@@ -8,8 +8,8 @@
  */
 
 #import "AppDelegate.h"
-
 #import "RCTRootView.h"
+#import "RootViewController.h"
 
 @implementation AppDelegate
 
@@ -32,6 +32,7 @@
    */
 
   jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+  //jsCodeLocation = [NSURL URLWithString:@"http://192.168.1.153:8081/index.ios.bundle?platform=ios&dev=true"];
 
   /**
    * OPTION 2
@@ -47,7 +48,7 @@
                                                    launchOptions:launchOptions];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UIViewController *rootViewController = [UIViewController new];
+  RootViewController *rootViewController = [[RootViewController alloc] init];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
