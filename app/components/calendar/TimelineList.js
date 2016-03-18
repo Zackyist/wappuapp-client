@@ -94,6 +94,13 @@ var TimelineList = React.createClass({
     analytics.viewOpened(VIEW_NAME);
   },
 
+  // shouldComponentUpdate(nextProps) {
+  //   const announcementsChanged = this.props.announcements.length !== nextProps.announcements.length;
+  //   const eventsChanged = this.props.events.length !== nextProps.events.length;
+  //   const stateChanged = this.props.eventsFetchState !== nextProps.eventsFetchState;
+  //   return announcementsChanged || eventsChanged || stateChanged;
+  // },
+
   getViewContent(){
     // ...should these be throttled?
     this.props.dispatch(EventActions.fetchEvents());
