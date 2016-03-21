@@ -1,23 +1,24 @@
 'use strict';
 
-import React from 'react-native';
-var {
+import React, {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
   Dimensions,
-  TouchableHighlight,
+  TouchableOpacity,
   View,
   Platform,
   Linking
-} = React;
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import theme from '../../style/theme';
-import Toolbar from './EventDetailToolbar';
 
 import analytics from '../../services/analytics';
 import locationService from '../../services/location';
 import time from '../../utils/time';
+
+import theme from '../../style/theme';
+import Toolbar from './EventDetailToolbar';
 import EventListItem from './EventListItem';
 
 const VIEW_NAME = 'EventDetail';
@@ -26,97 +27,111 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#FFF',
+    paddingTop: Platform.OS === 'ios' ? 20 : 0,
     paddingBottom: 20
-  },
-  detailEventImg: {
-    width: Dimensions.get('window').width,
-    height: 200,
   },
   content: {
     padding: 20,
+    flex: 1
+  },
+
+
+  imageWrapper: {
+    width: Dimensions.get('window').width,
+    position: 'relative'
+  },
+  imageElement: {
+    height: 200,
+  },
+  imageOverlayBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: 5,
+
+    opacity: 0.92,
+    backgroundColor: theme.secondary,
+    color: '#FFF'
+  },
+
+
+  detailItemWrapper: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+
+    backgroundColor: theme.gray,
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+
+    padding: 10,
+    paddingLeft: 25,
+    paddingRight: 25,
+    marginBottom: 10
   },
-  detailEventInfoContainer: {
-    flexDirection:'row',
-    alignItems:'flex-start',
-    justifyContent:'center',
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    height: 40
+  detailRowWrapper: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1
   },
-  detailEventInfoWrapper: {
-    flex:1,
-    flexDirection:'row',
-    alignItems:'flex-end',
+  detailItemIcon: {
+    fontSize: 25,
+    marginTop: 1,
+    paddingRight: 10
   },
-  detailEventInfoIcon: {
-    fontSize:25,
-    marginTop:1,
-    paddingRight:10,
-  },
-  detailEventInfoAttending: {
-    fontSize:12,
-    color:'#aaa',
+  detailItemText: {
+    fontSize: 12,
     lineHeight: 12,
     alignSelf: 'center'
   },
-  detailEventInfoTime: {
-    color: '#aaa',
-    fontSize: 13,
-    alignSelf: 'center'
+
+
+  infoWrapper: {
+    elevation: 2,
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: theme.primaryDarker,
+    padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20
   },
-  detailEventName: {
-    backgroundColor: theme.light,
-    textAlign: 'left',
-    color: theme.primary,
+  eventTitle: {
+    fontSize: 26,
     fontWeight: 'bold',
-    fontSize: 25,
+    textAlign: 'center',
+    color: '#CF3C89'
   },
-  detailEventDescription: {
+  eventOrganizer: {
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  eventTime: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: theme.light
+  },
+
+  descriptionText: {
     color: '#aaa',
     fontWeight: 'bold',
     fontSize: 15,
-    marginTop: 10,
-  },
-
-  navigationButtonWrapper: {
-    height: 50,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 10,
-    marginBottom: 50,
-  },
-  navigationButton: {
-    height: 50,
-    backgroundColor: '#E9E9E9',
-    borderColor: '#C7C7C7',
-    borderWidth: 2
-  },
-  navigationButtonText: {
-    fontSize: 20,
-    textAlign: 'center',
-    lineHeight: 35,
-    fontWeight: 'bold',
-    color: '#8A8A8A',
-    margin: 0,
-    padding: 0
-  },
-  navigationButtonIcon: {
-    backgroundColor: 'transparent',
-    position: 'absolute',
-    left: 15,
-    top: 10,
+    textAlign: 'justify'
   }
 });
 
-const EventDetail = React.createClass({
+export default React.createClass({
   componentDidMount() {
+    // TODO - trigger what event is watched
     analytics.viewOpened(VIEW_NAME);
-  },
-
-  onPressBack() {
-    this.props.navigator.pop();
   },
 
   getEventStatus(timepoint) {
@@ -129,58 +144,66 @@ const EventDetail = React.createClass({
     }
   },
 
-  render: function() {
-    // TODO: stylize the "meta-elements"
+  renderEventDetails(model, timepoint) {
+    return (
+      <View>
 
-    const model = this.props.route.model;
+        {model.facebookId &&
+          <TouchableOpacity
+            style={styles.detailItemWrapper}
+            onPress={() => Linking.openURL(`https://www.facebook.com/events/${ model.facebookId }`)}
+          >
+            <View style={styles.detailRowWrapper}>
+              <Icon style={styles.detailItemIcon} name='social-facebook' size={20}/>
+              <Text style={styles.detailItemText}>{model.attendingCount} attending </Text>
+              <Icon style={styles.detailItemIcon} name='ios-arrow-forward' />
+            </View>
+          </TouchableOpacity>
+        }
+
+        <TouchableOpacity
+          style={styles.detailItemWrapper}
+          onPress={() => Linking.openURL(locationService.getGeoUrl(model))}
+        >
+          <View style={styles.detailRowWrapper}>
+            <Icon name='location' style={styles.detailItemIcon} />
+            <Text style={styles.detailItemText}>{model.locationName} </Text>
+            <Icon style={styles.detailItemIcon} name='navigate' />
+          </View>
+        </TouchableOpacity>
+
+      </View>
+    );
+  },
+
+  render: function() {
+    let model = this.props.route.model;
     const timepoint = time.formatEventTime(model.startTime, model.endTime, { formatLong: true });
 
     return <View style={styles.wrapper}>
-      {(Platform.OS === 'android') ?
-        <Toolbar title={model.name} navigator={this.props.navigator} /> : null}
+      {(Platform.OS === 'android') && <Toolbar title={model.name} navigator={this.props.navigator} />}
 
       <ScrollView>
-        <EventListItem item={model} handlePress={() => true} />
-
-        <View style={styles.detailEventInfoContainer}>
-          <View style={styles.detailEventInfoWrapper}>
-            {model.facebookId &&
-            <TouchableHighlight
-              style={styles.detailEventInfoWrapper}
-              onPress={() =>
-                Linking.openURL(`https://www.facebook.com/events/${ model.facebookId }`)}
-            >
-              <View style={styles.detailEventInfoWrapper}>
-                <Icon style={styles.detailEventInfoIcon} name='social-facebook' size={20}/>
-                <Text style={styles.detailEventInfoAttending}>
-                  {model.attendingCount} attending
-                </Text>
-              </View>
-            </TouchableHighlight>
-            }
-          </View>
-          <Text style={styles.detailEventInfoTime}>{this.getEventStatus(timepoint)}</Text>
+        <View style={styles.imageWrapper}>
+          <Image
+            source={{ uri: model.coverImage }}
+            style={styles.imageElement} />
+          <Text style={styles.imageOverlayBadge}>{this.getEventStatus(timepoint)}</Text>
         </View>
+
+        <View style={styles.infoWrapper}>
+          <Text style={styles.eventTitle}>{model.name}</Text>
+          <Text style={styles.eventOrganizer}>by {model.organizer}</Text>
+          <Text style={styles.eventTime}>{timepoint.date} ({timepoint.time} - {timepoint.endTime})</Text>
+        </View>
+
+        {this.renderEventDetails(model, timepoint)}
 
         <View style={styles.content}>
-          <Text style={styles.detailEventDescription}>{model.description}</Text>
+          <Text style={styles.descriptionText}>{model.description}</Text>
         </View>
 
-        <View style={styles.navigationButtonWrapper}>
-          <TouchableHighlight
-            style={styles.navigationButton}
-            onPress={() => Linking.openURL(locationService.getGeoUrl(model))}
-          >
-            <Text style={styles.navigationButtonText}>
-              Get me there!
-            </Text>
-          </TouchableHighlight>
-          <Icon name='navigate' size={35} color='#EA489C' style={styles.navigationButtonIcon} />
-        </View>
       </ScrollView>
     </View>;
   }
-
 });
-
-export default EventDetail;
