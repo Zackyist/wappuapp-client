@@ -11,6 +11,7 @@ const theme = {
   danger:       '#FF5240',
   light:        '#fff',
   dark:         '#003340',
+  gray:         '#F9F9F9'
 };
 
 module.exports = theme;
