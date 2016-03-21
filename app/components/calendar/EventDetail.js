@@ -11,6 +11,7 @@ import React, {
   Platform,
   Linking
 } from 'react-native';
+import MapView from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import analytics from '../../services/analytics';
@@ -24,11 +25,36 @@ import EventListItem from './EventListItem';
 const VIEW_NAME = 'EventDetail';
 
 const styles = StyleSheet.create({
-  wrapper: {
+   mainWrapper: {
+    position: 'relative',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height
+  },
+
+  map: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
+  contenColumnScrollView: {
+    position: 'absolute',
+    top: Dimensions.get('window').height * 0.22,
+    left: 20,
+    right: 20,
+    bottom: 0,
+    flex: 1
+  },
+
+
+  // # Styles for the "content column"
+  //
+  contentColumnWrapper: {
     flex: 1,
     backgroundColor: '#FFF',
-    paddingTop: Platform.OS === 'ios' ? 20 : 0,
-    paddingBottom: 20
+    paddingBottom: 40
   },
   content: {
     padding: 20,
@@ -37,11 +63,16 @@ const styles = StyleSheet.create({
 
 
   imageWrapper: {
-    width: Dimensions.get('window').width,
-    position: 'relative'
+    flex: 1,
+    position: 'relative',
+    height: 200,
   },
   imageElement: {
-    height: 200,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   },
   imageOverlayBadge: {
     position: 'absolute',
@@ -124,7 +155,8 @@ const styles = StyleSheet.create({
     color: '#aaa',
     fontWeight: 'bold',
     fontSize: 15,
-    textAlign: 'justify'
+    textAlign: 'justify',
+    marginBottom: 15
   }
 });
 
@@ -176,14 +208,11 @@ export default React.createClass({
     );
   },
 
-  render: function() {
-    let model = this.props.route.model;
+  renderContent(model) {
     const timepoint = time.formatEventTime(model.startTime, model.endTime, { formatLong: true });
 
-    return <View style={styles.wrapper}>
-      {(Platform.OS === 'android') && <Toolbar title={model.name} navigator={this.props.navigator} />}
 
-      <ScrollView>
+    return <View style={styles.contentColumnWrapper}>
         <View style={styles.imageWrapper}>
           <Image
             source={{ uri: model.coverImage }}
@@ -203,7 +232,34 @@ export default React.createClass({
           <Text style={styles.descriptionText}>{model.description}</Text>
         </View>
 
-      </ScrollView>
     </View>;
+  },
+
+  render() {
+    let model = this.props.route.model;
+
+    return (
+      <View style={styles.mainWrapper}>
+        {(Platform.OS === 'android') && <Toolbar title={model.name} navigator={this.props.navigator} />}
+
+        <MapView style={styles.map}
+          initialRegion={{
+            latitude: model.location.latitude,
+            longitude: model.location.longitude,
+            latitudeDelta: 0.2,
+            longitudeDelta: 0.2
+          }}
+          showsPointsOfInterest={false}
+          showsBuildings={false}
+          showsIndoors={false}
+          rotateEnabled={false}
+        />
+
+        <ScrollView style={styles.contenColumnScrollView}>
+          {this.renderContent(model)}
+        </ScrollView>
+      </View>
+    );
   }
 });
+
