@@ -253,7 +253,11 @@ export default React.createClass({
           showsBuildings={false}
           showsIndoors={false}
           rotateEnabled={false}
-        />
+        >
+          <MapView.Marker
+            image={require('../../../assets/marker.png')}
+            coordinate={model.location} />
+        </MapView>
 
         <ScrollView style={styles.contenColumnScrollView}>
           {this.renderContent(model)}
