@@ -275,7 +275,11 @@ export default React.createClass({
             coordinate={model.location} />
         </MapView>
 
-        <ScrollView ref="ContentScrollView" style={styles.contenColumnScrollView}>
+        <ScrollView
+          ref="ContentScrollView"
+          style={styles.contenColumnScrollView}
+          showsVerticalScrollIndicator={false}
+        >
           {this.renderContent(model)}
         </ScrollView>
       </View>
