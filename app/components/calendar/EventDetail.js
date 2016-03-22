@@ -26,7 +26,7 @@ import EventListItem from './EventListItem';
 const VIEW_NAME = 'EventDetail';
 
 const styles = StyleSheet.create({
-   mainWrapper: {
+  mainWrapper: {
     position: 'relative',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height
@@ -54,14 +54,8 @@ const styles = StyleSheet.create({
   //
   contentColumnWrapper: {
     flex: 1,
-    backgroundColor: '#FFF',
     paddingBottom: 40
   },
-  content: {
-    padding: 20,
-    flex: 1
-  },
-
 
   imageWrapper: {
     flex: 1,
@@ -94,19 +88,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
 
     backgroundColor: theme.gray,
-    elevation: 2,
-    shadowColor: '#000000',
-    shadowOpacity: 0.15,
-    shadowRadius: 1,
-    shadowOffset: {
-      height: 2,
-      width: 0
-    },
 
     padding: 10,
     paddingLeft: 25,
     paddingRight: 25,
-    marginBottom: 10
+    marginBottom: 5
   },
   detailRowWrapper: {
     justifyContent: 'space-between',
@@ -133,7 +119,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.primaryDarker,
     padding: 10,
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
+    marginBottom: 10
   },
   eventTitle: {
     fontSize: 26,
@@ -152,11 +139,25 @@ const styles = StyleSheet.create({
     color: theme.light
   },
 
+  descriptionTextWrapper: {
+    marginTop: 5,
+    marginBottom: 50,
+
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row'
+  },
   descriptionText: {
+    flex: 1,
     color: '#aaa',
+    backgroundColor: '#FFF',
     fontWeight: 'bold',
     fontSize: 15,
-    textAlign: 'justify',
+    textAlign: 'left',
+
+    paddingTop: 10,
+    paddingLeft: 25,
+    paddingRight: 25,
     marginBottom: 15
   }
 });
@@ -234,7 +235,7 @@ export default React.createClass({
 
         {this.renderEventDetails(model, timepoint)}
 
-        <View style={styles.content}>
+        <View style={styles.descriptionTextWrapper}>
           <Text style={styles.descriptionText}>{model.description}</Text>
         </View>
 
