@@ -253,8 +253,8 @@ export default React.createClass({
           initialRegion={{
             latitude: model.location.latitude,
             longitude: model.location.longitude,
-            latitudeDelta: 0.2,
-            longitudeDelta: 0.2
+            latitudeDelta: 0.02,
+            longitudeDelta: 0.02
           }}
           showsPointsOfInterest={false}
           showsBuildings={false}
