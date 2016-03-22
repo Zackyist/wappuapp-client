@@ -2,7 +2,7 @@ import DeviceInfo from 'react-native-device-info';
 import { AsyncStorage } from 'react-native';
 
 import Endpoints from '../constants/Endpoints';
-import {version as VERSION_NUMBER} from '../../package.json';
+import { version as VERSION_NUMBER } from '../../package.json';
 
 const USER_UUID = DeviceInfo.getUniqueID();
 const API_TOKEN = 'hessu'; // TODO implement build step & get this from env config or some other magical solution
@@ -29,20 +29,19 @@ const fetchModels = modelType => {
   });
 };
 
-//?beforeId=VANHIMMAN_ID&limit=20
 const fetchMoreFeed = lastID => {
-  const params = {beforeId: lastID, limit: 6};
-  let url = Endpoints.urls['feed'];
-  url += '?' + Object.keys(params).map(function(k) {
+  const params = { beforeId: lastID, limit: 20 };
+  let url = Endpoints.urls.feed;
+  url += '?' + Object.keys(params).map(k => {
     return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
   }).join('&');
 
   return wapuFetch(url)
   .then(response => response.json())
-  .then(response => {
-    return response;
-    //return AsyncStorage.setItem(url, JSON.stringify(response)).then(() => response);
-  })
+  // TODO: Why is this commented?
+  // .then(response => {
+  //   return AsyncStorage.setItem(url, JSON.stringify(response)).then(() => response);
+  // })
   .catch((error) => {
     console.log('Error catched on API-fetch', error);
     return AsyncStorage.getItem(url)
@@ -52,7 +51,6 @@ const fetchMoreFeed = lastID => {
       } else {
         return Promise.reject(null);
       }
-
     });
   });
 };
@@ -60,7 +58,7 @@ const fetchMoreFeed = lastID => {
 const postAction = (params, location) => {
   let payload = Object.assign({}, params, { user: DeviceInfo.getUniqueID() });
 
-  // Add locatino to payload, if it exists
+  // Add location to payload, if it exists
   if (location) {
     payload.location = location;
   }
@@ -107,10 +105,13 @@ const checkResponseStatus = response => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    console.log('Error catched', response.statusText);
-    const error = new Error(response.statusText);
-    error.response = response;
-    throw error;
+    return response.json()
+      .then(res => {
+        console.log('Error catched', response.statusText);
+        const error = new Error(response.statusText);
+        error.response = response;
+        throw error;
+      });
   }
 };
 
@@ -118,7 +119,7 @@ const _post = (url, body) => {
   return wapuFetch(url, {
     method: 'post',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)
@@ -129,7 +130,7 @@ const _put = (url, body) => {
   return wapuFetch(url, {
     method: 'put',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)
@@ -140,7 +141,7 @@ const _delete = (url, body) => {
   return wapuFetch(url, {
     method: 'delete',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)

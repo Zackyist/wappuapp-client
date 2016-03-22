@@ -25,6 +25,7 @@
 
     "requireCamelCaseOrUpperCaseIdentifiers": true,
     "requireCommaBeforeLineBreak": true,
+    "requireTrailingComma": false,
     "requireCurlyBraces": [
         "if",
         "else",
@@ -65,6 +66,7 @@
     "requireSpacesInFunctionExpression": {
         "beforeOpeningCurlyBrace": true
     },
+    "requirePaddingNewLinesBeforeLineComments": false,
 
     "validateLineBreaks": "LF",
     "validateIndentation": 2,

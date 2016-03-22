@@ -11,11 +11,12 @@ import {
   FEED_LIST_REFRESHED,
   FEED_ITEM_DELETE
 } from '../actions/feed';
+import LoadingStates from '../constants/LoadingStates';
 
 const initialState = Immutable.fromJS({
   list: [],
-  listState: 'none',
-  refreshState: false,
+  listState: LoadingStates.NONE,
+  isRefreshing: false,
 });
 
 export default function feed(state = initialState, action) {
@@ -25,16 +26,15 @@ export default function feed(state = initialState, action) {
     case FEED_APPEND:
       return state.set('list', state.get('list').concat(action.feed));
     case FEED_LIST_LOADING:
-      return state.set('listState', 'loading');
+      return state.set('listState', LoadingStates.LOADING);
     case FEED_LIST_LOADED:
-      return state.set('listState', 'ready');
+      return state.set('listState', LoadingStates.READY);
     case FEED_LIST_FAILED:
-      return state.set('listState', 'failed');
+      return state.set('listState', LoadingStates.FAILED);
     case FEED_LIST_REFRESHING:
-      return state.set('refreshState', true);
+      return state.set('isRefreshing', true);
     case FEED_LIST_REFRESHED:
-      return state.set('refreshState', false);
-
+      return state.set('isRefreshing', false);
     case FEED_ITEM_DELETE:
       const originalList = state.get('list');
       const itemIndex = originalList.findIndex((item) => item.get('id') === action.item.id);

@@ -1,24 +1,32 @@
 'use strict';
 
-import _ from 'lodash';
 import React, {
   View,
   Text,
   TextInput,
   StyleSheet,
   Platform,
+  PropTypes,
   ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
 import Modal from 'react-native-modalbox';
 import Team from './Team';
-import Logos from '../../constants/Logos';
 import * as RegistrationActions from '../../actions/registration';
 import * as TeamActions from '../../actions/team';
 
 const RegistrationView = React.createClass({
+  propTypes: {
+    name: PropTypes.string.isRequired,
+    teams: PropTypes.instanceOf(Immutable.List).isRequired,
+    selectedTeam: PropTypes.number.isRequired,
+    isRegistrationViewOpen: PropTypes.bool.isRequired,
+    isRegistrationInfoValid: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired
+  },
   onRegister() {
     this.props.dispatch(RegistrationActions.putUser());
   },
@@ -35,8 +43,6 @@ const RegistrationView = React.createClass({
     this.props.dispatch(RegistrationActions.closeRegistrationView());
   },
   render() {
-    const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]);
-    const currentTeamName = currentTeam ? currentTeam.name : 'Not selected';
     return (
       <Modal
         isOpen={this.props.isRegistrationViewOpen}
@@ -69,7 +75,7 @@ const RegistrationView = React.createClass({
                   key={i}
                   name={team.get('name')}
                   teamid={team.get('id')}
-                  logo={this.props.logos[team.get('name')]}
+                  logo={team.get('imagePath')}
                   selected={this.props.selectedTeam}
                   onPress={this.onSelectTeam.bind(null, team.get('id'))} />
               )}
@@ -78,7 +84,6 @@ const RegistrationView = React.createClass({
             </View>
 
             <View style={styles.bottomButtons}>
-
 
               <Button
                 onPress={this.onCancel}
@@ -169,7 +174,6 @@ const styles = StyleSheet.create({
 
 const select = store => {
   return {
-    logos: Logos.killat,
     isRegistrationViewOpen: store.registration.get('isRegistrationViewOpen'),
     name: store.registration.get('name'),
     selectedTeam: store.registration.get('selectedTeam'),

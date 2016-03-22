@@ -5,6 +5,7 @@ import React, {
   StyleSheet,
   View,
   Platform,
+  PropTypes,
   Text,
   TouchableHighlight
 } from 'react-native';
@@ -35,6 +36,13 @@ class EventMap extends Component {
       name: event.name,
       model: event
     });
+  }
+
+  // Enables swiping between tabs
+  // 20px of right part of map can not be used to navigate map
+  renderSwipeHelperOverlay() {
+    if(Platform.OS === 'ios') return;
+    return <View style={styles.androidSwipeHelper}></View>;
   }
 
   render() {
@@ -69,6 +77,7 @@ class EventMap extends Component {
     );
 
     return (
+      <View style={{flex:1}}>
         <MapView style={styles.map}
           initialRegion={{
             latitude: 61.4931758,
@@ -83,8 +92,16 @@ class EventMap extends Component {
         >
           {markers}
         </MapView>
+
+        {this.renderSwipeHelperOverlay()}
+      </View>
     );
   }
+}
+
+EventMap.propTypes = {
+  navigator: PropTypes.object.isRequired,
+  events: PropTypes.array.isRequired
 }
 
 const styles = StyleSheet.create({
@@ -131,6 +148,16 @@ const styles = StyleSheet.create({
     top:Platform.OS === 'ios' ? 0 : 2,
     fontSize:14,
     color:theme.primary
+  },
+  androidSwipeHelper:{
+    position: 'absolute',
+    right: 0,
+    width: 20,
+    top: 0,
+    bottom: 0,
+    elevation: 1,
+    backgroundColor: 'transparent',
+    opacity: 0
   }
 });
 

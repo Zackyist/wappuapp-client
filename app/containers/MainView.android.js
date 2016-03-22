@@ -5,6 +5,7 @@ import React, {
   View,
   Navigator,
   StatusBar,
+  PropTypes,
   BackAndroid
 } from 'react-native'
 
@@ -21,22 +22,24 @@ const theme = require('../style/theme');
 const IconTabBar = require('../components/common/IconTabBar');
 
 const AndroidTabNavigation = React.createClass({
+  propTypes: {
+    navigator: PropTypes.object.isRequired
+  },
   render() {
     return (
       <AndroidTabs
-        tabBarPosition={'top'}
-        tabBarUnderlineColor={theme.accent}
-        tabBarBackgroundColor={theme.primary}
-        tabBarActiveTextColor={'#FFF'}
         initialPage={2}
-        tabBarInactiveTextColor={'#FFF'}
-        renderTabBar={() => <IconTabBar rippleColor={'rgba(255,255,255,.2)'} />}
+        tabBarPosition={'top'}
+        tabBarBackgroundColor={theme.primary}
+        tabBarActiveTextColor={theme.accent}
+        tabBarInactiveTextColor={theme.light}
+        renderTabBar={() => <IconTabBar rippleColor={theme.primaryDarker} />}
       >
-        <EventMapView navigator={this.props.navigator} tabLabel='map' />
-        <CalendarView navigator={this.props.navigator} tabLabel='event-note' />
-        <FeedView navigator={this.props.navigator} tabLabel='whatshot' />
-        <CompetitionView tabLabel='equalizer' />
-        <ProfileView tabLabel='person' />
+        <EventMapView navigator={this.props.navigator} tabLabel={{title:'Map', icon:'map'}} />
+        <CalendarView navigator={this.props.navigator} tabLabel={{title:'Events', icon:'event-note'}} />
+        <FeedView navigator={this.props.navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
+        <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
+        <ProfileView tabLabel={{title:'Profile', icon:'person'}} />
       </AndroidTabs>
     )
   }

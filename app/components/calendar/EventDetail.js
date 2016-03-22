@@ -8,6 +8,7 @@ import React, {
   Dimensions,
   TouchableOpacity,
   View,
+  PropTypes,
   Platform,
   Linking
 } from 'react-native';
@@ -161,6 +162,11 @@ const styles = StyleSheet.create({
 });
 
 export default React.createClass({
+  propTypes: {
+    navigator: PropTypes.object.isRequired,
+    route: PropTypes.object.isRequired
+  },
+
   componentDidMount() {
     // TODO - trigger what event is watched
     analytics.viewOpened(VIEW_NAME);
