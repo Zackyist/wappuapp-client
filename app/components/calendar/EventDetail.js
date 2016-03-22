@@ -260,6 +260,8 @@ export default React.createClass({
           showsBuildings={false}
           showsIndoors={false}
           rotateEnabled={false}
+          scrollEnabled={false}
+          zoomEnabled={false}
         >
           <MapView.Marker
             image={require('../../../assets/marker.png')}
