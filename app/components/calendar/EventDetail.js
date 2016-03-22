@@ -25,6 +25,8 @@ import EventListItem from './EventListItem';
 
 const VIEW_NAME = 'EventDetail';
 
+const SCROLL_CONTENT_TOP_MARGIN = Dimensions.get('window').height * 0.6;
+
 const styles = StyleSheet.create({
   mainWrapper: {
     position: 'relative',
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
 
   contenColumnScrollView: {
     position: 'absolute',
-    top: Dimensions.get('window').height * 0.22,
+    top: 20,
     left: 20,
     right: 20,
     bottom: 0,
@@ -53,6 +55,7 @@ const styles = StyleSheet.create({
   // # Styles for the "content column"
   //
   contentColumnWrapper: {
+    marginTop: SCROLL_CONTENT_TOP_MARGIN,
     flex: 1,
     paddingBottom: 40
   },
@@ -61,6 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     height: 200,
+    backgroundColor: theme.gray
   },
   imageElement: {
     position: 'absolute',
@@ -158,6 +162,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 25,
     paddingRight: 25,
+    paddingBottom: 25,
     marginBottom: 15
   }
 });
@@ -171,6 +176,8 @@ export default React.createClass({
   componentDidMount() {
     // TODO - trigger what event is watched
     analytics.viewOpened(VIEW_NAME);
+
+    this.refs.ContentScrollView.scrollTo({ x: 0, y: SCROLL_CONTENT_TOP_MARGIN, animated: true });
   },
 
   getEventStatus(timepoint) {
@@ -268,7 +275,7 @@ export default React.createClass({
             coordinate={model.location} />
         </MapView>
 
-        <ScrollView style={styles.contenColumnScrollView}>
+        <ScrollView ref="ContentScrollView" style={styles.contenColumnScrollView}>
           {this.renderContent(model)}
         </ScrollView>
       </View>
