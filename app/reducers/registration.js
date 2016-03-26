@@ -1,5 +1,3 @@
-'use strict';
-
 import Immutable from 'immutable';
 import {
   CREATE_USER_REQUEST,

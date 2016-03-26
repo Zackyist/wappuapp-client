@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Platform, StatusBarIOS } from 'react-native';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';

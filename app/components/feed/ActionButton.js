@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { StyleSheet, Platform } from 'react-native';
 import Fab from '../common/Fab';
 import theme from '../../style/theme';

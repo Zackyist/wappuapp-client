@@ -1,5 +1,3 @@
-'use strict';
-
 import Immutable from 'immutable';
 import {
   CHANGE_TAB

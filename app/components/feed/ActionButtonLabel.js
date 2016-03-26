@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Animated, View, Text, Platform, StyleSheet } from 'react-native';
 import theme from '../../style/theme';
 

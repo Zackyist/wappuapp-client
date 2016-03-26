@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Animated, Easing, Platform, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';

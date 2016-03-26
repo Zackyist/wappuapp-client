@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react-native';
 var {
   ToolbarAndroid,
@@ -8,11 +6,6 @@ var {
 } = React;
 import Icon from 'react-native-vector-icons/Ionicons';
 import theme from '../../style/theme';
-
-// TODO re-enable
-// const toolbarActions = [
-//   {title: 'Share', id:'share'}
-// ];
 
 const styles = StyleSheet.create({
   toolbar: {

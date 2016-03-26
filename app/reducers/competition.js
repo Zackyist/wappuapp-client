@@ -1,5 +1,3 @@
-'use strict';
-
 import Immutable from 'immutable';
 import {
   POST_ACTION_REQUEST,

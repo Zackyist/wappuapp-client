@@ -1,5 +1,3 @@
-'use strict';
-
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 var React = require('react-native');
 var {
