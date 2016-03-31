@@ -5,10 +5,12 @@ var React = require('react-native');
 var {
   Image,
   PropTypes,
+  Platform,
   StyleSheet,
   Dimensions,
   Text,
   TouchableHighlight,
+  TouchableNativeFeedback,
   View
 } = React;
 
@@ -18,73 +20,108 @@ import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
   gridListItem: {
-    width: Dimensions.get('window').width,
     flex: 1,
-    height: 200
+    paddingLeft:97,
+    backgroundColor:'#fff',
   },
 
   gridListItemImgWrap: {
-    height: 200,
-    width: Dimensions.get('window').width,
-    position: 'absolute'
+    height: 80,
+    width: Dimensions.get('window').width - 130,
+    position: 'relative'
   },
   gridListItemImg: {
-    width: Dimensions.get('window').width,
-    height: 200
+    width: Dimensions.get('window').width - 130,
+    height: 80
   },
-  gridListItemImgColorLayer: {
-    // backgroundColor is set programmatically on render() based on rowId
-    opacity: 0.75,
-    position: 'absolute',
-    left: 0, top: 0, bottom: 0, right: 0
-  },
-
   gridListItemContent: {
-    elevation: 2,
     flex: 1,
     justifyContent: 'center',
-    padding: 20
+    padding: 15,
+    paddingBottom:25,
+    paddingTop:0,
+
   },
   gridListItemTitle: {
-    fontSize: 23,
-    lineHeight:26,
-    fontWeight: 'bold',
+    fontSize: 14,
+    lineHeight:18,
+    fontWeight: 'normal',
     textAlign: 'left',
-    color: theme.light,
-    paddingBottom:10
+    color: '#000',
+    paddingBottom:10,
+    marginTop:3,
   },
 
   gridListItemMeta: {
+    position:'absolute',
+    left:15,
+    top:3,
     flex:1
   },
   gridListItemPlace: {
-    fontSize: 15,
-    color: '#ddd'
+    marginTop:10,
+    fontSize: 13,
+    color: '#888'
   },
   gridListItemDistance: {
-    color:'#ddd',
+    color:'#888',
     fontSize:14,
   },
   gridListItemTime: {
-    fontSize: 15,
-    color: theme.accent,
-    fontWeight: 'bold',
+    fontSize: 14,
+    color: theme.secondary,
+    fontWeight:'normal'
+  },
+  gridListItemTimeEnd: {
+    color:'#888',
+  },
+  gridListItemDay: {
+    fontWeight:'bold'
   },
   gridListItemIconsWrapper__left:{
-    position: 'absolute',
-    left: 20,
-    bottom: 15,
+
   },
   gridListItemIconsWrapper: {
-    position: 'absolute',
-    right: 20,
-    bottom: 15,
+    position: 'relative',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    top: -5,
+    marginBottom: 5,
   },
   gridListItemIcon: {
-    color: theme.light,
-    opacity: 0.9,
-    height: 20,
-    fontSize: 14
+    color: '#888',
+    fontWeight:'normal',
+    fontSize: 12
+  },
+  gridListItemIcon__alert: {
+    color: theme.secondary
+  },
+  timeline: {
+    position:'absolute',
+    top:0,
+    bottom:0,
+    left:78,
+    width:2,
+    backgroundColor:'#eee'
+  },
+  timelineCircle: {
+    backgroundColor: theme.secondary,
+    borderColor:theme.light,
+    position:'absolute',
+    left:66,
+    borderWidth:3,
+    width:26,
+    height:26,
+    borderRadius:13,
+    top:0
+  },
+  timelineCircleInner: {
+    borderRadius:7,
+    width:14,
+    height:14,
+    backgroundColor:theme.light,
+    top:3,
+    left:3
   }
 });
 
@@ -98,41 +135,48 @@ export default React.createClass({
   render() {
     const item = this.props.item;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
+    const startDay = time.getEventDay(item.startTime);
     const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
 
-    return <TouchableHighlight onPress={this.props.handlePress} underlayColor={'transparent'}>
+    return <TouchableNativeFeedback onPress={this.props.handlePress} background={TouchableNativeFeedback.SelectableBackground()}>
       <View style={styles.gridListItem}>
-        <View style={styles.gridListItemImgWrap}>
-          <Image
-            source={{ uri: coverImage }}
-            style={styles.gridListItemImg} />
-          <View style={[
-            styles.gridListItemImgColorLayer,
-            { backgroundColor: this.props.rowId && this.props.rowId % 2 === 0 ?
-              '#444' : '#444' }
-          ]} />
-        </View>
 
         <View style={styles.gridListItemContent}>
           <Text style={styles.gridListItemTitle}>{item.name}</Text>
-          <View style={styles.gridListItemMeta}>
-            <Text style={styles.gridListItemTime}>{timepoint.time} - {timepoint.endTime}</Text>
-            <Text style={styles.gridListItemPlace}>{item.locationName}</Text>
 
-          </View>
-
-          {this.props.currentDistance !== null && <View style={styles.gridListItemIconsWrapper__left}>
-            <Text style={styles.gridListItemDistance}>{this.props.currentDistance}</Text>
-          </View>}
-
-          <View style={styles.gridListItemIconsWrapper}>
+          <View style={[styles.gridListItemIconsWrapper,
+            {marginBottom: item.teemu || timepoint.onGoing || timepoint.startsSoon ? 5 : 0}
+          ]}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
-              <Icon name='university' size={15} /> Emäteemu!</Text>}
-            {timepoint.onGoing && <Text style={styles.gridListItemIcon}>Käynnissä ny!</Text>}
-            {timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Alkaa kohta!</Text>}
+            <Icon name='university' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
+            {timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Käynnissä ny!</Text>}
+            {timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Alkaa kohta!</Text>}
           </View>
+
+          <View style={styles.gridListItemImgWrap}>
+            <Image
+              source={{ uri: coverImage }}
+              style={styles.gridListItemImg} />
+
+          </View>
+
+          <Text style={styles.gridListItemPlace}>{item.locationName} {this.props.currentDistance}</Text>
+
         </View>
+        <View style={styles.timeline} />
+        <View style={styles.timelineCircle}>
+          <View style={styles.timelineCircleInner} />
+        </View>
+
+        <View style={styles.gridListItemMeta}>
+            {false && Platform.OS === 'android' &&
+            <Text style={[styles.gridListItemTime, styles.gridListItemDay]}>{startDay}</Text>
+            }
+            <Text style={styles.gridListItemTime}>{timepoint.time}</Text>
+            <Text style={[styles.gridListItemTime, styles.gridListItemTimeEnd]}>{timepoint.endTime}</Text>
+        </View>
+
       </View>
-    </TouchableHighlight>;
+    </TouchableNativeFeedback>;
   }
 });
