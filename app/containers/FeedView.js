@@ -1,10 +1,7 @@
 'use strict';
 
-import React, {
-  Navigator,
-  StyleSheet,
-  Platform
-} from 'react-native';
+import React, { Component } from 'react';
+import { Navigator, StyleSheet, Platform } from 'react-native';
 
 import analytics from '../services/analytics';
 import FeedList from '../components/feed/FeedList';
@@ -27,17 +24,18 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+
+class FeedView extends Component {
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
-  },
+  }
 
   renderScene(route, navigator) {
     if (route.component) {
       const RouteComponent = route.component;
       return <RouteComponent navigator={navigator} route={route} {...this.props} />
     }
-  },
+  }
 
   render() {
     if (Platform.OS === 'ios') {
@@ -70,4 +68,6 @@ export default React.createClass({
         })} />;
     }
   }
-});
+}
+
+export default FeedView;

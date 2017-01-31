@@ -1,9 +1,7 @@
 'use strict';
 
-import React, {
-  Navigator,
-  StyleSheet,
-} from 'react-native';
+import React, { Component } from 'react';
+import { Navigator, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 
 import sceneConfig from '../utils/sceneConfig';
@@ -26,13 +24,14 @@ const styles = StyleSheet.create({
   }
 });
 
-var TimelineListWrapper = React.createClass({
+
+class TimelineListWrapper extends Component {
   renderScene(route, navigator) {
     if (route.component) {
       const RouteComponent = route.component;
       return <RouteComponent navigator={navigator} route={route} {...this.props} />;
     }
-  },
+  }
 
   render() {
     return (
@@ -52,7 +51,7 @@ var TimelineListWrapper = React.createClass({
       />
     );
   }
-});
+}
 
 const select = store => {
   return {};

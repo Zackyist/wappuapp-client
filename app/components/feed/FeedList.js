@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   StyleSheet,
   ListView,
   Text,
@@ -12,7 +13,7 @@ import { connect } from 'react-redux';
 import { ImagePickerManager } from 'NativeModules';
 
 import theme from '../../style/theme';
-import * as FeedActions from '../../actions/feed';
+import { fetchFeed, refreshFeed, loadMoreItems } from '../../actions/feed';
 import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
 import Loading from './Loading';
@@ -21,7 +22,12 @@ import TextActionView from '../../components/actions/TextActionView';
 import LoadingStates from '../../constants/LoadingStates';
 
 import ImageCaptureOptions from '../../constants/ImageCaptureOptions';
-import * as CompetitionActions from '../../actions/competition';
+import {
+  updateCooldowns,
+  postImage,
+  postAction,
+  openTextActionView
+} from '../../actions/competition';
 import TimerMixin from 'react-timer-mixin';
 
 const styles = StyleSheet.create({
@@ -43,24 +49,28 @@ const styles = StyleSheet.create({
 
 });
 
-const FeedList = React.createClass({
-  mixins: [TimerMixin],
-  getInitialState() {
-    return {
+class FeedList extends Component {
+  // mixins: [TimerMixin]
+
+  constructor(props) {
+    super(props);
+    this.state = {
       showScrollTopButton: false,
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
     };
-  },
+
+    this.onRefreshFeed = this.onRefreshFeed.bind(this);
+  }
 
   componentDidMount() {
-    this.props.dispatch(FeedActions.fetchFeed());
+    this.props.fetchFeed();
 
-    this.props.dispatch(CompetitionActions.updateCooldowns());
-  },
+    this.props.updateCooldowns();
+  }
 
   componentWillUnmount() {
     //this.clearInterval(this.updateCooldownInterval);
-  },
+  }
 
   componentWillReceiveProps({ feed }) {
     if (feed !== this.props.feed) {
@@ -72,12 +82,12 @@ const FeedList = React.createClass({
     if (this.props.isSending){
       this.scrollTop();
     }
-  },
+  }
   scrollTop() {
     if (this.refs._scrollView){
      this.refs._scrollView.scrollTo({x: 0, y: 0, animated: true});
     }
-  },
+  }
 
   _onScroll(event){
     const SHOW_SCROLLTOP_LIMIT = 600;
@@ -90,11 +100,11 @@ const FeedList = React.createClass({
         showScrollTopButton: showScrollTopButton
       })
     }
-  },
+  }
 
   onRefreshFeed() {
-    this.props.dispatch(FeedActions.refreshFeed());
-  },
+    this.props.refreshFeed();
+  }
 
   onLoadMoreItems() {
     if (this.props.isRefreshing || !this.props.feed.size || this.props.feed.size < 10) {
@@ -103,18 +113,18 @@ const FeedList = React.createClass({
 
     const lastItemID = this.props.feed.get(this.props.feed.size - 1).get('id') || '';
     if (lastItemID) {
-      this.props.dispatch(FeedActions.loadMoreItems(lastItemID));
+      this.props.loadMoreItems(lastItemID);
     }
-  },
+  }
 
   chooseImage() {
     ImagePickerManager.showImagePicker(ImageCaptureOptions, (response) => {
       if (!response.didCancel && !response.error) {
         const image = 'data:image/jpeg;base64,' + response.data;
-        this.props.dispatch(CompetitionActions.postImage(image));
+        this.props.postImage(image);
       }
     });
-  },
+  }
 
   onPressAction(type) {
 
@@ -122,11 +132,11 @@ const FeedList = React.createClass({
       case 'IMAGE':
         return this.chooseImage();
       case 'TEXT':
-        return this.props.dispatch(CompetitionActions.openTextActionView());
+        return this.props.openTextActionView();
       default:
-        return this.props.dispatch(CompetitionActions.postAction(type));
+        return this.props.postAction(type);
     }
-  },
+  }
 
   renderFeed(feedListState, isLoadingActionTypes, isLoadingUserData) {
     const refreshControl = <RefreshControl
@@ -171,7 +181,7 @@ const FeedList = React.createClass({
           </View>
         );
     }
-  },
+  }
 
   render() {
 
@@ -188,8 +198,18 @@ const FeedList = React.createClass({
         <TextActionView />
       </View>
     );
-  },
-});
+  }
+}
+
+const mapDispatchToProps = {
+  fetchFeed,
+  refreshFeed,
+  loadMoreItems,
+  updateCooldowns,
+  postImage,
+  postAction,
+  openTextActionView
+};
 
 const select = store => {
   const isRegistrationInfoValid = store.registration.get('name') !== '' &&
@@ -210,4 +230,4 @@ const select = store => {
   };
 };
 
-export default connect(select)(FeedList);
+export default connect(select, mapDispatchToProps)(FeedList);

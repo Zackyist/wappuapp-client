@@ -1,24 +1,25 @@
 'use strict';
 
-import React, {
+import React, { Component, PropTypes } from 'react';
+import {
   View,
   Text,
   StyleSheet,
   Image,
-  PropTypes,
   TouchableOpacity
 } from 'react-native';
 
 import theme from '../../style/theme';
 
-const Team = React.createClass({
+class Team extends Component {
   propTypes: {
     name: PropTypes.string.isRequired,
     logo: PropTypes.string.isRequired,
     teamid: PropTypes.number.isRequired,
     selected: PropTypes.number.isRequired,
     onPress: PropTypes.func.isRequired
-  },
+  }
+
   render() {
     const selected = this.props.teamid === this.props.selected;
     return (
@@ -36,7 +37,7 @@ const Team = React.createClass({
       </View>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   item: {

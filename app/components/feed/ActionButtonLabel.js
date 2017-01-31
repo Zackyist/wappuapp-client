@@ -1,6 +1,7 @@
 'use strict';
 
-import React, { Animated, View, Text, Platform, StyleSheet } from 'react-native';
+import React, { Component } from 'react';
+import { Animated, View, Text, Platform, StyleSheet } from 'react-native';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const ActionButtonLabel = React.createClass({
+class ActionButtonLabel extends Component {
   render() {
     const combinedStyle = [styles.label];
     const { extraStyle, children, additionalLabel } = this.props;
@@ -54,6 +55,6 @@ const ActionButtonLabel = React.createClass({
 
     );
   }
-});
+}
 
 export default ActionButtonLabel;

@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   Navigator,
   StyleSheet,
   Platform
@@ -23,13 +24,14 @@ const styles = StyleSheet.create({
   }
 });
 
-var ProfileView = React.createClass({
+
+class ProfileView extends Component {
   renderScene(route, navigator) {
     if (route.component) {
       const RouteComponent = route.component;
       return <RouteComponent navigator={navigator} route={route} {...this.props} />
     }
-  },
+  }
 
   render() {
     return (
@@ -51,7 +53,7 @@ var ProfileView = React.createClass({
       />
     );
   }
-});
+}
 
 const select = store => {
   return {};

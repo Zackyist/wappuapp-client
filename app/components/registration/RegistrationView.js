@@ -1,13 +1,13 @@
 'use strict';
 
-import React, {
+import React, { Component, PropTypes } from 'react';
+import {
   View,
   Text,
   TextInput,
   StyleSheet,
   Dimensions,
   Platform,
-  PropTypes,
   TouchableOpacity,
   ScrollView,
   BackAndroid
@@ -20,23 +20,45 @@ import IntroView from './IntroView';
 import Modal from 'react-native-modalbox';
 import Team from './Team';
 import Toolbar from './RegistrationToolbar';
-import * as RegistrationActions from '../../actions/registration';
-import * as TeamActions from '../../actions/team';
+import {
+  putUser,
+  updateName,
+  selectTeam,
+  generateName,
+  dismissIntroduction,
+  closeRegistrationView
+} from '../../actions/registration';
+import { showChooseTeam } from '../../actions/team';
 import * as keyboard from '../../utils/keyboard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 
 const IOS = Platform.OS === 'ios';
 const {height} = Dimensions.get('window');
 
-const RegistrationView = React.createClass({
+class RegistrationView extends Component {
   propTypes: {
     name: PropTypes.string.isRequired,
-    teams: PropTypes.instanceOf(Immutable.List).isRequired,
+    //teams: PropTypes.instanceOf(Immutable.List).isRequired,
+    teams: PropTypes.any,
     selectedTeam: PropTypes.number.isRequired,
     isRegistrationViewOpen: PropTypes.bool.isRequired,
     isRegistrationInfoValid: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
-  },
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.onDismissIntroduction = this.onDismissIntroduction.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onGenerateName = this.onGenerateName.bind(this);
+    this.onRegister = this.onRegister.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onSelectTeam = this.onSelectTeam.bind(this);
+    this.onShowChooseTeam = this.onShowChooseTeam.bind(this);
+  }
+
   componentDidMount() {
     BackAndroid.addEventListener('hardwareBackPress', () => {
       if (this.props.isRegistrationViewOpen) {
@@ -45,54 +67,40 @@ const RegistrationView = React.createClass({
       }
       return false;
     })
-  },
+  }
   onRegister() {
-    this.props.dispatch(RegistrationActions.putUser());
-  },
+    this.props.putUser();
+  }
   onChangeName(name) {
-    this.props.dispatch(RegistrationActions.updateName(name));
-  },
+    this.props.updateName(name);
+  }
   onSelectTeam(id) {
-    this.props.dispatch(RegistrationActions.selectTeam(id));
-  },
+    this.props.selectTeam(id);
+  }
   onGenerateName() {
-    this.props.dispatch(RegistrationActions.generateName());
-  },
+    this.props.generateName();
+  }
   onShowChooseTeam() {
-    this.props.dispatch(TeamActions.showChooseTeam());
-  },
+    this.props.showChooseTeam();
+  }
   onDismissIntroduction() {
     if (this.props.isRegistrationInfoValid) {
       this.onRegister();
     }
-    this.props.dispatch(RegistrationActions.dismissIntroduction());
-  },
+    this.props.dismissIntroduction();
+  }
   onClose() {
     if (this.props.isRegistrationInfoValid) {
       this.onRegister();
     }
-    this.props.dispatch(RegistrationActions.closeRegistrationView());
-  },
-  render() {
-    return (
-      <Modal
-        isOpen={this.props.isRegistrationViewOpen}
-        swipeToClose={false}
-        backdropPressToClose={false}>
-        {
-          this.props.selectedTeam || this.props.isIntroductionDismissed
-            ? this._renderNameSelectContainer()
-            : <IntroView onDismiss={this.onDismissIntroduction} />
-        }
-      </Modal>
-    );
-  },
+    this.props.closeRegistrationView();
+  }
 
   _renderNameSelectContainer() {
     return (
       <View style={[styles.container, styles.modalBackgroundStyle]}>
 
-        <Toolbar icon={this.props.isRegistrationInfoValid ? 'android-done' : 'android-close'}
+        <Toolbar icon={this.props.isRegistrationInfoValid ? 'done' : 'close'}
           iconClick={this.onClose}
           title='Fill your profile' />
 
@@ -132,7 +140,7 @@ const RegistrationView = React.createClass({
         </View>
       </View>
     );
-  },
+  }
 
   _renderNameSelect() {
     return (
@@ -170,7 +178,23 @@ const RegistrationView = React.createClass({
       </View>
     );
   }
-});
+
+  render() {
+    return (
+      <Modal
+        isOpen={this.props.isRegistrationViewOpen}
+        swipeToClose={false}
+        backdropPressToClose={false}>
+        {
+          this.props.selectedTeam || this.props.isIntroductionDismissed
+            ? this._renderNameSelectContainer()
+            : <IntroView onDismiss={this.onDismissIntroduction} />
+        }
+      </Modal>
+    );
+  }
+
+}
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 const styles = StyleSheet.create({
@@ -274,6 +298,16 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapDispatchToProps = {
+  putUser,
+  updateName,
+  selectTeam,
+  generateName,
+  dismissIntroduction,
+  closeRegistrationView,
+  showChooseTeam
+};
+
 const select = store => {
   return {
     isIntroductionDismissed: store.registration.get('isIntroductionDismissed'),
@@ -287,4 +321,4 @@ const select = store => {
   };
 };
 
-export default connect(select)(RegistrationView);
+export default connect(select, mapDispatchToProps)(RegistrationView);

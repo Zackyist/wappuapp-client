@@ -1,6 +1,7 @@
 'use strict';
 
-import React, { Platform, StatusBarIOS, AppStateIOS } from 'react-native';
+import React, { Component } from 'react';
+import { Platform, StatusBar, AppState } from 'react-native';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -36,10 +37,12 @@ store.dispatch(CompetitionActions.fetchActionTypes());
 store.dispatch(TeamActions.fetchTeams());
 store.dispatch(RegistrationActions.getUser());
 
-const RootView = React.createClass({
+
+class RootView extends Component {
+
   componentWillMount() {
     HockeyApp.configure(HOCKEYAPP_ID, true);
-  },
+  }
 
   componentDidMount() {
     HockeyApp.start();
@@ -64,11 +67,11 @@ const RootView = React.createClass({
     // Statusbar style
     if (Platform.OS === 'ios') {
 
-      StatusBarIOS.setHidden(false)
-      StatusBarIOS.setStyle('light-content')
+      StatusBar.setHidden(false)
+      StatusBar.setBarStyle('light-content')
 
       // check for updates when app is resumed
-      AppStateIOS.addEventListener('change', state => {
+      AppState.addEventListener('change', state => {
         if (state === 'active') {
           checkForUpdates();
         }
@@ -77,18 +80,18 @@ const RootView = React.createClass({
       // and check once on startup
       checkForUpdates();
     }
-  },
+  }
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchID);
-  },
+  }
 
   updateLocation(position) {
     store.dispatch(LocationActions.updateLocation({
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     }));
-  },
+  }
 
   render() {
     return (
@@ -97,6 +100,6 @@ const RootView = React.createClass({
       </Provider>
     );
   }
-});
+}
 
 export default RootView;

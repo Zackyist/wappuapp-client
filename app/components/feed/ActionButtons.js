@@ -1,6 +1,7 @@
 'use strict';
 
-import React, { Animated, Easing, Platform, StyleSheet, Text, View, BackAndroid } from 'react-native';
+import React, { Component } from 'react';
+import { Animated, Easing, Platform, StyleSheet, Text, View, BackAndroid } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionButton from './ActionButton';
@@ -83,17 +84,19 @@ const getBoundAction = (type, fn) => {
   return actions[type];
 };
 
-const ActionButtons = React.createClass({
-    mixins: [TimerMixin],
-  getInitialState() {
-    return {
+class ActionButtons extends Component {
+  // mixins: [TimerMixin]
+  constructor(props) {
+    super(props);
+
+    this.state = {
       buttons: BUTTON_POS.map(() => new Animated.ValueXY()),
       plusButton: new Animated.Value(0),
       labels: BUTTON_POS.map(() => new Animated.Value(0)),
       actionButtonsOpen: false,
       overlayOpacity: new Animated.Value(0)
     };
-  },
+  }
 
   animateButtonsToState(nextState) {
 
@@ -131,7 +134,7 @@ const ActionButtons = React.createClass({
       ]).start();
     });
     Animated.spring(this.state.plusButton, { toValue: nextState === OPEN ? 1 : 0 }).start();
-  },
+  }
 
   onToggleActionButtons() {
       this.props.dispatch(CompetitionActions.updateCooldowns());
@@ -151,7 +154,7 @@ const ActionButtons = React.createClass({
         {duration:300, easing:Easing.ease, toValue: this.state.actionButtonsOpen ? 0 : 1}).start();
       this.animateButtonsToState(this.state.actionButtonsOpen ? CLOSED : OPEN);
     }
-  },
+  }
 
   onPressActionButtons(type, fn) {
     // Start the action
@@ -159,7 +162,7 @@ const ActionButtons = React.createClass({
 
     // Close Action buttons
     this.onToggleActionButtons();
-  },
+  }
 
   componentDidMount(){
     // Close Action buttons on back press
@@ -170,7 +173,7 @@ const ActionButtons = React.createClass({
       }
       return false;
     })
-  },
+  }
 
   getIconForAction(type) {
     const mapping = {
@@ -182,7 +185,7 @@ const ActionButtons = React.createClass({
       default: 'image'
     };
     return mapping[type] || mapping['default'];
-  },
+  }
 
   getLabelForAction(type) {
     const mapping = {
@@ -194,7 +197,7 @@ const ActionButtons = React.createClass({
       default: 'image'
     };
     return mapping[type] || mapping['default'];
-  },
+  }
 
   getCooldownTime(actionType) {
     const now = new Date().getTime();
@@ -203,7 +206,7 @@ const ActionButtons = React.createClass({
     const seconds = Math.floor(diffInSecs % 60);
 
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-  },
+  }
 
   renderActionButtons() {
     return this.props.actionTypes.map((actionType, i) => {
@@ -236,7 +239,7 @@ const ActionButtons = React.createClass({
         </Animated.View>
       );
     });
-  },
+  }
 
   renderMenuButton() {
     // Show scroll top button instead of add button when scrolled down
@@ -262,7 +265,7 @@ const ActionButtons = React.createClass({
         </Animated.View>
       </ActionButton>
     );
-  },
+  }
 
   render() {
     const { isLoading, actionTypes, style } = this.props;
@@ -285,7 +288,7 @@ const ActionButtons = React.createClass({
       </View>
     );
   }
-});
+}
 
 const select = store => {
   return {

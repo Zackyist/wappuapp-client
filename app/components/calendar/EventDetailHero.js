@@ -1,15 +1,15 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-var React = require('react-native');
-var {
+import React, { Component } from 'react';
+import {
   Image,
   PropTypes,
   StyleSheet,
   Dimensions,
   Text,
   View
-} = React;
+} from 'react-native';
 
 //import Icon from 'react-native-vector-icons/Ionicons';
 import time from '../../utils/time';
@@ -99,11 +99,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+export default class EventDetailHero extends Component {
   propTypes: {
     item: PropTypes.object.isRequired,
     rowId: PropTypes.number
-  },
+  }
 
   render() {
     const item = this.props.item;
@@ -147,4 +147,4 @@ export default React.createClass({
           */}
       </View>;
   }
-});
+}

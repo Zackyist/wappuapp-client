@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   Text,
   Image,
@@ -10,40 +11,29 @@ import React, {
   StyleSheet,
   LayoutAnimation
 } from 'react-native';
-import Immutable from 'immutable';
+// import Immutable from 'immutable';
 import theme from '../../style/theme';
 
 import TimerMixin from 'react-timer-mixin';
 
-const LeaderboardEntry = React.createClass({
-  mixins: [TimerMixin],
+class LeaderboardEntry extends Component {
+  // mixins: [TimerMixin],
   propTypes: {
-    team: PropTypes.instanceOf(Immutable.Map).isRequired,
+    // team: PropTypes.instanceOf(Immutable.Map).isRequired,
     topscore: PropTypes.number.isRequired,
     position: PropTypes.number.isRequired,
     logo: PropTypes.string.isRequired
-  },
-  getOrderSuffix(order) {
-    const lastNum = order > 20 ? order % 10 : order;
-    switch (lastNum) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  },
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { width: 25 };
+  }
+
   componentWillMount() {
     LayoutAnimation.spring();
-  },
-  getInitialState() {
-    return {
-      width: 25
-    }
-  },
+  }
+
   componentDidMount() {
     // Increase min width if the team has some points, so that if winner has
     // e.g. 40000, the team with 30 points does not have too short bar
@@ -57,7 +47,21 @@ const LeaderboardEntry = React.createClass({
       barWidth = Math.max(barWidth, minWidth); // minWidth for teams with low points
       this.setState({ width: barWidth });
     }, 1000);
-  },
+  }
+
+  getOrderSuffix(order) {
+    const lastNum = order > 20 ? order % 10 : order;
+    switch (lastNum) {
+      case 1:
+        return 'st';
+      case 2:
+        return 'nd';
+      case 3:
+        return 'rd';
+      default:
+        return 'th';
+    }
+  }
 
   render() {
 
@@ -103,7 +107,7 @@ const LeaderboardEntry = React.createClass({
       </View>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   entry: {

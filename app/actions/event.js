@@ -11,20 +11,19 @@ const {
 const UPDATE_EVENT_SHOWFILTER = 'UPDATE_EVENT_SHOWFILTER';
 const TOGGLE_EVENT_MAP_LOCATE = 'TOGGLE_EVENT_MAP_LOCATE';
 
-const fetchEvents = () => {
-  return (dispatch) => {
-    dispatch({ type: GET_EVENT_LIST_REQUEST });
+const fetchEvents = () => dispatch => {
+  dispatch({ type: GET_EVENT_LIST_REQUEST });
 
-    api.fetchModels('events')
-      .then(events => {
-        dispatch({
-          type: SET_EVENT_LIST,
-          payload: events
-        });
-        dispatch({ type: GET_EVENT_LIST_SUCCESS });
-      })
-      .catch(error => dispatch({ type: GET_EVENT_LIST_FAILURE, error: true, payload: error }));
-  }
+  return api.fetchModels('events')
+  .then(events => {
+    dispatch({
+      type: SET_EVENT_LIST,
+      payload: events
+    });
+    dispatch({ type: GET_EVENT_LIST_SUCCESS });
+  })
+  .catch(error => dispatch({ type: GET_EVENT_LIST_FAILURE, error: true, payload: error }));
+
 };
 
 const updateShowFilter = filterName => {

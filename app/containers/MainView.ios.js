@@ -1,10 +1,7 @@
 'use strict';
 
-import React, {
-  TabBarIOS,
-  PropTypes,
-  View
-} from 'react-native';
+import React, { Component } from 'react';
+import { TabBarIOS, View } from 'react-native';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import CalendarView from './CalendarView';
@@ -16,19 +13,14 @@ import Tabs from '../constants/Tabs';
 import * as NavigationActions from '../actions/navigation';
 import RegistrationView from '../components/registration/RegistrationView';
 import errorAlert from '../utils/error-alert';
+import MDIcon from 'react-native-vector-icons/MaterialIcons';
 
 const theme = require('../style/theme');
-const Icon = require('react-native-vector-icons/Ionicons');
 
-const MainView = React.createClass({
-  propTypes: {
-    dispatch: PropTypes.func.isRequired,
-    currentTab: PropTypes.string.isRequired
-  },
-
-  _onChangeTab(tab) {
+class MainView extends Component {
+  onChangeTab(tab) {
     this.props.dispatch(NavigationActions.changeTab(tab));
-  },
+  }
 
   render() {
     const immutableError = this.props.errors.get('error');
@@ -40,57 +32,52 @@ const MainView = React.createClass({
     return (
       <View style={{flex:1}}>
         <TabBarIOS tintColor={theme.secondary} translucent={true} >
-          <Icon.TabBarItem
-            iconName='ios-clock-outline'
-            selectedIconName='ios-clock'
+          <MDIcon.TabBarItemIOS
+            iconName='access-time'
             title='Events'
             selected={this.props.currentTab === Tabs.CALENDAR}
-            onPress={() => { this._onChangeTab(Tabs.CALENDAR); }}>
+            onPress={() => { this.onChangeTab(Tabs.CALENDAR); }}>
             <CalendarView />
-          </Icon.TabBarItem>
+          </MDIcon.TabBarItemIOS>
 
-          <Icon.TabBarItem
-            iconName='ios-location-outline'
-            selectedIconName='ios-location'
+          <MDIcon.TabBarItemIOS
+            iconName='location-on'
             title='Map'
             selected={this.props.currentTab === Tabs.MAP}
-            onPress={() => { this._onChangeTab(Tabs.MAP); }}>
+            onPress={() => { this.onChangeTab(Tabs.MAP); }}>
             <EventMapView />
-          </Icon.TabBarItem>
+          </MDIcon.TabBarItemIOS>
 
-          <Icon.TabBarItem
-            iconName='ios-flame-outline'
-            selectedIconName='ios-flame'
+          <MDIcon.TabBarItemIOS
+            iconName='whatshot'
             title='Buzz'
             selected={this.props.currentTab === Tabs.FEED}
-            onPress={() => { this._onChangeTab(Tabs.FEED); }}>
+            onPress={() => { this.onChangeTab(Tabs.FEED); }}>
             <FeedView />
-          </Icon.TabBarItem>
+          </MDIcon.TabBarItemIOS>
 
-          <Icon.TabBarItem
-            iconName='stats-bars'
-            selectedIconName='stats-bars'
+          <MDIcon.TabBarItemIOS
+            iconName='equalizer'
             title='Ranking'
             selected={this.props.currentTab === Tabs.ACTION}
-            onPress={() => { this._onChangeTab(Tabs.ACTION); }}>
+            onPress={() => { this.onChangeTab(Tabs.ACTION); }}>
             <CompetitionView />
-          </Icon.TabBarItem>
+          </MDIcon.TabBarItemIOS>
 
-          <Icon.TabBarItem
-            iconName='ios-person-outline'
-            selectedIconName='ios-person'
+          <MDIcon.TabBarItemIOS
+            iconName='person'
             title='Settings'
             selected={this.props.currentTab === Tabs.SETTINGS}
-            onPress={() => { this._onChangeTab(Tabs.SETTINGS); }}>
+            onPress={() => { this.onChangeTab(Tabs.SETTINGS); }}>
             <SettingsView />
-          </Icon.TabBarItem>
+          </MDIcon.TabBarItemIOS>
         </TabBarIOS>
 
         <RegistrationView />
       </View>
-    );
+    )
   }
-});
+}
 
 const select = store => {
   return {

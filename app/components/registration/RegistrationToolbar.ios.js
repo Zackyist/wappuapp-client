@@ -1,14 +1,14 @@
 'use strict';
 
-import React from 'react-native';
-var {
+import React, { Component } from 'react';
+import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   PropTypes
-} = React;
-import Icon from 'react-native-vector-icons/Ionicons';
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
@@ -33,14 +33,12 @@ const styles = StyleSheet.create({
   }
 });
 
-var EventDetailToolbar = React.createClass({
+class EventDetailToolbar extends Component {
   propTypes: {
     title: PropTypes.string.isRequired,
     icon: PropTypes.string,
     iconClick: PropTypes.func
-  },
-  _onActionSelected: function(position) {
-  },
+  }
 
   render() {
     const touchableProps = {};
@@ -64,6 +62,6 @@ var EventDetailToolbar = React.createClass({
 
     );
   }
-});
+}
 
 module.exports = EventDetailToolbar;

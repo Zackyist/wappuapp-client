@@ -1,15 +1,15 @@
 'use strict';
 
-var React = require('react-native');
-var {
+import React, { Component } from 'react';
+import {
   StyleSheet,
   ListView,
   Text,
   Platform,
   PropTypes,
-  ActivityIndicatorIOS,
+  ActivityIndicator,
   View,
-} = React;
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
@@ -18,8 +18,8 @@ import moment from 'moment';
 import analytics from '../../services/analytics';
 import location from '../../services/location';
 import theme from '../../style/theme';
-import * as AnnouncementActions from '../../actions/announcement';
-import * as EventActions from '../../actions/event';
+import { fetchAnnouncements } from '../../actions/announcement';
+import { fetchEvents } from '../../actions/event';
 import LoadingStates from '../../constants/LoadingStates';
 import EventListItem from './EventListItem';
 import AnnouncementListItem from './AnnouncementListItem';
@@ -80,22 +80,25 @@ const styles = StyleSheet.create({
   }
 });
 
-var TimelineList = React.createClass({
+class TimelineList extends Component {
   propTypes: {
     announcements: PropTypes.object.isRequired,
     events: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     navigator: PropTypes.object.isRequired,
-    eventsFetchState: PropTypes.oneOf(_.values(LoadingStates)).isRequired
-  },
-  getInitialState() {
-    return {
+    eventsFetchState: PropTypes.any
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2
       })
-    };
-  },
+    }
+    this.getViewContent = this.getViewContent.bind(this);
+  }
 
   componentWillReceiveProps({ events, announcements }) {
     if (announcements === this.props.announcements && events === this.props.events) {
@@ -103,19 +106,19 @@ var TimelineList = React.createClass({
     }
 
     this.updateListItems(events, announcements);
-  },
+  }
 
   componentDidMount() {
     this.getViewContent();
     this.updateListItems(this.props.events, this.props.announcements);
     analytics.viewOpened(VIEW_NAME);
-  },
+  }
 
   getViewContent() {
     // TODO: ...should these be throttled?
-    this.props.dispatch(EventActions.fetchEvents());
-    this.props.dispatch(AnnouncementActions.fetchAnnouncements());
-  },
+    this.props.fetchEvents();
+    this.props.fetchAnnouncements();
+  }
 
   navigateToSingleEvent(model) {
     const currentDistance = model.location.latitude !== 0 & model.location.longitude !== 0 ?
@@ -127,7 +130,7 @@ var TimelineList = React.createClass({
       currentDistance: currentDistance,
       model
     });
-  },
+  }
 
   updateListItems(eventsData, announcementData) {
 
@@ -157,7 +160,7 @@ var TimelineList = React.createClass({
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(listSections, listOrder)
     });
-  },
+  }
 
   renderLoadingView() {
     // TODO: platform-specific if-else
@@ -165,7 +168,7 @@ var TimelineList = React.createClass({
       {(Platform.OS === 'android') ?
         <ProgressBar styleAttr='Inverse' color={theme.primary}/> :
 
-        <ActivityIndicatorIOS
+        <ActivityIndicator
           color={theme.primary}
           animating={true}
           style={{ alignItems: 'center', justifyContent: 'center', height: 80 }}
@@ -173,7 +176,7 @@ var TimelineList = React.createClass({
       }
       <Text style={styles.loaderText}>Loading events...</Text>
     </View>;
-  },
+  }
 
   renderSectionHeader(sectionData, sectionId) {
     let sectionCaption = '';
@@ -203,7 +206,7 @@ var TimelineList = React.createClass({
     return <View style={headerStyle}>
       <Text style={[styles.sectionHeaderText,headerTextStyle]}>{sectionCaption}</Text>
     </View>;
-  },
+  }
 
   renderListItem(item, sectionId, rowId) {
     switch (item.timelineType) {
@@ -220,7 +223,7 @@ var TimelineList = React.createClass({
           handlePress={() => this.navigateToSingleEvent(item)}
         />;
     }
-  },
+  }
 
   render() {
     switch (this.props.eventsFetchState) {
@@ -247,7 +250,9 @@ var TimelineList = React.createClass({
         />;
     }
   }
-});
+}
+
+const mapDispatchToProps = { fetchEvents, fetchAnnouncements };
 
 const select = store => {
   return {
@@ -258,4 +263,4 @@ const select = store => {
   }
 };
 
-export default connect(select)(TimelineList);
+export default connect(select, mapDispatchToProps)(TimelineList);

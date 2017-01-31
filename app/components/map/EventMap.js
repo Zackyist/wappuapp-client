@@ -1,11 +1,10 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component, PropTypes } from 'react';
+import {
   StyleSheet,
   View,
   Platform,
-  PropTypes,
   Linking,
   Text,
   TouchableHighlight,
@@ -15,8 +14,8 @@ import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
-const Icon = require('react-native-vector-icons/Ionicons');
-const MDIcon = require('react-native-vector-icons/MaterialIcons');
+import Icon from 'react-native-vector-icons/Ionicons';
+import MDIcon from 'react-native-vector-icons/MaterialIcons';
 import analytics from '../../services/analytics';
 import * as MarkerActions from '../../actions/marker';
 import * as EventActions from '../../actions/event';
@@ -45,11 +44,6 @@ const MARKER_IMAGES = {
 const VIEW_NAME = 'EventMap';
 
 class EventMap extends Component {
-
-  constructor() {
-    super();
-  }
-
   componentDidMount() {
     this.props.dispatch(EventActions.fetchEvents());
     this.props.dispatch(MarkerActions.fetchMarkers());
@@ -265,7 +259,7 @@ class EventMap extends Component {
     return Platform.OS === 'ios' ? <View style={styles.locateButton}>
           <TouchableOpacity onPress={this._toggleLocateMe.bind(this,null)}
             style={styles.locateButtonText} >
-            <Icon size={20} style={{ color:this.props.locateMe ? '#1D7BF7' : '#888' }} name='navigate' />
+            <MDIcon size={20} style={{ color:this.props.locateMe ? '#1D7BF7' : '#888' }} name='navigation' />
           </TouchableOpacity>
         </View> :
         false;

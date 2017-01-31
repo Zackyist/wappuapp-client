@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   Text,
   StyleSheet,
@@ -10,11 +11,11 @@ import React, {
 import theme from '../../style/theme';
 import Toolbar from './RegistrationToolbar';
 import Button from '../../components/common/Button';
-const Icon = require('react-native-vector-icons/Ionicons');
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const IOS = Platform.OS === 'ios';
 
-const IntroView = React.createClass({
+class IntroView extends Component {
   render() {
     return (
       <View style={[styles.container, styles.modalBackgroundStyle]}>
@@ -88,7 +89,7 @@ const IntroView = React.createClass({
       </View>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   container: {

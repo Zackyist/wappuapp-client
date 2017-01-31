@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   Text,
   TextInput,
@@ -23,18 +24,21 @@ const IOS = Platform.OS === 'ios';
 const {width} = Dimensions.get('window');
 
 
-const TextActionView = React.createClass({
+class TextActionView extends Component {
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     isTextActionViewOpen: PropTypes.bool.isRequired
-  },
-  getInitialState() {
-    return {
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
       text: '',
       formAnimation: new Animated.Value(1),
       okAnimation: new Animated.Value(0)
     }
-  },
+  }
+
   componentDidMount(){
     BackAndroid.addEventListener('hardwareBackPress', () => {
       if (this.props.isTextActionViewOpen) {
@@ -43,22 +47,27 @@ const TextActionView = React.createClass({
       }
       return false;
     })
-  },
+  }
+
   showOK() {
     Animated.spring(this.state.okAnimation, {toValue:1, duration:250}).start();
     Animated.timing(this.state.formAnimation, {toValue:0, duration:100}).start();
-  },
+  }
+
   hideOK() {
     this.state.formAnimation.setValue(1);
     this.state.okAnimation.setValue(0);
-  },
+  }
+
   onChangeText(text) {
     this.setState({text: text});
-  },
+  }
+
   onCancel() {
     this.setState({text: ''});
     this.props.dispatch(CompetitionActions.closeTextActionView());
-  },
+  }
+
   onSendText() {
 
     if (!this.state.text.length) {
@@ -79,7 +88,8 @@ const TextActionView = React.createClass({
 
     }, 600);
 
-  },
+  }
+
   render() {
     return (
       <Modal
@@ -145,7 +155,7 @@ const TextActionView = React.createClass({
       </Modal>
     );
   }
-});
+}
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 const styles = StyleSheet.create({

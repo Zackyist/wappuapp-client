@@ -1,11 +1,10 @@
 'use strict'
 
-import React, {
-  Component,
+import React, { Component } from 'react';
+import {
   View,
   Navigator,
   StatusBar,
-  PropTypes,
   BackAndroid
 } from 'react-native'
 
@@ -19,17 +18,13 @@ import FeedView from './FeedView';
 import ProfileView from './ProfileView';
 import RegistrationView from '../components/registration/RegistrationView';
 import errorAlert from '../utils/error-alert';
+import AndroidTabs  from 'react-native-scrollable-tab-view';
 
-const AndroidTabs = require('react-native-scrollable-tab-view');
 const theme = require('../style/theme');
 const IconTabBar = require('../components/common/IconTabBar');
 
-const AndroidTabNavigation = React.createClass({
-  propTypes: {
-    navigator: PropTypes.object.isRequired
-  },
+class AndroidTabNavigation extends Component {
   render() {
-
     return (
       <AndroidTabs
         initialPage={2}
@@ -48,7 +43,7 @@ const AndroidTabNavigation = React.createClass({
       </AndroidTabs>
     )
   }
-});
+}
 
 let _navigator;
 BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -59,12 +54,7 @@ BackAndroid.addEventListener('hardwareBackPress', () => {
   return false;
 });
 
-class App extends Component {
-
-  constructor(props) {
-    super(props)
-  }
-
+class MainView extends Component {
   renderScene(route, navigator) {
     _navigator = navigator;
     if (route.component) {
@@ -79,23 +69,23 @@ class App extends Component {
       const error = immutableError.toJS();
       errorAlert(this.props.dispatch, _.get(error, 'header'), _.get(error, 'message'));
     }
+
     return (
-      <View style={{flex:1}}>
+      <View style={{ flex:1 }}>
+        <StatusBar backgroundColor={theme.secondaryDark} />
 
-      <StatusBar backgroundColor={theme.secondaryDark} />
-
-      <Navigator
-        initialRoute={{
-          component: AndroidTabNavigation,
-          name: 'Whappu'
-        }}
-        renderScene={this.renderScene}
-        configureScene={() => ({
-          ...Navigator.SceneConfigs.FloatFromBottomAndroid
-        })}
-      />
-      <RegistrationView />
-    </View>
+        <Navigator
+          initialRoute={{
+            component: AndroidTabNavigation,
+            name: 'Whappu'
+          }}
+          renderScene={this.renderScene}
+          configureScene={() => ({
+            ...Navigator.SceneConfigs.FloatFromBottomAndroid
+          })}
+        />
+        <RegistrationView />
+      </View>
     )
   }
 }
@@ -106,4 +96,4 @@ const select = store => {
     errors: store.errors
   }
 };
-export default connect(select)(App);
+export default connect(select)(MainView);

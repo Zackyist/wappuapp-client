@@ -9,7 +9,8 @@
 
 'use strict';
 
-import React, {
+import React from 'react';
+import {
   StyleSheet,
   View,
   Text,
@@ -19,7 +20,7 @@ import React, {
   TouchableHighlight
 } from 'react-native';
 
-const Icon = require('react-native-vector-icons/Ionicons');
+import Icon from 'react-native-vector-icons/Ionicons';
 
 let showShareActionSheet = function(url) {
   if (Platform.OS === 'ios') {

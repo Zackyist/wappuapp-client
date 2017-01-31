@@ -1,7 +1,8 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-import React, {
+import React, { Component } from 'react';
+import {
   Alert,
   Image,
   StyleSheet,
@@ -144,15 +145,16 @@ const styles = StyleSheet.create({
   }
 });
 
-const FeedListItem = React.createClass({
+
+class FeedListItem extends Component {
   propTypes: {
     item: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
-  },
+  }
 
   itemIsCreatedByMe(item) {
     return item.author.type === 'ME';
-  },
+  }
 
   showRemoveDialog(item) {
     if (this.itemIsCreatedByMe(item)) {
@@ -178,11 +180,11 @@ const FeedListItem = React.createClass({
         ]
       );
     }
-  },
+  }
 
   removeThisItem() {
     this.props.dispatch(removeFeedItem(this.props.item));
-  },
+  }
 
   // Render "remove" button, which is remove OR flag button,
   // depending is the user the creator of this feed item or not
@@ -205,7 +207,7 @@ const FeedListItem = React.createClass({
 
       </TouchableOpacity>
     );
-  },
+  }
 
   renderAdminItem() {
     const item = this.props.item;
@@ -238,7 +240,7 @@ const FeedListItem = React.createClass({
         </View>
       </View>
     );
-  },
+  }
 
   render() {
     const item = this.props.item;
@@ -279,7 +281,7 @@ const FeedListItem = React.createClass({
       </View>
     );
   }
-});
+}
 
 const select = store => {
   return {

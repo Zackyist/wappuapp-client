@@ -1,11 +1,7 @@
 'use strict';
 
-import React from 'react-native';
-var {
-  ToolbarAndroid,
-  StyleSheet,
-  PropTypes
-} = React;
+import React, { Component, PropTypes } from 'react';
+import { ToolbarAndroid, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import theme from '../../style/theme';
 
@@ -26,19 +22,19 @@ const styles = StyleSheet.create({
   }
 });
 
-var EventDetailToolbar = React.createClass({
+class EventDetailToolbar extends Component {
   propTypes: {
     title: PropTypes.string.isRequired,
     navigator: PropTypes.object.isRequired
-  },
+  }
 
   _goBack() {
     this.props.navigator.pop();
-  },
+  }
 
-  _onActionSelected: function(position) {
+  _onActionSelected(position) {
     //TODO switch toolbarActions[position]
-  },
+  }
 
   render() {
     return (
@@ -54,6 +50,6 @@ var EventDetailToolbar = React.createClass({
       />
     );
   }
-});
+}
 
 module.exports = EventDetailToolbar;

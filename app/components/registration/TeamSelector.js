@@ -1,18 +1,18 @@
 'use strict';
 
-import React, {
+import React, { Component, PropTypes } from 'react';
+import {
   View,
-  PropTypes,
   StyleSheet
 } from 'react-native';
 import Team from './Team';
 
 /** DEPRECATED */
-const TeamSelector = React.createClass({
+class TeamSelector extends Component {
   propTypes: {
     teams: PropTypes.array.isRequired,
     onSelectTeam: PropTypes.func.isRequired
-  },
+  }
 
   render() {
     return (
@@ -26,7 +26,7 @@ const TeamSelector = React.createClass({
       </View>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   teamList: {

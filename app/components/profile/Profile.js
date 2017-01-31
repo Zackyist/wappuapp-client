@@ -1,23 +1,21 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-var React = require('react-native');
-var {
+import React, { Component, PropTypes } from 'react';
+import {
   StyleSheet,
   Text,
   View,
   ListView,
   TouchableHighlight,
-  Linking,
-  Platform,
-  PropTypes
-} = React;
+  Linking
+} from 'react-native';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
-import * as ProfileActions from '../../actions/profile';
-import * as RegistrationActions from '../../actions/registration';
+import { fetchLinks } from '../../actions/profile';
+import { openRegistrationView } from '../../actions/registration';
 
 const styles = StyleSheet.create({
   container: {
@@ -78,26 +76,31 @@ const styles = StyleSheet.create({
   }
 });
 
-var Profile = React.createClass({
+class Profile extends Component {
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
     links: PropTypes.object.isRequired
-  },
+  }
 
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props);
+    this.state = {
       dataSource: new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2})
-    }
-  },
+    };
+
+    this.renderItem = this.renderItem.bind(this);
+    this.openRegistration = this.openRegistration.bind(this);
+  }
+
 
   componentDidMount() {
-    this.props.dispatch(ProfileActions.fetchLinks());
-  },
+    this.props.fetchLinks();
+  }
 
   openRegistration() {
-    this.props.dispatch(RegistrationActions.openRegistrationView());
-  },
+    this.props.openRegistrationView();
+  }
 
   renderLinkItem(item) {
     return (
@@ -110,7 +113,7 @@ var Profile = React.createClass({
         </View>
       </TouchableHighlight>
     );
-  },
+  }
 
   renderModalItem(item) {
     const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
@@ -139,14 +142,14 @@ var Profile = React.createClass({
         </View>
       </TouchableHighlight>
     );
-  },
+  }
 
   renderItem(item) {
     if (item.link) {
       return this.renderLinkItem(item);
     }
     return this.renderModalItem(item);
-  },
+  }
 
   render() {
     const listData = [{title:this.props.name,
@@ -162,7 +165,9 @@ var Profile = React.createClass({
       );
 
   }
-});
+}
+
+const mapDispatchToProps = { fetchLinks, openRegistrationView };
 
 const select = store => {
   return {
@@ -173,4 +178,4 @@ const select = store => {
     }
 };
 
-export default connect(select)(Profile);
+export default connect(select, mapDispatchToProps)(Profile);

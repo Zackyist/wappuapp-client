@@ -1,5 +1,7 @@
-import React, {
-  ActivityIndicatorIOS,
+
+import React from 'react';
+import {
+  ActivityIndicator,
   Platform,
   StyleSheet
 } from 'react-native';
@@ -23,7 +25,7 @@ const Loader = props => {
     return <ProgressBar styleAttr='Inverse' color={theme.primary}/>
   }
 
-  return <ActivityIndicatorIOS
+  return <ActivityIndicator
     color={theme.primary}
     animating={true}
     style={styles.activityIndicator}

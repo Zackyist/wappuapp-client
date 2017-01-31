@@ -1,7 +1,8 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-import React, {
+import React, { Component } from 'react';
+import {
   Image,
   StyleSheet,
   PropTypes,
@@ -80,11 +81,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+export default class AnnouncementListItem extends Component {
 
   propTypes: {
-    item: PropTypes.object.isRequired
-  },
+    item: PropTypes.object
+  }
 
   // TODO: parse away the Finnish-part of the message?
   // TODO: set some fallback-image?
@@ -129,9 +130,9 @@ export default React.createClass({
         </View>
       </View>
     );
-  },
+  }
 
   handleUrlPress(url) {
     Linking.openURL(url);
   }
-});
+}

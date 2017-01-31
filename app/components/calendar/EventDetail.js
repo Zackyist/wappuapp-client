@@ -1,7 +1,7 @@
 'use strict';
 
-import React from 'react-native';
-var {
+import React, { Component } from 'react';
+import {
   ScrollView,
   StyleSheet,
   Text,
@@ -11,7 +11,7 @@ var {
   PropTypes,
   Platform,
   Linking
-} = React;
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import theme from '../../style/theme';
 import Toolbar from './EventDetailToolbar';
@@ -111,19 +111,19 @@ const styles = StyleSheet.create({
   }
 });
 
-const EventDetail = React.createClass({
+class EventDetail extends Component {
   propTypes: {
     navigator: PropTypes.object.isRequired,
     route: PropTypes.object.isRequired
-  },
+  }
 
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
-  },
+  }
 
   onPressBack() {
     this.props.navigator.pop();
-  },
+  }
 
   getEventStatus(timepoint) {
     if (timepoint.onGoing) {
@@ -133,9 +133,9 @@ const EventDetail = React.createClass({
     } else {
       return null;
     }
-  },
+  }
 
-  render: function() {
+  render() {
     // TODO: stylize the "meta-elements"
 
     const model = this.props.route.model;
@@ -189,6 +189,6 @@ const EventDetail = React.createClass({
     </View>;
   }
 
-});
+}
 
 export default EventDetail;

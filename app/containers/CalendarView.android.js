@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   Navigator,
   BackAndroid,
   PropTypes
@@ -17,17 +18,19 @@ BackAndroid.addEventListener('hardwareBackPress', () => {
   return false;
 });
 
-var TimelineListWrapper = React.createClass({
+
+class TimelineListWrapper extends Component {
   propTypes: {
     navigator: PropTypes.object.isRequired
-  },
+  }
+
   renderScene(route, navigator) {
     _navigator = navigator;
     if (route.component) {
       const RouteComponent = route.component;
       return <RouteComponent navigator={this.props.navigator} route={route} {...this.props} />
     }
-  },
+  }
 
   render() {
     return (
@@ -43,7 +46,7 @@ var TimelineListWrapper = React.createClass({
       />
     );
   }
-});
+}
 
 const select = store => {
   return {};

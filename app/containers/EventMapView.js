@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   Navigator,
   StyleSheet,
   BackAndroid,
@@ -34,14 +35,14 @@ BackAndroid.addEventListener('hardwareBackPress', () => {
   return false;
 });
 
-var EventMapView = React.createClass({
+class EventMapView extends Component {
   renderScene(route, navigator) {
     _navigator = navigator;
     if (route.component) {
       const RouteComponent = route.component;
       return <RouteComponent navigator={navigator} route={route} {...this.props} />
     }
-  },
+  }
 
   render() {
     return (
@@ -62,7 +63,7 @@ var EventMapView = React.createClass({
       />
     );
   }
-});
+}
 
 const select = store => {
   return {};

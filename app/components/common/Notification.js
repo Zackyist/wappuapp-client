@@ -1,6 +1,6 @@
-import React, {
-  Component,
-  PropTypes,
+
+import React, { Component, PropTypes } from 'react';
+import {
   Text,
   Easing,
   Animated,
@@ -43,14 +43,14 @@ const styles = StyleSheet.create({
 });
 
 class Notification extends Component {
-  static propTypes = {
-    children: PropTypes.node,
-    visible: PropTypes.bool,
-  };
+  // static propTypes = {
+  //   children: PropTypes.node,
+  //   visible: PropTypes.bool,
+  // }
 
-  static defaultProps = {
-    visible: true,
-  };
+  // static defaultProps = {
+  //   visible: true,
+  // }
 
   constructor(props) {
     super(props);
