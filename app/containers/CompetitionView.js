@@ -11,6 +11,7 @@ import {
   RefreshControl
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import theme from '../style/theme';
 import { fetchTeams } from '../actions/team';
@@ -21,16 +22,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const VIEW_NAME = 'CompetitionView';
 
 class CompetitionView extends Component {
-  constructor(props) {
-    super(props);
-
-    this.onRefreshFeed = this.onRefreshFeed.bind(this);
-  }
 
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
   }
 
+  @autobind
   onRefreshFeed(){
     this.props.fetchTeams();
   }

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { ImagePickerManager } from 'NativeModules';
+import autobind from 'autobind-decorator';
 
 import theme from '../../style/theme';
 import { fetchFeed, refreshFeed, loadMoreItems } from '../../actions/feed';
@@ -58,8 +59,6 @@ class FeedList extends Component {
       showScrollTopButton: false,
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
     };
-
-    this.onRefreshFeed = this.onRefreshFeed.bind(this);
   }
 
   componentDidMount() {
@@ -102,6 +101,7 @@ class FeedList extends Component {
     }
   }
 
+  @autobind
   onRefreshFeed() {
     this.props.refreshFeed();
   }

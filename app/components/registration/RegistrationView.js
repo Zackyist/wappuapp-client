@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
+import autobind from 'autobind-decorator';
+
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
 import IntroView from './IntroView';
@@ -47,18 +49,6 @@ class RegistrationView extends Component {
     dispatch: PropTypes.func.isRequired
   }
 
-  constructor(props) {
-    super(props);
-
-    this.onDismissIntroduction = this.onDismissIntroduction.bind(this);
-    this.onClose = this.onClose.bind(this);
-    this.onGenerateName = this.onGenerateName.bind(this);
-    this.onRegister = this.onRegister.bind(this);
-    this.onChangeName = this.onChangeName.bind(this);
-    this.onSelectTeam = this.onSelectTeam.bind(this);
-    this.onShowChooseTeam = this.onShowChooseTeam.bind(this);
-  }
-
   componentDidMount() {
     BackAndroid.addEventListener('hardwareBackPress', () => {
       if (this.props.isRegistrationViewOpen) {
@@ -68,27 +58,41 @@ class RegistrationView extends Component {
       return false;
     })
   }
+
+  @autobind
   onRegister() {
     this.props.putUser();
   }
+
+  @autobind
   onChangeName(name) {
     this.props.updateName(name);
   }
+
+  @autobind
   onSelectTeam(id) {
     this.props.selectTeam(id);
   }
+
+  @autobind
   onGenerateName() {
     this.props.generateName();
   }
+
+  @autobind
   onShowChooseTeam() {
     this.props.showChooseTeam();
   }
+
+  @autobind
   onDismissIntroduction() {
     if (this.props.isRegistrationInfoValid) {
       this.onRegister();
     }
     this.props.dismissIntroduction();
   }
+
+  @autobind
   onClose() {
     if (this.props.isRegistrationInfoValid) {
       this.onRegister();

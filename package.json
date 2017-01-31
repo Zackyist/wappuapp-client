@@ -22,6 +22,7 @@
     "Hannu-Pekka Heinäjärvi <hannupekka@gmail.com> (http://github.com/hannupekka)"
   ],
   "dependencies": {
+    "autobind-decorator": "^1.3.4",
     "geolib": "^2.0.20",
     "immutable": "^3.7.6",
     "lodash": "^4.6.1",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^6.0.0-beta.5",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "david": "^7.0.1",
     "eslint": "^2.4.0",
     "eslint-plugin-react": "^4.2.3",

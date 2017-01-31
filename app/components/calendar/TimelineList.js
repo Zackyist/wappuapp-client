@@ -11,6 +11,8 @@ import {
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 
 import _ from 'lodash';
 import moment from 'moment';
@@ -97,7 +99,6 @@ class TimelineList extends Component {
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2
       })
     }
-    this.getViewContent = this.getViewContent.bind(this);
   }
 
   componentWillReceiveProps({ events, announcements }) {
@@ -114,6 +115,7 @@ class TimelineList extends Component {
     analytics.viewOpened(VIEW_NAME);
   }
 
+  @autobind
   getViewContent() {
     // TODO: ...should these be throttled?
     this.props.fetchEvents();

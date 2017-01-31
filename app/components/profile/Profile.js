@@ -11,6 +11,8 @@ import {
   Linking
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 import _ from 'lodash';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
@@ -88,9 +90,6 @@ class Profile extends Component {
     this.state = {
       dataSource: new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2})
     };
-
-    this.renderItem = this.renderItem.bind(this);
-    this.openRegistration = this.openRegistration.bind(this);
   }
 
 
@@ -98,6 +97,7 @@ class Profile extends Component {
     this.props.fetchLinks();
   }
 
+  @autobind
   openRegistration() {
     this.props.openRegistrationView();
   }
@@ -144,6 +144,7 @@ class Profile extends Component {
     );
   }
 
+  @autobind
   renderItem(item) {
     if (item.link) {
       return this.renderLinkItem(item);
