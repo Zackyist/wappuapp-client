@@ -11,7 +11,7 @@ const APP_NAME = 'Wappuapp';
 const CLIENT_ID = DeviceInfo.getUniqueID();
 const INSTALLER_ID = 'futu.tammerforce.wappuapp.' + Platform.OS;
 
-var ga = new Analytics(GA_TRACKING_ID, CLIENT_ID);
+var ga = new Analytics(GA_TRACKING_ID, CLIENT_ID, 1, DeviceInfo.getUserAgent());
 
 function viewOpened(viewName) {
   var screenView = new GAHits.ScreenView(APP_NAME, viewName, VERSION_NUMBER, INSTALLER_ID);
