@@ -14,6 +14,7 @@ import {
 // import Immutable from 'immutable';
 import theme from '../../style/theme';
 
+import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 
 class LeaderboardEntry extends Component {
@@ -197,4 +198,5 @@ const styles = StyleSheet.create({
   }
 });
 
+reactMixin(LeaderboardEntry.prototype, TimerMixin);
 export default LeaderboardEntry;

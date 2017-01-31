@@ -29,6 +29,7 @@ import {
   postAction,
   openTextActionView
 } from '../../actions/competition';
+import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 
 const styles = StyleSheet.create({
@@ -230,4 +231,5 @@ const select = store => {
   };
 };
 
+reactMixin(FeedList.prototype, TimerMixin);
 export default connect(select, mapDispatchToProps)(FeedList);

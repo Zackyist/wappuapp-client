@@ -8,6 +8,7 @@ import ActionButton from './ActionButton';
 import ActionButtonLabel from './ActionButtonLabel';
 import * as RegistrationActions from '../../actions/registration';
 import theme from '../../style/theme';
+import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import * as CompetitionActions from '../../actions/competition';
 
@@ -298,4 +299,5 @@ const select = store => {
   };
 };
 
-export default connect(select)(ActionButtons);
+reactMixin(ActionButtons.prototype, TimerMixin);
+export default connect(select, mapDispatchToProps)(ActionButtons);
