@@ -17,8 +17,9 @@ import Button from '../../components/common/Button';
 import theme from '../../style/theme';
 import Modal from 'react-native-modalbox';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import autobind from 'autobind-decorator';
 
-import * as CompetitionActions from '../../actions/competition';
+import { closeTextActionView, postText } from '../../actions/competition';
 const IOS = Platform.OS === 'ios';
 
 const {width} = Dimensions.get('window');
@@ -54,20 +55,24 @@ class TextActionView extends Component {
     Animated.timing(this.state.formAnimation, {toValue:0, duration:100}).start();
   }
 
+  @autobind
   hideOK() {
     this.state.formAnimation.setValue(1);
     this.state.okAnimation.setValue(0);
   }
 
+  @autobind
   onChangeText(text) {
-    this.setState({text: text});
+    this.setState({ text });
   }
 
+  @autobind
   onCancel() {
-    this.setState({text: ''});
-    this.props.dispatch(CompetitionActions.closeTextActionView());
+    this.setState({ text: '' });
+    this.props.closeTextActionView();
   }
 
+  @autobind
   onSendText() {
 
     if (!this.state.text.length) {
@@ -77,9 +82,9 @@ class TextActionView extends Component {
 
     this.showOK()
     setTimeout(() => {
-      this.props.dispatch(CompetitionActions.postText(this.state.text));
+      this.props.postText(this.state.text);
       this.setState({text: ''});
-      this.props.dispatch(CompetitionActions.closeTextActionView());
+      this.props.closeTextActionView();
 
       // reset values for the next time
       setTimeout(() => {
@@ -269,10 +274,13 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapDispatchToProps = { closeTextActionView, postText };
+
+
 const select = store => {
   return {
     isTextActionViewOpen: store.competition.get('isTextActionViewOpen')
   };
 };
 
-export default connect(select)(TextActionView);
+export default connect(select, mapDispatchToProps)(TextActionView);

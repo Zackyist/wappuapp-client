@@ -3,14 +3,16 @@
 import React, { Component } from 'react';
 import { Animated, Easing, Platform, StyleSheet, Text, View, BackAndroid } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionButton from './ActionButton';
 import ActionButtonLabel from './ActionButtonLabel';
-import * as RegistrationActions from '../../actions/registration';
+import { openRegistrationView } from '../../actions/registration';
 import theme from '../../style/theme';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import * as CompetitionActions from '../../actions/competition';
+import { updateCooldowns } from '../../actions/competition';
 
 // in a happy world all this would be calculated on the fly but no
 const BUTTON_COUNT = 6;
@@ -137,18 +139,19 @@ class ActionButtons extends Component {
     Animated.spring(this.state.plusButton, { toValue: nextState === OPEN ? 1 : 0 }).start();
   }
 
+  @autobind
   onToggleActionButtons() {
-      this.props.dispatch(CompetitionActions.updateCooldowns());
+      this.props.updateCooldowns();
 
       if (this.state.actionButtonsOpen === false) {
           this.updateCooldownInterval = this.setInterval(() => {
-              this.props.dispatch(CompetitionActions.updateCooldowns());
+              this.props.updateCooldowns();
           }, 1000);
       } else {
           this.clearInterval(this.updateCooldownInterval);
       }
     if (this.props.isRegistrationInfoValid === false) {
-      this.props.dispatch(RegistrationActions.openRegistrationView());
+      this.props.openRegistrationView();
     } else {
 
       Animated.timing(this.state.overlayOpacity,
@@ -157,6 +160,7 @@ class ActionButtons extends Component {
     }
   }
 
+  @autobind
   onPressActionButtons(type, fn) {
     // Start the action
     getBoundAction(type, fn)();
@@ -290,6 +294,8 @@ class ActionButtons extends Component {
     );
   }
 }
+
+const mapDispatchToProps = { updateCooldowns, openRegistrationView };
 
 const select = store => {
   return {

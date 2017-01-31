@@ -83,12 +83,15 @@ class FeedList extends Component {
       this.scrollTop();
     }
   }
+
+  @autobind
   scrollTop() {
     if (this.refs._scrollView){
      this.refs._scrollView.scrollTo({x: 0, y: 0, animated: true});
     }
   }
 
+  @autobind
   _onScroll(event){
     const SHOW_SCROLLTOP_LIMIT = 600;
     const scrollTop = event.nativeEvent.contentOffset.y;
@@ -127,6 +130,7 @@ class FeedList extends Component {
     });
   }
 
+  @autobind
   onPressAction(type) {
 
     switch (type) {
