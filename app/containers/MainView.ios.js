@@ -65,7 +65,7 @@ class MainView extends Component {
           </MDIcon.TabBarItemIOS>
 
           <MDIcon.TabBarItemIOS
-            iconName='person'
+            iconName='person-outline'
             title='Settings'
             selected={this.props.currentTab === Tabs.SETTINGS}
             onPress={() => { this.onChangeTab(Tabs.SETTINGS); }}>

@@ -50,7 +50,7 @@ class CompetitionView extends Component {
       <View style={styles.container}>
         <View style={styles.leaderboardIntro}>
           <View style={styles.leaderboardIconWrap}>
-            <Icon name='trophy' style={styles.leaderboardIcon} />
+            <Icon name='ios-trophy' style={styles.leaderboardIcon} />
           </View>
           <View style={styles.leaderboardIntroTextWrap}>
             <Text style={styles.leaderboardIntroText}>
@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
     paddingRight:10,
   },
   leaderboardIcon: {
-    color:'#FFCC03',
-    fontSize:44,
-    top:4
+    color: '#FFCC03',
+    fontSize:52,
+    top: 0,
   },
   leaderboardIntroTextWrap:{
     flex:1,
