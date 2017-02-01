@@ -79,6 +79,17 @@ const removeFeedItem = (item) => {
   };
 };
 
+// Open image in Lightbox
+const OPEN_LIGHTBOX = 'OPEN_LIGHTBOX';
+const CLOSE_LIGHTBOX = 'CLOSE_LIGHTBOX';
+const openLightBox = (item) => {
+  return { type: OPEN_LIGHTBOX, payload: { item } };
+};
+
+const closeLightBox = () => {
+  return { type: CLOSE_LIGHTBOX };
+};
+
 export {
   SET_FEED,
   APPEND_FEED,
@@ -88,9 +99,13 @@ export {
   REFRESH_FEED_REQUEST,
   REFRESH_FEED_SUCCESS,
   DELETE_FEED_ITEM,
+  OPEN_LIGHTBOX,
+  CLOSE_LIGHTBOX,
 
   fetchFeed,
   refreshFeed,
   loadMoreItems,
-  removeFeedItem
+  removeFeedItem,
+  openLightBox,
+  closeLightBox
 };

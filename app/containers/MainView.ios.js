@@ -14,6 +14,7 @@ import * as NavigationActions from '../actions/navigation';
 import RegistrationView from '../components/registration/RegistrationView';
 import errorAlert from '../utils/error-alert';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
+import LightBox from '../components/lightbox/Lightbox';
 
 const theme = require('../style/theme');
 
@@ -74,6 +75,7 @@ class MainView extends Component {
         </TabBarIOS>
 
         <RegistrationView />
+        <LightBox />
       </View>
     )
   }

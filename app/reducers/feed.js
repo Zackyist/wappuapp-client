@@ -9,7 +9,9 @@ import {
   GET_FEED_FAILURE,
   REFRESH_FEED_REQUEST,
   REFRESH_FEED_SUCCESS,
-  DELETE_FEED_ITEM
+  DELETE_FEED_ITEM,
+  OPEN_LIGHTBOX,
+  CLOSE_LIGHTBOX
 } from '../actions/feed';
 import LoadingStates from '../constants/LoadingStates';
 
@@ -17,6 +19,8 @@ const initialState = Immutable.fromJS({
   list: [],
   listState: LoadingStates.NONE,
   isRefreshing: false,
+  lightBoxItem: {},
+  isLightBoxOpen: false
 });
 
 export default function feed(state = initialState, action) {
@@ -38,7 +42,7 @@ export default function feed(state = initialState, action) {
       return state.set('isRefreshing', true);
     case REFRESH_FEED_SUCCESS:
       return state.set('isRefreshing', false);
-    case DELETE_FEED_ITEM:
+      case DELETE_FEED_ITEM:
       const originalList = state.get('list');
       const itemIndex = originalList.findIndex((item) => item.get('id') === action.item.id);
 
@@ -48,6 +52,18 @@ export default function feed(state = initialState, action) {
       } else {
         return state.set('list', originalList.delete(itemIndex));
       }
+
+    case OPEN_LIGHTBOX:
+      return state.merge({
+        isLightBoxOpen: true,
+        lightBoxItem: Immutable.fromJS(action.payload.item)
+      });
+
+    case CLOSE_LIGHTBOX:
+      return state.merge({
+        isLightBoxOpen: false,
+        lightBoxItem: Immutable.fromJS({}),
+      })
 
     default:
       return state;

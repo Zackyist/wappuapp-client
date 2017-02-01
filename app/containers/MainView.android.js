@@ -19,6 +19,7 @@ import ProfileView from './ProfileView';
 import RegistrationView from '../components/registration/RegistrationView';
 import errorAlert from '../utils/error-alert';
 import AndroidTabs  from 'react-native-scrollable-tab-view';
+import LightBox from '../components/lightbox/Lightbox';
 
 const theme = require('../style/theme');
 const IconTabBar = require('../components/common/IconTabBar');
@@ -85,6 +86,7 @@ class MainView extends Component {
           })}
         />
         <RegistrationView />
+        <LightBox />
       </View>
     )
   }

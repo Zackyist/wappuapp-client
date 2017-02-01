@@ -1,6 +1,9 @@
 package com.wappuapp;
 
 import com.facebook.react.ReactActivity;
+import cl.json.RNSharePackage;
+import com.cmcewen.blurview.BlurViewPackage;
+import com.reactnative.photoview.PhotoViewPackage;
 import com.slowpath.hockeyapp.RNHockeyAppPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.image.zoom.ReactImageZoom;

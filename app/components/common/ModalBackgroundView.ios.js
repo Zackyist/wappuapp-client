@@ -1,0 +1,7 @@
+// import { BlurView } from 'react-native-blur';
+// export default BlurView;
+
+import { View } from 'react-native';
+export default View;
+
+

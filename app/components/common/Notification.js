@@ -1,5 +1,4 @@
-
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   Text,
   Easing,
@@ -9,14 +8,15 @@ import {
   StyleSheet
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 
-const Screen = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: -100,
-    width: Screen.width,
+    width: width,
     left: 0,
     right: 0,
     backgroundColor: theme.primary,
@@ -37,20 +37,20 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: 'rgba(0,0,0,0)',
-    width: Screen.width,
+    width: width,
     height: 400
   }
 });
 
 class Notification extends Component {
-  // static propTypes = {
-  //   children: PropTypes.node,
-  //   visible: PropTypes.bool,
-  // }
+  static propTypes = {
+    children: PropTypes.node,
+    visible: PropTypes.bool,
+  };
 
-  // static defaultProps = {
-  //   visible: true,
-  // }
+  static defaultProps = {
+    visible: true,
+  };
 
   constructor(props) {
     super(props);
@@ -68,6 +68,7 @@ class Notification extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+
     if (nextProps.visible && !this.props.visible) {
       this.fadeIn();
     } else {
@@ -116,6 +117,7 @@ class Notification extends Component {
     const message = this.props.children;
     const animatedViewStyles = [
       styles.container,
+      { /* backgroundColor: this.props.success ? theme.green : theme.red */},
       { top: this.state.height === 0 ? -100 : 0 },
       { transform: this.state.translate.getTranslateTransform() }
     ];
@@ -125,6 +127,8 @@ class Notification extends Component {
         <Animated.View
           onLayout={this.getViewSize.bind(this)}
           style={animatedViewStyles}>
+          {this.props.success &&
+            <Icon name="done" style={{fontSize:20, color:theme.white, position:'absolute', left: 15, top: 17 }} />}
           <Text style={styles.message}>{message}</Text>
         </Animated.View>
       </View>

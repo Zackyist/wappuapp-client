@@ -56,6 +56,7 @@ class FeedList extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       showScrollTopButton: false,
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
@@ -68,9 +69,9 @@ class FeedList extends Component {
     this.props.updateCooldowns();
   }
 
-  componentWillUnmount() {
-    //this.clearInterval(this.updateCooldownInterval);
-  }
+  // componentWillUnmount() {
+  //   //this.clearInterval(this.updateCooldownInterval);
+  // }
 
   componentWillReceiveProps({ feed }) {
     if (feed !== this.props.feed) {
@@ -92,7 +93,7 @@ class FeedList extends Component {
   }
 
   @autobind
-  _onScroll(event){
+  _onScroll(event) {
     const SHOW_SCROLLTOP_LIMIT = 600;
     const scrollTop = event.nativeEvent.contentOffset.y;
 
@@ -110,6 +111,7 @@ class FeedList extends Component {
     this.props.refreshFeed();
   }
 
+  @autobind
   onLoadMoreItems() {
     if (this.props.isRefreshing || !this.props.feed.size || this.props.feed.size < 10) {
       return;
@@ -121,6 +123,7 @@ class FeedList extends Component {
     }
   }
 
+  @autobind
   chooseImage() {
     ImagePickerManager.showImagePicker(ImageCaptureOptions, (response) => {
       if (!response.didCancel && !response.error) {
@@ -143,6 +146,7 @@ class FeedList extends Component {
     }
   }
 
+  @autobind
   renderFeed(feedListState, isLoadingActionTypes, isLoadingUserData) {
     const refreshControl = <RefreshControl
       refreshing={this.props.isRefreshing || this.props.isSending}

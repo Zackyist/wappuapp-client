@@ -17,7 +17,7 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { removeFeedItem } from '../../actions/feed';
+import { removeFeedItem, openLightBox } from '../../actions/feed';
 import abuse from '../../services/abuse';
 import time from '../../utils/time';
 import theme from '../../style/theme';
@@ -25,6 +25,7 @@ import theme from '../../style/theme';
 const styles = StyleSheet.create({
   itemWrapper: {
     width: Dimensions.get('window').width,
+    flex: 1,
     backgroundColor: '#f2f2f2',
     paddingBottom: 10,
     paddingTop:5,
@@ -183,7 +184,7 @@ class FeedListItem extends Component {
   }
 
   removeThisItem() {
-    this.props.dispatch(removeFeedItem(this.props.item));
+    this.props.removeFeedItem(this.props.item);
   }
 
   // Render "remove" button, which is remove OR flag button,
@@ -199,7 +200,7 @@ class FeedListItem extends Component {
       <TouchableOpacity
        style={[styles.listItemRemoveContainer,
          {backgroundColor:item.type !== 'IMAGE' ? 'transparent' : 'rgba(255,255,255,.1)'}]}
-       onPress={() => this.showRemoveDialog(this.props.item)}>
+       onPress={() => this.showRemoveDialog(item)}>
 
         <Icon name={iconName} style={[styles.listItemRemoveButton,
           {opacity:item.type !== 'IMAGE' ? 0.7 : 1}]
@@ -209,9 +210,7 @@ class FeedListItem extends Component {
     );
   }
 
-  renderAdminItem() {
-    const item = this.props.item;
-    const ago = time.getTimeAgo(item.createdAt);
+  renderAdminItem(item, ago) {
 
     return (
       <View style={styles.itemWrapper}>
@@ -226,9 +225,14 @@ class FeedListItem extends Component {
 
           {item.type === 'IMAGE' ?
             <View style={styles.itemImageWrapper}>
-              <Image
-                source={{ uri: item.url }}
-                style={[styles.feedItemListItemImg, styles.feedItemListItemImg__admin]} />
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => this.props.openLightBox(item)}
+              >
+                <Image
+                  source={{ uri: item.url }}
+                  style={[styles.feedItemListItemImg, styles.feedItemListItemImg__admin]} />
+              </TouchableOpacity>
             </View>
           :
             <View style={[styles.itemTextWrapper, styles.itemTextWrapper__admin]}>
@@ -243,11 +247,11 @@ class FeedListItem extends Component {
   }
 
   render() {
-    const item = this.props.item;
-    const ago = time.getTimeAgo(item.createdAt);
+    const { item } = this.props;
+    const ago = time.getTimeAgo(item.createdAt)
 
     if (item.author.type === 'SYSTEM') {
-      return this.renderAdminItem();
+      return this.renderAdminItem(item, ago);
     }
 
     return (
@@ -265,9 +269,14 @@ class FeedListItem extends Component {
 
           {item.type === 'IMAGE' ?
             <View style={styles.itemImageWrapper}>
-              <Image
-                source={{ uri: item.url }}
-                style={styles.feedItemListItemImg} />
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => this.props.openLightBox(item)}
+              >
+                <Image
+                  source={{ uri: item.url }}
+                  style={styles.feedItemListItemImg} />
+              </TouchableOpacity>
             </View>
           :
             <View style={styles.itemTextWrapper}>
@@ -283,10 +292,13 @@ class FeedListItem extends Component {
   }
 }
 
+
+const mapDispatchToProps = { removeFeedItem, openLightBox };
+
 const select = store => {
   return {
     user: store.registration.toJS()
   }
 };
 
-export default connect(select)(FeedListItem);
+export default connect(select, mapDispatchToProps)(FeedListItem);
