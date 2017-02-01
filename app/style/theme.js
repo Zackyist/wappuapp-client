@@ -11,6 +11,7 @@ const theme = {
   secondaryDark:  '#ce3686',
   accent:         '#FFFB38',
   danger:         '#FF5240',
+  stable:         '#f6f6f6',
   light:          '#fff',
   dark:           '#003340',
   black:          '#222',

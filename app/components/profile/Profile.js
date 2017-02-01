@@ -12,9 +12,11 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-
 import _ from 'lodash';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import WebViewer from '../webview/WebViewer';
+import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
 import { fetchLinks } from '../../actions/profile';
 import { openRegistrationView } from '../../actions/registration';
@@ -22,7 +24,7 @@ import { openRegistrationView } from '../../actions/registration';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF'
+    backgroundColor: theme.stable
   },
   scrollView:{
     flex: 1,
@@ -34,8 +36,21 @@ const styles = StyleSheet.create({
     backgroundColor:'#FFF',
   },
   listItem__hero:{
-    paddingTop:25,
-    paddingBottom:25,
+    paddingTop: 35,
+    paddingBottom: 35,
+  },
+  listItemSeparator: {
+    marginBottom: 15,
+    elevation: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    shadowColor: '#000000',
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 1,
+      width: 0
+    },
   },
   listItemButton:{
     flex:1,
@@ -46,14 +61,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 50,
   },
-  listItemIcon__hero:{
-    top: 0
+  listItemIcon__hero: {
+    top: 0,
+    left: 9,
+    alignSelf: 'stretch',
+    backgroundColor: 'transparent'
+  },
+  avatarColumn: {
+    width: 50,
+  },
+  avatar: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    left: -10,
+    width: 40,
+    height: 40,
+    backgroundColor: theme.stable,
+    color: '#FFF',
+    borderRadius: 20,
   },
   listItemIconRight:{
     position: 'absolute',
     right: 0,
     color: '#aaa',
-    top: 27,
+    top: 45,
   },
   listItemText:{
     color:'#000',
@@ -74,7 +106,7 @@ const styles = StyleSheet.create({
     left:70,
     bottom:0,
     height:1,
-    backgroundColor:'#eee'
+    backgroundColor:'#f4f4f4'
   }
 });
 
@@ -102,27 +134,62 @@ class Profile extends Component {
     this.props.openRegistrationView();
   }
 
+  @autobind
+  onLinkPress(url, text, openInWebview) {
+    if (!url) {
+      return;
+    }
+    if (!openInWebview) {
+      Linking.openURL(url)
+    } else {
+      this.props.navigator.push({
+        component: WebViewer,
+        name: text,
+        url: url
+      });
+
+    }
+  }
+
   renderLinkItem(item) {
+    const linkItemStyles = [styles.listItemButton];
+
+    if (item.separatorAfter || item.last) {
+      linkItemStyles.push(styles.listItemSeparator)
+    }
+
     return (
-      <TouchableHighlight style={styles.listItemButton} underlayColor={theme.primary}
-        onPress={() => Linking.openURL(item.link)}>
-        <View style={styles.listItem}>
-          <Icon style={styles.listItemIcon} name={item.icon} />
-          <Text style={styles.listItemText}>{item.title}</Text>
-          <View style={styles.listItemBottomLine} />
+      <PlatformTouchable
+        underlayColor={'#eee'}
+        activeOpacity={0.6}
+        delayPressIn={0}
+        style={styles.listItemButton}
+        onPress={() => this.onLinkPress(item.link, item.title, item.showInWebview)}>
+        <View style={linkItemStyles}>
+          <View style={styles.listItem}>
+            <Icon style={styles.listItemIcon} name={item.icon} />
+            <Text style={styles.listItemText}>{item.title}</Text>
+            {!item.separatorAfter && !item.last && <View style={styles.listItemBottomLine} />}
+          </View>
         </View>
-      </TouchableHighlight>
+      </PlatformTouchable>
     );
   }
+
+
 
   renderModalItem(item) {
     const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
 
     return (
-      <TouchableHighlight style={styles.listItemButton} underlayColor={theme.primary}
+      <TouchableHighlight style={[styles.listItemButton, styles.listItemSeparator]} underlayColor={theme.primary}
         onPress={this.openRegistration}>
         <View style={[styles.listItem, styles.listItem__hero]}>
-          <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+          <View style={styles.avatarColumn}>
+            <View style={styles.avatar}>
+              <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+            </View>
+          </View>
           <View style={{flexDirection:'column',flex:1}}>
             {
               item.title ?
@@ -138,7 +205,6 @@ class Profile extends Component {
             </Text>
           </View>
           <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
-          <View style={styles.listItemBottomLine} />
         </View>
       </TouchableHighlight>
     );
