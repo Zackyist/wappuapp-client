@@ -15,6 +15,7 @@ import RegistrationView from '../components/registration/RegistrationView';
 import errorAlert from '../utils/error-alert';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
 import LightBox from '../components/lightbox/Lightbox';
+import RadioPlayer from '../containers/RadioPlayer'
 
 const theme = require('../style/theme');
 
@@ -31,7 +32,7 @@ class MainView extends Component {
     }
 
     return (
-      <View style={{flex:1}}>
+      <View style={{ flex:1 }}>
         <TabBarIOS tintColor={theme.secondary} translucent={true} >
           <MDIcon.TabBarItemIOS
             iconName='access-time'
@@ -76,6 +77,7 @@ class MainView extends Component {
 
         <RegistrationView />
         <LightBox />
+        <RadioPlayer />
       </View>
     )
   }
