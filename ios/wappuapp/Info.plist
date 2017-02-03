@@ -20,6 +20,16 @@
     <string>????</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>audio</string>
+    </array>
+    <key>NSCameraUsageDescription</key>
+    <string>Whappu requires access to the camera</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Whappu requires access to the photo library</string>
     <key>CodePushDeploymentKey</key>
     <string>deployment-key-here</string>
     <key>LSRequiresIPhoneOS</key>
@@ -35,8 +45,6 @@
         </dict>
       </dict>
     </dict>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string/>
     <key>UIAppFonts</key>
     <array>
       <string>Entypo.ttf</string>
