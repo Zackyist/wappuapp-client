@@ -73,12 +73,10 @@ const styles = StyleSheet.create({
   avatar: {
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
     left: -10,
     width: 40,
     height: 40,
     backgroundColor: theme.stable,
-    color: '#FFF',
     borderRadius: 20,
   },
   listItemIconRight:{
