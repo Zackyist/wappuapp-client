@@ -1,5 +1,5 @@
 'use strict';
-import Immutable from 'immutable';
+import { fromJS, List } from 'immutable';
 
 import {
   GET_TEAMS_REQUEST,
@@ -9,7 +9,7 @@ import {
   CLOSE_TEAM_SELECTOR
 } from '../actions/team';
 
-const initialState = Immutable.fromJS({
+const initialState = fromJS({
   teams: [],
   isLoading: false,
   isError: false,
@@ -47,3 +47,7 @@ export default function team(state = initialState, action) {
       return state;
   }
 };
+
+
+// # Selectors
+export const getTeams = state => state.team.get('teams', List());

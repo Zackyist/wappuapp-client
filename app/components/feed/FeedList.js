@@ -14,7 +14,15 @@ import { ImagePickerManager } from 'NativeModules';
 import autobind from 'autobind-decorator';
 
 import theme from '../../style/theme';
-import { fetchFeed, refreshFeed, loadMoreItems } from '../../actions/feed';
+import { fetchFeed,
+  refreshFeed,
+  loadMoreItems,
+  removeFeedItem,
+  openLightBox
+} from '../../actions/feed';
+
+import { getUserTeam } from '../../reducers/registration';
+
 import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
 import Loading from './Loading';
@@ -173,7 +181,12 @@ class FeedList extends Component {
             <ListView
               ref='_scrollView'
               dataSource={this.state.dataSource}
-              renderRow={item => <FeedListItem item={item} />}
+              renderRow={item => <FeedListItem
+                item={item}
+                userTeam={this.props.userTeam}
+                removeFeedItem={this.props.removeFeedItem}
+                openLightBox={this.props.openLightBox} />
+              }
               style={[styles.listView]}
               onScroll={this._onScroll}
               onEndReached={this.onLoadMoreItems}
@@ -217,7 +230,9 @@ const mapDispatchToProps = {
   updateCooldowns,
   postImage,
   postAction,
-  openTextActionView
+  openTextActionView,
+  removeFeedItem,
+  openLightBox
 };
 
 const select = store => {
@@ -233,6 +248,7 @@ const select = store => {
     isNotificationVisible: store.competition.get('isNotificationVisible'),
     notificationText: store.competition.get('notificationText'),
     isSending: store.competition.get('isSending'),
+    userTeam: getUserTeam(store),
 
     isRegistrationInfoValid,
     isLoadingUserData: store.registration.get('isLoading'),

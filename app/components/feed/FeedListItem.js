@@ -14,13 +14,15 @@ import {
   View
 } from 'react-native';
 
-import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { removeFeedItem, openLightBox } from '../../actions/feed';
 import abuse from '../../services/abuse';
 import time from '../../utils/time';
 import theme from '../../style/theme';
+
+
+const FEED_ITEM_MARGIN_DISTANCE = 50;
+const FEED_ITEM_MARGIN_DEFAULT = 15;
 
 const styles = StyleSheet.create({
   itemWrapper: {
@@ -32,38 +34,53 @@ const styles = StyleSheet.create({
   },
   itemContent:{
     flex: 1,
-    elevation: 2,
-    shadowColor: '#000000',
-    shadowOpacity: 0.15,
-    shadowRadius: 1,
-    shadowOffset: {
-      height: 2,
-      width: 0
-    },
+    marginLeft: FEED_ITEM_MARGIN_DEFAULT,
+    marginRight: FEED_ITEM_MARGIN_DISTANCE,
+    borderRadius: 20,
+    overflow: 'hidden',
+    // // # Drop shadows
+    // elevation: 2,
+    // shadowColor: '#000000',
+    // shadowOpacity: 0.15,
+    // shadowRadius: 1,
+    // shadowOffset: {
+    //   height: 2,
+    //   width: 0
+    // },
     backgroundColor: '#fff'
+  },
+  itemContent_byMyTeam: {
+    marginRight: FEED_ITEM_MARGIN_DEFAULT,
+    marginLeft: FEED_ITEM_MARGIN_DISTANCE,
+  },
+  itemContent_image: {
+    marginLeft: FEED_ITEM_MARGIN_DEFAULT,
+    marginRight: FEED_ITEM_MARGIN_DEFAULT,
   },
   itemImageWrapper: {
     height: 400,
     width: Dimensions.get('window').width,
   },
   itemTextWrapper: {
-    paddingLeft: 40,
+    paddingLeft: 30,
     paddingRight: 30,
-    paddingTop: 0,
-    paddingBottom: 10,
-    top: -10
+    paddingTop: 20,
+    paddingBottom: 25,
+    top: -10,
   },
   feedItemListText: {
-    fontSize: 13,
+    textAlign: 'center',
+    fontSize: 17,
+    lineHeight: 25,
     color: theme.dark
   },
   feedItemListItemImg: {
-    width: Dimensions.get('window').width,
+    width: Dimensions.get('window').width - (2 * FEED_ITEM_MARGIN_DEFAULT),
     height: 400,
-    backgroundColor: '#ddd'
+    backgroundColor: '#ddd',
   },
   feedItemListItemImg__admin: {
-    width: Dimensions.get('window').width - 30
+    width: Dimensions.get('window').width - (2 * FEED_ITEM_MARGIN_DEFAULT),
   },
   feedItemListItemInfo: {
     flex: 1,
@@ -157,6 +174,20 @@ class FeedListItem extends Component {
     return item.author.type === 'ME';
   }
 
+  itemIsCreatedByMyTeam(item) {
+    const { userTeam } = this.props;
+    return item.author.team === userTeam.get('name')
+  }
+
+  selectItem() {
+    this.setState({ selected: true });
+    this.showRemoveDialog(this.props.item);
+  }
+
+  deSelectItem() {
+    this.setState({ selected: false });
+  }
+
   showRemoveDialog(item) {
     if (this.itemIsCreatedByMe(item)) {
       Alert.alert(
@@ -164,9 +195,9 @@ class FeedListItem extends Component {
         'Do you want to remove this item?',
         [
           { text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            onPress: () => this.deSelectItem(), style: 'cancel' },
           { text: 'Yes, remove item',
-            onPress: () => this.removeThisItem(), style: 'destructive' }
+            onPress: () => { this.deSelectItem(); this.removeThisItem() }, style: 'destructive' }
         ]
       );
     } else {
@@ -175,9 +206,9 @@ class FeedListItem extends Component {
         'Do you want to report this item?',
         [
           { text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            onPress: () => this.deSelectItem() , style: 'cancel' },
           { text: 'Yes, report item',
-            onPress: () => abuse.reportFeedItem(item), style: 'destructive' }
+            onPress: () => { this.deSelectItem(); abuse.reportFeedItem(item) }, style: 'destructive' }
         ]
       );
     }
@@ -248,15 +279,26 @@ class FeedListItem extends Component {
 
   render() {
     const { item } = this.props;
-    const ago = time.getTimeAgo(item.createdAt)
+    const ago = time.getTimeAgo(item.createdAt);
 
     if (item.author.type === 'SYSTEM') {
       return this.renderAdminItem(item, ago);
     }
 
+    const itemByMyTeam = this.itemIsCreatedByMyTeam(item);
+    const isItemImage = item.type === 'IMAGE';
+
     return (
       <View style={styles.itemWrapper}>
-        <View style={styles.itemContent}>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{ flex: 1 }}
+          onLongPress={() => this.selectItem() }
+        >
+        <View style={[styles.itemContent,
+          itemByMyTeam ? styles.itemContent_byMyTeam : {},
+          isItemImage ? styles.itemContent_image : {}
+        ]}>
 
           <View style={styles.feedItemListItemInfo}>
             <Icon name='face' style={styles.feedItemListItemAuthorIcon} />
@@ -267,7 +309,7 @@ class FeedListItem extends Component {
             <Text style={styles.itemTimestamp}>{ago}</Text>
           </View>
 
-          {item.type === 'IMAGE' ?
+          {isItemImage ?
             <View style={styles.itemImageWrapper}>
               <TouchableOpacity
                 activeOpacity={1}
@@ -284,21 +326,18 @@ class FeedListItem extends Component {
             </View>
           }
 
-          {this.renderRemoveButton(item)}
+          {/* this.renderRemoveButton(item) */}
 
         </View>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 
 
-const mapDispatchToProps = { removeFeedItem, openLightBox };
+// const mapDispatchToProps = { removeFeedItem, openLightBox };
+// const mapStateToProps = createStructuredSelector({ team: getUserTeam });
+// export default connect(mapStateToProps, mapDispatchToProps)(FeedListItem);
 
-const select = store => {
-  return {
-    user: store.registration.toJS()
-  }
-};
-
-export default connect(select, mapDispatchToProps)(FeedListItem);
+export default FeedListItem;

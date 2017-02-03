@@ -1,6 +1,7 @@
 'use strict';
 
-import Immutable from 'immutable';
+import { fromJS } from 'immutable';
+import { createSelector } from 'reselect';
 import {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
@@ -15,7 +16,9 @@ import {
   SELECT_TEAM
 } from '../actions/registration';
 
-const initialState = Immutable.fromJS({
+import { getTeams } from './team';
+
+const initialState = fromJS({
   isRegistrationViewOpen: false,
   name: '',
   selectedTeam: 0,
@@ -68,3 +71,8 @@ export default function registration(state = initialState, action) {
       return state;
   }
 }
+
+// # Selectors
+export const getUserTeamId = state => state.registration.get('selectedTeam', 0);
+export const getUserTeam = createSelector(getUserTeamId, getTeams,
+  (teamId, teams) => teams.find(item => item.get('id') === teamId))
