@@ -35,7 +35,7 @@ class MainView extends Component {
         <TabBarIOS tintColor={theme.secondary} translucent={true} >
           <MDIcon.TabBarItemIOS
             iconName='access-time'
-            title='Events'
+            title=''
             selected={this.props.currentTab === Tabs.CALENDAR}
             onPress={() => { this.onChangeTab(Tabs.CALENDAR); }}>
             <CalendarView />
@@ -43,7 +43,7 @@ class MainView extends Component {
 
           <MDIcon.TabBarItemIOS
             iconName='location-on'
-            title='Map'
+            title=''
             selected={this.props.currentTab === Tabs.MAP}
             onPress={() => { this.onChangeTab(Tabs.MAP); }}>
             <EventMapView />
@@ -51,7 +51,7 @@ class MainView extends Component {
 
           <MDIcon.TabBarItemIOS
             iconName='whatshot'
-            title='Buzz'
+            title=''
             selected={this.props.currentTab === Tabs.FEED}
             onPress={() => { this.onChangeTab(Tabs.FEED); }}>
             <FeedView />
@@ -59,7 +59,7 @@ class MainView extends Component {
 
           <MDIcon.TabBarItemIOS
             iconName='equalizer'
-            title='Ranking'
+            title=''
             selected={this.props.currentTab === Tabs.ACTION}
             onPress={() => { this.onChangeTab(Tabs.ACTION); }}>
             <CompetitionView />
@@ -67,7 +67,7 @@ class MainView extends Component {
 
           <MDIcon.TabBarItemIOS
             iconName='person-outline'
-            title='Settings'
+            title=''
             selected={this.props.currentTab === Tabs.SETTINGS}
             onPress={() => { this.onChangeTab(Tabs.SETTINGS); }}>
             <SettingsView />
