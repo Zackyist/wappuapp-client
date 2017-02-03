@@ -1,12 +1,12 @@
 'use strict';
 
-import React, { PropTypes } from 'react';
-
+import React, { Component } from 'react';
 import {
   View,
   Text,
   TextInput,
   Platform,
+  PropTypes,
   Dimensions,
   Animated,
   StyleSheet,
@@ -17,25 +17,29 @@ import Button from '../../components/common/Button';
 import theme from '../../style/theme';
 import Modal from 'react-native-modalbox';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import autobind from 'autobind-decorator';
 
-import * as CompetitionActions from '../../actions/competition';
+import { closeTextActionView, postText } from '../../actions/competition';
 const IOS = Platform.OS === 'ios';
 
-const { width, height } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 
-const TextActionView = React.createClass({
+class TextActionView extends Component {
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     isTextActionViewOpen: PropTypes.bool.isRequired
-  },
-  getInitialState() {
-    return {
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
       text: '',
       formAnimation: new Animated.Value(1),
       okAnimation: new Animated.Value(0)
     }
-  },
+  }
+
   componentDidMount(){
     BackAndroid.addEventListener('hardwareBackPress', () => {
       if (this.props.isTextActionViewOpen) {
@@ -44,22 +48,31 @@ const TextActionView = React.createClass({
       }
       return false;
     })
-  },
+  }
+
   showOK() {
     Animated.spring(this.state.okAnimation, {toValue:1, duration:250}).start();
     Animated.timing(this.state.formAnimation, {toValue:0, duration:100}).start();
-  },
+  }
+
+  @autobind
   hideOK() {
     this.state.formAnimation.setValue(1);
     this.state.okAnimation.setValue(0);
-  },
+  }
+
+  @autobind
   onChangeText(text) {
-    this.setState({text: text});
-  },
+    this.setState({ text });
+  }
+
+  @autobind
   onCancel() {
-    this.setState({text: ''});
-    this.props.dispatch(CompetitionActions.closeTextActionView());
-  },
+    this.setState({ text: '' });
+    this.props.closeTextActionView();
+  }
+
+  @autobind
   onSendText() {
 
     if (!this.state.text.length) {
@@ -69,9 +82,9 @@ const TextActionView = React.createClass({
 
     this.showOK()
     setTimeout(() => {
-      this.props.dispatch(CompetitionActions.postText(this.state.text));
+      this.props.postText(this.state.text);
       this.setState({text: ''});
-      this.props.dispatch(CompetitionActions.closeTextActionView());
+      this.props.closeTextActionView();
 
       // reset values for the next time
       setTimeout(() => {
@@ -80,7 +93,8 @@ const TextActionView = React.createClass({
 
     }, 600);
 
-  },
+  }
+
   render() {
     return (
       <Modal
@@ -89,51 +103,43 @@ const TextActionView = React.createClass({
         backdropPressToClose={false}>
         <View style={[styles.container, styles.modalBackgroundStyle]}>
 
-          <Animated.View style={[styles.okView, { opacity: this.state.okAnimation}]}>
-            <Animated.View style={[styles.okWrap,
-              {opacity: this.state.okAnimation, transform:[{ scale: this.state.okAnimation }]}
-            ]}>
-              <Icon name='done' style={styles.okSign} />
-            </Animated.View>
-            <View style={{ marginTop: 20 }}>
-              <Text style={styles.okText}>Let's publish your message...</Text>
-            </View>
-          </Animated.View>
 
+          <Animated.View style={[styles.okWrap,
+            {opacity: this.state.okAnimation, transform:[{scale:this.state.okAnimation}]}
+          ]}>
+            <Icon name='done' style={styles.okSign} />
+          </Animated.View>
+          <Animated.Text style={[styles.okText, { opacity: this.state.okAnimation}]}>
+            Let's publish your message...
+          </Animated.Text>
 
           <Animated.View style={[styles.innerContainer, {opacity:this.state.formAnimation}]}>
 
-          {/*
             <View>
               <View style={styles.title}>
                 <Icon name='textsms' style={styles.titleIcon} />
-                <Text style={styles.titleText}> Post Text</Text>
+                <Text style={styles.titleText}> Share your Wappu feelings</Text>
               </View>
             </View>
-          */}
             <TextInput
               autoFocus={true}
               multiLine={true}
               autoCapitalize={'sentences'}
-              underlineColorAndroid={'transparent'}
+              underlineColorAndroid={theme.accent}
               clearButtonMode={'while-editing'}
               returnKeyType={'send'}
               onSubmitEditing={this.onSendText}
               style={[styles.inputField, styles['inputField_' + Platform.OS]]}
               onChangeText={this.onChangeText}
-              numberOfLines={3}
-              placeholderTextColor={'rgba(255,255,255, 0.7)'}
-              placeholder="Say something..."
               value={this.state.text} />
 
 
-          {/*
+
             <View style={styles.bottomInfo}>
               <Text style={styles.bottomInfoText}>
-                How is it going?
+                Earn points for your guild by sharing a wappu message!
               </Text>
             </View>
-          */}
 
             <View style={styles.bottomButtons}>
               <Button
@@ -146,7 +152,7 @@ const TextActionView = React.createClass({
                 onPress={this.onSendText}
                 style={styles.modalButton}
                 isDisabled={!this.state.text}>
-                Post
+                Send!
               </Button>
             </View>
           </Animated.View>
@@ -154,32 +160,30 @@ const TextActionView = React.createClass({
       </Modal>
     );
   }
-});
+}
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop:0,
-    paddingBottom:IOS ? 49 : 0
+    paddingBottom:IOS ? 49 : 0,
   },
   innerContainer: {
     padding:10,
-    paddingBottom: 60,
     flex:1,
-    justifyContent: 'center'
   },
   title:{
     padding: 10,
-    paddingBottom: 100,
-    paddingTop: 0,
+    paddingTop: IOS ? 0 : 0,
     backgroundColor:'transparent',
+    flex:1,
     flexDirection: 'row',
-    justifyContent: IOS ? 'center' : 'center',
+    justifyContent: IOS ? 'center' : 'flex-start',
   },
   titleText:{
     fontSize: 20,
-    color: theme.primary,
+    color: theme.light,
     fontWeight: 'bold',
     textAlign: IOS ? 'center' : 'left',
   },
@@ -187,29 +191,29 @@ const styles = StyleSheet.create({
     top:5,
     fontSize:20,
     marginRight:5,
-    color:theme.primary,
+    color:theme.accent,
   },
   bottomButtons:{
+    flex: 1,
     flexDirection: 'row',
     alignItems: IOS ? 'stretch' : 'flex-end',
     justifyContent: IOS ? 'center' : 'flex-end',
-    position: IOS ? 'absolute' : 'absolute',
+    position: IOS ? 'relative' : 'absolute',
     bottom:0,
     right:0,
     left:0,
     padding:10,
-    paddingBottom: IOS ? 0 : 10,
     paddingLeft:20,
-    paddingRight: 20,
+    paddingRight: IOS ? 20 : 0,
     borderTopWidth: IOS ? 0 : 1,
-    borderTopColor:'rgba(0,0,0,.1)',
+    borderTopColor:'rgba(0,0,0,.1)'
   },
   modalButton: {
-    flex: 1,
+    flex:1,
     marginLeft: 10,
   },
   cancelButton: {
-    flex: 1,
+    flex:1,
     marginRight: 10,
     backgroundColor: '#999',
   },
@@ -217,17 +221,17 @@ const styles = StyleSheet.create({
     backgroundColor: theme.secondary
   },
   inputField: {
+    height: 50,
     fontSize: 18,
-    margin: 0,
+    margin: 10,
     color:'#FFF',
-    textAlign: 'center',
-    height: 150,
-    width: width - 40,
   },
   inputField_android: {
 
   },
   inputField_ios: {
+    padding:10,
+    backgroundColor: 'rgba(250,250,250,0.4)',
   },
   bottomInfo:{
     padding: 15,
@@ -237,20 +241,13 @@ const styles = StyleSheet.create({
   },
   bottomInfoText:{
     textAlign: IOS ? 'center' : 'left',
-    fontSize: 12,
-    color: 'rgba(255,255,255,.7)'
-  },
-  okView: {
-    position: 'absolute',
-    top: IOS ? height / 2 - 140 : 50,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
+    fontSize: 11,
+    color: theme.light
   },
   okWrap:{
-    position: 'relative',
+    top: 60,
+    left: width / 2 - 72,
+    position: 'absolute',
     overflow: 'visible',
     borderWidth: 5,
     borderColor: theme.light,
@@ -265,16 +262,20 @@ const styles = StyleSheet.create({
     fontSize: 65,
     color: theme.light,
     backgroundColor: 'transparent',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   okText:{
     color: theme.light,
     fontWeight: 'bold',
     textAlign: 'center',
     backgroundColor: 'transparent',
-    fontSize: 15
+    fontSize: 15,
+    top: 220
   }
 });
+
+const mapDispatchToProps = { closeTextActionView, postText };
+
 
 const select = store => {
   return {
@@ -282,4 +283,4 @@ const select = store => {
   };
 };
 
-export default connect(select)(TextActionView);
+export default connect(select, mapDispatchToProps)(TextActionView);
