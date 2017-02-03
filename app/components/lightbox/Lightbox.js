@@ -131,7 +131,7 @@ class LightBox extends Component {
         transparent={true}
         animationType={IOS ? 'none' : 'slide'}
         >
-        <ModalBackgroundView blurType="dark" style={styles.container}>
+        <ModalBackgroundView style={styles.container} blurType="dark" >
           {
           IOS ?
           <View style={{ width, height }}>
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: IOS ? theme.secondary : theme.black,
+    backgroundColor: IOS ? 'transparent' : theme.black,
   },
   header: {
     height: 56,
