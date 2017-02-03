@@ -13,7 +13,7 @@ const theme = {
   danger:         '#FF5240',
   stable:         '#f6f6f6',
   light:          '#fff',
-  dark:           '#003340',
+  dark:           '#414e51',
   black:          '#222',
   white:          '#fff'
 };
