@@ -12,8 +12,19 @@ import {
   Platform,
   Dimensions
 } from 'react-native';
-import theme from '../style/theme';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import {
+  getRadioMode,
+  getRadioStatus,
+  getRadioSong,
+  toggleRadioBar,
+  setRadioSong,
+  setRadioStatus
+} from '../concepts/radio';
+import theme from '../style/theme';
 import autobind from 'autobind-decorator';
 
 import PlayerUI from '../components/radio/PlayerUI';
@@ -29,22 +40,25 @@ class RadioPlayer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false,
       playerHeight: new Animated.Value(48)
     };
   }
 
   @autobind
   toggle() {
-    const nextState = !this.state.expanded;
+    const nextState = !this.props.expanded;
+    if (!nextState) {
+      return;
+    }
+
     this.animateRadioBar(nextState);
-    this.setState({ expanded: nextState });
+    this.props.toggleRadioBar(nextState);
   }
 
   @autobind
   close() {
     this.animateRadioBar(false);
-    this.setState({ expanded: false });
+    this.props.toggleRadioBar(false);
   }
 
   animateRadioBar(nextState) {
@@ -53,7 +67,9 @@ class RadioPlayer extends Component {
   }
 
   render() {
-    const { expanded, playerHeight, iconSize } = this.state;
+    const { playerHeight } = this.state;
+    const { expanded, song, status } = this.props;
+
     return (
       <Animated.View style={[styles.container, { height: playerHeight }]}>
         {expanded && <Image
@@ -62,9 +78,15 @@ class RadioPlayer extends Component {
         }
         <TouchableOpacity
         activeOpacity={1}
-        onPress={!expanded ? this.toggle : () => {}}
+        onPress={this.toggle}
         style={styles.pressable}>
-          <PlayerUI url="http://lacavewebradio.chickenkiller.com:8000/stream.mp3" />
+          <PlayerUI
+            setRadioStatus={this.props.setRadioStatus}
+            setRadioSong={this.props.setRadioSong}
+            status={status}
+            song={song}
+            url="http://lacavewebradio.chickenkiller.com:8000/stream.mp3"
+          />
           {expanded &&
             <TouchableOpacity onPress={this.close} style={styles.close} >
               <Icon name="ios-arrow-up-outline" style={styles.closeArrow} />
@@ -87,8 +109,8 @@ const styles = StyleSheet.create({
     right: 0,
     height: PLAYER_HEIGHT,
     zIndex: 0,
-    top: 60,
-    backgroundColor: theme.secondary, // 'rgba(255, 255, 255, .95)',
+    top: 20,
+    backgroundColor: theme.primary, // 'rgba(255, 255, 255, .95)',
     overflow: 'hidden',
   },
   bgImage: {
@@ -126,4 +148,17 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RadioPlayer;
+const mapDispatchToProps = {
+  setRadioStatus,
+  setRadioSong,
+  toggleRadioBar
+}
+
+const mapStateToProps = createStructuredSelector({
+  status: getRadioStatus,
+  song: getRadioSong,
+  expanded: getRadioMode
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RadioPlayer);
+

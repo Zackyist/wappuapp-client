@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,28 +6,25 @@ import {
   TouchableOpacity,
   DeviceEventEmitter,
   ActivityIndicator,
-  Platform
 } from 'react-native';
 
 import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import theme from '../../style/theme';
+import {
+  PLAYING,
+  STREAMING,
+  PAUSED,
+  STOPPED,
+  ERROR,
+  METADATA_UPDATED,
+  BUFFERING,
+  START_PREPARING,
+  BUFFERING_START,
+} from '../../constants/RadioStates';
 
-// Possibles states
-const PLAYING = 'PLAYING';
-const STREAMING = 'STREAMING';
-const PAUSED = 'PAUSED';
-const STOPPED = 'STOPPED';
-const ERROR = 'ERROR';
-const METADATA_UPDATED = 'METADATA_UPDATED';
-const BUFFERING = 'BUFFERING';
-const START_PREPARING = 'START_PREPARING'; // Android only
-const BUFFERING_START = 'BUFFERING_START'; // Android only
-
-// UI
-const iconSize = 60;
-
+// Player UI Component
 class Player extends Component {
   constructor(props) {
     super(props);
@@ -39,24 +36,30 @@ class Player extends Component {
   }
 
   componentDidMount() {
+    const { setRadioSong, setRadioStatus } = this.props;
     this.subscription = DeviceEventEmitter.addListener(
       'AudioBridgeEvent', (evt) => {
         // We just want meta update for song name
         if (evt.status === METADATA_UPDATED && evt.key === 'StreamTitle') {
-          this.setState({song: evt.value});
+          setRadioSong(evt.value);
         } else if (evt.status != METADATA_UPDATED) {
-          this.setState(evt);
+          // TODO
+          // evt can also contain progress & duration
+          // check if useful, would be cool
+          setRadioStatus(evt.status);
         }
       }
       );
 
-    ReactNativeAudioStreaming.getStatus((error, status) => {
-      (error) ? console.log(error) : this.setState(status)
+    ReactNativeAudioStreaming.getStatus((error, { status }) => {
+      (error) ? console.log(error) : setRadioStatus(status)
     });
   }
 
   _onPress() {
-    switch (this.state.status) {
+    const { status, url } = this.props;
+
+    switch (status) {
       case PLAYING:
       case STREAMING:
       ReactNativeAudioStreaming.pause();
@@ -66,7 +69,7 @@ class Player extends Component {
       break;
       case STOPPED:
       case ERROR:
-      ReactNativeAudioStreaming.play(this.props.url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
+      ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
       break;
       case BUFFERING:
       ReactNativeAudioStreaming.stop();
@@ -76,7 +79,8 @@ class Player extends Component {
 
   render() {
     let icon = null;
-    switch (this.state.status) {
+    const { status, song } = this.props;
+    switch (status) {
       case PLAYING:
       case STREAMING:
         icon = <Icon name="pause-circle-outline" style={styles.icon} />;
@@ -96,7 +100,6 @@ class Player extends Component {
         />;
         break;
     }
-    const { song } = this.state;
 
     return (
       <View style={styles.container}>
@@ -149,7 +152,11 @@ const styles = StyleSheet.create({
 });
 
 Player.propTypes = {
-  url: React.PropTypes.string.isRequired
+  url: PropTypes.string.isRequired,
+  status: PropTypes.string,
+  song: PropTypes.string,
+  setRadioStatus: PropTypes.func,
+  setRadioSong: PropTypes.func,
 };
 
 export default Player;
