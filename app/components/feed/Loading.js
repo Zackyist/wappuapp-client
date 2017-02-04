@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.light
+    backgroundColor: 'transparent'
   },
   activityIndicator: {
     alignItems: 'center',

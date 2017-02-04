@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.light
+    backgroundColor: '#f2f2f2'
   },
   listView: {
     flex: 1
