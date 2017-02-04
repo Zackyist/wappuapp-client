@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { Navigator, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import sceneConfig from '../utils/sceneConfig';
 import NavRouteMapper from '../components/common/navbarRouteMapper';
@@ -12,7 +13,7 @@ const theme = require('../style/theme');
 
 const styles = StyleSheet.create({
   navigator: {
-    paddingTop: 42,
+    paddingTop: 20,
     paddingBottom:30,
   },
   navbar: {
@@ -26,10 +27,11 @@ const styles = StyleSheet.create({
 
 
 class TimelineListWrapper extends Component {
+  @autobind
   renderScene(route, navigator) {
     if (route.component) {
       const RouteComponent = route.component;
-      return <RouteComponent navigator={navigator} route={route} {...this.props} />;
+      return <RouteComponent route={route} {...this.props} />;
     }
   }
 
@@ -37,11 +39,12 @@ class TimelineListWrapper extends Component {
     return (
       <Navigator
         style={styles.navigator}
-        navigationBar={
+        /*navigationBar={
           <Navigator.NavigationBar
             style={styles.navbar}
             routeMapper={NavRouteMapper} />
         }
+        */
         initialRoute={{
           component: TimelineList,
           name: 'Tapahtumat'

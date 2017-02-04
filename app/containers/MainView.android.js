@@ -26,6 +26,7 @@ const IconTabBar = require('../components/common/IconTabBar');
 
 class AndroidTabNavigation extends Component {
   render() {
+    const { navigator } = this.props;
     return (
       <AndroidTabs
         initialPage={2}
@@ -36,11 +37,11 @@ class AndroidTabNavigation extends Component {
         tabBarInactiveTextColor={theme.light}
         renderTabBar={() => <IconTabBar rippleColor={theme.secondaryDark} />}
       >
-        <EventMapView navigator={this.props.navigator} tabLabel={{title:'Map', icon:'map'}} />
-        <CalendarView navigator={this.props.navigator} tabLabel={{title:'Events', icon:'event-note'}} />
-        <FeedView navigator={this.props.navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
+        <EventMapView navigator={navigator} tabLabel={{title:'Map', icon:'map'}} />
+        <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event-note'}} />
+        <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
         <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
-        <ProfileView tabLabel={{title:'Profile', icon:'person'}} />
+        <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'person'}} />
       </AndroidTabs>
     )
   }
