@@ -142,6 +142,7 @@ class Profile extends Component {
     } else {
       this.props.navigator.push({
         component: WebViewer,
+        showName: true,
         name: text,
         url: url
       });
@@ -162,7 +163,7 @@ class Profile extends Component {
         activeOpacity={0.6}
         delayPressIn={0}
         style={styles.listItemButton}
-        onPress={() => this.onLinkPress(item.link, item.title, item.showInWebview)}>
+        onPress={() => item.onPress ? item.onPress() : this.onLinkPress(item.link, item.title, item.showInWebview)}>
         <View style={linkItemStyles}>
           <View style={styles.listItem}>
             <Icon style={styles.listItemIcon} name={item.icon} />
