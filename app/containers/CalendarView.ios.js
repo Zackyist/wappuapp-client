@@ -2,13 +2,13 @@
 
 import React, { Component } from 'react';
 import { Navigator, StyleSheet } from 'react-native';
-import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
 import sceneConfig from '../utils/sceneConfig';
 import NavRouteMapper from '../components/common/navbarRouteMapper';
 
-import TimelineList from '../components/calendar/TimelineList';
+//import TimelineList from '../components/calendar/TimelineList';
+import EventsView from './EventsView';
 const theme = require('../style/theme');
 
 const styles = StyleSheet.create({
@@ -46,8 +46,8 @@ class TimelineListWrapper extends Component {
         }
         */
         initialRoute={{
-          component: TimelineList,
-          name: 'Tapahtumat'
+          component: EventsView,
+          name: 'Events'
         }}
         renderScene={this.renderScene}
         configureScene={() => sceneConfig}
@@ -56,8 +56,4 @@ class TimelineListWrapper extends Component {
   }
 }
 
-const select = store => {
-  return {};
-};
-
-export default connect(select)(TimelineListWrapper);
+export default TimelineListWrapper;

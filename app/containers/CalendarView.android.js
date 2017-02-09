@@ -6,8 +6,9 @@ import {
   BackAndroid,
   PropTypes
 } from 'react-native';
-import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 import TimelineList from '../components/calendar/TimelineList';
+import EventsView from './EventsView';
 
 var _navigator;
 BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -24,6 +25,7 @@ class TimelineListWrapper extends Component {
     navigator: PropTypes.object.isRequired
   }
 
+  @autobind
   renderScene(route, navigator) {
     _navigator = navigator;
     if (route.component) {
@@ -36,8 +38,8 @@ class TimelineListWrapper extends Component {
     return (
       <Navigator
         initialRoute={{
-          component: TimelineList,
-          name: 'Tapahtumat'
+          component: EventsView,
+          name: 'Events'
         }}
         renderScene={this.renderScene}
         configureScene={() => ({
@@ -48,8 +50,4 @@ class TimelineListWrapper extends Component {
   }
 }
 
-const select = store => {
-  return {};
-};
-
-export default connect(select)(TimelineListWrapper);
+export default TimelineListWrapper;

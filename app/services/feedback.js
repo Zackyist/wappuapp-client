@@ -12,7 +12,6 @@ feedbackUrl += '&body=';
 
 // Send feedback via email
 function sendFeedback() {
-  alert('test')
   const emailURL = feedbackUrl;
 
   // Ship it
