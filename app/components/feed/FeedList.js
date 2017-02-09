@@ -7,7 +7,8 @@ import {
   Text,
   RefreshControl,
   View,
-  ScrollView
+  ScrollView,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { ImagePickerManager } from 'NativeModules';
@@ -40,6 +41,8 @@ import {
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 
+const IOS = Platform.OS === 'ios';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -53,7 +56,7 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     position: 'absolute',
-    bottom: 0,
+    bottom: IOS ? 30 : 0,
     right: 0
   },
 

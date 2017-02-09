@@ -7,15 +7,16 @@ import autobind from 'autobind-decorator';
 import analytics from '../services/analytics';
 import FeedList from '../components/feed/FeedList';
 import RadioPlayer from '../containers/RadioPlayer'
-import NavRouteMapper from '../components/common/navbarRouteMapper';
 import theme from '../style/theme';
+import Header from '../components/common/Header';
+
 
 const VIEW_NAME = 'FeedView';
 
 const styles = StyleSheet.create({
   navigator: {
-    paddingTop: Platform.OS === 'ios' ? 64 : 0,
-    paddingBottom:Platform.OS === 'ios' ? 30 : 0,
+    paddingTop: Platform.OS === 'ios' ? 64 : 50,
+    paddingBottom:Platform.OS === 'ios' ? 0 : 0,
   },
   navbar: {
     backgroundColor: theme.secondary,
@@ -48,11 +49,6 @@ class FeedView extends Component {
           component: FeedList,
           name: 'Feed'
         }}
-        /*navigationBar={
-          <Navigator.NavigationBar
-            style={styles.navbar}
-            routeMapper={NavRouteMapper} />
-        }*/
         renderScene={this.renderScene}
         configureScene={() => ({
           ...Navigator.SceneConfigs.FloatFromRight
@@ -61,7 +57,8 @@ class FeedView extends Component {
       </View>;
     }
     else {
-      return <Navigator
+      return <View style={{ flex: 1 }}>
+        <Navigator
         style={styles.navigator}
         initialRoute={{
           component: FeedList,
@@ -70,7 +67,9 @@ class FeedView extends Component {
         renderScene={this.renderScene}
         configureScene={() => ({
           ...Navigator.SceneConfigs.FloatFromRight
-        })} />;
+        })} />
+        <RadioPlayer />
+      </View>;
     }
   }
 }

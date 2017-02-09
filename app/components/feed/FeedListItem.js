@@ -20,13 +20,15 @@ import abuse from '../../services/abuse';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 
+const { height, width } = Dimensions.get('window');
+
 
 const FEED_ITEM_MARGIN_DISTANCE = 50;
 const FEED_ITEM_MARGIN_DEFAULT = 15;
 
 const styles = StyleSheet.create({
   itemWrapper: {
-    width: Dimensions.get('window').width,
+    width,
     flex: 1,
     backgroundColor: '#f2f2f2',
     paddingBottom: 10,
@@ -58,8 +60,11 @@ const styles = StyleSheet.create({
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
   },
   itemImageWrapper: {
-    height: 400,
-    width: Dimensions.get('window').width,
+    width,
+    height: width,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    overflow: 'hidden'
   },
   itemTextWrapper: {
     paddingLeft: 30,
@@ -75,12 +80,15 @@ const styles = StyleSheet.create({
     color: theme.dark
   },
   feedItemListItemImg: {
-    width: Dimensions.get('window').width - (2 * FEED_ITEM_MARGIN_DEFAULT),
+    width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
     height: 400,
     backgroundColor: '#ddd',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+
   },
   feedItemListItemImg__admin: {
-    width: Dimensions.get('window').width - (2 * FEED_ITEM_MARGIN_DEFAULT),
+    width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
   },
   feedItemListItemInfo: {
     flex: 1,
@@ -121,7 +129,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 8,
     bottom: 10,
-    borderRadius:15,
+    borderRadius: 15,
     width: 30,
     height: 30,
     flex: 1,
