@@ -1,5 +1,8 @@
 'use strict';
 import Immutable from 'immutable';
+import { map } from 'lodash';
+
+import eventTestData from '../data/events';
 
 import {
   SET_EVENT_LIST,
@@ -20,7 +23,14 @@ const initialState = Immutable.fromJS({
 export default function event(state = initialState, action) {
   switch (action.type) {
     case SET_EVENT_LIST:
-      return state.set('list', Immutable.fromJS(action.payload));
+      // return state.set('list', Immutable.fromJS(action.payload));
+      const processed = map(eventTestData, (item, index) => {
+        item.id = index;
+        return item;
+      });
+
+
+      return state.set('list', Immutable.fromJS(processed));
     case GET_EVENT_LIST_REQUEST:
       return state.set('listState', 'loading');
     case GET_EVENT_LIST_SUCCESS:
