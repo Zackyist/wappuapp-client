@@ -15,6 +15,7 @@ import {
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import Icon from 'react-native-vector-icons/Ionicons';
+const IOS = Platform.OS === 'ios';
 
 import {
   getRadioMode,
@@ -26,14 +27,13 @@ import {
 } from '../concepts/radio';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
-
 import PlayerUI from '../components/radio/PlayerUI';
 
-const { height, width } = Dimensions.get('window');
-const IOS = Platform.OS === 'ios';
+const { height } = Dimensions.get('window');
 
-const PLAYER_HEIGHT_EXPANDED = height - 60 - 48;
-const PLAYER_HEIGHT = 48;
+const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 48 : height - 77;
+const PLAYER_HEIGHT = 50;
+const URL = 'http://209.73.138.20:80/;?icy=http';
 
 class RadioPlayer extends Component {
 
@@ -73,7 +73,9 @@ class RadioPlayer extends Component {
     return (
       <Animated.View style={[styles.container, { height: playerHeight }]}>
         {expanded && <Image
-          source={require('../../assets/radiopic.jpg')}
+          resizeMode={'contain'}
+          source={require('../../assets/radio.png')}
+          // source={require('../../assets/rakkauden-wappuradio.png')}
           style={styles.bgImage} />
         }
         <TouchableOpacity
@@ -85,7 +87,7 @@ class RadioPlayer extends Component {
             setRadioSong={this.props.setRadioSong}
             status={status}
             song={song}
-            url="http://lacavewebradio.chickenkiller.com:8000/stream.mp3"
+            url={URL}
           />
           {expanded &&
             <TouchableOpacity onPress={this.close} style={styles.close} >
@@ -102,24 +104,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderStyle: 'solid',
-    borderBottomWidth: 2,
-    borderBottomColor: theme.accent,
+    borderBottomWidth: 0,
+    borderBottomColor: theme.secondary,
     position: 'absolute',
     left: 0,
     right: 0,
     height: PLAYER_HEIGHT,
     zIndex: 0,
-    top: 20,
-    backgroundColor: theme.primary, // 'rgba(255, 255, 255, .95)',
+    top: IOS ? 20 : 0,
+    backgroundColor: theme.white, // 'rgba(255, 255, 255, .95)',
     overflow: 'hidden',
+    elevation: 1,
   },
   bgImage: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    height: PLAYER_HEIGHT_EXPANDED,
-    bottom: 0,
-    opacity: 0.1,
+    height: PLAYER_HEIGHT_EXPANDED - 250,
+    bottom: 35,
+    opacity: 0.8,
+    tintColor: theme.secondary,
   },
   pressable: {
     paddingLeft: 10,
@@ -128,10 +130,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  text: {
-    color: theme.stable,
-    backgroundColor: 'transparent',
   },
   close: {
     position: 'absolute',
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
   closeArrow: {
     fontSize: 30,
     marginBottom: 5,
-    color: 'rgba(255, 255, 255, .6)',
+    color: 'rgba(0, 0, 0, .3)',
     backgroundColor: 'transparent'
   }
 });

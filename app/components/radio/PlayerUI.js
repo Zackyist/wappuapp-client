@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   DeviceEventEmitter,
   ActivityIndicator,
+  Platform
 } from 'react-native';
 
 import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
@@ -23,6 +24,8 @@ import {
   START_PREPARING,
   BUFFERING_START,
 } from '../../constants/RadioStates';
+
+const IOS = Platform.OS === 'ios';
 
 // Player UI Component
 class Player extends Component {
@@ -81,8 +84,8 @@ class Player extends Component {
     let icon = null;
     const { status, song } = this.props;
     switch (status) {
-      case PLAYING:
       case STREAMING:
+      case PLAYING:
         icon = <Icon name="pause-circle-outline" style={styles.icon} />;
         break;
       case ERROR:
@@ -94,7 +97,8 @@ class Player extends Component {
       case BUFFERING_START:
       case START_PREPARING:
         icon = <ActivityIndicator
-          color={theme.white}
+          size={IOS ? 'small' : 25}
+          color={theme.secondary}
           animating={true}
           style={styles.loader}
         />;
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     fontSize: 30,
     marginRight: 20,
-    color: theme.white,
+    color: theme.secondary,
   },
   loader: {
     width: 30,
@@ -138,16 +142,18 @@ const styles = StyleSheet.create({
     paddingRight: 30,
   },
   textLive: {
-    color: theme.white,
+    color: theme.dark,
   },
   stationTitle: {
     fontWeight: '100',
-    fontSize: 11,
-    color: theme.accent,
+    fontSize: 10,
+    color: theme.dark,
+    opacity: 0.8,
   },
   songName: {
-    fontSize: 14,
-    color: theme.white
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: theme.dark
   }
 });
 
