@@ -28,20 +28,6 @@ class Navigation extends Component {
     return (
       <TabBarIOS tintColor={theme.secondary} translucent={true}>
         <MDIcon.TabBarItemIOS
-          iconName='access-time'
-          title=''
-          selected={currentTab === Tabs.CALENDAR}
-          onPress={() => { this.onChangeTab(Tabs.CALENDAR); }}>
-          <CalendarView navigator={navigator} />
-        </MDIcon.TabBarItemIOS>
-        <MDIcon.TabBarItemIOS
-          iconName='location-on'
-          title=''
-          selected={currentTab === Tabs.MAP}
-          onPress={() => { this.onChangeTab(Tabs.MAP); }}>
-          <EventMapView navigator={navigator} />
-        </MDIcon.TabBarItemIOS>
-        <MDIcon.TabBarItemIOS
           iconName={'whatshot'}
           title=''
           selected={currentTab === Tabs.FEED}
@@ -49,14 +35,28 @@ class Navigation extends Component {
           <FeedView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
-          iconName='equalizer'
+          iconName='access-time'
+          title=''
+          selected={currentTab === Tabs.CALENDAR}
+          onPress={() => { this.onChangeTab(Tabs.CALENDAR); }}>
+          <CalendarView navigator={navigator} />
+        </MDIcon.TabBarItemIOS>
+        {/*<MDIcon.TabBarItemIOS
+          iconName='location-on'
+          title=''
+          selected={currentTab === Tabs.MAP}
+          onPress={() => { this.onChangeTab(Tabs.MAP); }}>
+          <EventMapView navigator={navigator} />
+        </MDIcon.TabBarItemIOS>*/}
+        <MDIcon.TabBarItemIOS
+          iconName='stars'
           title=''
           selected={currentTab === Tabs.ACTION}
           onPress={() => { this.onChangeTab(Tabs.ACTION); }}>
           <CompetitionView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
-          iconName='person-outline'
+          iconName='account-circle'
           title=''
           selected={currentTab === Tabs.SETTINGS}
           onPress={() => { this.onChangeTab(Tabs.SETTINGS); }}>
