@@ -29,8 +29,10 @@ import LoadingStates from '../../constants/LoadingStates';
 const DeviceInfo = require('react-native-device-info');
 const Manufacturer = DeviceInfo.getManufacturer();
 const OSVersion = DeviceInfo.getSystemVersion();
-const disableMap = Platform.OS === 'android' && parseInt(OSVersion) >= 6 &&
+const disableMap = false; /*
+  Platform.OS === 'android' && parseInt(OSVersion) >= 6 &&
   (Manufacturer.indexOf('Sony') >= 0 || Manufacturer === 'OnePlus');
+*/
 
 const MARKER_IMAGES = {
   EVENT: require('../../../assets/marker.png'),
@@ -408,7 +410,7 @@ const styles = StyleSheet.create({
   },
   androidSwipeHelper: {
     position: 'absolute',
-    right: 0,
+    left: 0,
     width: 20,
     top: 0,
     bottom: 0,
