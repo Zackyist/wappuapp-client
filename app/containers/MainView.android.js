@@ -5,14 +5,12 @@ import {
   View,
   Navigator,
   StatusBar,
-  BackAndroid
+  BackAndroid,
 } from 'react-native'
 
-/* Containers */
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import CalendarView from './CalendarView';
-import EventMapView from './EventMapView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import ProfileView from './ProfileView';
@@ -20,29 +18,33 @@ import RegistrationView from '../components/registration/RegistrationView';
 import errorAlert from '../utils/error-alert';
 import AndroidTabs  from 'react-native-scrollable-tab-view';
 import LightBox from '../components/lightbox/Lightbox';
+import Header from '../components/common/Header';
 
 const theme = require('../style/theme');
-const IconTabBar = require('../components/common/IconTabBar');
+const IconTabBar = require('../components/common/MdIconTabBar');
 
 class AndroidTabNavigation extends Component {
   render() {
     const { navigator } = this.props;
-    return (
-      <AndroidTabs
-        initialPage={2}
-        tabBarPosition={'top'}
-        tabBarUnderlineColor={theme.accent}
-        tabBarBackgroundColor={theme.secondary}
-        tabBarActiveTextColor={theme.light}
-        tabBarInactiveTextColor={theme.light}
-        renderTabBar={() => <IconTabBar rippleColor={theme.secondaryDark} />}
-      >
-        <EventMapView navigator={navigator} tabLabel={{title:'Map', icon:'map'}} />
-        <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event-note'}} />
-        <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
-        <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
-        <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'person'}} />
-      </AndroidTabs>
+    return (<View style={{flex: 1}}>
+        {/*<Header title={'Whappu'} backgroundColor={theme.secondary} navigator={navigator} />*/}
+        <AndroidTabs
+          initialPage={0}
+          tabBarPosition={'bottom'}
+          tabBarUnderlineColor={theme.secondary}
+          tabBarBackgroundColor={theme.white}
+          tabBarActiveTextColor={theme.secondary}
+          tabBarInactiveTextColor={'rgba(0, 0, 0, 0.6)'}
+          locked={true}
+          scrollWithoutAnimation={true}
+          renderTabBar={() => <IconTabBar />}
+        >
+          <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
+          <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event-available'}} />
+          <CompetitionView tabLabel={{title:'Ranking', icon:'stars'}} />
+          <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
+        </AndroidTabs>
+      </View>
     )
   }
 }
@@ -74,7 +76,7 @@ class MainView extends Component {
 
     return (
       <View style={{ flex:1 }}>
-        <StatusBar backgroundColor={theme.secondaryDark} />
+        <StatusBar backgroundColor={theme.secondaryLight} />
 
         <Navigator
           initialRoute={{
@@ -92,6 +94,7 @@ class MainView extends Component {
     )
   }
 }
+
 
 const select = store => {
   return {
