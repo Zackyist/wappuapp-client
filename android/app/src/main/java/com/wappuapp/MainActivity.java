@@ -1,18 +1,15 @@
 package com.wappuapp;
 
 import com.facebook.react.ReactActivity;
-import cl.json.RNSharePackage;
-import com.cmcewen.blurview.BlurViewPackage;
-import com.reactnative.photoview.PhotoViewPackage;
-import com.slowpath.hockeyapp.RNHockeyAppPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.image.zoom.ReactImageZoom;
-import com.airbnb.android.react.maps.MapsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.AirMaps.AirPackage;
-import com.imagepicker.ImagePickerPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.microsoft.codepush.react.CodePush;
+import com.imagepicker.ImagePickerPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
+import cl.json.RNSharePackage;
+import com.reactnative.photoview.PhotoViewPackage;
+import com.image.zoom.ReactImageZoom;
+import com.cmcewen.blurview.BlurViewPackage;
+import com.slowpath.hockeyapp.RNHockeyAppPackage;
 
 public class MainActivity extends ReactActivity {
 
