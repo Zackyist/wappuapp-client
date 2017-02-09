@@ -25,8 +25,7 @@ import { fetchEvents } from '../../actions/event';
 import LoadingStates from '../../constants/LoadingStates';
 import EventListItem from './EventListItem';
 import AnnouncementListItem from './AnnouncementListItem';
-import EventDetail from './EventDetail';
-import ProgressBar from 'ProgressBarAndroid';
+import EventDetail from './EventDetailView';
 import Button from '../common/Button';
 
 const IOS = Platform.OS === 'ios';
@@ -35,7 +34,7 @@ const ANNOUNCEMENTS_SECTION = 'announcements';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -54,8 +53,8 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
   },
   listView: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? 0 : 20,
+    flexGrow: 1,
+    paddingTop: IOS ? 0 : 0,
     backgroundColor: '#fff',
   },
   sectionHeader: {
@@ -63,13 +62,13 @@ const styles = StyleSheet.create({
     opacity: IOS ? 1 : 1,
     padding: IOS ? 15 : 35,
     paddingLeft:15,
-    flex: 1
+    flexGrow: 1,
   },
   sectionHeaderAnnouncement: {
     backgroundColor: theme.secondary,
     marginTop: 0,
     padding: IOS ? 20 : 15,
-    flex: 1
+    flexGrow: 1,
   },
   sectionHeaderAnnouncementText:{
     color: theme.light
@@ -122,6 +121,7 @@ class TimelineList extends Component {
     this.props.fetchAnnouncements();
   }
 
+  @autobind
   navigateToSingleEvent(model) {
     const currentDistance = model.location.latitude !== 0 & model.location.longitude !== 0 ?
       location.getDistance(this.props.userLocation, model.location) : null;
@@ -167,19 +167,16 @@ class TimelineList extends Component {
   renderLoadingView() {
     // TODO: platform-specific if-else
     return <View style={styles.container}>
-      {(Platform.OS === 'android') ?
-        <ProgressBar styleAttr='Inverse' color={theme.primary}/> :
-
-        <ActivityIndicator
-          color={theme.primary}
-          animating={true}
-          style={{ alignItems: 'center', justifyContent: 'center', height: 80 }}
-          size='large' />
-      }
+      <ActivityIndicator
+        color={theme.primary}
+        animating={true}
+        style={{ alignItems: 'center', justifyContent: 'center', height: 80 }}
+        size='large' />
       <Text style={styles.loaderText}>Loading events...</Text>
     </View>;
   }
 
+  @autobind
   renderSectionHeader(sectionData, sectionId) {
     let sectionCaption = '';
     const sectionStartMoment = moment.unix(sectionId);
@@ -210,6 +207,7 @@ class TimelineList extends Component {
     </View>;
   }
 
+  @autobind
   renderListItem(item, sectionId, rowId) {
     switch (item.timelineType) {
       case 'announcement':

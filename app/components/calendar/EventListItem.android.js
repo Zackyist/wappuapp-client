@@ -13,13 +13,13 @@ import {
   View
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
   gridListItem: {
-    flex: 1,
+    flexGrow: 1,
     paddingLeft:97,
     backgroundColor:'#fff',
   },
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     height: 80
   },
   gridListItemContent: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 15,
     paddingBottom:25,
@@ -146,7 +146,7 @@ export default class EventListItem extends Component {
             {marginBottom: item.teemu || timepoint.onGoing || timepoint.startsSoon ? 5 : 0}
           ]}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
-            <Icon name='university' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
+            <Icon name='school' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
             {timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Käynnissä ny!</Text>}
             {timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Alkaa kohta!</Text>}
           </View>

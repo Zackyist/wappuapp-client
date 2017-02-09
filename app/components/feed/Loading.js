@@ -7,7 +7,6 @@ import {
   Text,
   View
 } from 'react-native';
-import ProgressBar from 'ProgressBarAndroid';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
@@ -32,15 +31,11 @@ const styles = StyleSheet.create({
 const Loading = props => {
   return (
     <View style={styles.container}>
-      {(Platform.OS === 'android') ?
-        <ProgressBar styleAttr='Inverse' color={theme.primary}/>
-      :
-        <ActivityIndicator
-          color={theme.primary}
-          animating={true}
-          style={styles.activityIndicator}
-          size='large' />
-      }
+      <ActivityIndicator
+        color={theme.primary}
+        animating={true}
+        style={styles.activityIndicator}
+        size='large' />
       <Text style={ styles.loadMessage}>Loading awesomeness...</Text>
     </View>
   );

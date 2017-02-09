@@ -2,7 +2,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import { ToolbarAndroid, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 
 // TODO re-enable
@@ -42,7 +42,7 @@ class EventDetailToolbar extends Component {
       //actions={toolbarActions} TODO - SHARE
       //onActionSelected={this._onActionSelected}
       onIconClicked={this._goBack}
-      navIconName={'android-arrow-back'}
+      navIconName={'arrow-back'}
       titleColor={theme.light}
       iconColor={theme.light}
       style={styles.toolbar}

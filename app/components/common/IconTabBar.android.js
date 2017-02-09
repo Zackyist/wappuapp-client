@@ -100,8 +100,9 @@ class AndroidTabBar extends Component {
 
   render() {
 
-    var containerWidth = this.props.containerWidth;
-    var numberOfTabs = this.props.tabs.length;
+    const { tabs, containerWidth } = this.props;
+    const numberOfTabs = tabs.length;
+
     var tabUnderlineStyle = {
       position: 'absolute',
       width: containerWidth / numberOfTabs,

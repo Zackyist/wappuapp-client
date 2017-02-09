@@ -5,7 +5,6 @@ import {
   Platform,
   StyleSheet
 } from 'react-native';
-import ProgressBar from 'ProgressBarAndroid';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
@@ -20,16 +19,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const Loader = props => {
-  if (Platform.OS === 'android') {
-    return <ProgressBar styleAttr='Inverse' color={theme.primary}/>
-  }
-
-  return <ActivityIndicator
+const Loader = props => (
+  <ActivityIndicator
     color={theme.primary}
     animating={true}
     style={styles.activityIndicator}
-    size='small' />;
-};
+    size='small' />
+);
 
 export default Loader;

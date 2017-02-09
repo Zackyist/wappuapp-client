@@ -16,6 +16,7 @@ import * as RegistrationActions from '../actions/registration';
 import * as ENV from '../../env';
 import { checkForUpdates } from '../utils/updater';
 var HockeyApp = require('react-native-hockeyapp');
+const IOS = Platform.OS === 'ios';
 
 const middlewares = [thunk];
 if (__DEV__) {
@@ -30,7 +31,7 @@ const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducer);
 
 // Use different HockeyApp ID for both platforms.
-const HOCKEYAPP_ID = Platform.OS === 'ios' ? ENV.HOCKEYAPP_ID : ENV.HOCKEYAPP_ID_ANDROID;
+const HOCKEYAPP_ID = IOS ? ENV.HOCKEYAPP_ID : ENV.HOCKEYAPP_ID_ANDROID;
 
 // Fetch teams & actions, check user existance
 store.dispatch(CompetitionActions.fetchActionTypes());
@@ -41,11 +42,15 @@ store.dispatch(RegistrationActions.getUser());
 class RootView extends Component {
 
   componentWillMount() {
-    HockeyApp.configure(HOCKEYAPP_ID, true);
+    if (IOS) {
+      HockeyApp.configure(HOCKEYAPP_ID, true);
+    }
   }
 
   componentDidMount() {
-    HockeyApp.start();
+    if (IOS) {
+      HockeyApp.start();
+    }
 
     const locationOpts = {
       enableHighAccuracy: false,
@@ -65,7 +70,7 @@ class RootView extends Component {
     );
 
     // Statusbar style
-    if (Platform.OS === 'ios') {
+    if (IOS) {
 
       StatusBar.setHidden(false)
       StatusBar.setBarStyle('light-content')

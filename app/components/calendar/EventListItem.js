@@ -12,14 +12,14 @@ import {
   View
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
   gridListItem: {
     width: Dimensions.get('window').width,
-    flex: 1,
+    flexGrow: 1,
     height: 200
   },
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 
   gridListItemContent: {
     elevation: 2,
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 20
   },
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
 
   gridListItemMeta: {
-    flex:1
+    flexGrow:1
   },
   gridListItemPlace: {
     fontSize: 15,
@@ -96,9 +96,10 @@ export default class EventListItem extends Component {
   }
 
   render() {
-    const item = this.props.item;
+    const { item } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
-    const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
+    const { coverImage } = item;
+    // const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
 
     return <TouchableHighlight onPress={this.props.handlePress} underlayColor={'transparent'}>
       <View style={styles.gridListItem}>
@@ -127,7 +128,7 @@ export default class EventListItem extends Component {
 
           <View style={styles.gridListItemIconsWrapper}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
-              <Icon name='university' size={15} /> Emäteemu!</Text>}
+              <Icon name='school' size={15} /> Emäteemu!</Text>}
             {timepoint.onGoing && <Text style={styles.gridListItemIcon}>Käynnissä ny!</Text>}
             {timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Alkaa kohta!</Text>}
           </View>
