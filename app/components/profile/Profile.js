@@ -8,7 +8,8 @@ import {
   View,
   ListView,
   TouchableHighlight,
-  Linking
+  Linking,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
@@ -16,11 +17,13 @@ import _ from 'lodash';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import WebViewer from '../webview/WebViewer';
+import Header from '../common/Header';
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
 import { fetchLinks } from '../../actions/profile';
 import { openRegistrationView } from '../../actions/registration';
 
+const IOS = Platform.OS === 'ios';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -223,6 +226,7 @@ class Profile extends Component {
 
     return (
       <View style={styles.container}>
+        {!IOS && <Header title="Profile" backgroundColor={theme.white} titleColor={theme.secondary} />}
         <ListView style={[styles.scrollView]}
           dataSource={this.state.dataSource.cloneWithRows(listData)}
           renderRow={this.renderItem}
