@@ -32,17 +32,16 @@ class AndroidTabNavigation extends Component {
         <AndroidTabs
           initialPage={0}
           tabBarPosition={'bottom'}
-          tabBarUnderlineColor={theme.secondary}
-          tabBarBackgroundColor={theme.white}
-          tabBarActiveTextColor={theme.secondary}
-          tabBarInactiveTextColor={'rgba(0, 0, 0, 0.6)'}
+          tabBarBackgroundColor={theme.secondaryLight}
+          tabBarActiveTextColor={theme.white}
+          tabBarInactiveTextColor={'rgba(255, 255, 255, 1)'}
           locked={true}
           scrollWithoutAnimation={true}
           renderTabBar={() => <IconTabBar />}
         >
           <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
-          <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event-available'}} />
-          <CompetitionView tabLabel={{title:'Ranking', icon:'stars'}} />
+          <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
+          <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
           <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
         </AndroidTabs>
       </View>
