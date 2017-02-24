@@ -2,10 +2,11 @@
 
 import React, { Component, PropTypes } from 'react';
 import { ToolbarAndroid, StyleSheet } from 'react-native';
+import autobind from 'autobind-decorator';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 
-// TODO re-enable
 // const toolbarActions = [
 //   {title: 'Share', id:'share'}
 // ];
@@ -28,24 +29,27 @@ class EventDetailToolbar extends Component {
     navigator: PropTypes.object.isRequired
   }
 
-  _goBack() {
+  @autobind
+  goBack() {
     this.props.navigator.pop();
   }
 
-  _onActionSelected(position) {
+  onActionSelected(position) {
     //TODO switch toolbarActions[position]
   }
 
   render() {
+    const { backgroundColor } = this.props;
+
     return (
       <Icon.ToolbarAndroid
-      //actions={toolbarActions} TODO - SHARE
-      //onActionSelected={this._onActionSelected}
-      onIconClicked={this._goBack}
+      // actions={toolbarActions} TODO: SHARE
+      // onActionSelected={this._onActionSelected}
+      onIconClicked={this.goBack}
       navIconName={'arrow-back'}
       titleColor={theme.light}
       iconColor={theme.light}
-      style={styles.toolbar}
+      style={[styles.toolbar, backgroundColor ? { backgroundColor } : {} ]}
       title={this.props.title}
       />
     );
