@@ -8,10 +8,11 @@ import {
   Text,
   TouchableNativeFeedback,
   View,
-  Animated
+  Animated,
+  Easing
 } from 'react-native';
 
-import { times } from 'lodash';
+import { times, range } from 'lodash';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
@@ -19,24 +20,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom:0
+    paddingBottom: 0
   },
   tabs: {
     elevation: 2,
-    height: 52,
+    height: 54,
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderWidth: 0,
-    borderTopWidth: 1,
+    borderTopWidth: 0,
     borderTopColor: '#f2f2f2'
   },
   textLabel: {
     fontSize: 10,
     textAlign:'center',
-    position:'absolute',
+    // position:'absolute',
     left:0,
     right:0,
-    bottom: 7
+    bottom: 0
   }
 });
 
@@ -51,21 +52,35 @@ var AndroidTabBar = React.createClass({
     inactiveTextColor : React.PropTypes.string,
   },
 
+  getInitialState() {
+    return {
+      buttonAnimations: this.props.tabs.map(() => new Animated.Value(1))
+    };
+  },
+
+  componentWillReceiveProps(nextProps) {
+    const { buttonAnimations } = this.state;
+    if (nextProps.activeTab !== this.props.activeTab) {
+      buttonAnimations.map(b => b.setValue(0));
+      Animated.timing(buttonAnimations[nextProps.activeTab], { duration: 200, easing: Easing.ease, toValue: 1}).start();
+    }
+  },
 
   renderTabOption(item, page) {
     const isTabActive = this.props.activeTab === page;
-    const activeTextColor = this.props.activeTextColor || 'navy';
+    const activeTextColor = this.props.activeTextColor || 'black';
     const inactiveTextColor = this.props.inactiveTextColor || 'black';
 
     // const AnimatedIcon = Animated.createAnimatedComponent(Icon);
 
-    const numberOfTabs = this.props.tabs.length;
-    const outPutArray = times(numberOfTabs, () => 0);
-    outPutArray[page] = 1.1; // -> eg. [0,1,0,0,0]
+    // const numberOfTabs = this.props.tabs.length;
+    // const outPutArray = times(numberOfTabs, () => 0);
+    // outPutArray[page] = 1; // -> eg. [0,1,0,0,0]
 
-    // const textScale = this.props.scrollValue.interpolate({  inputRange: _.range(numberOfTabs), outputRange: outPutArray});
+    // const textScale = this.props.scrollValue.interpolate({  inputRange: range(numberOfTabs), outputRange: outPutArray});
     // const iconTop = textScale.interpolate({ inputRange: [0, 1], outputRange: [0, -6] });
 
+    const buttonAnimation = this.state.buttonAnimations[page];
 
     return (
     <TouchableNativeFeedback
@@ -74,12 +89,12 @@ var AndroidTabBar = React.createClass({
       background={TouchableNativeFeedback.SelectableBackground()}
       delayPressIn={0}
     >
-      <View style={styles.tab}>
+      <View style={[styles.tab, { paddingLeft: isTabActive ? 0 : 0, paddingRight: isTabActive ? 0 : 0 }]}>
         <Icon
           name={item.icon}
           size={22}
           style={{
-            top: isTabActive ? -7 : 0,
+            top: 0, //isTabActive ? -7 : 0,
             color: isTabActive ? activeTextColor : inactiveTextColor,
           }} />
 
@@ -88,9 +103,10 @@ var AndroidTabBar = React.createClass({
             styles.textLabel,
             {
               color: activeTextColor,
-              opacity: isTabActive ? 1 : 0,
+              opacity: isTabActive ? buttonAnimation : 1,
               transform: [{
-                scale: isTabActive ? 1.1 : 0
+                scale: isTabActive ? buttonAnimation : 0
+                // scale: isTabActive ? 1.1 : 0
               }]
             }
           ]}>
