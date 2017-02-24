@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
 import {
   View,
@@ -10,12 +10,15 @@ import {
   Dimensions,
   Animated,
   StyleSheet,
-  BackAndroid
+  BackAndroid,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 import Button from '../../components/common/Button';
 import theme from '../../style/theme';
-import Modal from 'react-native-modalbox';
+// import Modal from 'react-native-modalbox';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import * as CompetitionActions from '../../actions/competition';
@@ -24,18 +27,21 @@ const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
 
 
-const TextActionView = React.createClass({
+class TextActionView extends Component {
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     isTextActionViewOpen: PropTypes.bool.isRequired
-  },
-  getInitialState() {
-    return {
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
       text: '',
       formAnimation: new Animated.Value(1),
       okAnimation: new Animated.Value(0)
     }
-  },
+  }
+
   componentDidMount(){
     BackAndroid.addEventListener('hardwareBackPress', () => {
       if (this.props.isTextActionViewOpen) {
@@ -44,22 +50,30 @@ const TextActionView = React.createClass({
       }
       return false;
     })
-  },
+  }
+
   showOK() {
     Animated.spring(this.state.okAnimation, {toValue:1, duration:250}).start();
     Animated.timing(this.state.formAnimation, {toValue:0, duration:100}).start();
-  },
+  }
+
   hideOK() {
     this.state.formAnimation.setValue(1);
     this.state.okAnimation.setValue(0);
-  },
+  }
+
+  @autobind
   onChangeText(text) {
     this.setState({text: text});
-  },
+  }
+
+  @autobind
   onCancel() {
     this.setState({text: ''});
     this.props.dispatch(CompetitionActions.closeTextActionView());
-  },
+  }
+
+  @autobind
   onSendText() {
 
     if (!this.state.text.length) {
@@ -80,13 +94,22 @@ const TextActionView = React.createClass({
 
     }, 600);
 
-  },
+  }
+
   render() {
+
+    const { isTextActionViewOpen } = this.props;
+
+    if (!isTextActionViewOpen) {
+      return false;
+    }
+
     return (
       <Modal
-        isOpen={this.props.isTextActionViewOpen}
-        swipeToClose={false}
-        backdropPressToClose={false}>
+        onRequestClose={this.onCancel}
+        visible={isTextActionViewOpen}
+        animationType={'slide'}
+      >
         <View style={[styles.container, styles.modalBackgroundStyle]}>
 
           <Animated.View style={[styles.okView, { opacity: this.state.okAnimation}]}>
@@ -119,7 +142,7 @@ const TextActionView = React.createClass({
               clearButtonMode={'while-editing'}
               returnKeyType={'send'}
               onSubmitEditing={this.onSendText}
-              style={[styles.inputField, styles['inputField_' + Platform.OS]]}
+              style={styles.inputField}
               onChangeText={this.onChangeText}
               numberOfLines={3}
               placeholderTextColor={'rgba(255,255,255, 0.7)'}
@@ -154,7 +177,7 @@ const TextActionView = React.createClass({
       </Modal>
     );
   }
-});
+}
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 const styles = StyleSheet.create({
@@ -223,11 +246,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     height: 150,
     width: width - 40,
-  },
-  inputField_android: {
-
-  },
-  inputField_ios: {
   },
   bottomInfo:{
     padding: 15,
