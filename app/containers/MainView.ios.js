@@ -11,12 +11,10 @@ import errorAlert from '../utils/error-alert';
 
 import IOSTabNavigation from './Navigation';
 import RegistrationView from '../components/registration/RegistrationView';
+import TextActionView from '../components/actions/TextActionView';
 import LightBox from '../components/lightbox/Lightbox';
-import RadioPlayer from '../containers/RadioPlayer';
 
 const theme = require('../style/theme');
-
-
 
 class MainView extends Component {
   renderScene(route, navigator) {
@@ -51,6 +49,7 @@ class MainView extends Component {
         />
         <LightBox />
         <RegistrationView />
+        <TextActionView />
       </View>
     );
   }

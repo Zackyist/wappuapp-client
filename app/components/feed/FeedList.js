@@ -220,7 +220,6 @@ class FeedList extends Component {
         <Notification visible={this.props.isNotificationVisible}>
           {this.props.notificationText}
         </Notification>
-        <TextActionView />
       </View>
     );
   }

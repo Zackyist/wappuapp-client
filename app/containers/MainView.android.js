@@ -15,6 +15,7 @@ import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import ProfileView from './ProfileView';
 import RegistrationView from '../components/registration/RegistrationView';
+import TextActionView from '../components/actions/TextActionView';
 import errorAlert from '../utils/error-alert';
 import AndroidTabs  from 'react-native-scrollable-tab-view';
 import LightBox from '../components/lightbox/Lightbox';
@@ -90,6 +91,7 @@ class MainView extends Component {
         />
         <RegistrationView />
         <LightBox />
+        <TextActionView />
       </View>
     )
   }
