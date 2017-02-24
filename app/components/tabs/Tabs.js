@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   tabs: {
     elevation: 1,
-    height: IOS ? 50 : 50,
+    height: IOS ? 50 : 56,
     flexDirection: 'row',
     justifyContent: 'space-around'
   },

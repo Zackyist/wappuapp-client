@@ -30,9 +30,9 @@ const styles = StyleSheet.create({
   itemWrapper: {
     width,
     flex: 1,
-    backgroundColor: '#f2f2f2',
-    paddingBottom: 10,
-    paddingTop:5,
+    backgroundColor: '#fff',
+    paddingBottom: 0,
+    paddingTop: 10,
   },
   itemContent:{
     flex: 1,
@@ -49,19 +49,21 @@ const styles = StyleSheet.create({
     //   height: 2,
     //   width: 0
     // },
-    backgroundColor: '#fff'
+    backgroundColor: '#f5f5f5'
   },
   itemContent_byMyTeam: {
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
     marginLeft: FEED_ITEM_MARGIN_DISTANCE,
+    backgroundColor: '#edfcfb',
   },
   itemContent_image: {
     marginLeft: FEED_ITEM_MARGIN_DEFAULT,
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
+    borderRadius: 20,
   },
   itemImageWrapper: {
-    width,
-    height: width,
+    width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
+    height: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     overflow: 'hidden'
@@ -69,8 +71,8 @@ const styles = StyleSheet.create({
   itemTextWrapper: {
     paddingLeft: 30,
     paddingRight: 30,
-    paddingTop: 20,
-    paddingBottom: 25,
+    paddingTop: 15,
+    paddingBottom: 20,
     top: -10,
   },
   feedItemListText: {
@@ -81,8 +83,8 @@ const styles = StyleSheet.create({
   },
   feedItemListItemImg: {
     width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
-    height: 400,
-    backgroundColor: '#ddd',
+    height: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
+    backgroundColor: 'transparent',
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
 
@@ -93,7 +95,8 @@ const styles = StyleSheet.create({
   feedItemListItemInfo: {
     flex: 1,
     flexDirection: 'row',
-    padding: 20,
+    padding: 13,
+    paddingTop: 13,
     paddingLeft: 15,
     paddingRight: 15,
     alignItems: 'flex-start',
@@ -101,8 +104,8 @@ const styles = StyleSheet.create({
   },
   feedItemListItemAuthor:{
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: 'column',
+    alignItems: 'flex-start'
   },
   itemAuthorName: {
     fontSize: 13,
@@ -139,7 +142,7 @@ const styles = StyleSheet.create({
   itemTimestamp: {
     top:  Platform.OS === 'ios' ? 1 : 2,
     color: '#aaa',
-    fontSize: 11
+    fontSize: 11,
   },
   itemContent__admin:{
     marginLeft: 15,
@@ -251,6 +254,8 @@ class FeedListItem extends Component {
 
   renderAdminItem(item, ago) {
 
+    return null; // <--- TODO HOX REMOVE THIS BEFORE LAUNCH
+
     return (
       <View style={styles.itemWrapper}>
         <View style={[styles.itemContent, styles.itemContent__admin]}>
@@ -309,7 +314,7 @@ class FeedListItem extends Component {
         ]}>
 
           <View style={styles.feedItemListItemInfo}>
-            <Icon name='face' style={styles.feedItemListItemAuthorIcon} />
+            {/*<Icon name='face' style={styles.feedItemListItemAuthorIcon} />*/}
             <View style={styles.feedItemListItemAuthor}>
               <Text style={styles.itemAuthorName}>{item.author.name}</Text>
               <Text style={styles.itemAuthorTeam}>{item.author.team}</Text>

@@ -32,15 +32,16 @@ import PlayerUI from '../components/radio/PlayerUI';
 const { height } = Dimensions.get('window');
 
 const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 48 : height - 77;
-const PLAYER_HEIGHT = 50;
+const PLAYER_HEIGHT = IOS ? 50 : 56;
 const URL = 'http://209.73.138.20:80/;?icy=http';
+// const URL = 'http://stream.wappuradio.fi:80/wappuradio.mp3';
 
 class RadioPlayer extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      playerHeight: new Animated.Value(48)
+      playerHeight: new Animated.Value(PLAYER_HEIGHT)
     };
   }
 

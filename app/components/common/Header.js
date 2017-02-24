@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     left:0,
     top:0,
     right:0,
-    elevation: 0,
+    elevation: 2,
     height: 56,
     justifyContent: 'flex-start',
   }
@@ -47,8 +47,6 @@ var EventDetailToolbar = React.createClass({
       toolbarStyles.push({backgroundColor: this.props.backgroundColor})
     }
 
-    console.log(this.props.navigator);
-
     return (
       <Icon.ToolbarAndroid
         // actions={[{title: 'Share', id:'share'}, {title: 'Settings', id:'settings'}]}
@@ -58,7 +56,7 @@ var EventDetailToolbar = React.createClass({
         // navIconName={'arrow-back'}
         onIconClicked={this._goBack}
         iconColor={theme.light}
-        titleColor={theme.light}
+        titleColor={this.props.titleColor || theme.light}
         style={toolbarStyles}
         title={this.props.title}
       />

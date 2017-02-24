@@ -65,13 +65,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   sectionHeaderAnnouncement: {
-    backgroundColor: theme.secondary,
+    // backgroundColor: theme.secondary,
     marginTop: 0,
     padding: IOS ? 20 : 15,
     flexGrow: 1,
   },
   sectionHeaderAnnouncementText:{
-    color: theme.light
+    color: theme.secondary
   },
   sectionHeaderText: {
     textAlign: 'left',
@@ -243,6 +243,7 @@ class TimelineList extends Component {
         );
       default:
         return <ListView
+          enableEmptySections={true}
           dataSource={this.state.dataSource}
           renderSectionHeader={this.renderSectionHeader}
           renderRow={this.renderListItem}
