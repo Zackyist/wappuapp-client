@@ -187,7 +187,10 @@ class FeedListItem extends Component {
 
   itemIsCreatedByMyTeam(item) {
     const { userTeam } = this.props;
-    return item.author.team === userTeam.get('name')
+    if (userTeam) {
+      return item.author.team === userTeam.get('name');
+    }
+    return false;
   }
 
   selectItem() {
