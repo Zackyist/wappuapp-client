@@ -21,8 +21,6 @@ import time from '../../utils/time';
 import theme from '../../style/theme';
 
 const { height, width } = Dimensions.get('window');
-
-
 const FEED_ITEM_MARGIN_DISTANCE = 50;
 const FEED_ITEM_MARGIN_DEFAULT = 15;
 
@@ -64,8 +62,8 @@ const styles = StyleSheet.create({
   itemImageWrapper: {
     width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
     height: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    // borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
     overflow: 'hidden'
   },
   itemTextWrapper: {
@@ -74,6 +72,23 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 20,
     top: -10,
+  },
+  itemVoteWrapper: {
+    flexDirection: 'row',
+    paddingVertical: 5
+  },
+  itemVoteButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  itemVoteButtonIcon: {
+    fontSize: 20
+  },
+  itemVoteValue: {
+    fontSize: 15,
+    paddingVertical: 5,
+    color: theme.secondary
   },
   feedItemListText: {
     textAlign: 'center',
@@ -174,15 +189,27 @@ const styles = StyleSheet.create({
   }
 });
 
-
 class FeedListItem extends Component {
   propTypes: {
     item: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   }
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      wasVoted: false,
+      votes: 10
+    };
+  }
+
   itemIsCreatedByMe(item) {
     return item.author.type === 'ME';
+  }
+
+  itemIsVotedByMe() {
+    return false;
   }
 
   itemIsCreatedByMyTeam(item) {
@@ -232,6 +259,14 @@ class FeedListItem extends Component {
     this.props.removeFeedItem(this.props.item);
   }
 
+  voteThisItem(value) {
+    // this.props.voteFeedItem(this.props.item, value);
+    this.setState({
+      wasVoted: true,
+      votes: this.state.votes + value
+    });
+  }
+
   // Render "remove" button, which is remove OR flag button,
   // depending is the user the creator of this feed item or not
   renderRemoveButton(item) {
@@ -253,6 +288,30 @@ class FeedListItem extends Component {
 
       </TouchableOpacity>
     );
+  }
+
+  renderVoteButton(positive) {
+    const value = positive ? 1 : -1;
+    const icon = positive ? '+' : '–';
+
+    return (
+      <TouchableOpacity
+        style={styles.itemVoteButton}
+        disabled={this.state.wasVoted}
+        activeOpacity={0}
+        onPress={() => this.voteThisItem(value)}>
+        <Text style={[styles.itemVoteButtonIcon, {color: this.state.wasVoted ? '#aaa' : theme.secondary}]}>{icon}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  renderVotingPanel() {
+    return (
+       <View style={styles.itemVoteWrapper}>
+        {this.renderVoteButton(true)}
+        <Text style={styles.itemVoteValue}>{this.state.votes}</Text>
+        {this.renderVoteButton()}
+      </View>);
   }
 
   renderAdminItem(item, ago) {
@@ -341,6 +400,7 @@ class FeedListItem extends Component {
               <Text style={styles.feedItemListText}>{item.text}</Text>
             </View>
           }
+          {this.renderVotingPanel()}
 
           {/* this.renderRemoveButton(item) */}
 
