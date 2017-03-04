@@ -199,8 +199,7 @@ class FeedListItem extends Component {
     super(props);
 
     this.state = {
-      wasVoted: false,
-      votes: 10
+      wasVoted: false
     };
   }
 
@@ -260,11 +259,7 @@ class FeedListItem extends Component {
   }
 
   voteThisItem(value) {
-    // this.props.voteFeedItem(this.props.item, value);
-    this.setState({
-      wasVoted: true,
-      votes: this.state.votes + value
-    });
+    this.props.voteFeedItem(this.props.item, parseInt(value));
   }
 
   // Render "remove" button, which is remove OR flag button,
@@ -307,9 +302,9 @@ class FeedListItem extends Component {
 
   renderVotingPanel() {
     return (
-       <View style={styles.itemVoteWrapper}>
+      <View style={styles.itemVoteWrapper}>
         {this.renderVoteButton(true)}
-        <Text style={styles.itemVoteValue}>{this.state.votes}</Text>
+        <Text style={styles.itemVoteValue}>{this.props.item.votes}</Text>
         {this.renderVoteButton()}
       </View>);
   }

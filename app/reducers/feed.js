@@ -11,6 +11,7 @@ import {
   REFRESH_FEED_SUCCESS,
   DELETE_FEED_ITEM,
   OPEN_LIGHTBOX,
+  VOTE_FEED_ITEM,
   CLOSE_LIGHTBOX
 } from '../actions/feed';
 import LoadingStates from '../constants/LoadingStates';
@@ -42,7 +43,7 @@ export default function feed(state = initialState, action) {
       return state.set('isRefreshing', true);
     case REFRESH_FEED_SUCCESS:
       return state.set('isRefreshing', false);
-      case DELETE_FEED_ITEM:
+    case DELETE_FEED_ITEM:
       const originalList = state.get('list');
       const itemIndex = originalList.findIndex((item) => item.get('id') === action.item.id);
 
@@ -51,6 +52,17 @@ export default function feed(state = initialState, action) {
         return state;
       } else {
         return state.set('list', originalList.delete(itemIndex));
+      }
+
+    case VOTE_FEED_ITEM:
+      const list = state.get('list');
+      const itemIndex_ = list.findIndex((item) => item.get('id') === action.vote.feedItemId);
+
+      if (itemIndex < 0) {
+        console.log('Tried to vote item, but it was not found from state:', itemIndex);
+        return state;
+      } else {
+        return state.updateIn(['list', itemIndex_, 'votes'], value => parseInt(value) + parseInt(action.vote.value))
       }
 
     case OPEN_LIGHTBOX:

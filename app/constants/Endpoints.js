@@ -13,7 +13,8 @@ const EndpointUrls = {
   user: (uuid) => `${ROOT_URL}/users/${uuid}`,
   teams: `${ROOT_URL}/teams`,
   actionTypes: `${ROOT_URL}/action_types`,
-  announcements: `${ROOT_URL}/announcements`
+  announcements: `${ROOT_URL}/announcements`,
+  vote: `${ROOT_URL}/vote`
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);

@@ -48,6 +48,10 @@ const deleteFeedItem = item => {
   return _delete(Endpoints.urls.feedItem(item.id));
 };
 
+const voteFeedItem = payload => {
+  return _put(Endpoints.urls.vote, payload)
+};
+
 const cachedFetch = (url, opts) => {
   return wapuFetch(url, opts)
   .then(response => {
@@ -151,6 +155,7 @@ const _delete = (url, body) => {
 
 export default {
   deleteFeedItem,
+  voteFeedItem,
   fetchModels,
   fetchMoreFeed,
   postAction,

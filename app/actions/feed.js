@@ -16,6 +16,7 @@ const {
   // REFRESH_FEED_FAILURE
 } = createRequestActionTypes('REFRESH_FEED');
 const DELETE_FEED_ITEM = 'DELETE_FEED_ITEM';
+const VOTE_FEED_ITEM = 'VOTE_FEED_ITEM';
 
 const fetchFeed = () => {
   return (dispatch) => {
@@ -79,6 +80,21 @@ const removeFeedItem = (item) => {
   };
 };
 
+const voteFeedItem = (item, value) => {
+  const id = item.id;
+
+  const vote = {value, feedItemId: item.id};
+
+  return (dispatch) => {
+    api.voteFeedItem(vote)
+      .then(() => dispatch({
+        type: VOTE_FEED_ITEM,
+        vote
+      }))
+      .catch(error => console.log('Error when trying to vote feed item', error));
+  };
+}
+
 // Open image in Lightbox
 const OPEN_LIGHTBOX = 'OPEN_LIGHTBOX';
 const CLOSE_LIGHTBOX = 'CLOSE_LIGHTBOX';
@@ -95,6 +111,7 @@ export {
   APPEND_FEED,
   GET_FEED_REQUEST,
   GET_FEED_SUCCESS,
+  VOTE_FEED_ITEM,
   GET_FEED_FAILURE,
   REFRESH_FEED_REQUEST,
   REFRESH_FEED_SUCCESS,
@@ -106,6 +123,7 @@ export {
   refreshFeed,
   loadMoreItems,
   removeFeedItem,
+  voteFeedItem,
   openLightBox,
   closeLightBox
 };

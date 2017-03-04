@@ -19,6 +19,7 @@ import { fetchFeed,
   refreshFeed,
   loadMoreItems,
   removeFeedItem,
+  voteFeedItem,
   openLightBox
 } from '../../actions/feed';
 
@@ -188,6 +189,7 @@ class FeedList extends Component {
                 item={item}
                 userTeam={this.props.userTeam}
                 removeFeedItem={this.props.removeFeedItem}
+                voteFeedItem={this.props.voteFeedItem}
                 openLightBox={this.props.openLightBox} />
               }
               style={[styles.listView]}
@@ -234,6 +236,7 @@ const mapDispatchToProps = {
   postAction,
   openTextActionView,
   removeFeedItem,
+  voteFeedItem,
   openLightBox
 };
 
