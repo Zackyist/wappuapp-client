@@ -82,9 +82,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  itemVoteButtonIcon: {
-    fontSize: 20
-  },
   itemVoteValue: {
     fontSize: 15,
     paddingVertical: 5,
@@ -199,7 +196,8 @@ class FeedListItem extends Component {
     super(props);
 
     this.state = {
-      wasVoted: false
+      wasVoted: false,
+      myVote: 0
     };
   }
 
@@ -260,6 +258,9 @@ class FeedListItem extends Component {
 
   voteThisItem(value) {
     this.props.voteFeedItem(this.props.item, parseInt(value));
+    this.setState({
+      myVote: value
+    })
   }
 
   // Render "remove" button, which is remove OR flag button,
@@ -287,15 +288,18 @@ class FeedListItem extends Component {
 
   renderVoteButton(positive) {
     const value = positive ? 1 : -1;
-    const icon = positive ? '+' : '–';
+    const iconName = positive ? 'keyboard-arrow-up' : 'keyboard-arrow-down';
+    const disabled = this.state.myVote === value;
 
     return (
       <TouchableOpacity
         style={styles.itemVoteButton}
-        disabled={this.state.wasVoted}
+        disabled={disabled}
         activeOpacity={0}
         onPress={() => this.voteThisItem(value)}>
-        <Text style={[styles.itemVoteButtonIcon, {color: this.state.wasVoted ? '#aaa' : theme.secondary}]}>{icon}</Text>
+        <Text style={{color: disabled ? 'gray' : theme.secondary}}>
+          <Icon name={iconName} size={30}/>
+        </Text>
       </TouchableOpacity>
     );
   }
