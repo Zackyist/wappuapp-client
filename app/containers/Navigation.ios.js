@@ -49,7 +49,7 @@ class Navigation extends Component {
           <EventMapView navigator={navigator} />
         </MDIcon.TabBarItemIOS>*/}
         <MDIcon.TabBarItemIOS
-          iconName='stars'
+          iconName='equalizer'
           title=''
           selected={currentTab === Tabs.ACTION}
           onPress={() => { this.onChangeTab(Tabs.ACTION); }}>
