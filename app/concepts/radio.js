@@ -28,6 +28,8 @@ export const closeRadio = () => (dispatch) => {
 export const getRadioStatus = state => state.radio.get('status');
 export const getRadioSong = state => state.radio.get('song');
 export const getRadioMode = state => state.radio.get('expanded');
+export const getRadioName = state => state.radio.get('name');
+export const getRadioUrl = state => state.radio.get('url');
 
 export const isRadioPlaying = createSelector(
   getRadioStatus,
@@ -37,6 +39,8 @@ export const isRadioPlaying = createSelector(
 
 // # Reducer
 const initialState = fromJS({
+  url: 'http://stream.basso.fi:8000/stream', // http://stream.wappuradio.fi:80/wappuradio.mp3
+  name: 'Bassoradio',
   status: STOPPED,
   expanded: false,
   song: ''

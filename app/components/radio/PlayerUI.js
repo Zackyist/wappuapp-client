@@ -29,6 +29,11 @@ const IOS = Platform.OS === 'ios';
 
 // Player UI Component
 class Player extends Component {
+
+  static defaultProps = {
+    radioStationName: 'wappuradio',
+  }
+
   constructor(props) {
     super(props);
     this._onPress = this._onPress.bind(this);
@@ -82,7 +87,7 @@ class Player extends Component {
 
   render() {
     let icon = null;
-    const { status, song } = this.props;
+    const { status, song, radioStationName } = this.props;
     switch (status) {
       case STREAMING:
       case PLAYING:
@@ -111,8 +116,8 @@ class Player extends Component {
         {icon}
         </TouchableOpacity>
         <View style={styles.textContainer}>
-          {!song && <Text style={styles.stationTitle}>LISTEN TO WAPPURADIO</Text>}
-          {!!song && <Text style={styles.stationTitle}>NOW ON WAPPURADIO</Text>}
+          {!song && <Text style={styles.stationTitle}>LISTEN TO {radioStationName.toUpperCase()}</Text>}
+          {false && !!song && <Text style={styles.stationTitle}>NOW ON {radioStationName.toUpperCase()}</Text>}
           {!!song && <Text style={styles.songName}>{song}</Text>}
         </View>
       </View>

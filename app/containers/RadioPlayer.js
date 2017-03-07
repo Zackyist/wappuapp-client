@@ -21,9 +21,11 @@ import {
   getRadioMode,
   getRadioStatus,
   getRadioSong,
+  getRadioName,
+  getRadioUrl,
   toggleRadioBar,
   setRadioSong,
-  setRadioStatus
+  setRadioStatus,
 } from '../concepts/radio';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
@@ -33,8 +35,6 @@ const { height } = Dimensions.get('window');
 
 const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 48 : height - 77;
 const PLAYER_HEIGHT = IOS ? 50 : 56;
-const URL = 'http://209.73.138.20:80/;?icy=http';
-// const URL = 'http://stream.wappuradio.fi:80/wappuradio.mp3';
 
 class RadioPlayer extends Component {
 
@@ -69,7 +69,7 @@ class RadioPlayer extends Component {
 
   render() {
     const { playerHeight } = this.state;
-    const { expanded, song, status } = this.props;
+    const { expanded, song, status, url, name } = this.props;
 
     return (
       <Animated.View style={[styles.container, { height: playerHeight }]}>
@@ -86,9 +86,10 @@ class RadioPlayer extends Component {
           <PlayerUI
             setRadioStatus={this.props.setRadioStatus}
             setRadioSong={this.props.setRadioSong}
+            radioStationName={name}
             status={status}
             song={song}
-            url={URL}
+            url={url}
           />
           {expanded &&
             <TouchableOpacity onPress={this.close} style={styles.close} >
@@ -154,6 +155,8 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = createStructuredSelector({
+  url: getRadioUrl,
+  name: getRadioName,
   status: getRadioStatus,
   song: getRadioSong,
   expanded: getRadioMode
