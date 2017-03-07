@@ -89,7 +89,7 @@ class IntroView extends Component {
             onPress={this.props.closeRegistrationView}
             style={[styles.modalButton, {backgroundColor: theme.secondary}]}
           >
-            Skip, I'm just browsing.
+            Skip, just looking around.
           </Button>
         </View>
       </View>
