@@ -55,10 +55,15 @@ export default function registration(state = initialState, action) {
         'isError': false
       });
     case CREATE_USER_FAILURE:
-    case GET_USER_FAILURE:
       return state.merge({
         'isLoading': false,
         'isError': true
+      });
+    case GET_USER_FAILURE:
+      return state.merge({
+        'isLoading': false,
+        'isError': true,
+        'isRegistrationViewOpen': true
       });
     case GET_USER_SUCCESS:
       return state.merge({

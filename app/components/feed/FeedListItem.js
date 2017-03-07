@@ -16,10 +16,11 @@ import {
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import { connect } from 'react-redux';
 import abuse from '../../services/abuse';
 import time from '../../utils/time';
 import theme from '../../style/theme';
-
+import { openRegistrationView } from '../../actions/registration';
 const { height, width } = Dimensions.get('window');
 const FEED_ITEM_MARGIN_DISTANCE = 50;
 const FEED_ITEM_MARGIN_DEFAULT = 15;
@@ -257,10 +258,15 @@ class FeedListItem extends Component {
   }
 
   voteThisItem(value) {
-    this.props.voteFeedItem(this.props.item, parseInt(value));
-    this.setState({
-      myVote: value
-    })
+
+    if (this.props.isRegistrationInfoValid === false) {
+      this.props.openRegistrationView();
+    } else {
+      this.props.voteFeedItem(this.props.item, parseInt(value));
+      this.setState({
+        myVote: value
+      })
+    }
   }
 
   // Render "remove" button, which is remove OR flag button,
@@ -410,9 +416,11 @@ class FeedListItem extends Component {
   }
 }
 
+const select = store => {
+  return {
+    actionTypes: store.competition.get('actionTypes'),
+  };
+};
+const mapDispatchToProps = { openRegistrationView };
 
-// const mapDispatchToProps = { removeFeedItem, openLightBox };
-// const mapStateToProps = createStructuredSelector({ team: getUserTeam });
-// export default connect(mapStateToProps, mapDispatchToProps)(FeedListItem);
-
-export default FeedListItem;
+export default connect(select, mapDispatchToProps)(FeedListItem);

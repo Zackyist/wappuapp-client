@@ -190,6 +190,7 @@ class FeedList extends Component {
                 userTeam={this.props.userTeam}
                 removeFeedItem={this.props.removeFeedItem}
                 voteFeedItem={this.props.voteFeedItem}
+                isRegistrationInfoValid={this.props.isRegistrationInfoValid}
                 openLightBox={this.props.openLightBox} />
               }
               style={[styles.listView]}
