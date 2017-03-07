@@ -28,7 +28,7 @@ class IntroView extends Component {
 
               <View style={[styles.row, {paddingTop: 30}]}>
                 <View style={styles.rowIconContainer}>
-                  <Icon name='android-star' style={[styles.rowIcon, {color: theme.light}]} />
+                  <Icon name={IOS ? 'ios-star': 'md-star'} style={[styles.rowIcon, {color: theme.light}]} />
                 </View>
 
                 <View style={styles.rowTextContainer}>
@@ -43,7 +43,7 @@ class IntroView extends Component {
 
               <View style={styles.row}>
                 <View style={styles.rowIconContainer}>
-                  <Icon name='android-bar' style={[styles.rowIcon, {color: theme.light}]} />
+                  <Icon name={IOS ? 'ios-wine': 'md-wine'}  style={[styles.rowIcon, {color: theme.light}]} />
                 </View>
 
                 <View style={styles.rowTextContainer}>
@@ -58,7 +58,7 @@ class IntroView extends Component {
 
               <View style={styles.row}>
                 <View style={styles.rowIconContainer}>
-                  <Icon name='trophy' style={[styles.rowIcon, {color: theme.light}]} />
+                  <Icon name={IOS ? 'ios-trophy': 'md-trophy'}  style={[styles.rowIcon, {color: theme.light}]} />
                 </View>
 
                 <View style={styles.rowTextContainer}>
@@ -84,6 +84,12 @@ class IntroView extends Component {
             style={styles.modalButton}
           >
             Got it
+          </Button>
+          <Button
+            onPress={this.props.closeRegistrationView}
+            style={[styles.modalButton, {backgroundColor: theme.secondary}]}
+          >
+            Skip, I'm just browsing.
           </Button>
         </View>
       </View>
@@ -168,12 +174,12 @@ const styles = StyleSheet.create({
   },
   bottomButtons:{
     flex:1,
-    flexDirection:'row',
+    flexDirection:'column',
     margin:0,
     marginBottom:0,
     marginLeft:0,
     marginRight:0,
-    height:50,
+    height:100,
     alignItems:'stretch',
     position:'absolute',
     bottom:0,
