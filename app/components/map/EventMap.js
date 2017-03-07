@@ -221,11 +221,7 @@ class EventMap extends Component {
   // Enables swiping between tabs
   // 20px of right part of map can not be used to navigate map
   _renderSwipeHelperOverlay() {
-    if (Platform.OS === 'ios') {
-      return;
-    }
-
-    return <View style={styles.androidSwipeHelper}></View>;
+    return <View style={styles.swipeHelperArea}></View>;
   }
 
   _renderFilterSelection() {
@@ -408,7 +404,7 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     paddingTop:5
   },
-  androidSwipeHelper: {
+  swipeHelperArea: {
     position: 'absolute',
     left: 0,
     width: 20,
