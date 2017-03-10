@@ -10,6 +10,7 @@ import profile from './profile';
 import marker from './marker';
 import errors from './errors';
 import radio from '../concepts/radio';
+import city from '../concepts/city';
 
 export {
   errors,
@@ -23,5 +24,6 @@ export {
   competition,
   announcement,
   profile,
-  radio
+  radio,
+  city
 };
