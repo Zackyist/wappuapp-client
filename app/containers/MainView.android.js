@@ -8,46 +8,16 @@ import {
   BackAndroid,
 } from 'react-native'
 
-import { connect } from 'react-redux';
 import _ from 'lodash';
-import CalendarView from './CalendarView';
-import CompetitionView from './CompetitionNavigator';
-import FeedView from './FeedView';
-import ProfileView from './ProfileView';
+import { connect } from 'react-redux';
+
+import AndroidTabNavigation from './Navigation';
 import RegistrationView from '../components/registration/RegistrationView';
 import TextActionView from '../components/actions/TextActionView';
 import errorAlert from '../utils/error-alert';
-import AndroidTabs  from 'react-native-scrollable-tab-view';
 import LightBox from '../components/lightbox/Lightbox';
-import Header from '../components/common/Header';
 
 const theme = require('../style/theme');
-const IconTabBar = require('../components/common/MdIconTabBar');
-
-class AndroidTabNavigation extends Component {
-  render() {
-    const { navigator } = this.props;
-    return (<View style={{flex: 1}}>
-        {/*<Header title={'Whappu'} backgroundColor={theme.secondary} navigator={navigator} />*/}
-        <AndroidTabs
-          initialPage={0}
-          tabBarPosition={'bottom'}
-          tabBarBackgroundColor={theme.secondaryLight}
-          tabBarActiveTextColor={theme.white}
-          tabBarInactiveTextColor={'rgba(255, 255, 255, 1)'}
-          locked={true}
-          scrollWithoutAnimation={true}
-          renderTabBar={() => <IconTabBar />}
-        >
-          <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
-          <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
-          <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
-          <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
-        </AndroidTabs>
-      </View>
-    )
-  }
-}
 
 let _navigator;
 BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -96,11 +66,10 @@ class MainView extends Component {
   }
 }
 
-
 const select = store => {
   return {
-    currentTab: store.navigation.get('currentTab'),
     errors: store.errors
   }
 };
+
 export default connect(select)(MainView);
