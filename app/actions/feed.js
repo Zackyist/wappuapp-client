@@ -83,9 +83,9 @@ const removeFeedItem = (item) => {
 };
 
 const voteFeedItem = (item, value) => {
-  const id = item.id;
+  const { id } = item;
 
-  const vote = {value, feedItemId: item.id};
+  const vote = { value, feedItemId: id };
 
   return (dispatch) => {
     api.voteFeedItem(vote)
