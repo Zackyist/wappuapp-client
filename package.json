@@ -58,6 +58,7 @@
   "devDependencies": {
     "babel-eslint": "^6.0.0-beta.5",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-react-native": "^1.9.1",
     "david": "^7.0.1",
     "eslint": "^2.4.0",
     "eslint-plugin-react": "^4.2.3",
