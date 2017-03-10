@@ -20,6 +20,9 @@ import {
   TouchableHighlight
 } from 'react-native';
 
+
+import theme from '../../style/theme';
+import CitySelector from '../header/CitySelector';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 let showShareActionSheet = function(url) {
@@ -36,19 +39,19 @@ let showShareActionSheet = function(url) {
 
 let NavigationBarRouteMapper = {
   LeftButton: function(route, navigator, index, navState) {
-    return (<TouchableHighlight
-      underlayColor={'transparent'}
-      onPress={() => {
-        if (index > 0) {
-          navigator.pop();
-        }
-      }}>
-      { index > 0 ?
-        <Icon name='ios-arrow-back' style={styles.navBarIcon} /> :
-        <View/>
-      }
-      </TouchableHighlight>
+
+    if (index > 0) {
+      return (
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          onPress={() => { navigator.pop() }}>
+          <Icon name='ios-arrow-back' style={styles.navBarIcon} /> :
+          <View/>
+        </TouchableHighlight>
       )
+    }
+
+    return <CitySelector />
   },
 
   RightButton: function(route, navigator, index, navState) {
@@ -59,7 +62,7 @@ let NavigationBarRouteMapper = {
           showShareActionSheet(route.post.link)
         }}
         >
-        <Icon name='ios-upload-outline' style={styles.navBarIcon} />
+          <Icon name='ios-upload-outline' style={styles.navBarIcon} />
         </TouchableHighlight>
         );
     }
@@ -78,7 +81,7 @@ let NavigationBarRouteMapper = {
     return (
       <View style={styles.navBarLogoWrap}>
         <Image
-          source={require('../../../assets/headericon.png')}
+          source={require('../../../assets/header/4.png')}
           style={styles.navBarLogo} />
       </View>
     );
@@ -86,19 +89,18 @@ let NavigationBarRouteMapper = {
 };
 
 var styles = StyleSheet.create({
-
   navBarLogoWrap:{
     flex:1,
     alignItems:'center'
   },
   navBarButton:{
-    color:'#FFFFFF',
+    color: theme.white,
     padding:10,
     fontSize:16,
     textAlign:'center',
   },
   navBarIcon:{
-    color:'#FFFFFF',
+    color: theme.white,
     padding:6,
     paddingLeft:10,
     paddingRight:10,
@@ -106,17 +108,17 @@ var styles = StyleSheet.create({
     textAlign:'center',
   },
   navBarLogo:{
-    top:-5,
-    width:64,
-    height:64,
+    top: 0,
+    width:58,
+    height:38,
   },
   navBarTitle:{
     padding:10,
     fontSize:16,
-    color:'#FFFFFF',
+    color: theme.white,
     textAlign:'center',
     fontWeight:'bold',
   }
 });
 
-module.exports = NavigationBarRouteMapper;
+export default NavigationBarRouteMapper
