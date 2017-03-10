@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   ListView,
+  Animated,
+  Easing,
   Text,
   RefreshControl,
   View,
@@ -71,6 +73,7 @@ class FeedList extends Component {
 
     this.state = {
       showScrollTopButton: false,
+      listAnimation: new Animated.Value(0),
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
     };
   }
@@ -85,7 +88,7 @@ class FeedList extends Component {
   //   //this.clearInterval(this.updateCooldownInterval);
   // }
 
-  componentWillReceiveProps({ feed }) {
+  componentWillReceiveProps({ feed, feedListState }) {
     if (feed !== this.props.feed) {
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(feed.toJS())
@@ -95,6 +98,19 @@ class FeedList extends Component {
     if (this.props.isSending){
       this.scrollTop();
     }
+
+    if (this.props.feedListState !== LoadingStates.READY && feedListState === LoadingStates.READY) {
+      this.animateList();
+    }
+
+  }
+
+  animateList() {
+    Animated.timing(this.state.listAnimation, {
+      toValue: 1,
+      duration: IOS ? 250 : 700,
+      easing: Easing.ease
+    }).start();
   }
 
   @autobind
@@ -182,6 +198,9 @@ class FeedList extends Component {
         return (
           <View style={styles.container}>
 
+            <Animated.View style={{ opacity: this.state.listAnimation, transform: [
+              { translateY: this.state.listAnimation.interpolate({ inputRange: [0, 1], outputRange: [-50, 0] })}
+            ]}}>
             <ListView
               ref='_scrollView'
               dataSource={this.state.dataSource}
@@ -197,6 +216,7 @@ class FeedList extends Component {
               onScroll={this._onScroll}
               onEndReached={this.onLoadMoreItems}
               refreshControl={refreshControl} />
+            </Animated.View>
 
             <ActionButtons
               isRegistrationInfoValid={this.props.isRegistrationInfoValid}
