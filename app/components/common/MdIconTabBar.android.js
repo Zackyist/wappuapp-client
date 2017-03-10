@@ -23,12 +23,12 @@ const styles = StyleSheet.create({
     paddingBottom: 0
   },
   tabs: {
-    elevation: 2,
+    elevation: 4,
     height: 54,
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderWidth: 0,
-    borderTopWidth: 0,
+    borderTopWidth: 1,
     borderTopColor: '#f2f2f2'
   },
   textLabel: {
@@ -62,7 +62,7 @@ var AndroidTabBar = React.createClass({
     const { buttonAnimations } = this.state;
     if (nextProps.activeTab !== this.props.activeTab) {
       buttonAnimations.map(b => b.setValue(0));
-      Animated.timing(buttonAnimations[nextProps.activeTab], { duration: 200, easing: Easing.ease, toValue: 1}).start();
+      Animated.timing(buttonAnimations[nextProps.activeTab], { duration: 330, easing: Easing.ease, toValue: 1}).start();
     }
   },
 
@@ -92,7 +92,7 @@ var AndroidTabBar = React.createClass({
       <View style={[styles.tab, { paddingLeft: isTabActive ? 0 : 0, paddingRight: isTabActive ? 0 : 0 }]}>
         <Icon
           name={item.icon}
-          size={22}
+          size={20}
           style={{
             top: 0, //isTabActive ? -7 : 0,
             color: isTabActive ? activeTextColor : inactiveTextColor,

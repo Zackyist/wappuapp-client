@@ -226,7 +226,6 @@ class Profile extends Component {
 
     return (
       <View style={styles.container}>
-        {!IOS && <Header title="Profile" backgroundColor={theme.white} titleColor={theme.secondary} />}
         <ListView style={[styles.scrollView]}
           dataSource={this.state.dataSource.cloneWithRows(listData)}
           renderRow={this.renderItem}

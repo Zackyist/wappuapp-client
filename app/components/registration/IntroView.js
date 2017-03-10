@@ -19,7 +19,7 @@ class IntroView extends Component {
   render() {
     return (
       <View style={[styles.container, styles.modalBackgroundStyle]}>
-        <Toolbar icon='' iconClick={() => null} title='Introduction' />
+        <Toolbar icon={null} iconClick={() => null} title='Introduction' />
           <ScrollView style={{flex:1, width: null, height: null}}>
             <View style={[styles.container, styles.contentContainer]}>
               <Text style={styles.header}>

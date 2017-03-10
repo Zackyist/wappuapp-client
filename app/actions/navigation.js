@@ -2,9 +2,7 @@
 
 const CHANGE_TAB = 'CHANGE_TAB';
 
-const changeTab = (newTab) => {
-  return { type: CHANGE_TAB, payload: newTab };
-};
+const changeTab = (newTab) => ({ type: CHANGE_TAB, payload: newTab })
 
 export {
   CHANGE_TAB,
