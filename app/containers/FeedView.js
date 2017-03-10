@@ -15,7 +15,7 @@ const VIEW_NAME = 'FeedView';
 
 const styles = StyleSheet.create({
   navigator: {
-    paddingTop: Platform.OS === 'ios' ? 64 : 57,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom:Platform.OS === 'ios' ? 0 : 0,
   },
   navbar: {
