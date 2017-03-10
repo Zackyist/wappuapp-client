@@ -102,7 +102,7 @@ class Player extends Component {
       case BUFFERING_START:
       case START_PREPARING:
         icon = <ActivityIndicator
-          size={IOS ? 'small' : 25}
+          size={IOS ? 'small' : 22}
           color={theme.secondary}
           animating={true}
           style={styles.loader}
@@ -133,13 +133,15 @@ const styles = StyleSheet.create({
   },
   icon: {
     backgroundColor: 'transparent',
-    fontSize: 30,
-    marginRight: 20,
+    fontSize: 26,
+    marginLeft: 5,
+    marginRight: 15,
     color: theme.secondary,
   },
   loader: {
-    width: 30,
-    marginRight: 20,
+    marginLeft: 5,
+    width: 26,
+    marginRight: 15,
   },
   textContainer: {
     flexDirection: 'column',
