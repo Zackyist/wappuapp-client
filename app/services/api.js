@@ -8,13 +8,16 @@ import * as ENV from '../../env';
 const USER_UUID = DeviceInfo.getUniqueID();
 const API_TOKEN = ENV.API_TOKEN;
 
-const fetchModels = modelType => {
-  const url = Endpoints.urls[modelType];
+const fetchModels = (modelType, cityId) => {
+  let url = Endpoints.urls[modelType];
+  if (cityId) {
+    url += `?cityId=${cityId}`;
+  }
   return cachedFetch(url);
 };
 
-const fetchMoreFeed = lastID => {
-  const params = { beforeId: lastID, limit: 20 };
+const fetchMoreFeed = (beforeId, cityId) => {
+  const params = { beforeId, limit: 20, cityId };
   let url = Endpoints.urls.feed;
   url += '?' + Object.keys(params).map(k => {
     return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);

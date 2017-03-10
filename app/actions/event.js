@@ -1,5 +1,6 @@
 import api from '../services/api';
 import {createRequestActionTypes} from '.';
+import { getCityId } from '../concepts/city';
 
 const SET_EVENT_LIST = 'SET_EVENT_LIST';
 const {
@@ -11,10 +12,15 @@ const {
 const UPDATE_EVENT_SHOWFILTER = 'UPDATE_EVENT_SHOWFILTER';
 const TOGGLE_EVENT_MAP_LOCATE = 'TOGGLE_EVENT_MAP_LOCATE';
 
-const fetchEvents = () => dispatch => {
-  dispatch({ type: GET_EVENT_LIST_REQUEST });
+const fetchEvents = () => (dispatch, getState) => {
+  const cityId = getCityId(getState());
 
-  return api.fetchModels('events')
+  if (!cityId) {
+    return;
+  }
+
+  dispatch({ type: GET_EVENT_LIST_REQUEST });
+  return api.fetchModels('events', cityId)
   .then(events => {
     dispatch({
       type: SET_EVENT_LIST,
