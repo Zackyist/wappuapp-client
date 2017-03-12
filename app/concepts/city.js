@@ -21,7 +21,7 @@ export const setCity = (cityId) => dispatch => {
 
   // set to local storage
   AsyncStorage.setItem(cityKey, JSON.stringify(cityId))
-    .then(() => console.log('test') || dispatch(fetchCitySpecificContent()));
+    .then(() => dispatch(fetchCitySpecificContent()));
 }
 
 const SET_CITY_LIST = 'city/SET_CITY_LIST';
