@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
     height: 200
   },
   gridListItemImgColorLayer: {
-    // backgroundColor is set programmatically on render() based on rowId
-    opacity: 0.75,
+    backgroundColor: '#444',
+    opacity: 0.6,
     position: 'absolute',
     left: 0, top: 0, bottom: 0, right: 0
   },
@@ -101,17 +101,14 @@ export default class EventListItem extends Component {
     const { coverImage } = item;
     // const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
 
-    return <TouchableHighlight onPress={this.props.handlePress} underlayColor={'transparent'}>
+    return (
+      <TouchableHighlight onPress={this.props.handlePress} underlayColor={'transparent'}>
       <View style={styles.gridListItem}>
         <View style={styles.gridListItemImgWrap}>
           <Image
             source={{ uri: coverImage }}
             style={styles.gridListItemImg} />
-          <View style={[
-            styles.gridListItemImgColorLayer,
-            { backgroundColor: this.props.rowId && this.props.rowId % 2 === 0 ?
-              '#444' : '#444' }
-          ]} />
+          <View style={styles.gridListItemImgColorLayer} />
         </View>
 
         <View style={styles.gridListItemContent}>
@@ -122,9 +119,11 @@ export default class EventListItem extends Component {
 
           </View>
 
-          {this.props.currentDistance !== null && <View style={styles.gridListItemIconsWrapper__left}>
-            <Text style={styles.gridListItemDistance}>{this.props.currentDistance}</Text>
-          </View>}
+          {this.props.currentDistance !== null &&
+            <View style={styles.gridListItemIconsWrapper__left}>
+              <Text style={styles.gridListItemDistance}>{this.props.currentDistance}</Text>
+            </View>
+          }
 
           <View style={styles.gridListItemIconsWrapper}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
@@ -134,6 +133,6 @@ export default class EventListItem extends Component {
           </View>
         </View>
       </View>
-    </TouchableHighlight>;
+    </TouchableHighlight>);
   }
 }
