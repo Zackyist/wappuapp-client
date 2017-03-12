@@ -41,13 +41,14 @@ class Navigation extends Component {
           onPress={() => { this.onChangeTab(Tabs.CALENDAR); }}>
           <CalendarView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
-        {/*<MDIcon.TabBarItemIOS
-          iconName='location-on'
+        <MDIcon.TabBarItemIOS
+          iconName='thumbs-up-down'
+          iconSize={22}
           title=''
-          selected={currentTab === Tabs.MAP}
-          onPress={() => { this.onChangeTab(Tabs.MAP); }}>
-          <EventMapView navigator={navigator} />
-        </MDIcon.TabBarItemIOS>*/}
+          selected={currentTab === Tabs.FEELING}
+          onPress={() => { this.onChangeTab(Tabs.FEELING); }}>
+          <CompetitionView navigator={navigator} />
+        </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
           iconName='equalizer'
           title=''
