@@ -8,6 +8,7 @@ import {
   View,
   Platform,
   Linking,
+  TouchableHighlight,
   Image
 } from 'react-native';
 
@@ -31,8 +32,7 @@ const VIEW_NAME = 'EventDetail';
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#ddd',
-    paddingBottom: 0
+    backgroundColor: '#eee'
   },
   detailEventImg: {
     width: Dimensions.get('window').width,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
-    backgroundColor:theme.light,
+    backgroundColor: theme.light,
     flex: 1,
   },
   detailEventInfoContainer: {
@@ -117,6 +117,9 @@ const styles = StyleSheet.create({
     left: 15,
     top: 10,
   },
+  eventContent: {
+    marginTop: 10
+  },
   gridListItemMetaWrap:{
     paddingBottom:10,
     borderBottomWidth:1,
@@ -153,10 +156,10 @@ const styles = StyleSheet.create({
     fontSize:15,
   },
   gridListItemMetaInfo: {
-    color: theme.darkgrey,
+    color: theme.dark,
   },
   gridListItemPlace:{
-    color:theme.darkgrey
+    color:theme.midgrey
   },
   gridListItemDistance: {
     color: '#000',
@@ -241,9 +244,8 @@ const EventDetail = React.createClass({
             </View>
           )}
       >
-        <View style={{marginTop:10 }}>
-
-            <View style={styles.gridListItemMetaWrap}>
+        <View style={styles.eventContent}>
+          <View style={styles.gridListItemMetaWrap}>
 
             <View style={styles.gridListItemMeta}>
               <View style={styles.gridListItemMeta__block}>
@@ -256,16 +258,20 @@ const EventDetail = React.createClass({
               </View>
             </View>
 
-            <View style={styles.gridListItemMeta}>
-              <View style={styles.gridListItemMeta__block}>
-                <View style={styles.gridListItemLeftImage}><MaterialIcon style={styles.gridListItemIcon} name='map' /></View>
-              </View>
+            <TouchableHighlight underlayColor={'#eee'}
+              onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>
+              <View style={styles.gridListItemMeta}>
+                <View style={styles.gridListItemMeta__block}>
+                  <Text style={styles.gridListItemLeftIcon}><MaterialIcon style={styles.gridListItemIcon} name='location-on'/> </Text>
+                </View>
 
-              <View style={[styles.gridListItemMeta__block, {alignItems: 'flex-start'}]}>
-              <Text style={styles.gridListItemMetaInfo__title}>Location</Text>
-                <Text style={styles.gridListItemPlace}>{model.locationName}</Text>
+                <View style={[styles.gridListItemMeta__block, {alignItems: 'flex-start'}]}>
+                <Text style={styles.gridListItemMetaInfo__title}>Location</Text>
+                  <Text style={styles.gridListItemPlace}>{model.locationName}</Text>
+                </View>
               </View>
-            </View>
+            </TouchableHighlight>
+
 
             { currentDistance !== '' && currentDistance &&
             <View style={styles.gridListItemMeta}>
@@ -287,25 +293,28 @@ const EventDetail = React.createClass({
                 onPress={() =>
                   Linking.openURL(`https://www.facebook.com/${ model.facebookId }`)}
                 >
-                  <View style={styles.detailEventInfoContainer}>
-                    <View style={styles.detailEventInfoWrapper}>
-                      <Icon style={styles.detailEventInfoIcon} name='social-facebook' size={18}/>
-                      <Text style={styles.detailEventInfoAttending}>
-                        Facebook page
+                  <View style={styles.gridListItemMeta}>
+                    <View style={styles.gridListItemMeta__block}>
+                      <Text style={[styles.gridListItemLeftIcon, {paddingLeft: 3}]}>
+                        <Icon style={styles.detailEventInfoIcon} name='logo-facebook' />
                       </Text>
+                    </View>
+
+                    <View style={[styles.gridListItemMeta__block, {alignItems: 'flex-start'}]}>
+                      <Text style={styles.gridListItemMetaInfo__title}>Facebook page</Text>
                     </View>
                   </View>
                 </PlatformTouchable>
               }
-              </View>
-
-              <View style={styles.content}>
-                <Text style={styles.detailEventDescription}>{model.description}</Text>
-              </View>
-              <View style={styles.navigationButtonWrapper}>
-                <Button style={{borderRadius:0}} onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
-              </View>
           </View>
+
+          <View style={styles.content}>
+            <Text style={styles.detailEventDescription}>{model.description}</Text>
+          </View>
+          <View style={styles.navigationButtonWrapper}>
+            <Button style={{borderRadius:0}} onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
+          </View>
+        </View>
       </ParallaxView>
     </View>
   }
