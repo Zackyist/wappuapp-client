@@ -45,8 +45,7 @@ let NavigationBarRouteMapper = {
         <TouchableHighlight
           underlayColor={'transparent'}
           onPress={() => { navigator.pop() }}>
-          <Icon name='ios-arrow-back' style={styles.navBarIcon} /> :
-          <View/>
+          <Icon name='ios-arrow-back' style={styles.navBarIcon} />
         </TouchableHighlight>
       )
     }
