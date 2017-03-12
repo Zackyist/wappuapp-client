@@ -12,7 +12,6 @@ import autobind from 'autobind-decorator';
 
 import EventMap from '../components/map/EventMap';
 import sceneConfig from '../utils/sceneConfig';
-import NavRouteMapper from '../components/common/navbarRouteMapper';
 import theme from '../style/theme';
 
 const styles = StyleSheet.create({
@@ -55,11 +54,6 @@ class EventMapView extends Component {
           component: EventMap,
           name: 'Map'
         }}
-        /*navigationBar={
-          (Platform.OS === 'ios') ? <Navigator.NavigationBar
-            style={styles.navbar}
-            routeMapper={NavRouteMapper} /> : null
-        }*/
 
         renderScene={this.renderScene}
         configureScene={() => sceneConfig}
