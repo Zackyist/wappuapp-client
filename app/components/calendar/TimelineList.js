@@ -126,9 +126,13 @@ class TimelineList extends Component {
     const currentDistance = model.location.latitude !== 0 & model.location.longitude !== 0 ?
       location.getDistance(this.props.userLocation, model.location) : null;
 
+    const startDay = moment(model.startTime).format('ddd D.M.')
+
+    console.log(model);
     this.props.navigator.push({
+      showName: true,
       component: EventDetail,
-      name: model.name,
+      name: startDay,
       currentDistance: currentDistance,
       model
     });
