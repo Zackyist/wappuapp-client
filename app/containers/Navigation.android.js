@@ -11,6 +11,7 @@ import { changeTab } from '../actions/navigation';
 import { openCitySelection, getCityId } from '../concepts/city';
 
 import CalendarView from './CalendarView';
+import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import ProfileView from './ProfileView';
@@ -71,7 +72,7 @@ class AndroidTabNavigation extends Component {
         >
           <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
           <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
-          <CompetitionView tabLabel={{title:'Vibes', icon:'thumbs-up-down'}} />
+          <MoodView tabLabel={{title:'Vibes', icon:'thumbs-up-down'}} />
           <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
           <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
         </AndroidTabs>

@@ -31,6 +31,7 @@ const getActions = (tab) => {
     }
     case Tabs.CALENDAR:
     case Tabs.ACTION:
+    case Tabs.FEELING:
       return [{ title: 'City', id:'city', show: 'always', iconName: 'map', iconColor }]
     default:{
       return [];
@@ -41,6 +42,7 @@ const getActions = (tab) => {
 const getElevation = (tab) => {
   switch (tab) {
     case Tabs.FEED:
+    case Tabs.FEELING:
     case Tabs.CALENDAR: {
       return 0;
     }

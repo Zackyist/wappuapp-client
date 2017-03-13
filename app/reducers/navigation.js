@@ -7,7 +7,7 @@ import {
 import Tabs from '../constants/Tabs';
 
 const initialState = Immutable.fromJS({
-  currentTab: Tabs.FEED
+  currentTab: Tabs.FEELING
 });
 
 export default function navigation(state = initialState, action) {
