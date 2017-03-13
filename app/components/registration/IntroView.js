@@ -11,6 +11,7 @@ import {
 import theme from '../../style/theme';
 import Toolbar from './RegistrationToolbar';
 import Button from '../../components/common/Button';
+import Row from '../../components/common/Row';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const IOS = Platform.OS === 'ios';
@@ -26,55 +27,22 @@ class IntroView extends Component {
                 How to Whappu
               </Text>
 
-              <View style={[styles.row, {paddingTop: 30}]}>
-                <View style={styles.rowIconContainer}>
-                  <Icon name={IOS ? 'ios-star': 'md-star'} style={[styles.rowIcon, {color: theme.light}]} />
-                </View>
+              <Row
+                style={{paddingTop: 30}}
+                icon={IOS ? 'ios-star': 'md-star'}
+                title={'1. Earn points'}
+                text={'Guild with most Whappu points wins a juicy prize!'}/>
 
-                <View style={styles.rowTextContainer}>
-                  <Text style={styles.rowTitle}>
-                    1. Earn points
-                  </Text>
-                  <Text style={styles.rowText}>
-                    Guild with most Whappu points wins a juicy prize!
-                  </Text>
-                </View>
-              </View>
+              <Row
+                icon={IOS ? 'ios-wine' : 'md-wine'}
+                title={'2. Enjoy sima'}
+                text={'Because otherwise you might get thirsty.'}/>
 
-              <View style={styles.row}>
-                <View style={styles.rowIconContainer}>
-                  <Icon name={IOS ? 'ios-wine': 'md-wine'}  style={[styles.rowIcon, {color: theme.light}]} />
-                </View>
-
-                <View style={styles.rowTextContainer}>
-                  <Text style={styles.rowTitle}>
-                    2. Enjoy sima
-                  </Text>
-                  <Text style={styles.rowText}>
-                    Because otherwise you might get thirsty.
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.rowIconContainer}>
-                  <Icon name={IOS ? 'ios-trophy': 'md-trophy'}  style={[styles.rowIcon, {color: theme.light}]} />
-                </View>
-
-                <View style={styles.rowTextContainer}>
-                  <Text style={styles.rowTitle}>
-                    3. Winner takes it all
-                  </Text>
-                  <Text style={styles.rowText}>
-                    Competition ends at 12:00AM on 1st of May.
-                  </Text>
-
-                  <Text style={[styles.rowText, styles.rowSecondaryText]}>
-                    Winner will be
-                    announced later on the day.
-                  </Text>
-                </View>
-              </View>
+              <Row
+                icon={IOS ? 'ios-trophy' : 'md-trophy'}
+                title={'3. Winner takes it all'}
+                text={'Competition ends at 12:00AM on 1st of May.'}
+                secondaryText={'Winner will be announced later on the day.'}/>
             </View>
           </ScrollView>
 
@@ -112,65 +80,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: IOS ? 25 : 15,
     fontSize: 28
-  },
-  row: {
-    padding: 20,
-    paddingLeft:15,
-    paddingBottom: 25,
-    flex: 1,
-    flexDirection: 'row'
-  },
-  rowNumberContainer: {
-    paddingLeft: 10,
-    paddingTop:6,
-    borderWidth:2,
-    borderColor:theme.secondary,
-    borderRadius:25,
-    width:50,
-    height:50,
-    paddingRight: 10,
-    top: 2
-  },
-  rowNumberText: {
-    fontSize: 28,
-    color: theme.secondary,
-    textAlign: 'center',
-    backgroundColor: 'rgba(0,0,0,0)',
-    fontWeight: 'bold'
-  },
-  rowIconContainer: {
-    width: 50,
-    height:50,
-    backgroundColor:theme.secondary,
-    borderRadius:25,
-    marginRight:5,
-    marginLeft:10,
-    justifyContent:'center'
-  },
-  rowIcon: {
-    textAlign:'center',
-    color: theme.white,
-    backgroundColor: 'rgba(0,0,0,0)',
-    fontSize: 24
-  },
-  rowTextContainer: {
-    flex: 1,
-    marginLeft: 20,
-    marginRight: 20
-  },
-  rowTitle:{
-    color: theme.secondary,
-    fontWeight:'bold',
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  rowText: {
-    color: IOS ? '#555' : '#888',
-    fontSize: 14,
-    fontWeight: 'normal'
-  },
-  rowSecondaryText: {
-    marginTop: 8
   },
   bottomButtons:{
     flex:1,
