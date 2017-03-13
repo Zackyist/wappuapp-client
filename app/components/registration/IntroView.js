@@ -18,9 +18,12 @@ const IOS = Platform.OS === 'ios';
 
 class IntroView extends Component {
   render() {
+    const { simplified } = this.props;
+    const containerStyles = [styles.container, styles.modalBackgroundStyle, simplified && styles.simplified];
+
     return (
-      <View style={[styles.container, styles.modalBackgroundStyle]}>
-        <Toolbar icon='' iconClick={() => null} title='Introduction' />
+      <View style={containerStyles}>
+        {!simplified && <Toolbar icon='' iconClick={() => null} title='Introduction' />}
           <ScrollView style={{flex:1, width: null, height: null}}>
             <View style={[styles.container, styles.contentContainer]}>
               <Text style={styles.header}>
@@ -46,20 +49,12 @@ class IntroView extends Component {
             </View>
           </ScrollView>
 
-        <View style={styles.bottomButtons}>
-          <Button
-            onPress={this.props.onDismiss}
-            style={styles.modalButton}
-          >
-            Got it
-          </Button>
-          <Button
-            onPress={this.props.closeRegistrationView}
-            style={[styles.modalButton, {backgroundColor: theme.secondary}]}
-          >
-            Skip, just looking around.
-          </Button>
-        </View>
+        {!simplified &&
+          <View style={styles.bottomButtons}>
+            <Button onPress={this.props.onDismiss} style={styles.modalButton}>
+              Got it
+            </Button>
+          </View>}
       </View>
     );
   }
@@ -69,6 +64,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingBottom: 30
+  },
+  simplified: {
+    marginBottom: 40,
+    alignSelf: 'stretch'
   },
   innerContainer: {
     flex: 1,
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
     marginBottom:0,
     marginLeft:0,
     marginRight:0,
-    height:100,
+    height:50,
     alignItems:'stretch',
     position:'absolute',
     bottom:0,
