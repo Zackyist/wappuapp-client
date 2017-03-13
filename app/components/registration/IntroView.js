@@ -23,7 +23,7 @@ class IntroView extends Component {
 
     return (
       <View style={containerStyles}>
-        {!simplified && <Toolbar icon='' iconClick={() => null} title='Introduction' />}
+        {!simplified && <Toolbar icon={null} iconClick={() => null} title='Introduction' />}
           <ScrollView style={{flex:1, width: null, height: null}}>
             <View style={[styles.container, styles.contentContainer]}>
               <Text style={styles.header}>
