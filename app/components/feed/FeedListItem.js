@@ -22,33 +22,40 @@ import time from '../../utils/time';
 import theme from '../../style/theme';
 import { openRegistrationView } from '../../actions/registration';
 const { height, width } = Dimensions.get('window');
-const FEED_ITEM_MARGIN_DISTANCE = 50;
-const FEED_ITEM_MARGIN_DEFAULT = 15;
+const FEED_ITEM_MARGIN_DISTANCE = 0;
+const FEED_ITEM_MARGIN_DEFAULT = 0;
+const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
   itemWrapper: {
     width,
     flex: 1,
-    backgroundColor: '#fff',
-    paddingBottom: 0,
-    paddingTop: 10,
+    backgroundColor: '#f2f2f2',
+    paddingBottom: 10,
+    paddingTop: 0,
+  },
+  itemTouchable: {
+    elevation: 1,
+    flexGrow: 1,
   },
   itemContent:{
-    flex: 1,
+    flexGrow: 1,
     marginLeft: FEED_ITEM_MARGIN_DEFAULT,
     marginRight: FEED_ITEM_MARGIN_DISTANCE,
-    borderRadius: 20,
-    overflow: 'hidden',
+    borderRadius: 0,
+    // overflow: 'hidden',
+    borderBottomWidth: IOS ? 0 : 1,
+    borderBottomColor: 'rgba(0, 0, 0, .075)',
     // // # Drop shadows
-    // elevation: 2,
-    // shadowColor: '#000000',
-    // shadowOpacity: 0.15,
-    // shadowRadius: 1,
-    // shadowOffset: {
-    //   height: 2,
-    //   width: 0
-    // },
-    backgroundColor: '#f5f5f5'
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOpacity: 0.075,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+    backgroundColor: '#fff'
   },
   itemContent_byMyTeam: {
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
@@ -58,7 +65,7 @@ const styles = StyleSheet.create({
   itemContent_image: {
     marginLeft: FEED_ITEM_MARGIN_DEFAULT,
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
-    borderRadius: 20,
+    borderRadius: 0,
   },
   itemImageWrapper: {
     width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
@@ -70,13 +77,14 @@ const styles = StyleSheet.create({
   itemTextWrapper: {
     paddingLeft: 30,
     paddingRight: 30,
-    paddingTop: 15,
-    paddingBottom: 20,
+    paddingTop: 16,
+    paddingBottom: 12,
     top: -10,
   },
   itemVoteWrapper: {
     flexDirection: 'row',
-    paddingVertical: 5
+    paddingVertical: 5,
+    width: 100,
   },
   itemVoteButton: {
     flex: 1,
@@ -86,7 +94,7 @@ const styles = StyleSheet.create({
   itemVoteValue: {
     fontSize: 15,
     paddingVertical: 5,
-    color: theme.secondary
+    color: theme.grey
   },
   feedItemListText: {
     textAlign: 'center',
@@ -98,8 +106,8 @@ const styles = StyleSheet.create({
     width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
     height: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
     backgroundColor: 'transparent',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
 
   },
   feedItemListItemImg__admin: {
@@ -139,7 +147,7 @@ const styles = StyleSheet.create({
   listItemRemoveButton:{
     backgroundColor: 'transparent',
     color: 'rgba(150,150,150,.65)',
-    fontSize: Platform.OS === 'ios' ? 22 : 20,
+    fontSize: IOS ? 22 : 20,
   },
   listItemRemoveContainer: {
     position: 'absolute',
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   itemTimestamp: {
-    top:  Platform.OS === 'ios' ? 1 : 2,
+    top:  IOS ? 1 : 2,
     color: '#aaa',
     fontSize: 11,
   },
@@ -303,8 +311,8 @@ class FeedListItem extends Component {
         disabled={disabled}
         activeOpacity={0}
         onPress={() => this.voteThisItem(value)}>
-        <Text style={{color: disabled ? 'gray' : theme.secondary}}>
-          <Icon name={iconName} size={30}/>
+        <Text style={{color: disabled ? theme.secondary : theme.grey}}>
+          <Icon name={iconName} size={25}/>
         </Text>
       </TouchableOpacity>
     );
@@ -372,7 +380,7 @@ class FeedListItem extends Component {
       <View style={styles.itemWrapper}>
         <TouchableOpacity
           activeOpacity={1}
-          style={{ flex: 1 }}
+          style={styles.itemTouchable}
           onLongPress={() => this.selectItem() }
         >
         <View style={[styles.itemContent,

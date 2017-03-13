@@ -33,8 +33,8 @@ import PlayerUI from '../components/radio/PlayerUI';
 
 const { height } = Dimensions.get('window');
 
-const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 48 : height - 77;
-const PLAYER_HEIGHT = IOS ? 50 : 56;
+const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 48 : height - 130;
+const PLAYER_HEIGHT = IOS ? 40 : 40;
 
 class RadioPlayer extends Component {
 
@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderStyle: 'solid',
-    borderBottomWidth: 0,
-    borderBottomColor: theme.secondary,
+    borderBottomWidth: IOS ? 1 : 0,
+    borderBottomColor: '#eee',
     position: 'absolute',
     left: 0,
     right: 0,

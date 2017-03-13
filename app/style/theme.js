@@ -14,6 +14,8 @@ const theme = {
   stable:         '#f6f6f6',
   light:          '#fff',
   dark:           '#414e51',
+  midgrey:        '#777',
+  grey:           '#aaa',
   black:          '#222',
   white:          '#fff'
 };

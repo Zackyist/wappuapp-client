@@ -13,6 +13,7 @@ import * as CompetitionActions from '../actions/competition';
 import * as LocationActions from '../actions/location';
 import * as TeamActions from '../actions/team';
 import * as RegistrationActions from '../actions/registration';
+import { initializeUsersCity, fetchCities } from '../concepts/city';
 import * as ENV from '../../env';
 import { checkForUpdates } from '../utils/updater';
 var HockeyApp = require('react-native-hockeyapp');
@@ -33,10 +34,14 @@ const store = createStoreWithMiddleware(reducer);
 // Use different HockeyApp ID for both platforms.
 const HOCKEYAPP_ID = IOS ? ENV.HOCKEYAPP_ID : ENV.HOCKEYAPP_ID_ANDROID;
 
-// Fetch teams & actions, check user existance
+// Fetch actions, check user existance
 store.dispatch(CompetitionActions.fetchActionTypes());
-store.dispatch(TeamActions.fetchTeams());
 store.dispatch(RegistrationActions.getUser());
+
+// Fetch all cities
+store.dispatch(fetchCities())
+// load selectd city from local storage
+.then(() => store.dispatch(initializeUsersCity()))
 
 
 class RootView extends Component {

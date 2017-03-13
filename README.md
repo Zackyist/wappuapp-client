@@ -104,6 +104,8 @@ The xcode-project is expecting that you have nvm installed. It can be reconfigur
 
   **Note:** Use the .xworkspace instead of .xcodeproj!
 
+- `error: /Users/totu/code/wappuapp/wappuapp-client/node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf: No such file or directory`
+  - Download the from [here](https://github.com/oblador/react-native-vector-icons/raw/master/Fonts/MaterialCommunityIcons.ttf) and move it to `/node_modules/react-native-vector-icons/Fonts`
 - Cmd + R
 
 ### Android
