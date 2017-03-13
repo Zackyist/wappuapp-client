@@ -72,7 +72,7 @@ class RegistrationView extends Component {
 
   @autobind
   onRegister() {
-    this.props.putUser();
+    this.props.putUser(this.state.selectedCity);
   }
 
   @autobind
@@ -118,6 +118,17 @@ class RegistrationView extends Component {
     this.props.closeRegistrationView();
   }
 
+  teamIsValid() {
+    const { selectedTeam, teams } = this.props
+    const { selectedCity } = this.state;
+    const team = teams.find(team => team.get('id') === selectedTeam);
+
+    if (team) {
+      return team.get('cityId') === selectedCity;
+    }
+    return false;
+  }
+
   changeSlide(index) {
     this.setState({
       showSkipButton: index > 1,
@@ -161,7 +172,6 @@ class RegistrationView extends Component {
                 </ScrollView>
               </View>
             </View>
-
             {this._renderNameSelect()}
           </View>
         </ScrollView>
@@ -170,7 +180,7 @@ class RegistrationView extends Component {
           <Button
             onPress={this.onRegister}
             style={styles.modalButton}
-            isDisabled={!this.props.isRegistrationInfoValid}>
+            isDisabled={!this.props.isRegistrationInfoValid || !this.teamIsValid()}>
             Save
           </Button>
         </View>}
@@ -251,7 +261,7 @@ class RegistrationView extends Component {
           onSkipBtnClick={() => this.onClose()}
           onDoneBtnClick={() => this.onRegister()}
           showSkipButton={this.state.showSkipButton}
-          showDoneButton={this.props.isRegistrationViewOpen}
+          showDoneButton={this.props.isRegistrationViewOpen && this.teamIsValid()}
           nextBtnLabel={this.state.index === 2 ? <Text style={{fontSize: 22}}>Join</Text> : '›'}
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
