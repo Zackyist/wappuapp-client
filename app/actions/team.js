@@ -1,7 +1,8 @@
 'use strict';
 
 import api from '../services/api';
-import {createRequestActionTypes} from '.'
+import {createRequestActionTypes} from '.';
+import { getCityId } from '../concepts/city';
 
 const {
   GET_TEAMS_REQUEST,
@@ -10,13 +11,20 @@ const {
 } = createRequestActionTypes('GET_TEAMS');
 const SHOW_TEAM_SELECTOR = 'SHOW_TEAM_SELECTOR';
 
-const fetchTeams = () => {
-  return dispatch => {
-    dispatch({ type: GET_TEAMS_REQUEST });
-    api.fetchModels('teams')
-      .then(teams => dispatch({ type: GET_TEAMS_SUCCESS, payload: teams }))
-      .catch(e => dispatch({ type: GET_TEAMS_FAILURE, error: true, payload: e }));
-  };
+const fetchTeams = () => (dispatch, getState) => {
+  let cityId = getCityId(getState());
+  // if (!cityId) {
+  //   return;
+  // }
+
+  if (cityId === 1) {
+    cityId = null;
+  }
+
+  dispatch({ type: GET_TEAMS_REQUEST });
+  return api.fetchModels('teams', cityId)
+    .then(teams => dispatch({ type: GET_TEAMS_SUCCESS, payload: teams }))
+    .catch(e => dispatch({ type: GET_TEAMS_FAILURE, error: true, payload: e }));
 };
 
 const showChooseTeam = () => {
