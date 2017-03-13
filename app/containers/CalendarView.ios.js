@@ -39,12 +39,6 @@ class TimelineListWrapper extends Component {
     return (
       <Navigator
         style={styles.navigator}
-        /*navigationBar={
-          <Navigator.NavigationBar
-            style={styles.navbar}
-            routeMapper={NavRouteMapper} />
-        }
-        */
         initialRoute={{
           component: EventsView,
           name: 'Events'
