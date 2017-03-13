@@ -20,6 +20,7 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.airbnb.android.react.maps.MapsPackage;
+import com.horcrux.svg.RNSvgPackage;
 //import com.microsoft.codepush.react.CodePush;
 import com.slowpath.hockeyapp.RNHockeyAppModule;
 import com.slowpath.hockeyapp.RNHockeyAppPackage;
@@ -54,6 +55,7 @@ public class MainApplication extends Application implements ReactApplication {
           new ReactImageZoom(),
           new RNSharePackage(),
           new MapsPackage(),
+          new RNSvgPackage(),
           new RNHockeyAppPackage(MainApplication.this),
           // new CodePush("deployment-key-here", MainApplication.this, BuildConfig.DEBUG),
           new MainReactPackage()
