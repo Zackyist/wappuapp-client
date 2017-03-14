@@ -20,7 +20,6 @@ import AppIntro from 'react-native-app-intro';
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
 import IntroView from './IntroView';
-import CityView from './CityView';
 import Modal from 'react-native-modalbox';
 import Team from './Team';
 import Toolbar from './RegistrationToolbar';
@@ -271,9 +270,6 @@ class RegistrationView extends Component {
           dotColor={theme.secondary}>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
             <IntroView simplified={true} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
-          </View>
-          <View style={[styles.slide, { backgroundColor: '#fff' }]}>
-            <CityView onSelect={this.onSelectCity} selectedCity={this.state.selectedCity} cities={this.props.cities}/>
           </View>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
             <IntroView simplified={true} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
