@@ -3,9 +3,11 @@
 import React, { Component } from 'react';
 import {
   View,
+  Animated,
   Text,
   Image,
   StyleSheet,
+  Easing,
   TouchableWithoutFeedback,
   Platform,
   ScrollView
@@ -19,13 +21,41 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const IOS = Platform.OS === 'ios';
 
 class InstructionView extends Component {
+  constructor(props) {
+     super(props);
+     this.state = {
+       springAnim: new Animated.Value(0),
+     };
+   }
+
    handlePress(id) {
+     console.log('aeruaer');
      this.props.onSelect(id);
+
+     this.state.springAnim.setValue(0);
+      Animated.timing(
+        this.state.springAnim,
+        {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.elastic(1)}
+      ).start();
 
    }
 
   render() {
     const containerStyles = [styles.container, styles.modalBackgroundStyle];
+    const size = this.state.springAnim;
+
+    const active = this.state.springAnim.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 1.2, 1]
+    });
+
+    const unactive = this.state.springAnim.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 1, 1]
+    });
 
     return (
        <View style={containerStyles}>
@@ -50,7 +80,7 @@ class InstructionView extends Component {
                       return <TouchableWithoutFeedback
                         key={i}
                         onPress={this.handlePress.bind(this, city.get('id'))}>
-                        <View style={styles.touchable}>
+                        <Animated.View style={[styles.touchable, {transform: [{scale: city.get('id') === this.props.selectedCity ? active : unactive}] }]}>
                           <View style={styles.circle}>
                             <Icon style={styles.cityIcon} name={'location-city'} size={50}/>
                             <Text style={{fontSize: 15, color: 'white', fontWeight: 'bold', marginBottom: 10}}>
@@ -58,7 +88,7 @@ class InstructionView extends Component {
                             </Text>
                             {this.props.selectedCity === city.get('id') && <Icon name={'check'} style={styles.checked} size={30}/>}
                           </View>
-                        </View>
+                        </Animated.View>
                       </TouchableWithoutFeedback>
                     }}
                   )}
