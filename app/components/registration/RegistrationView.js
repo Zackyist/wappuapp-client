@@ -19,6 +19,7 @@ import AppIntro from 'react-native-app-intro';
 
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
+import InstructionView from './InstructionView';
 import IntroView from './IntroView';
 import Modal from 'react-native-modalbox';
 import Team from './Team';
@@ -54,7 +55,7 @@ class RegistrationView extends Component {
     super(props);
     this.state = {
       showSkipButton: false,
-      selectedCity: 1,
+      selectedCity: 2,
       index: 0
     };
   }
@@ -265,14 +266,14 @@ class RegistrationView extends Component {
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
           rightTextColor={theme.secondary}
-          leftTextColor={theme.secondary}
-          activeDotColor={theme.secondaryDark}
-          dotColor={theme.secondary}>
+          leftTextColor={this.state.index === 0 ? 'white' : theme.secondary}
+          activeDotColor={this.state.index === 0 ? 'white' : theme.secondaryDark}
+          dotColor={this.state.index === 0 ? theme.primary : theme.secondary}>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
-            <IntroView simplified={true} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
+            <IntroView selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
           </View>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
-            <IntroView simplified={true} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
+            <InstructionView simplified={true} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
           </View>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
             {this._renderNameSelectContainer()}
@@ -294,7 +295,7 @@ class RegistrationView extends Component {
           {
             this.props.selectedTeam || this.props.isIntroductionDismissed
               ? this._renderNameSelectContainer()
-              : <IntroView simplified={false} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
+              : <InstructionView simplified={false} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
           }
         </Modal>
     );

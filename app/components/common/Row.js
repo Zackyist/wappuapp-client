@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 class Row extends Component {
 
   render() {
-    const { selected } = this.props;
+    const { selected, title } = this.props;
     return (
     <View style={[styles.row, this.props.style]}>
       {this.props.icon && <View style={styles.rowIconContainer}>
@@ -25,7 +25,7 @@ class Row extends Component {
 
       <View style={styles.rowTextContainer}>
         <Text style={styles.rowTitle}>
-          {this.props.title}
+          {title}
         </Text>
         <Text style={styles.rowText}>
           {this.props.text}
