@@ -15,9 +15,11 @@ import {
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import autobind from 'autobind-decorator';
+import AppIntro from 'react-native-app-intro';
 
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
+import InstructionView from './InstructionView';
 import IntroView from './IntroView';
 import Modal from 'react-native-modalbox';
 import Team from './Team';
@@ -49,6 +51,15 @@ class RegistrationView extends Component {
     dispatch: PropTypes.func.isRequired
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      showSkipButton: false,
+      selectedCity: 2,
+      index: 0
+    };
+  }
+
   componentDidMount() {
     BackAndroid.addEventListener('hardwareBackPress', () => {
       if (this.props.isRegistrationViewOpen) {
@@ -61,7 +72,7 @@ class RegistrationView extends Component {
 
   @autobind
   onRegister() {
-    this.props.putUser();
+    this.props.putUser(this.state.selectedCity);
   }
 
   @autobind
@@ -72,6 +83,13 @@ class RegistrationView extends Component {
   @autobind
   onSelectTeam(id) {
     this.props.selectTeam(id);
+  }
+
+  @autobind
+  onSelectCity(id) {
+    this.setState({
+      selectedCity: id
+    });
   }
 
   @autobind
@@ -100,57 +118,106 @@ class RegistrationView extends Component {
     this.props.closeRegistrationView();
   }
 
-  _renderNameSelectContainer() {
-    return (
-      <View style={[styles.container, styles.modalBackgroundStyle]}>
+  teamIsValid() {
+    const { selectedTeam, teams } = this.props
+    const { selectedCity } = this.state;
+    const team = teams.find(team => team.get('id') === selectedTeam);
 
-        <Toolbar icon={this.props.isRegistrationInfoValid ? 'done' : 'close'}
+    if (team) {
+      return team.get('cityId') === selectedCity;
+    }
+    return false;
+  }
+
+  changeSlide(index) {
+    this.setState({
+      showSkipButton: index > 1,
+      index
+    });
+  }
+
+  _renderNameSelectContainer() {
+    const simplified = this.props.initialSetup;
+    const containerStyles = [styles.container, styles.modalBackgroundStyle, simplified && styles.simplified]
+
+    return (
+      <View style={containerStyles}>
+
+        {!simplified ? <Toolbar icon={this.props.isRegistrationInfoValid ? 'done' : 'close'}
           iconClick={this.onClose}
           title='Fill your profile' />
+        : <Text style={styles.header}>Create a user</Text>}
 
         <ScrollView ref={view => this.containerScrollViewRef = view} style={{flex:1}}>
           <View style={[styles.innerContainer]}>
+            {!simplified && this._renderCitySelect()}
             <View style={styles.inputGroup}>
               <View style={styles.inputLabel}>
-                <Text style={styles.inputLabelText}>Choose your Guild</Text>
+                <Text style={simplified ? styles.subLabel : styles.inputLabelText}>Choose your Guild</Text>
               </View>
 
-              <View style={[styles.inputFieldWrap, {paddingTop:0,paddingBottom:0}]}>
+              <View style={styles.inputFieldWrap}>
                 <ScrollView style={{flex:1, height: (IOS || height > 605) ? 210 : null}}>
-                  {this.props.teams.map((team,i) =>
-                    <Team
-                      key={team.get('id')}
-                      name={team.get('name')}
-                      teamid={team.get('id')}
-                      logo={team.get('imagePath')}
-                      selected={this.props.selectedTeam}
-                      onPress={this.onSelectTeam.bind(this, team.get('id'))} />
+                  {this.props.teams.map(team => {
+                    if (team.get('cityId') === this.state.selectedCity) {
+                      return <Team
+                        key={team.get('id')}
+                        name={team.get('name')}
+                        teamid={team.get('id')}
+                        logo={team.get('imagePath')}
+                        selected={this.props.selectedTeam}
+                        onPress={this.onSelectTeam.bind(this, team.get('id'))}/>;
+                    }}
                   )}
                 </ScrollView>
               </View>
             </View>
-
             {this._renderNameSelect()}
           </View>
         </ScrollView>
 
-        <View style={styles.bottomButtons}>
+        {!simplified && <View style={styles.bottomButtons}>
           <Button
             onPress={this.onRegister}
             style={styles.modalButton}
-            isDisabled={!this.props.isRegistrationInfoValid}>
+            isDisabled={!this.props.isRegistrationInfoValid || !this.teamIsValid()}>
             Save
           </Button>
+        </View>}
+      </View>
+    );
+  }
+
+  _renderCitySelect() {
+    return (
+      <View style={styles.inputGroup}>
+        <View style={styles.inputLabel}>
+          <Text style={styles.inputLabelText}>{`Choose your City`}</Text>
+        </View>
+        <View style={{flexDirection: 'row', padding: 10}}>
+          {this.props.cities.map((city, i) =>
+            <View key={i} style={styles.item}>
+              <TouchableOpacity
+                style={[styles.button, {backgroundColor: this.state.selectedCity === city.get('id') ? '#50E3C2' : 'white'}]}
+                onPress={this.onSelectCity.bind(this, city.get('id'))}>
+                <Text style={[styles.text, {color: this.state.selectedCity  === city.get('id')? 'white' : '#666'}]}>
+                  {city.get('name')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     );
   }
 
   _renderNameSelect() {
+    const simplified = this.props.initialSetup;
+
     return (
       <View style={[styles.inputGroup, {marginBottom:4}]}>
         <View style={styles.inputLabel}>
-          <Text style={styles.inputLabelText}>{`Hi there! What's your wappu name?`}</Text>
+          <Text style={simplified ? styles.subLabel : styles.inputLabelText}>{`Hi there! What's your wappu name?`}</Text>
         </View>
         <View style={styles.inputFieldWrap}>
           <TextInput
@@ -183,18 +250,54 @@ class RegistrationView extends Component {
     );
   }
 
-  render() {
+  _renderIntroForCitySelection() {
+
     return (
       <Modal
         isOpen={this.props.isRegistrationViewOpen}
         swipeToClose={false}
         backdropPressToClose={false}>
-        {
-          this.props.selectedTeam || this.props.isIntroductionDismissed
-            ? this._renderNameSelectContainer()
-            : <IntroView onDismiss={this.onDismissIntroduction} />
-        }
+        <AppIntro
+          onSkipBtnClick={() => this.onClose()}
+          onDoneBtnClick={() => this.onRegister()}
+          showSkipButton={this.state.showSkipButton}
+          showDoneButton={this.props.isRegistrationViewOpen && this.teamIsValid()}
+          nextBtnLabel={this.state.index === 2 ? <Text style={{fontSize: 22}}>Join</Text> : '›'}
+          onSlideChange={(index) => this.changeSlide(index)}
+          defaultIndex={this.state.index}
+          rightTextColor={theme.secondary}
+          leftTextColor={this.state.index === 0 ? 'white' : theme.secondary}
+          activeDotColor={this.state.index === 0 ? 'white' : theme.secondaryDark}
+          dotColor={this.state.index === 0 ? theme.primary : theme.secondary}>
+          <View style={[styles.slide, { backgroundColor: '#fff' }]}>
+            <IntroView selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
+          </View>
+          <View style={[styles.slide, { backgroundColor: '#fff' }]}>
+            <InstructionView simplified={true} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
+          </View>
+          <View style={[styles.slide, { backgroundColor: '#fff' }]}>
+            {this._renderNameSelectContainer()}
+          </View>
+        </AppIntro>
       </Modal>
+    );
+  }
+
+  render() {
+    return (
+      this.props.initialSetup ?
+        this._renderIntroForCitySelection()
+        :
+        <Modal
+          isOpen={this.props.isRegistrationViewOpen}
+          swipeToClose={false}
+          backdropPressToClose={false}>
+          {
+            this.props.selectedTeam || this.props.isIntroductionDismissed
+              ? this._renderNameSelectContainer()
+              : <InstructionView simplified={false} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
+          }
+        </Modal>
     );
   }
 
@@ -205,6 +308,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingBottom:50
+  },
+  simplified: {
+    marginBottom: 70,
+    // marginTop: 30,
+    alignSelf: 'stretch',
+    backgroundColor: 'white'
   },
   innerContainer: {
     flex:1,
@@ -241,6 +350,17 @@ const styles = StyleSheet.create({
     elevation:1,
     flex:1,
   },
+  item: {
+    flex: 1
+  },
+  button: {
+    height: 40,
+    borderRadius: 2,
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   inputLabel:{
     padding:15,
     paddingTop:13,
@@ -253,6 +373,11 @@ const styles = StyleSheet.create({
     color:theme.primary,
     fontWeight:'bold',
     textAlign: IOS ? 'center' : 'left',
+  },
+  subLabel: {
+    color: theme.secondary,
+    fontWeight: 'bold',
+    fontSize: 18
   },
   inputFieldWrap:{
     padding:15,
@@ -289,8 +414,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   header: {
-    fontSize: 20,
-    marginBottom: 10
+    fontWeight: 'bold',
+    color: theme.secondary,
+    marginTop: 30,
+    marginLeft: IOS ? 25 : 15,
+    fontSize: 28
   },
   introductionContainer: {
     margin: 10,
@@ -299,7 +427,20 @@ const styles = StyleSheet.create({
   introductionSecondaryText: {
     marginTop: 10,
     color: '#555'
-  }
+  },
+  slide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    backgroundColor: '#9DD6EB',
+    padding: 0,
+  },
+  text: {
+    color: '#000',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 });
 
 const mapDispatchToProps = {
@@ -313,15 +454,20 @@ const mapDispatchToProps = {
 };
 
 const select = store => {
+
+  const initialSetup =  store.city.get('id') === 1 || !store.city.get('id');
   return {
     isIntroductionDismissed: store.registration.get('isIntroductionDismissed'),
     isRegistrationViewOpen: store.registration.get('isRegistrationViewOpen'),
     name: store.registration.get('name'),
     selectedTeam: store.registration.get('selectedTeam'),
+    selectedCity: store.city.get('id'),
     teams: store.team.get('teams'),
+    cities: store.city.get('list'),
     isChooseTeamViewOpen: store.team.get('isChooseTeamViewOpen'),
     isRegistrationInfoValid: !!store.registration.get('name') &&
-      !!store.registration.get('selectedTeam')
+      !!store.registration.get('selectedTeam'),
+    initialSetup
   };
 };
 

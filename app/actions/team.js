@@ -12,10 +12,10 @@ const {
 const SHOW_TEAM_SELECTOR = 'SHOW_TEAM_SELECTOR';
 
 const fetchTeams = () => (dispatch, getState) => {
-  const cityId = getCityId(getState());
+  let cityId = getCityId(getState());
 
-  if (!cityId) {
-    return;
+  if (cityId === 1) {
+    cityId = null;
   }
 
   dispatch({ type: GET_TEAMS_REQUEST });

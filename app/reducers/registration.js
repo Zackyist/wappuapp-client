@@ -16,6 +16,10 @@ import {
   SELECT_TEAM
 } from '../actions/registration';
 
+import {
+  NO_SELECTED_CITY_FOUND
+} from '../concepts/city';
+
 import { getTeams } from './team';
 
 const initialState = fromJS({
@@ -55,16 +59,15 @@ export default function registration(state = initialState, action) {
         'isError': false
       });
     case CREATE_USER_FAILURE:
+    case GET_USER_FAILURE:
       return state.merge({
         'isLoading': false,
         'isError': true
       });
-    case GET_USER_FAILURE:
+    case NO_SELECTED_CITY_FOUND:
       return state.merge({
-        'isLoading': false,
-        'isError': true,
-        'isRegistrationViewOpen': true
-      });
+        'isRegistrationViewOpen': action.payload
+      })
     case GET_USER_SUCCESS:
       return state.merge({
         'name': action.payload.name,

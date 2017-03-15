@@ -3,96 +3,99 @@
 import React, { Component } from 'react';
 import {
   View,
+  Animated,
   Text,
+  Image,
   StyleSheet,
+  Easing,
+  TouchableWithoutFeedback,
   Platform,
   ScrollView
 } from 'react-native';
 import theme from '../../style/theme';
 import Toolbar from './RegistrationToolbar';
 import Button from '../../components/common/Button';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Row from '../../components/common/Row';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const IOS = Platform.OS === 'ios';
 
-class IntroView extends Component {
+class InstructionView extends Component {
+  constructor(props) {
+     super(props);
+     this.state = {
+       springAnim: new Animated.Value(0),
+     };
+   }
+
+   handlePress(id) {
+     console.log('aeruaer');
+     this.props.onSelect(id);
+
+     this.state.springAnim.setValue(0);
+      Animated.timing(
+        this.state.springAnim,
+        {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.elastic(1)}
+      ).start();
+
+   }
+
   render() {
+    const containerStyles = [styles.container, styles.modalBackgroundStyle];
+    const size = this.state.springAnim;
+
+    const active = this.state.springAnim.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 1.2, 1]
+    });
+
+    const unactive = this.state.springAnim.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 1, 1]
+    });
+
     return (
-      <View style={[styles.container, styles.modalBackgroundStyle]}>
-        <Toolbar icon={null} iconClick={() => null} title='Introduction' />
+       <View style={containerStyles}>
           <ScrollView style={{flex:1, width: null, height: null}}>
-            <View style={[styles.container, styles.contentContainer]}>
-              <Text style={styles.header}>
-                How to Whappu
-              </Text>
-
-              <View style={[styles.row, {paddingTop: 30}]}>
-                <View style={styles.rowIconContainer}>
-                  <Icon name={IOS ? 'ios-star': 'md-star'} style={[styles.rowIcon, {color: theme.light}]} />
+              <View style={[styles.container, styles.contentContainer]}>
+                <View style={{alignItems: 'center'}}>
+                  <Image style={{marginTop: 50, height: 140, width: 150}}  source={require('../../../assets/whappu-text.png')}/>
                 </View>
 
-                <View style={styles.rowTextContainer}>
-                  <Text style={styles.rowTitle}>
-                    1. Earn points
-                  </Text>
-                  <Text style={styles.rowText}>
-                    Guild with most Whappu points wins a juicy prize!
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.rowIconContainer}>
-                  <Icon name={IOS ? 'ios-wine': 'md-wine'}  style={[styles.rowIcon, {color: theme.light}]} />
+                <View style={styles.content}>
+                  <Icon style={styles.icon} name={'location-on'} size={50}/>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.subTitle}>Pick your city to start</Text>
+                    <Text style={styles.text}>
+                      City you select will have an effect on the feed. You may change your answer whenever you want.</Text>
+                  </View>
                 </View>
 
-                <View style={styles.rowTextContainer}>
-                  <Text style={styles.rowTitle}>
-                    2. Enjoy sima
-                  </Text>
-                  <Text style={styles.rowText}>
-                    Because otherwise you might get thirsty.
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.rowIconContainer}>
-                  <Icon name={IOS ? 'ios-trophy': 'md-trophy'}  style={[styles.rowIcon, {color: theme.light}]} />
-                </View>
-
-                <View style={styles.rowTextContainer}>
-                  <Text style={styles.rowTitle}>
-                    3. Winner takes it all
-                  </Text>
-                  <Text style={styles.rowText}>
-                    Competition ends at 12:00AM on 1st of May.
-                  </Text>
-
-                  <Text style={[styles.rowText, styles.rowSecondaryText]}>
-                    Winner will be
-                    announced later on the day.
-                  </Text>
+                <View style={styles.cities}>
+                  {this.props.cities.map((city, i) => {
+                    if (i !== 0) {
+                      return <TouchableWithoutFeedback
+                        key={i}
+                        onPress={this.handlePress.bind(this, city.get('id'))}>
+                        <Animated.View style={[styles.touchable, {transform: [{scale: city.get('id') === this.props.selectedCity ? active : unactive}] }]}>
+                          <View style={styles.circle}>
+                            <Icon style={styles.cityIcon} name={'location-city'} size={50}/>
+                            <Text style={{fontSize: 15, color: 'white', fontWeight: 'bold', marginBottom: 10}}>
+                              {city.get('name')}
+                            </Text>
+                            {this.props.selectedCity === city.get('id') && <Icon name={'check'} style={styles.checked} size={30}/>}
+                          </View>
+                        </Animated.View>
+                      </TouchableWithoutFeedback>
+                    }}
+                  )}
                 </View>
               </View>
-            </View>
-          </ScrollView>
-
-        <View style={styles.bottomButtons}>
-          <Button
-            onPress={this.props.onDismiss}
-            style={styles.modalButton}
-          >
-            Got it
-          </Button>
-          <Button
-            onPress={this.props.closeRegistrationView}
-            style={[styles.modalButton, {backgroundColor: theme.secondary}]}
-          >
-            Skip, just looking around.
-          </Button>
+            </ScrollView>
         </View>
-      </View>
     );
   }
 }
@@ -100,11 +103,9 @@ class IntroView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.secondary,
+    alignSelf: 'stretch',
     paddingBottom: 30
-  },
-  innerContainer: {
-    flex: 1,
-    paddingTop: IOS ? 15 : 15,
   },
   header: {
     fontWeight: 'bold',
@@ -113,64 +114,63 @@ const styles = StyleSheet.create({
     marginLeft: IOS ? 25 : 15,
     fontSize: 28
   },
-  row: {
+  content: {
+    marginTop: 30,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    flex: 2,
+    color: 'white',
+    alignItems: 'center',
+    textAlign: 'center'
+  },
+  textContainer: {
+    flex: 5,
+    flexDirection: 'column'
+  },
+  subTitle: {
+    fontFamily: 'arial',
+    color: 'white',
+    fontSize: 22,
+  },
+  text: {
+    fontSize: 12,
+    color: 'white',
+    paddingRight: 15
+  },
+  cities: {
+    marginTop: 20,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flex: 1
+  },
+  touchable: {
+    height: 120,
+    width: 120,
+    margin: 10,
+    borderRadius: 60,
+  },
+  circle: {
+    flex: 1,
+    backgroundColor: theme.primary,
     padding: 20,
-    paddingLeft:15,
-    paddingBottom: 25,
-    flex: 1,
-    flexDirection: 'row'
+    borderWidth: 2,
+    borderStyle: 'dotted',
+    borderColor: theme.white,
+    alignItems: 'center',
+    borderRadius: 60,
   },
-  rowNumberContainer: {
-    paddingLeft: 10,
-    paddingTop:6,
-    borderWidth:2,
-    borderColor:theme.secondary,
-    borderRadius:25,
-    width:50,
-    height:50,
-    paddingRight: 10,
-    top: 2
+  cityIcon: {
+    color: 'white'
   },
-  rowNumberText: {
-    fontSize: 28,
-    color: theme.secondary,
-    textAlign: 'center',
+  checked: {
+    position: 'absolute',
+    top: 10,
+    right: 5,
+    color: 'white',
     backgroundColor: 'rgba(0,0,0,0)',
-    fontWeight: 'bold'
-  },
-  rowIconContainer: {
-    width: 50,
-    height:50,
-    backgroundColor:theme.secondary,
-    borderRadius:25,
-    marginRight:5,
-    marginLeft:10,
-    justifyContent:'center'
-  },
-  rowIcon: {
-    textAlign:'center',
-    color: theme.white,
-    backgroundColor: 'rgba(0,0,0,0)',
-    fontSize: 24
-  },
-  rowTextContainer: {
-    flex: 1,
-    marginLeft: 20,
-    marginRight: 20
-  },
-  rowTitle:{
-    color: theme.secondary,
-    fontWeight:'bold',
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  rowText: {
-    color: IOS ? '#555' : '#888',
-    fontSize: 14,
-    fontWeight: 'normal'
-  },
-  rowSecondaryText: {
-    marginTop: 8
   },
   bottomButtons:{
     flex:1,
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     marginBottom:0,
     marginLeft:0,
     marginRight:0,
-    height:100,
+    height:50,
     alignItems:'stretch',
     position:'absolute',
     bottom:0,
@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     flex:1,
     marginLeft:0,
   }
+
 });
 
-export default IntroView;
+export default InstructionView;

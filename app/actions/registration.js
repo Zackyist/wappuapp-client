@@ -3,6 +3,7 @@ import api from '../services/api';
 import namegen from '../services/namegen';
 import _ from 'lodash';
 import {createRequestActionTypes} from '.';
+import {setCity} from '../concepts/city';
 
 const {
   CREATE_USER_REQUEST,
@@ -34,7 +35,7 @@ const dismissIntroduction = () => {
   return { type: DISMISS_INTRODUCTION };
 };
 
-const putUser = () => {
+const putUser = (city) => {
   return (dispatch, getStore) => {
     dispatch({ type: CREATE_USER_REQUEST });
     const uuid = DeviceInfo.getUniqueID();
@@ -44,6 +45,7 @@ const putUser = () => {
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_REGISTRATION_VIEW });
+        dispatch(setCity(city));
       })
       .catch(error => dispatch({ type: CREATE_USER_FAILURE, error: error }));
   };

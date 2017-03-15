@@ -34,9 +34,6 @@ const store = createStoreWithMiddleware(reducer);
 // Use different HockeyApp ID for both platforms.
 const HOCKEYAPP_ID = IOS ? ENV.HOCKEYAPP_ID : ENV.HOCKEYAPP_ID_ANDROID;
 
-
-
-
 // Fetch actions, check user existance
 store.dispatch(CompetitionActions.fetchActionTypes());
 store.dispatch(RegistrationActions.getUser());
