@@ -62,7 +62,8 @@ export default function feed(state = initialState, action) {
         console.log('Tried to vote item, but it was not found from state:', itemIndex);
         return state;
       } else {
-        return state.updateIn(['list', itemIndex_, 'votes'], value => parseInt(value) + parseInt(action.vote.value))
+        return state
+        // .updateIn(['list', itemIndex_, 'userVote'], value => parseInt(action.vote.value));
       }
 
     case OPEN_LIGHTBOX:
