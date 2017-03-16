@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   Platform,
   ScrollView
@@ -26,29 +27,30 @@ class InstructionView extends Component {
         {!simplified && <Toolbar icon={null} iconClick={() => null} title='Introduction' />}
           <ScrollView style={{flex:1, width: null, height: null}}>
             <View style={[styles.container, styles.contentContainer]}>
-              <Text style={styles.header}>
-                How to Whappu
-              </Text>
+              <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={styles.header}>
+                  How to
+                </Text>
+                <Image style={{marginTop: 20, marginLeft: 10, height: 110, width: 110}}  source={require('../../../assets/whappu-text.png')}/>
+              </View>
 
               <Row
                 style={{paddingTop: 30}}
                 icon={IOS ? 'ios-star': 'md-star'}
-                title={'1. Earn points'}
-                text={'Guild with most Whappu points wins a juicy prize!'}/>
+                number={1}
+                title={'Whappu hard & Share it'}
+                text={'Guild with the best Whappu-buzz wins a juicy prize!'}/>
 
               <Row
                 icon={IOS ? 'ios-wine' : 'md-wine'}
-                title={'2. Enjoy sima'}
+                number={2}
+                title={'Enjoy sima'}
                 text={'Because otherwise you might get thirsty.'}/>
 
               <Row
-                icon={IOS ? 'ios-happy' : 'md-happy'}
-                title={'3. Show the love'}
-                text={'Remember also to log your daily Whappumood!'}/>
-
-              <Row
                 icon={IOS ? 'ios-trophy' : 'md-trophy'}
-                title={'4. Winner takes it all'}
+                number={3}
+                title={'Winner takes it all'}
                 text={'Competition ends at 12:00AM on 1st of May.'}
                 secondaryText={'Winner will be announced later on the day.'}/>
             </View>
@@ -68,10 +70,11 @@ class InstructionView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.secondary,
     paddingBottom: 30
   },
   simplified: {
-    marginBottom: 40,
+    // marginBottom: 40,
     alignSelf: 'stretch'
   },
   innerContainer: {
@@ -79,11 +82,13 @@ const styles = StyleSheet.create({
     paddingTop: IOS ? 15 : 15,
   },
   header: {
-    fontWeight: 'bold',
-    color: theme.secondary,
-    marginTop: 30,
-    marginLeft: IOS ? 25 : 15,
-    fontSize: 28
+    // fontWeight: 'bold',
+    textAlignVertical: 'center',
+    // fontFamily: 'arial',
+    color: theme.white,
+    marginTop: 15,
+    // marginLeft: IOS ? 25 : 15,
+    fontSize: 25
   },
   bottomButtons:{
     flex:1,

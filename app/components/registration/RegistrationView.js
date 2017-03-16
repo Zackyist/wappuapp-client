@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import {
   View,
   Text,
+  Image,
   TextInput,
   StyleSheet,
   Dimensions,
@@ -131,7 +132,7 @@ class RegistrationView extends Component {
 
   changeSlide(index) {
     this.setState({
-      showSkipButton: index > 1,
+      showSkipButton: index > 0,
       index
     });
   }
@@ -146,14 +147,19 @@ class RegistrationView extends Component {
         {!simplified ? <Toolbar icon={this.props.isRegistrationInfoValid ? 'done' : 'close'}
           iconClick={this.onClose}
           title='Fill your profile' />
-        : <Text style={styles.header}>Create a user</Text>}
+        : <Text style={styles.header}>Create
+            <Image style={styles.logo}  source={require('../../../assets/whappu-text.png')}/>
+            user</Text>}
 
-        <ScrollView ref={view => this.containerScrollViewRef = view} style={{flex:1}}>
+        <ScrollView
+          ref={view => this.containerScrollViewRef = view}
+          showsVerticalScrollIndicator={true}
+          style={{flex:1}}>
           <View style={[styles.innerContainer]}>
             {!simplified && this._renderCitySelect()}
             <View style={styles.inputGroup}>
               <View style={styles.inputLabel}>
-                <Text style={simplified ? styles.subLabel : styles.inputLabelText}>Choose your Guild</Text>
+                <Text style={styles.inputLabelText}>Choose your Guild</Text>
               </View>
 
               <View style={styles.inputFieldWrap}>
@@ -217,7 +223,7 @@ class RegistrationView extends Component {
     return (
       <View style={[styles.inputGroup, {marginBottom:4}]}>
         <View style={styles.inputLabel}>
-          <Text style={simplified ? styles.subLabel : styles.inputLabelText}>{`Hi there! What's your wappu name?`}</Text>
+          <Text style={styles.inputLabelText}>{`Hi there! What's your wappu name?`}</Text>
         </View>
         <View style={styles.inputFieldWrap}>
           <TextInput
@@ -261,14 +267,11 @@ class RegistrationView extends Component {
           onSkipBtnClick={() => this.onClose()}
           onDoneBtnClick={() => this.onRegister()}
           showSkipButton={this.state.showSkipButton}
-          showDoneButton={this.props.isRegistrationViewOpen && this.teamIsValid()}
-          nextBtnLabel={this.state.index === 2 ? <Text style={{fontSize: 22}}>Join</Text> : '›'}
+          showDoneButton={this.state.index !== 2 || (this.props.isRegistrationViewOpen && this.teamIsValid())}
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
-          rightTextColor={theme.secondary}
-          leftTextColor={this.state.index === 0 ? 'white' : theme.secondary}
-          activeDotColor={this.state.index === 0 ? 'white' : theme.secondaryDark}
-          dotColor={this.state.index === 0 ? theme.primary : theme.secondary}>
+          leftTextColor={theme.white}
+          dotColor={theme.primary}>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
             <IntroView selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
           </View>
@@ -310,10 +313,10 @@ const styles = StyleSheet.create({
     paddingBottom:50
   },
   simplified: {
-    marginBottom: 70,
+    paddingBottom: 80,
     // marginTop: 30,
     alignSelf: 'stretch',
-    backgroundColor: 'white'
+    backgroundColor: theme.secondary
   },
   innerContainer: {
     flex:1,
@@ -343,12 +346,14 @@ const styles = StyleSheet.create({
   },
   inputGroup:{
     padding:0,
-    backgroundColor:'#FFF',
-    margin:10,
+    backgroundColor:theme.light,
+    margin:20,
     marginTop:0,
     borderRadius:2,
     elevation:1,
     flex:1,
+    borderRadius:10,
+    overflow:'hidden'
   },
   item: {
     flex: 1
@@ -364,20 +369,16 @@ const styles = StyleSheet.create({
   inputLabel:{
     padding:15,
     paddingTop:13,
+    backgroundColor:theme.primary,
     paddingBottom:13,
     borderBottomWidth:1,
     borderColor:'#ddd',
   },
   inputLabelText:{
-    fontSize:14,
-    color:theme.primary,
+    fontSize:16,
+    color:theme.white,
     fontWeight:'bold',
     textAlign: IOS ? 'center' : 'left',
-  },
-  subLabel: {
-    color: theme.secondary,
-    fontWeight: 'bold',
-    fontSize: 18
   },
   inputFieldWrap:{
     padding:15,
@@ -414,11 +415,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   header: {
-    fontWeight: 'bold',
-    color: theme.secondary,
-    marginTop: 30,
-    marginLeft: IOS ? 25 : 15,
+    textAlign:'center',
+    color: theme.white,
+    marginTop: 15,
+    // marginLeft: IOS ? 25 : 15,
     fontSize: 28
+  },
+  logo: {
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    height: 110,
+    width: 110
   },
   introductionContainer: {
     margin: 10,
