@@ -56,15 +56,14 @@ export default function feed(state = initialState, action) {
 
     case VOTE_FEED_ITEM:
       const list = state.get('list');
-      const itemIndex_ = list.findIndex((item) => item.get('id') === action.vote.feedItemId);
-
+      const itemIndex_ = list.findIndex((item) => item.get('id') === action.feedItemId);
       if (itemIndex < 0) {
         console.log('Tried to vote item, but it was not found from state:', itemIndex);
         return state;
       } else {
-        return state
-        // .updateIn(['list', itemIndex_, 'userVote'], value => parseInt(action.vote.value));
+        return state.updateIn(['list', itemIndex_, 'difference'], value => action.difference);
       }
+
 
     case OPEN_LIGHTBOX:
       return state.merge({

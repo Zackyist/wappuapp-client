@@ -261,25 +261,30 @@ class FeedListItem extends Component {
     this.props.removeFeedItem(this.props.item);
   }
 
-  voteThisItem(value) {
+  voteThisItem(vote) {
+
+    const { userVote, id } = this.props.item;
 
     if (this.props.isRegistrationInfoValid === false) {
       this.props.openRegistrationView();
     } else {
-      this.props.voteFeedItem(this.props.item, parseInt(value));
+      const wasAlreadyVotedByMe = userVote !== 0;
+      const voteWasChanged = userVote !== vote;
+      const multiplier = wasAlreadyVotedByMe ? 2 : 1;
+      const difference = voteWasChanged ? vote * multiplier : 0;
+
+      this.props.voteFeedItem(id, vote, difference);
       this.setState({
-        myVote: value
+        myVote: vote
       })
     }
   }
 
   getVotes() {
-    // If the user has already voted this item, the value displayed will be changed by 2 steps instead of 1
-    const wasAlreadyVotedByMe = this.props.item.userVote !== 0;
-    const controlFactor = wasAlreadyVotedByMe ? 2 : 1;
-    const votes = parseInt(this.props.item.votes) + (this.state.myVote * controlFactor);
-
-    return votes;
+    // If the user has just given a vote, it is added to the total amount to votes displayed on the screen.
+    const { difference, votes } = this.props.item;
+    const newVote = difference ? difference : 0;
+    return parseInt(votes) + newVote;
   }
 
   // Render "remove" button, which is remove OR flag button,
