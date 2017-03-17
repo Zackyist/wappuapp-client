@@ -6,6 +6,10 @@
         <item name="colorPrimary">#ec449c</item>
         <!-- Status Bar color -->
         <item name="colorPrimaryDark">#dd4997</item>
+        <!-- Plain buttons -->
+        <item name="colorAccent">#00d7d2</item>
+        <!-- text -->
+        <item name="android:textColor">#ec449c</item>
     </style>
 
 </resources>
