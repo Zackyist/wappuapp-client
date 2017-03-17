@@ -43,6 +43,20 @@ const styles = StyleSheet.create({
       width: 0
     },
   },
+  scrollTopButton: {
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+    backgroundColor: '#FFF'
+  },
+  scrollTopButtonContent: {
+    color: theme.secondaryLight
+  },
   buttonEnclosure: {
     flexDirection: 'column',
     justifyContent: 'center',
@@ -187,6 +201,7 @@ class ActionButtons extends Component {
       SIMA: 'local-bar',
       LECTURE: 'school',
       BUTTON_PUSH: 'touch-app',
+      CHECK_IN_EVENT: 'add-location',
       default: 'image'
     };
     return mapping[type] || mapping['default'];
@@ -198,6 +213,7 @@ class ActionButtons extends Component {
       IMAGE: 'Take a photo',
       SIMA: 'Have a sima',
       LECTURE: 'At a lecture',
+      CHECK_IN_EVENT: 'Check in event',
       BUTTON_PUSH: 'Push the button',
       default: 'image'
     };
@@ -251,9 +267,10 @@ class ActionButtons extends Component {
     if (this.props.showScrollTopButton) {
       return (
       <ActionButton onPress={this.props.onScrollTop}
-        extraStyle={styles.mainButton}>
+        underLayColor={theme.lightgrey}
+        extraStyle={styles.scrollTopButton}>
         <View >
-          <Icon name={'keyboard-arrow-up'} size={26} style={styles.actionButtonContent}></Icon>
+          <Icon name={'keyboard-arrow-up'} size={26} style={[styles.actionButtonContent, styles.scrollTopButtonContent]}></Icon>
         </View>
       </ActionButton>
       );
