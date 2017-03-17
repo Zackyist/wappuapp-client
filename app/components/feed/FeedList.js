@@ -48,11 +48,14 @@ const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    backgroundColor: '#f2f2f2'
+  },
+  feedContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f2f2f2'
+    flexGrow: 1,
   },
   listView: {
     flex: 1
@@ -108,7 +111,7 @@ class FeedList extends Component {
   animateList() {
     Animated.timing(this.state.listAnimation, {
       toValue: 1,
-      duration: IOS ? 250 : 700,
+      duration: IOS ? 250 : 600,
       easing: Easing.ease
     }).start();
   }
@@ -196,10 +199,10 @@ class FeedList extends Component {
         );
       default:
         return (
-          <View style={styles.container}>
+          <View style={styles.feedContainer}>
 
             <Animated.View style={{ opacity: this.state.listAnimation, transform: [
-              { translateY: this.state.listAnimation.interpolate({ inputRange: [0, 1], outputRange: [-50, 0] })}
+              { translateY: this.state.listAnimation.interpolate({ inputRange: [0, 1], outputRange: [50, 0] })}
             ]}}>
             <ListView
               ref='_scrollView'

@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 class ActionButton extends Component {
   render() {
     const combinedStyle = [styles.button];
-    const { extraStyle, onPress, disabled, children } = this.props;
+    const { extraStyle, onPress, disabled, children, underLayColor } = this.props;
 
     if (extraStyle) {
       combinedStyle.push(extraStyle);
@@ -40,7 +40,7 @@ class ActionButton extends Component {
 
     return (
       <Fab onPress={onPress} styles={combinedStyle}
-        disabled={disabled} underlayColor={theme.secondaryLight}>
+        disabled={disabled} underlayColor={underLayColor || theme.secondaryLight}>
         {children}
       </Fab>
     );

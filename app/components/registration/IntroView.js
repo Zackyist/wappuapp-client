@@ -62,7 +62,7 @@ class InstructionView extends Component {
           <ScrollView style={{flex:1, width: null, height: null}}>
               <View style={[styles.container, styles.contentContainer]}>
                 <View style={{alignItems: 'center'}}>
-                  <Image style={{marginTop: 50, height: 140, width: 150}}  source={require('../../../assets/whappu-text.png')}/>
+                  <Image style={{marginTop: 50, height: 140, width: 150}}  source={require('../../../assets/header/4.png')}/>
                 </View>
 
                 <View style={styles.content}>

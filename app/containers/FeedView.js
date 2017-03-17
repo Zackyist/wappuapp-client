@@ -8,7 +8,6 @@ import analytics from '../services/analytics';
 import FeedList from '../components/feed/FeedList';
 import RadioPlayer from '../containers/RadioPlayer'
 import theme from '../style/theme';
-import Header from '../components/common/Header';
 
 
 const VIEW_NAME = 'FeedView';
@@ -42,22 +41,8 @@ class FeedView extends Component {
   }
 
   render() {
-    if (Platform.OS === 'ios') {
-      return <View style={{ flex: 1 }}><Navigator
-        style={styles.navigator}
-        initialRoute={{
-          component: FeedList,
-          name: 'Feed'
-        }}
-        renderScene={this.renderScene}
-        configureScene={() => ({
-          ...Navigator.SceneConfigs.FloatFromRight
-        })} />
-        <RadioPlayer />
-      </View>;
-    }
-    else {
-      return <View style={{ flex: 1 }}>
+    return (
+      <View style={{ flex: 1 }}>
         <Navigator
         style={styles.navigator}
         initialRoute={{
@@ -69,8 +54,8 @@ class FeedView extends Component {
           ...Navigator.SceneConfigs.FloatFromRight
         })} />
         <RadioPlayer />
-      </View>;
-    }
+      </View>
+    );
   }
 }
 
