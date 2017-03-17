@@ -4,6 +4,7 @@ import api from '../services/api';
 import ActionTypes from '../constants/ActionTypes';
 import * as NotificationMessages from '../utils/notificationMessage';
 import { refreshFeed } from './feed';
+import { sortFeedChronological } from '../concepts/sortType';
 import {createRequestActionTypes} from '.';
 
 const {
@@ -38,9 +39,16 @@ const _postAction = (payload) => {
     return api.postAction(payload, getStore().location.get('currentLocation'))
       .then(response => {
          setTimeout(() => {
-             dispatch(refreshFeed());
-        dispatch({ type: POST_ACTION_SUCCESS, payload: { type: payload.type } });
-        dispatch({ type: SHOW_NOTIFICATION, payload: NotificationMessages.getMessage(payload) });
+
+            // Set feed sort to 'new' if posted image or text, otherwise just refresh
+            if ([ActionTypes.TEXT, ActionTypes.IMAGE].indexOf(payload.type) >= 0) {
+              dispatch(sortFeedChronological())
+            } else {
+              dispatch(refreshFeed());
+            }
+
+            dispatch({ type: POST_ACTION_SUCCESS, payload: { type: payload.type } });
+            dispatch({ type: SHOW_NOTIFICATION, payload: NotificationMessages.getMessage(payload) });
 
          }, 1000);
 
