@@ -36,7 +36,7 @@
     "react-native-code-push": "^1.16.0-beta",
     "react-native-device-info": "^0.9.5",
     "react-native-google-analytics": "^1.0.1",
-    "react-native-hockeyapp": "^0.4.0",
+    "react-native-hockeyapp": "^0.5.0",
     "react-native-image-picker": "^0.22.6",
     "react-native-image-zoom": "^0.31.0",
     "react-native-linear-gradient": "^1.5.12",
