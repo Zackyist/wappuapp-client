@@ -1,49 +1,189 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
+  View,
   Text,
+  Animated,
+  Dimensions,
+  Easing,
+  Platform,
   TouchableHighlight
 } from 'react-native'
 
+import autobind from 'autobind-decorator';
 import { connect } from 'react-redux';
 
-import { openCitySelection, getCityId } from '../../concepts/city';
+import {
+  setCity,
+  getCityList,
+  getCityId,
+  getCityPanelShowState,
+} from '../../concepts/city';
 
 import theme from '../../style/theme';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 
-const CitySelector = ({
-  currentCity,
-  openCitySelection
-}) => (
-  <TouchableHighlight
-    underlayColor={'transparent'}
-    onPress={() => openCitySelection() }>
-    <Text style={styles.filterText}>
-      <MdIcon name='map' style={styles.filterIcon} /> {currentCity}
-    </Text>
-  </TouchableHighlight>
-);
+const IOS = Platform.OS === 'ios';
+const { width } = Dimensions.get('window');
+
+class CitySelector extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      wrapAnimation: new Animated.Value(0),
+      contentAnimation: new Animated.Value(0)
+    }
+  }
+
+  componentDidMount() {
+    this.animateWrap();
+  }
+
+  animateWrap() {
+    Animated.timing(
+      this.state.wrapAnimation,
+      {
+        toValue: 1,
+        duration: 600,
+        easing: Easing.elastic(0.75)
+      }
+      ).start(() => {
+        Animated.timing(
+          this.state.contentAnimation,
+          {
+            toValue: 1,
+            duration: 250,
+            easing: Easing.elastic(2)
+          }
+          ).start();
+      });
+  }
+
+  @autobind
+  renderCitySelection(city, index) {
+    const { currentCity } = this.props;
+    const isActive = city.get('id') === currentCity;
+    return (
+      <View style={styles.filterBtnWrap} key={city.get('id')}>
+        <View style={styles.filterBtn}>
+          <TouchableHighlight
+            style={styles.buttonInner}
+            underlayColor={theme.primaryLight}
+            onPress={() => this.props.setCity(city.get('id')) }>
+            <MdIcon name={city.get('id') === 3 ? 'domain' : 'location-city'} style={styles.filterIcon} />
+          </TouchableHighlight>
+        </View>
+        <Text style={[styles.filterText, isActive ? styles.activeText : {}]}>{city.get('name')}</Text>
+      </View>
+    );
+  }
+
+
+  render() {
+    const { cities, showCitySelection } = this.props;
+    const { wrapAnimation, contentAnimation } = this.state;
+
+    if (!showCitySelection) {
+      return <View />;
+    }
+
+    return (
+    <Animated.View style={[styles.citySelector, {
+      transform: [
+        // { scale: wrapAnimation },
+        { translateY: wrapAnimation.interpolate({ inputRange: [0, 0.3, 1], outputRange: [-80, 0, 0]}) },
+        { translateX: wrapAnimation.interpolate({ inputRange: [0, 1], outputRange: [-40, 0]}) }
+      ],
+      top: wrapAnimation.interpolate({ inputRange: [0, 1], outputRange: IOS ? [30, 70] : [30, 56]}),
+      right: wrapAnimation.interpolate({ inputRange: [0, 1], outputRange: [30, 0]}),
+      height: wrapAnimation.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 0, 170]}),
+      width: wrapAnimation.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 0, width]}),
+      borderRadius: wrapAnimation.interpolate({ inputRange: [0, 0.9, 1], outputRange: [300, 300, 0]})
+    }]}>
+
+      <Animated.View style={[styles.content,
+        {
+         opacity: contentAnimation,
+         transform: [{ scale: contentAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1]}) }]
+        }
+      ]}>
+        {cities.filter(item => item.get('id') > 1).map(this.renderCitySelection)}
+      </Animated.View>
+    </Animated.View>
+    );
+  }
+};
 
 var styles = StyleSheet.create({
+  citySelector: {
+    transform: [{ scale: 0 }, { translateY: -80 }, { translateX: -40 }],
+    backgroundColor: '#FFF',
+    position: 'absolute',
+    justifyContent: 'center',
+    elevation: 2,
+    right: IOS ? null : 0,
+    left: IOS ? 0 : null,
+    top: IOS ? 70 : 56,
+    shadowColor: '#000000',
+    shadowOpacity: 0.075,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+  },
+  content: {
+    padding: 30,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+  },
+  filterBtnWrap: {
+    width: 70,
+  },
+  filterBtn: {
+    overflow: 'hidden',
+    elevation: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: theme.primary,
+  },
+  buttonInner: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    flex:1,
+    justifyContent:'center',
+    alignItems: 'center'
+  },
   filterText: {
-    color: theme.white,
-    fontSize: 10,
-    paddingTop: 10,
-    paddingLeft: 18,
+    color: theme.midgrey,
+    fontSize: 14,
+    paddingTop: 8,
+    textAlign: 'center',
+  },
+  activeText: {
+    color: theme.primary,
+    fontWeight: 'bold',
   },
   filterIcon: {
-    fontSize: 24,
+    color: theme.white,
+    fontSize: 33,
   }
 });
 
 
-const mapDispatchToProps = { openCitySelection };
+const mapDispatchToProps = { setCity };
 
 const select = state => {
   return {
+    showCitySelection: getCityPanelShowState(state),
     currentCity: getCityId(state),
-    currentTab: state.navigation.get('currentTab')
+    cities: getCityList(state),
   }
 };
 
