@@ -20,13 +20,16 @@ class Row extends Component {
     return (
     <View style={[styles.row, this.props.style]}>
       {this.props.icon && <View style={styles.rowIconContainer}>
-        <Icon name={this.props.icon}  style={[styles.rowIcon, {color: theme.light}]} />
+        <Icon name={this.props.icon}  style={[styles.rowIcon, {color: theme.white}]} />
       </View>}
 
       <View style={styles.rowTextContainer}>
-        <Text style={styles.rowTitle}>
-          {title}
-        </Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.rowTitle}>{this.props.number}. </Text>
+          <Text style={styles.rowTitle}>
+            {title}
+          </Text>
+        </View>
         <Text style={styles.rowText}>
           {this.props.text}
         </Text>
@@ -46,7 +49,7 @@ const styles = StyleSheet.create({
   row: {
     padding: 20,
     paddingLeft:15,
-    paddingBottom: 25,
+    paddingBottom: 20,
     flex: 1,
     flexDirection: 'row'
   },
@@ -54,7 +57,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop:6,
     borderWidth:2,
-    borderColor:theme.secondary,
+    borderColor:theme.white,
     borderRadius:25,
     width:50,
     height:50,
@@ -63,25 +66,24 @@ const styles = StyleSheet.create({
   },
   rowNumberText: {
     fontSize: 28,
-    color: theme.secondary,
+    color: theme.white,
     textAlign: 'center',
     backgroundColor: 'rgba(0,0,0,0)',
     fontWeight: 'bold'
   },
   rowIconContainer: {
-    width: 50,
-    height:50,
-    backgroundColor:theme.secondary,
-    borderRadius:25,
+    width: 60,
+    height: 60,
+    backgroundColor:theme.primaryDarker,
+    borderRadius:30,
     marginRight:5,
     marginLeft:10,
     justifyContent:'center'
   },
   rowIcon: {
     textAlign:'center',
-    color: theme.white,
     backgroundColor: 'rgba(0,0,0,0)',
-    fontSize: 24
+    fontSize: 28
   },
   rowTextContainer: {
     flex: 1,
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   rowTitle:{
-    color: theme.secondary,
+    color: theme.white,
     fontWeight:'bold',
     fontSize: 18,
     marginBottom: 4,

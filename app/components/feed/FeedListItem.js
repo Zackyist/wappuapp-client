@@ -205,7 +205,6 @@ class FeedListItem extends Component {
     super(props);
 
     this.state = {
-      wasVoted: false,
       myVote: 0
     };
   }
@@ -214,9 +213,6 @@ class FeedListItem extends Component {
     return item.author.type === 'ME';
   }
 
-  itemIsVotedByMe() {
-    return false;
-  }
 
   itemIsCreatedByMyTeam(item) {
     const { userTeam } = this.props;
@@ -265,16 +261,30 @@ class FeedListItem extends Component {
     this.props.removeFeedItem(this.props.item);
   }
 
-  voteThisItem(value) {
+  voteThisItem(vote) {
+
+    const { userVote, id } = this.props.item;
 
     if (this.props.isRegistrationInfoValid === false) {
       this.props.openRegistrationView();
     } else {
-      this.props.voteFeedItem(this.props.item, parseInt(value));
+      const wasAlreadyVotedByMe = userVote !== 0;
+      const voteWasChanged = userVote !== vote;
+      const multiplier = wasAlreadyVotedByMe ? 2 : 1;
+      const difference = voteWasChanged ? vote * multiplier : 0;
+
+      this.props.voteFeedItem(id, vote, difference);
       this.setState({
-        myVote: value
+        myVote: vote
       })
     }
+  }
+
+  getVotes() {
+    // If the user has just given a vote, it is added to the total amount to votes displayed on the screen.
+    const { difference, votes } = this.props.item;
+    const newVote = difference ? difference : 0;
+    return parseInt(votes) + newVote;
   }
 
   // Render "remove" button, which is remove OR flag button,
@@ -301,9 +311,14 @@ class FeedListItem extends Component {
   }
 
   renderVoteButton(positive) {
+    const { myVote } = this.state;
+    const { userVote } = this.props.item;
+
     const value = positive ? 1 : -1;
     const iconName = positive ? 'keyboard-arrow-up' : 'keyboard-arrow-down';
-    const disabled = this.state.myVote === value;
+
+    const voteWasChanged = myVote !== 0;
+    const disabled = voteWasChanged ? myVote === value : userVote === value;
 
     return (
       <TouchableOpacity
@@ -311,7 +326,7 @@ class FeedListItem extends Component {
         disabled={disabled}
         activeOpacity={0}
         onPress={() => this.voteThisItem(value)}>
-        <Text style={{color: disabled ? theme.secondary : theme.grey}}>
+        <Text style={{color: disabled ? theme.grey : theme.secondary}}>
           <Icon name={iconName} size={25}/>
         </Text>
       </TouchableOpacity>
@@ -322,7 +337,7 @@ class FeedListItem extends Component {
     return (
       <View style={styles.itemVoteWrapper}>
         {this.renderVoteButton(true)}
-        <Text style={styles.itemVoteValue}>{this.props.item.votes}</Text>
+        <Text style={styles.itemVoteValue}>{this.getVotes()}</Text>
         {this.renderVoteButton()}
       </View>);
   }

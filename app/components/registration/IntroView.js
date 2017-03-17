@@ -121,13 +121,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    flex: 2,
+    flex: 1,
     color: 'white',
     alignItems: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
+    // borderWidth: 1
   },
   textContainer: {
-    flex: 5,
+    flex: 3,
+    marginLeft: 0,
+    // borderWidth: 1,
     flexDirection: 'column'
   },
   subTitle: {
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
     paddingRight: 15
   },
   cities: {
-    marginTop: 20,
+    marginTop: 40,
     justifyContent: 'center',
     flexDirection: 'row',
     flex: 1

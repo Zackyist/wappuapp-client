@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     padding:15,
     paddingTop:10,
     paddingBottom:10,
-    paddingLeft:0,
+    paddingLeft:10,
     borderBottomColor:'#eee',
     borderBottomWidth:1,
 
@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     borderWidth:3,
   },
   text: {
-
+    fontWeight: 'bold',
+    fontSize: 15
   },
   button: {
     flex:1,

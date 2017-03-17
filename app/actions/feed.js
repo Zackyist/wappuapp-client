@@ -86,16 +86,15 @@ const removeFeedItem = (item) => {
   };
 };
 
-const voteFeedItem = (item, value) => {
-  const { id } = item;
-
-  const vote = { value, feedItemId: id };
+const voteFeedItem = (feedItemId, value, difference) => {
+  const vote = { value, feedItemId};
 
   return (dispatch) => {
     api.voteFeedItem(vote)
       .then(() => dispatch({
         type: VOTE_FEED_ITEM,
-        vote
+        difference,
+        feedItemId
       }))
       .catch(error => console.log('Error when trying to vote feed item', error));
   };
