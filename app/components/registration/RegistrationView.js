@@ -169,7 +169,7 @@ class RegistrationView extends Component {
           <View style={[styles.innerContainer]}>
             {!simplified && this._renderCitySelect()}
             <View style={styles.inputGroup}>
-              <View style={styles.inputLabel}>
+              <View style={[styles.inputLabel, {backgroundColor: !simplified ? theme.white : '#eee'}]}>
                 <Text style={styles.inputLabelText}>Choose your Guild</Text>
               </View>
 
@@ -281,7 +281,7 @@ class RegistrationView extends Component {
         <AppIntro
           onSkipBtnClick={() => this.onSkip()}
           onDoneBtnClick={() => this.onRegister()}
-          showSkipButton={this.state.showSkipButton}
+          // showSkipButton={this.state.showSkipButton}
           showDoneButton={this.state.index !== 2 || (this.props.isRegistrationViewOpen && this.teamIsValid())}
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
@@ -329,13 +329,14 @@ const styles = StyleSheet.create({
   },
   simplified: {
     paddingBottom: 80,
-    // marginTop: 30,
     alignSelf: 'stretch',
     backgroundColor: theme.secondary
   },
   innerContainer: {
     flex:1,
-    paddingTop:IOS ? 15 : 10,
+    paddingTop:10,
+    margin: 5,
+    borderRadius: 5
   },
   bottomButtons:{
     flex:1,
@@ -362,7 +363,7 @@ const styles = StyleSheet.create({
   inputGroup:{
     padding:0,
     backgroundColor:theme.light,
-    marginHorizontal:10,
+    marginHorizontal:15,
     marginBottom:15,
     elevation:1,
     flex:1,
@@ -383,14 +384,13 @@ const styles = StyleSheet.create({
   inputLabel:{
     padding:15,
     paddingTop:13,
-    backgroundColor:theme.primary,
     paddingBottom:13,
     borderBottomWidth:1,
     borderColor:'#ddd',
   },
   inputLabelText:{
     fontSize:16,
-    color:theme.white,
+    color:theme.secondary,
     fontWeight:'bold',
     textAlign: IOS ? 'center' : 'left',
   },
