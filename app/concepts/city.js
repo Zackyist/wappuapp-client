@@ -71,10 +71,13 @@ export const NO_SELECTED_CITY_FOUND = 'city/NO_SELECTED_CITY_FOUND';
 export const initializeUsersCity = () => (dispatch, getState) => {
   const cityList = getCityList(getState());
   const defaultCityId = cityList.getIn([0, 'id'], '').toString()
+
+
   return AsyncStorage.getItem(cityKey)
     .then(city => {
       const activeCity = city ? JSON.parse(city) : defaultCityId;
-      dispatch({ type: NO_SELECTED_CITY_FOUND, payload: activeCity === 1});
+      const isDefault = parseInt(activeCity) === 1;
+      dispatch({ type: NO_SELECTED_CITY_FOUND, payload: isDefault});
       return dispatch(setCity(activeCity));
     })
     .catch(error => { console.log('error when setting city') });
@@ -107,7 +110,7 @@ export default function city(state = initialState, action) {
     }
 
     case SET_CITY: {
-      return state.set('id', action.payload);
+      return state.set('id', parseInt(action.payload));
     }
 
     default: {

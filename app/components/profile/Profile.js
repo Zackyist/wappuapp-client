@@ -47,13 +47,13 @@ const styles = StyleSheet.create({
     elevation: 1,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    shadowColor: '#000000',
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
-    shadowOffset: {
-      height: 1,
-      width: 0
-    },
+    // shadowColor: '#000000',
+    // shadowOpacity: 0.1,
+    // shadowRadius: 1,
+    // shadowOffset: {
+    //   height: 1,
+    //   width: 0
+    // },
   },
   listItemButton:{
     flex:1,

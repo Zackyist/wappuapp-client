@@ -24,18 +24,17 @@ class InstructionView extends Component {
 
     return (
       <View style={containerStyles}>
-        {!simplified && <Toolbar icon={null} iconClick={() => null} title='Introduction' />}
           <ScrollView style={{flex:1, width: null, height: null}}>
             <View style={[styles.container, styles.contentContainer]}>
               <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={styles.header}>
                   How to
                 </Text>
-                <Image style={{marginTop: 20, marginLeft: 10, height: 110, width: 110}}  source={require('../../../assets/whappu-text.png')}/>
+                <Image style={{marginTop: 30, marginLeft: 10, height: 110, width: 110}}  source={require('../../../assets/whappu-text.png')}/>
               </View>
 
               <Row
-                style={{paddingTop: 30}}
+                style={{paddingTop: 20}}
                 icon={IOS ? 'ios-star': 'md-star'}
                 number={1}
                 title={'Whappu hard & Share it'}
@@ -107,6 +106,7 @@ const styles = StyleSheet.create({
   modalButton: {
     borderRadius:0,
     flex:1,
+    backgroundColor: theme.primary,
     marginLeft:0,
   }
 });
