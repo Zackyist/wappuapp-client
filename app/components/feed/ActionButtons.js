@@ -186,6 +186,7 @@ class ActionButtons extends Component {
       IMAGE: 'photo-camera',
       SIMA: 'local-bar',
       LECTURE: 'school',
+      CHECK_IN_EVENT: 'place',
       BUTTON_PUSH: 'touch-app',
       default: 'image'
     };
@@ -198,6 +199,7 @@ class ActionButtons extends Component {
       IMAGE: 'Take a photo',
       SIMA: 'Have a sima',
       LECTURE: 'At a lecture',
+      CHECK_IN_EVENT: 'Check-in to event',
       BUTTON_PUSH: 'Push the button',
       default: 'image'
     };
