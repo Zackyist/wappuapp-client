@@ -19,6 +19,8 @@ const {
 
 const OPEN_TEXTACTION_VIEW = 'OPEN_TEXTACTION_VIEW';
 const CLOSE_TEXTACTION_VIEW = 'CLOSE_TEXTACTION_VIEW';
+const OPEN_CHECKIN_VIEW = 'OPEN_CHECKIN_VIEW';
+const CLOSE_CHECKIN_VIEW = 'CLOSE_CHECKIN_VIEW';
 const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 const HIDE_NOTIFICATION = 'HIDE_NOTIFICATION';
 const UPDATE_COOLDOWNS = 'UPDATE_COOLDOWNS';
@@ -30,6 +32,15 @@ const openTextActionView = () => {
 const closeTextActionView = () => {
   return { type: CLOSE_TEXTACTION_VIEW };
 };
+
+const openCheckInView = () => {
+  return { type : OPEN_CHECKIN_VIEW };
+};
+//
+// const closeCheckInView = () => {
+//   console.log('CLOSE');
+//   return { type: CLOSE_CHECKIN_VIEW };
+// };
 
 const _postAction = (payload) => {
   return (dispatch, getStore) => {
@@ -112,6 +123,8 @@ export {
   GET_ACTION_TYPES_SUCCESS,
   GET_ACTION_TYPES_FAILURE,
   OPEN_TEXTACTION_VIEW,
+  OPEN_CHECKIN_VIEW,
+  CLOSE_CHECKIN_VIEW,
   CLOSE_TEXTACTION_VIEW,
   SHOW_NOTIFICATION,
   HIDE_NOTIFICATION,
@@ -119,6 +132,8 @@ export {
   postAction,
   postText,
   postImage,
+  openCheckInView,
+  // closeCheckInView,
   openTextActionView,
   closeTextActionView,
   fetchActionTypes,

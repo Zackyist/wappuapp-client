@@ -11,6 +11,7 @@ import errorAlert from '../utils/error-alert';
 
 import IOSTabNavigation from './Navigation';
 import RegistrationView from '../components/registration/RegistrationView';
+import CheckInActionView from '../components/actions/CheckInActionView';
 import TextActionView from '../components/actions/TextActionView';
 import LightBox from '../components/lightbox/Lightbox';
 
@@ -49,6 +50,7 @@ class MainView extends Component {
         />
         <LightBox />
         <RegistrationView />
+        <CheckInActionView />
         <TextActionView />
       </View>
     );
