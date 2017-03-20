@@ -19,6 +19,7 @@ const {
 const OPEN_REGISTRATION_VIEW = 'OPEN_REGISTRATION_VIEW';
 const CLOSE_REGISTRATION_VIEW = 'CLOSE_REGISTRATION_VIEW';
 const UPDATE_NAME = 'UPDATE_NAME';
+const RESET = 'RESET';
 const SELECT_TEAM = 'SELECT_TEAM';
 const CLOSE_TEAM_SELECTOR = 'CLOSE_TEAM_SELECTOR';
 const DISMISS_INTRODUCTION = 'DISMISS_INTRODUCTION';
@@ -68,6 +69,10 @@ const updateName = name => {
   return { type: UPDATE_NAME, payload: name };
 };
 
+const reset = () => {
+  return { type: RESET };
+};
+
 const generateName = () => {
   return (dispatch, getStore) => {
     const currentTeamId = getStore().registration.get('selectedTeam');
@@ -107,6 +112,7 @@ export {
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
   SELECT_TEAM,
+  RESET,
   DISMISS_INTRODUCTION,
   putUser,
   openRegistrationView,
@@ -115,5 +121,6 @@ export {
   generateName,
   getUser,
   selectTeam,
+  reset,
   dismissIntroduction
 };
