@@ -64,7 +64,8 @@ const placeholderRadioStations = [
 
 // # Reducer
 const initialState = fromJS({
-  url: 'http://stream.basso.fi:8000/stream', // http://stream.wappuradio.fi:80/wappuradio.mp3
+  url: 'http://stream.basso.fi:8000/stream',
+  // url: 'http://stream.wappuradio.fi:80/wappuradio.mp3',
   name: 'Bassoradio',
   status: STOPPED,
   expanded: false,

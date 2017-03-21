@@ -128,7 +128,6 @@ class TimelineList extends Component {
 
     const startDay = moment(model.startTime).format('ddd D.M.')
 
-    console.log(model);
     this.props.navigator.push({
       showName: true,
       component: EventDetail,

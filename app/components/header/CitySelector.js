@@ -108,7 +108,7 @@ class CitySelector extends Component {
          transform: [{ scale: contentAnimation.interpolate({ inputRange: [0, 1], outputRange: [0.9, 1]}) }]
         }
       ]}>
-        {cities.filter(item => item.get('id') > 1).map(this.renderCitySelection)}
+        {cities.map(this.renderCitySelection)}
       </Animated.View>
     </Animated.View>
     );
