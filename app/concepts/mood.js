@@ -5,7 +5,9 @@ import { times } from 'lodash';
 
 
 // # Action creators
+export const TOGGLE_MOOD_SLIDER = 'mood/TOGGLE_MOOD_SLIDER';
 export const SET_MOOD_DATA = 'mood/SET_MOOD_DATA';
+
 export const setMoodData = (mood) => ({ type: SET_MOOD_DATA, payload: mood });
 
 
@@ -46,6 +48,7 @@ const placeHolderMoodData = times(27).map((item, index) => ({
 const initialState = fromJS({
   data: placeHolderMoodData,
   limitLine: 50,
+  showMoodSlider: false
 });
 
 export default function mood(state = initialState, action) {
@@ -53,6 +56,11 @@ export default function mood(state = initialState, action) {
     case SET_MOOD_DATA: {
       return state.set('data', action.payload);
     }
+
+    case TOGGLE_MOOD_SLIDER: {
+      return state.set('showMoodSlider', action.payload);
+    }
+
     default: {
       return state;
     }

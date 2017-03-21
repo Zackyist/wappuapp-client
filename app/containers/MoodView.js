@@ -20,6 +20,7 @@ import {
 } from '../concepts/mood';
 import MoodChart from '../components/mood/MoodChart';
 import MoodKpis from '../components/mood/MoodKpis';
+import MoodSlider from '../components/mood/MoodSlider';
 import Fab from '../components/common/Fab';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
@@ -36,6 +37,15 @@ class MoodView extends Component {
     };
   }
 
+  @autobind
+  navigateToMoodSlider() {
+    this.props.navigator.push({
+      showName: true,
+      component: MoodSlider,
+      name: 'How Whappu'
+    });
+  }
+
   render() {
     const { moodData, limitLineData, moodKpiValues } = this.props;
 
@@ -44,7 +54,7 @@ class MoodView extends Component {
         <MoodChart data={moodData} limitLineData={limitLineData} />
 
         <Fab
-          onPress={() => console.log('add mood')}
+          onPress={this.navigateToMoodSlider}
           styles={styles.button}
           disabled={false}
           underlayColor={theme.white}

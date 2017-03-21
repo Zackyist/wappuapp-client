@@ -85,7 +85,7 @@ class AndroidTabNavigation extends Component {
         >
           <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
           <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
-          <MoodView tabLabel={{title:'Vibes', icon:'trending-up'}} />
+          <MoodView navigator={navigator} tabLabel={{title:'Vibes', icon:'trending-up'}} />
           <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
           <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
         </AndroidTabs>
