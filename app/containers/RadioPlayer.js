@@ -71,11 +71,16 @@ class RadioPlayer extends Component {
   }
 
   renderExpandedContent() {
+    const { song } = this.props;
     return (
       <View style={styles.containerExpanded}>
         <View style={styles.tabs}>
           <View style={[styles.tab, styles.tab__active]}><PlatformTouchable><Text style={styles.tabText}>Wappuradio</Text></PlatformTouchable></View>
           <View style={styles.tab}><PlatformTouchable><Text style={styles.tabText}>Radiodiodi</Text></PlatformTouchable></View>
+        </View>
+
+        <View style={styles.radioContent}>
+          <Text style={styles.songName}>{song}</Text>
         </View>
 
         <TouchableOpacity onPress={this.close} style={styles.close} >
@@ -187,7 +192,21 @@ const styles = StyleSheet.create({
   tab__active: {
     borderBottomWidth: 2,
     borderBottomColor: theme.secondary
+  },
+  radioContent: {
+    backgroundColor: '#FFF',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  songName: {
+    padding: 5,
+    textAlign: 'center',
+    fontWeight: '900',
+    fontSize: 80,
+    color: theme.secondary,
   }
+
 });
 
 const mapDispatchToProps = {
