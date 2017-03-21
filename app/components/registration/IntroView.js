@@ -29,7 +29,6 @@ class InstructionView extends Component {
    }
 
    handlePress(id) {
-     console.log('aeruaer');
      this.props.onSelect(id);
 
      this.state.springAnim.setValue(0);

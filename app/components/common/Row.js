@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 class Row extends Component {
 
   render() {
-    const { selected, title } = this.props;
+    const { title } = this.props;
     return (
     <View style={[styles.row, this.props.style]}>
       {this.props.icon && <View style={styles.rowIconContainer}>
@@ -33,7 +33,6 @@ class Row extends Component {
         <Text style={styles.rowText}>
           {this.props.text}
         </Text>
-        {selected && <Icon size={40} name={IOS ? 'ios-checkmark' : 'md-checkmark'} style={styles.rowCheck}/>}
 
         {this.props.secondaryText &&
           <Text style={[styles.rowText, styles.rowSecondaryText]}>
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
   rowIconContainer: {
     width: 60,
     height: 60,
-    backgroundColor:theme.primaryDarker,
+    backgroundColor:theme.primary,
     borderRadius:30,
     marginRight:5,
     marginLeft:10,
@@ -103,11 +102,6 @@ const styles = StyleSheet.create({
   },
   rowSecondaryText: {
     marginTop: 8
-  },
-  rowCheck: {
-    position: 'absolute',
-    right: 10,
-    color: IOS ? '#555' : '#888',
   }
 });
 

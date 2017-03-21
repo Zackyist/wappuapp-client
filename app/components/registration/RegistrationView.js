@@ -29,10 +29,12 @@ import {
   putUser,
   updateName,
   selectTeam,
+  reset,
   generateName,
   dismissIntroduction,
   closeRegistrationView
 } from '../../actions/registration';
+import { setCity } from '../../concepts/city';
 import { showChooseTeam } from '../../actions/team';
 import * as keyboard from '../../utils/keyboard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -57,6 +59,7 @@ class RegistrationView extends Component {
     this.state = {
       showSkipButton: false,
       selectedCity: 2,
+      skipped: false,
       index: 0
     };
   }
@@ -111,10 +114,18 @@ class RegistrationView extends Component {
     this.props.dismissIntroduction();
   }
 
+  onSkip() {
+    this.setState({skipped: true});
+    this.onClose();
+  }
+
   @autobind
   onClose() {
-    if (this.props.isRegistrationInfoValid) {
+    if (!this.state.skipped && this.props.isRegistrationInfoValid) {
       this.onRegister();
+    } else if (this.state.skipped) {
+      this.props.reset();
+      this.props.setCity(this.state.selectedCity);
     }
     this.props.closeRegistrationView();
   }
@@ -158,7 +169,7 @@ class RegistrationView extends Component {
           <View style={[styles.innerContainer]}>
             {!simplified && this._renderCitySelect()}
             <View style={styles.inputGroup}>
-              <View style={styles.inputLabel}>
+              <View style={[styles.inputLabel, {backgroundColor: !simplified ? theme.white : '#eee'}]}>
                 <Text style={styles.inputLabelText}>Choose your Guild</Text>
               </View>
 
@@ -201,16 +212,20 @@ class RegistrationView extends Component {
           <Text style={styles.inputLabelText}>{`Choose your City`}</Text>
         </View>
         <View style={{flexDirection: 'row', padding: 10}}>
-          {this.props.cities.map((city, i) =>
-            <View key={i} style={styles.item}>
-              <TouchableOpacity
-                style={[styles.button, {backgroundColor: this.state.selectedCity === city.get('id') ? '#50E3C2' : 'white'}]}
-                onPress={this.onSelectCity.bind(this, city.get('id'))}>
-                <Text style={[styles.text, {color: this.state.selectedCity  === city.get('id')? 'white' : '#666'}]}>
-                  {city.get('name')}
-                </Text>
-              </TouchableOpacity>
-            </View>
+          {this.props.cities.map((city, i) => {
+            if (i !== 0) {
+              return (
+                <View key={i} style={styles.item}>
+                  <TouchableOpacity
+                    style={[styles.button, {backgroundColor: this.state.selectedCity === city.get('id') ? theme.grey : 'white'}]}
+                    onPress={this.onSelectCity.bind(this, city.get('id'))}>
+                    <Text style={[styles.text, {color: this.state.selectedCity  === city.get('id')? 'white' : '#666'}]}>
+                      {city.get('name')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>);
+              }
+            }
           )}
         </View>
       </View>
@@ -264,9 +279,9 @@ class RegistrationView extends Component {
         swipeToClose={false}
         backdropPressToClose={false}>
         <AppIntro
-          onSkipBtnClick={() => this.onClose()}
+          onSkipBtnClick={() => this.onSkip()}
           onDoneBtnClick={() => this.onRegister()}
-          showSkipButton={this.state.showSkipButton}
+          // showSkipButton={this.state.showSkipButton}
           showDoneButton={this.state.index !== 2 || (this.props.isRegistrationViewOpen && this.teamIsValid())}
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
@@ -310,17 +325,18 @@ class RegistrationView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom:50
+    paddingBottom:50,
   },
   simplified: {
     paddingBottom: 80,
-    // marginTop: 30,
     alignSelf: 'stretch',
     backgroundColor: theme.secondary
   },
   innerContainer: {
     flex:1,
-    paddingTop:IOS ? 15 : 10,
+    paddingTop:10,
+    margin: 5,
+    borderRadius: 5
   },
   bottomButtons:{
     flex:1,
@@ -347,12 +363,11 @@ const styles = StyleSheet.create({
   inputGroup:{
     padding:0,
     backgroundColor:theme.light,
-    margin:20,
-    marginTop:0,
-    borderRadius:2,
+    marginHorizontal:15,
+    marginBottom:15,
     elevation:1,
     flex:1,
-    borderRadius:10,
+    borderRadius:5,
     overflow:'hidden'
   },
   item: {
@@ -369,14 +384,13 @@ const styles = StyleSheet.create({
   inputLabel:{
     padding:15,
     paddingTop:13,
-    backgroundColor:theme.primary,
     paddingBottom:13,
     borderBottomWidth:1,
     borderColor:'#ddd',
   },
   inputLabelText:{
     fontSize:16,
-    color:theme.white,
+    color:theme.secondary,
     fontWeight:'bold',
     textAlign: IOS ? 'center' : 'left',
   },
@@ -454,6 +468,8 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   putUser,
   updateName,
+  reset,
+  setCity,
   selectTeam,
   generateName,
   dismissIntroduction,

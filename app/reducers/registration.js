@@ -13,7 +13,8 @@ import {
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
-  SELECT_TEAM
+  SELECT_TEAM,
+  RESET
 } from '../actions/registration';
 
 import {
@@ -46,6 +47,11 @@ export default function registration(state = initialState, action) {
       return state.set('name', action.payload);
     case SELECT_TEAM:
       return state.set('selectedTeam', action.payload);
+    case RESET:
+      return state.merge({
+        'name': '',
+        'selectedTeam': 0
+      });
     case CREATE_USER_REQUEST:
       return state.merge({
         'isLoading': true,
