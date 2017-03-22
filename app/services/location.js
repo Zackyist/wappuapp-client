@@ -33,7 +33,18 @@ function getDistance(userLocation, eventLocation) {
   return '' + _.round(distanceInKilometres, 1) + ' km';
 }
 
+function getDiscanceInMeters(userLocation, eventLocation) {
+  if (!userLocation) {
+    return '';
+  }
+
+  const distanceInMetres = geolib.getDistance(userLocation, eventLocation);
+
+  return distanceInMetres;
+}
+
 export default {
   getGeoUrl,
-  getDistance
+  getDistance,
+  getDiscanceInMeters
 };

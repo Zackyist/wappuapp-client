@@ -102,6 +102,13 @@ const postImage = image => {
   });
 };
 
+const checkIn = eventId => {
+  return _postAction({
+    type: ActionTypes.CHECK_IN_EVENT,
+    eventId: eventId
+  });
+}
+
 const fetchActionTypes = () => {
   return dispatch => {
     dispatch({ type: GET_ACTION_TYPES_REQUEST });
@@ -133,6 +140,7 @@ export {
   postText,
   postImage,
   openCheckInView,
+  checkIn,
   // closeCheckInView,
   openTextActionView,
   closeTextActionView,

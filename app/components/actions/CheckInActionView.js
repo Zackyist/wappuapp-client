@@ -18,8 +18,10 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EventListItem from '../calendar/EventListItem';
+import { checkIn } from '../../actions/competition';
 
 import Button from '../../components/common/Button';
+import CheckInButton from './CheckInButton';
 import theme from '../../style/theme';
 import * as CompetitionActions from '../../actions/competition';
 const IOS = Platform.OS === 'ios';
@@ -37,7 +39,7 @@ class CheckInActionView extends Component {
         rowHasChanged: (row1, row2) => row1 !== row2,
         sectionHeaderHasChanged: (s1, s2) => s1 !== s2
       })
-    }
+    };
   }
 
   componentWillReceiveProps({events}) {
@@ -51,14 +53,14 @@ class CheckInActionView extends Component {
         return true;
       }
       return false;
-    })
+    });
   }
 
   getContent(events) {
-    const fakeNow = moment("2017-04-22T11:30:00.000Z");
+    const currentTime = moment();
 
     const activeEvents = events.filter((event) => {
-      if (moment(event.get('startTime')).isBefore(fakeNow) && moment(event.get('endTime')).isAfter(fakeNow)) {
+      if (moment(event.get('startTime')).isBefore(currentTime) && moment(event.get('endTime')).isAfter(currentTime)) {
         return event;
       }
     });
@@ -75,12 +77,12 @@ class CheckInActionView extends Component {
   }
 
   noActiveEventsView() {
-
     return (
       <View style={styles.eventContainer}>
         <View style={styles.headerContainer}>
           <Text style={styles.noActiveEventsText}>No active events nearby!</Text>
         </View>
+
         <View style={styles.rowContainer}>
           <View style={styles.iconContainer}>
             <Icon name={IOS ? 'ios-clock' : 'md-clock'}  size={50} style={{color: theme.light}} />
@@ -91,44 +93,51 @@ class CheckInActionView extends Component {
             <Text style={styles.title}>It's all about time & place!</Text>
             <Text style={styles.text}>You can check-in to currently ongoing events that have the same location as you.</Text>
           </View>
-
         </View>
-
       </View>
     );
   }
 
   renderEventList() {
-    return (<View style={styles.eventContainer}>
-      <View style={styles.headerContainer}>
-        <Icon name={IOS ? 'ios-pin' : 'md-pin'} style={{color: theme.white}} size={30}/>
-        <Text style={styles.title}>CHECK IN</Text>
-      </View>
-      <Text style={[styles.text, {textAlign: 'center'}]}>You can only check-in to events that if you are in the event area.</Text>
-      <ListView
-        enableEmptySections={true}
-        dataSource={this.state.dataSource}
-        renderSectionHeader={this.renderSectionHeader}
-        renderRow={this.renderListItem}
-        style={styles.listView}
-      />
+    return (
+      <View style={styles.eventContainer}>
+        <View style={styles.headerContainer}>
+          <Icon name={IOS ? 'ios-pin' : 'md-pin'} style={{color: theme.white}} size={30}/>
+          <Text style={styles.title}>CHECK IN</Text>
+        </View>
 
-    </View>);
+        <Text style={[styles.text, {textAlign: 'center'}]}>You can only check-in to events that if you are in the event area.</Text>
+
+        <ListView
+          enableEmptySections={true}
+          dataSource={this.state.dataSource}
+          renderSectionHeader={this.renderSectionHeader}
+          renderRow={this.renderListItem.bind(this)}
+          style={styles.listView}
+        />
+      </View>
+    );
   }
 
   renderListItem(item, sectionId, rowId) {
-    const currentDistance = null;
-    return <View style={{height: 160}}>
-      <EventListItem
-        item={item}
-        rowId={+rowId}
-        currentDistance={currentDistance}
-      />
-      <View style={styles.button}>
-        <Icon size={30} name={'ios-checkmark'} style={{color: 'white', marginRight: 5}}/>
-        <Text style={{fontSize: 12, textAlign: 'center', color: theme.white}}>CHECK IN</Text>
-      </View>
-    </View>;
+    const { userLocation, checkIn } = this.props;
+    const eventLocation = {
+      longitude: item.location.x,
+      latitude: item.location.y
+    }
+    let validLocation = false;
+
+    if ( userLocation && eventLocation ) {
+      const distance = location.getDiscanceInMeters(userLocation, eventLocation);
+      const radius = item.radius*1000;
+      validLocation = radius > distance;
+    }
+
+    return (
+      <View style={{height: 160}}>
+        <EventListItem item={item} rowId={+rowId} hideStatus={true}/>
+        <CheckInButton validLocation={validLocation} checkIn={() => checkIn(item.id)} />
+      </View>);
   }
 
   render() {
@@ -182,7 +191,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold'
   },
-
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -217,23 +225,12 @@ const styles = StyleSheet.create({
   listView: {
     flexGrow: 1,
     marginTop: 20,
-  },
-  button: {
-    flexDirection: 'row',
-    alignItems:'center',
-    borderWidth: 2,
-    borderColor: theme.white,
-    height: 40,
-    width: 120,
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
-    overflow: 'hidden',
-    padding: 2,
-    justifyContent: 'center',
-    backgroundColor: theme.primaryDarker,
   }
 });
+
+const mapDispatchToProps = {
+  checkIn,
+};
 
 const select = store => {
   return {
@@ -243,4 +240,4 @@ const select = store => {
   };
 };
 
-export default connect(select)(CheckInActionView);
+export default connect(select, mapDispatchToProps)(CheckInActionView);
