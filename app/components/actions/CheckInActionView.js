@@ -109,7 +109,7 @@ class CheckInActionView extends Component {
         </View>
 
         <View style={{height: 60}}>
-          <Text style={[styles.text, {textAlign: 'center'}]}>You can only check-in to events if you are in the event area.</Text>
+          <Text style={[styles.text, {padding: 10}]}>You can only check-in to events if you are in the event area.</Text>
         </View>
 
         <ListView
@@ -124,7 +124,7 @@ class CheckInActionView extends Component {
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
           <View style={styles.cancelButton}>
-            <Text style={{fontSize: 20, color: theme.white}}>CANCEL</Text>
+            <Text style={{fontSize: 17, color: theme.white}}>CANCEL</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
