@@ -123,10 +123,9 @@ class RegistrationView extends Component {
   onClose() {
     if (!this.state.skipped && this.props.isRegistrationInfoValid) {
       this.onRegister();
-    } else if (this.state.skipped) {
-      this.props.reset();
-      this.props.setCity(this.state.selectedCity);
     }
+    this.props.reset();
+    this.props.setCity(this.state.selectedCity);
     this.props.closeRegistrationView();
   }
 
@@ -286,7 +285,7 @@ class RegistrationView extends Component {
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
           leftTextColor={theme.white}
-          dotColor={theme.primary}>
+          activeDotColor={theme.primary}>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
             <IntroView selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
           </View>
