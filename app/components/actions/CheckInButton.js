@@ -70,7 +70,7 @@ class CheckInButton extends Component {
 
     return (
       <TouchableWithoutFeedback disabled={!validLocation} onPress={() => this.handlePress()}>
-        <Animated.View style={[styles.button, {transform: [{scale: active}]}]}>
+        <Animated.View style={[styles.button, {opacity: validLocation ? 1 : 0.7, transform: [{scale: active}]}]}>
           {this.renderIcon(validLocation)}
           <Text style={styles.text}>{validLocation ? 'CHECK IN' : 'TOO FAR :<'}</Text>
         </Animated.View>

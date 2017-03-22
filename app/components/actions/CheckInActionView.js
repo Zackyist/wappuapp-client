@@ -10,6 +10,7 @@ import {
   Dimensions,
   StyleSheet,
   BackAndroid,
+  TouchableWithoutFeedback,
   Modal
 } from 'react-native';
 import moment from 'moment';
@@ -18,7 +19,7 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EventListItem from '../calendar/EventListItem';
-import { checkIn } from '../../actions/competition';
+import { checkIn, closeCheckInView } from '../../actions/competition';
 
 import Button from '../../components/common/Button';
 import CheckInButton from './CheckInButton';
@@ -57,7 +58,8 @@ class CheckInActionView extends Component {
   }
 
   getContent(events) {
-    const currentTime = moment();
+    const currentTime = moment('2017-04-22T11:30:00.000Z');
+    // const currentTime = moment();
 
     const activeEvents = events.filter((event) => {
       if (moment(event.get('startTime')).isBefore(currentTime) && moment(event.get('endTime')).isAfter(currentTime)) {
@@ -106,15 +108,25 @@ class CheckInActionView extends Component {
           <Text style={styles.title}>CHECK IN</Text>
         </View>
 
-        <Text style={[styles.text, {textAlign: 'center'}]}>You can only check-in to events that if you are in the event area.</Text>
+        <View style={{height: 60}}>
+          <Text style={[styles.text, {textAlign: 'center'}]}>You can only check-in to events if you are in the event area.</Text>
+        </View>
 
         <ListView
           enableEmptySections={true}
           dataSource={this.state.dataSource}
+          renderHeader={this.renderHeader}
+          stickyHeaderIndices={[0]}
           renderSectionHeader={this.renderSectionHeader}
           renderRow={this.renderListItem.bind(this)}
           style={styles.listView}
         />
+
+        <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
+          <View style={styles.cancelButton}>
+            <Text style={{fontSize: 20, color: theme.white}}>CANCEL</Text>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -134,10 +146,19 @@ class CheckInActionView extends Component {
     }
 
     return (
-      <View style={{height: 160}}>
+      <View style={{marginBottom: 5}}>
         <EventListItem item={item} rowId={+rowId} hideStatus={true}/>
         <CheckInButton validLocation={validLocation} checkIn={() => checkIn(item.id)} />
       </View>);
+  }
+
+  renderHeader() {
+    return (
+      <View style={styles.listHeader}>
+        <Text style={[styles.title, {fontSize: 20}]}>ONGOING</Text>
+      </View>
+    );
+
   }
 
   render() {
@@ -165,23 +186,21 @@ class CheckInActionView extends Component {
   }
 }
 
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:0,
-    paddingBottom:IOS ? 39 : 0
+    paddingTop:30,
   },
   modalBackgroundStyle: {
     backgroundColor: theme.secondary
   },
   eventContainer: {
-    marginTop: 30,
     alignItems: 'center',
+    flexDirection: 'column',
     justifyContent: 'center',
+    flex: 1
   },
   headerContainer: {
-    marginBottom: 20,
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -222,14 +241,39 @@ const styles = StyleSheet.create({
     color: theme.light,
     textAlign: 'center'
   },
+  listHeader: {
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: theme.primaryDarker,
+    alignSelf: 'stretch'
+  },
+  cancelButton: {
+    position: 'relative',
+    bottom: 15,
+    padding: 5,
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: theme.primaryDarker,
+    width: 120,
+    shadowColor: '#000000',
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 5,
+      width: 0
+    }
+  },
   listView: {
     flexGrow: 1,
-    marginTop: 20,
+    marginTop: 0,
   }
 });
 
 const mapDispatchToProps = {
   checkIn,
+  closeCheckInView,
 };
 
 const select = store => {

@@ -36,11 +36,11 @@ const closeTextActionView = () => {
 const openCheckInView = () => {
   return { type : OPEN_CHECKIN_VIEW };
 };
-//
-// const closeCheckInView = () => {
-//   console.log('CLOSE');
-//   return { type: CLOSE_CHECKIN_VIEW };
-// };
+
+const closeCheckInView = () => {
+  console.log('CLOSE');
+  return { type: CLOSE_CHECKIN_VIEW };
+};
 
 const _postAction = (payload) => {
   return (dispatch, getStore) => {
@@ -141,7 +141,7 @@ export {
   postImage,
   openCheckInView,
   checkIn,
-  // closeCheckInView,
+  closeCheckInView,
   openTextActionView,
   closeTextActionView,
   fetchActionTypes,
