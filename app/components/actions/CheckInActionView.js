@@ -124,7 +124,7 @@ class CheckInActionView extends Component {
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
           <View style={styles.cancelButton}>
-            <Text style={{fontSize: 17, color: theme.white}}>CANCEL</Text>
+            <Text style={{fontSize: 17, color: theme.white}}>CLOSE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
