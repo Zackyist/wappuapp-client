@@ -166,6 +166,8 @@ GZIP is licensed as follow:
     misrepresented as being the original software.
     
     3. This notice may not be removed or altered from any source distribution.</string>
+			<key>License</key>
+			<string>MIT</string>
 			<key>Title</key>
 			<string>HockeySDK</string>
 			<key>Type</key>
