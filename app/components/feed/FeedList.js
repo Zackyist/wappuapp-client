@@ -145,13 +145,21 @@ class FeedList extends Component {
 
   @autobind
   onLoadMoreItems() {
-    if (this.props.isRefreshing || !this.props.feed.size || this.props.feed.size < 10) {
+    const { isRefreshing, feed } = this.props;
+    if (isRefreshing || !feed.size || feed.size < 10) {
       return;
     }
 
-    const lastItemID = this.props.feed.get(this.props.feed.size - 1).get('id') || '';
-    if (lastItemID) {
-      this.props.loadMoreItems(lastItemID);
+    const oldestItem = feed
+      // admin items are not calclulated
+      .filter(item => item.getIn(['author','type']) !== 'SYSTEM')
+      // get oldest by createdAt
+      .minBy(item => item.get('createdAt'));
+
+    const oldestItemID = oldestItem.get('id', '');
+
+    if (oldestItemID) {
+      this.props.loadMoreItems(oldestItemID);
     }
   }
 

@@ -19,7 +19,10 @@ const theme = {
   lightgrey:      '#f2f2f2',
   grey:           '#aaa',
   black:          '#222',
-  white:          '#fff'
+  white:          '#fff',
+  sima:           '#e5a74b',
+  simaDark:       '#e29816',
+  simaLight:      'rgba(229, 167, 75, .8)',
 };
 
 module.exports = theme;

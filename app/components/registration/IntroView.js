@@ -75,21 +75,19 @@ class InstructionView extends Component {
 
                 <View style={styles.cities}>
                   {this.props.cities.map((city, i) => {
-                    if (i !== 0) {
-                      return <TouchableWithoutFeedback
-                        key={i}
-                        onPress={this.handlePress.bind(this, city.get('id'))}>
-                        <Animated.View style={[styles.touchable, {transform: [{scale: city.get('id') === this.props.selectedCity ? active : unactive}] }]}>
-                          <View style={styles.circle}>
-                            <Icon style={styles.cityIcon} name={'location-city'} size={50}/>
-                            <Text style={{fontSize: 15, color: 'white', fontWeight: 'bold', marginBottom: 10}}>
-                              {city.get('name')}
-                            </Text>
-                            {this.props.selectedCity === city.get('id') && <Icon name={'check'} style={styles.checked} size={30}/>}
-                          </View>
-                        </Animated.View>
-                      </TouchableWithoutFeedback>
-                    }}
+                    return <TouchableWithoutFeedback
+                      key={i}
+                      onPress={this.handlePress.bind(this, city.get('id'))}>
+                      <Animated.View style={[styles.touchable, {transform: [{scale: city.get('id') === this.props.selectedCity ? active : unactive}] }]}>
+                        <View style={styles.circle}>
+                          <Icon style={styles.cityIcon} name={'location-city'} size={50}/>
+                          <Text style={{fontSize: 15, color: 'white', fontWeight: 'bold', marginBottom: 10}}>
+                            {city.get('name')}
+                          </Text>
+                          {this.props.selectedCity === city.get('id') && <Icon name={'check'} style={styles.checked} size={30}/>}
+                        </View>
+                      </Animated.View>
+                    </TouchableWithoutFeedback>}
                   )}
                 </View>
               </View>

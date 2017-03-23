@@ -199,9 +199,6 @@ class ActionButtons extends Component {
       TEXT: 'textsms',
       IMAGE: 'photo-camera',
       SIMA: 'local-bar',
-      LECTURE: 'school',
-      CHECK_IN_EVENT: 'place',
-      BUTTON_PUSH: 'touch-app',
       CHECK_IN_EVENT: 'add-location',
       default: 'image'
     };
@@ -213,9 +210,7 @@ class ActionButtons extends Component {
       TEXT: 'Write a message',
       IMAGE: 'Take a photo',
       SIMA: 'Have a sima',
-      LECTURE: 'At a lecture',
       CHECK_IN_EVENT: 'Check in event',
-      BUTTON_PUSH: 'Push the button',
       default: 'image'
     };
     return mapping[type] || mapping['default'];

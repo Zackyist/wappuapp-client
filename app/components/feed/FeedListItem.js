@@ -344,7 +344,7 @@ class FeedListItem extends Component {
 
   renderAdminItem(item, ago) {
 
-    return null; // <--- TODO HOX REMOVE THIS BEFORE LAUNCH
+    // return null; // <--- TODO HOX REMOVE THIS BEFORE LAUNCH
 
     return (
       <View style={styles.itemWrapper}>
