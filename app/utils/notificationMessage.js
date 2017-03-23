@@ -8,14 +8,11 @@ const getMessage = (payload) => {
     case ActionTypes.SIMA: {
       return 'One sima down!';
     }
-    case ActionTypes.LECTURE: {
-      return 'Absorb that knowledge!';
-    }
-    case ActionTypes.BUTTON_PUSH: {
-      return 'Way to push that button!';
-    }
     case ActionTypes.TEXT: {
       return 'That\'s cool!';
+    }
+    case ActionTypes.CHECK_IN_EVENT: {
+      return 'Check! Have fun!';
     }
   }
 };
