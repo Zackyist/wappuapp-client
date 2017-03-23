@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
 import CalendarView from './CalendarView';
-import EventMapView from './EventMapView';
+import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import SettingsView from './ProfileView';
@@ -24,7 +24,7 @@ class Navigation extends Component {
   }
 
   render() {
-    const { navigator, currentTab, isRadioPlaying } = this.props;
+    const { navigator, currentTab } = this.props;
     return (
       <TabBarIOS tintColor={theme.secondary} translucent={true}>
         <MDIcon.TabBarItemIOS
@@ -42,12 +42,11 @@ class Navigation extends Component {
           <CalendarView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
-          iconName='thumbs-up-down'
-          iconSize={22}
+          iconName='trending-up'
           title=''
           selected={currentTab === Tabs.FEELING}
           onPress={() => { this.onChangeTab(Tabs.FEELING); }}>
-          <CompetitionView navigator={navigator} />
+          <MoodView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
           iconName='equalizer'
@@ -70,9 +69,9 @@ class Navigation extends Component {
 
 const mapDispatchToProps = { changeTab };
 
-const select = store => {
+const select = state => {
   return {
-    currentTab: store.navigation.get('currentTab')
+    currentTab: state.navigation.get('currentTab')
   }
 };
 

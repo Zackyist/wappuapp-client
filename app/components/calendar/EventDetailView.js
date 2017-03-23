@@ -23,6 +23,7 @@ import analytics from '../../services/analytics';
 import time from '../../utils/time';
 import locationService from '../../services/location';
 import Button from '../common/Button';
+import Fab from '../common/Fab';
 
 import PlatformTouchable from '../common/PlatformTouchable';
 const IOS = Platform.OS === 'ios';
@@ -245,6 +246,19 @@ const EventDetail = React.createClass({
           )}
       >
         <View style={styles.eventContent}>
+
+          <Fab onPress={() => console.log('checkin')} styles={{ position:'absolute', right: 20, top: -51, elevation: 2,
+              shadowColor: '#000000',
+              shadowOpacity: 0.15,
+              shadowRadius: 1,
+              shadowOffset: {
+                height: 2,
+                width: 0
+              },zIndex:99, borderRadius: 40, padding: 10, width: 80, height: 80, backgroundColor: theme.secondary}}
+            disabled={false} underlayColor={theme.secondaryLight}>
+            <Text style={{ textAlign: 'center', color: theme.accent, backgroundColor: 'transparent', fontWeight: 'bold' }}>CHECK IN!</Text>
+          </Fab>
+
           <View style={styles.gridListItemMetaWrap}>
 
             <View style={styles.gridListItemMeta}>

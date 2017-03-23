@@ -1,6 +1,8 @@
 package com.wappuapp;
 
 import com.facebook.react.ReactActivity;
+import com.microsoft.codepush.react.CodePush;
+import com.horcrux.svg.RNSvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.imagepicker.ImagePickerPackage;

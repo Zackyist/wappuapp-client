@@ -23,6 +23,8 @@ import {
   getRadioSong,
   getRadioName,
   getRadioUrl,
+  getRadioStations,
+  getActiveStationId,
   toggleRadioBar,
   setRadioSong,
   setRadioStatus,
@@ -30,6 +32,7 @@ import {
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
 import PlayerUI from '../components/radio/PlayerUI';
+import PlatformTouchable from '../components/common/PlatformTouchable';
 
 const { height } = Dimensions.get('window');
 
@@ -67,19 +70,41 @@ class RadioPlayer extends Component {
       { duration: 200, easing: Easing.quad, toValue: nextState ? PLAYER_HEIGHT_EXPANDED : PLAYER_HEIGHT}).start();
   }
 
+  renderExpandedContent() {
+    const { song } = this.props;
+    return (
+      <View style={styles.containerExpanded}>
+        <View style={styles.tabs}>
+          <View style={[styles.tab, styles.tab__active]}><PlatformTouchable><Text style={styles.tabText}>Wappuradio</Text></PlatformTouchable></View>
+          <View style={styles.tab}><PlatformTouchable><Text style={styles.tabText}>Radiodiodi</Text></PlatformTouchable></View>
+        </View>
+
+        <View style={styles.radioContent}>
+          <Text style={styles.songName}>{song}</Text>
+        </View>
+
+        <TouchableOpacity onPress={this.close} style={styles.close} >
+          <Icon name="ios-arrow-up-outline" style={styles.closeArrow} />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   render() {
     const { playerHeight } = this.state;
     const { expanded, song, status, url, name } = this.props;
 
     return (
       <Animated.View style={[styles.container, { height: playerHeight }]}>
-        {expanded && <Image
+        {false && expanded && <Image
           resizeMode={'contain'}
           source={require('../../assets/radio.png')}
           // source={require('../../assets/rakkauden-wappuradio.png')}
           style={styles.bgImage} />
         }
-        <TouchableOpacity
+        {expanded && this.renderExpandedContent()}
+
+        {!expanded && <TouchableOpacity
         activeOpacity={1}
         onPress={this.toggle}
         style={styles.pressable}>
@@ -91,12 +116,8 @@ class RadioPlayer extends Component {
             song={song}
             url={url}
           />
-          {expanded &&
-            <TouchableOpacity onPress={this.close} style={styles.close} >
-              <Icon name="ios-arrow-up-outline" style={styles.closeArrow} />
-            </TouchableOpacity>
-          }
         </TouchableOpacity>
+        }
       </Animated.View>
     );
   }
@@ -133,6 +154,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
+
+  // expanded
+  containerExpanded: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
   close: {
     position: 'absolute',
     bottom: 0,
@@ -145,13 +172,47 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: 'rgba(0, 0, 0, .3)',
     backgroundColor: 'transparent'
+  },
+  tabs: {
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tab: {
+    alignItems: 'center',
+  },
+  tabText: {
+    paddingRight: 20,
+    paddingLeft: 20,
+    padding: 10,
+    color: theme.secondary
+  },
+  tab__active: {
+    borderBottomWidth: 2,
+    borderBottomColor: theme.secondary
+  },
+  radioContent: {
+    backgroundColor: '#FFF',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  songName: {
+    padding: 5,
+    textAlign: 'center',
+    fontWeight: '900',
+    fontSize: 80,
+    color: theme.secondary,
   }
+
 });
 
 const mapDispatchToProps = {
   setRadioStatus,
   setRadioSong,
-  toggleRadioBar
+  toggleRadioBar,
 }
 
 const mapStateToProps = createStructuredSelector({
@@ -159,7 +220,9 @@ const mapStateToProps = createStructuredSelector({
   name: getRadioName,
   status: getRadioStatus,
   song: getRadioSong,
-  expanded: getRadioMode
+  expanded: getRadioMode,
+  stations: getRadioStations,
+  activeStationId: getActiveStationId,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RadioPlayer);

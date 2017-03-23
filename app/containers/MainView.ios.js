@@ -9,11 +9,14 @@ import sceneConfig from '../utils/sceneConfig';
 import NavRouteMapper from '../components/common/navbarRouteMapper';
 import errorAlert from '../utils/error-alert';
 
+
+import { getCityPanelShowState } from '../concepts/city';
 import IOSTabNavigation from './Navigation';
 import RegistrationView from '../components/registration/RegistrationView';
 import CheckInActionView from '../components/actions/CheckInActionView';
 import TextActionView from '../components/actions/TextActionView';
 import LightBox from '../components/lightbox/Lightbox';
+import CitySelector from '../components/header/CitySelector';
 
 const theme = require('../style/theme');
 
@@ -26,10 +29,11 @@ class MainView extends Component {
   }
 
   render() {
-    const immutableError = this.props.errors.get('error');
+    const { showCitySelection, errors, dispatch } = this.props;
+    const immutableError = errors.get('error');
     if (immutableError) {
       const error = immutableError.toJS();
-      errorAlert(this.props.dispatch, get(error, 'header'), get(error, 'message'));
+      errorAlert(dispatch, get(error, 'header'), get(error, 'message'));
     }
 
     return (
@@ -39,7 +43,7 @@ class MainView extends Component {
           navigationBar={
             <Navigator.NavigationBar
               style={styles.navbar}
-              routeMapper={NavRouteMapper} />
+              routeMapper={NavRouteMapper(this.props)} />
           }
           initialRoute={{
             component: IOSTabNavigation,
@@ -48,6 +52,7 @@ class MainView extends Component {
           renderScene={this.renderScene}
           configureScene={() => sceneConfig}
         />
+        {showCitySelection && <CitySelector />}
         <LightBox />
         <RegistrationView />
         <CheckInActionView />
@@ -71,9 +76,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const select = store => {
+const select = state => {
   return {
-    errors: store.errors
+    showCitySelection: getCityPanelShowState(state),
+    errors: state.errors,
+    currentTab: state.navigation.get('currentTab')
   }
 };
 

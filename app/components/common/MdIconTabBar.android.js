@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderWidth: 0,
-    borderTopWidth: 1,
+    borderTopWidth: 0,
     borderTopColor: '#f2f2f2'
   },
   textLabel: {

@@ -8,14 +8,22 @@ import autobind from 'autobind-decorator';
 import _ from 'lodash';
 
 import { changeTab } from '../actions/navigation';
-import { openCitySelection, getCityId } from '../concepts/city';
+import {
+  openCitySelection,
+  getCityId,
+  toggleCityPanel,
+  getCityPanelShowState,
+} from '../concepts/city';
+import { getFeedSortType, setFeedSortType } from '../concepts/sortType';
 
 import CalendarView from './CalendarView';
+import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import ProfileView from './ProfileView';
 import AndroidTabs  from 'react-native-scrollable-tab-view';
 import Header from '../components/common/MainHeader';
+import CitySelector from '../components/header/CitySelector';
 import Tabs from '../constants/Tabs';
 
 const theme = require('../style/theme');
@@ -45,17 +53,23 @@ class AndroidTabNavigation extends Component {
       navigator,
       currentTab,
       currentCity,
-      openCitySelection
+      openCitySelection,
+      showCitySelection,
+      toggleCityPanel,
+      selectedSortType,
+      setFeedSortType
     } = this.props;
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flexGrow: 1 }}>
         <Header
           title={null}
           backgroundColor={theme.secondary}
           currentTab={currentTab}
-          currentCity={currentCity}
           openCitySelection={openCitySelection}
+          toggleCityPanel={toggleCityPanel}
+          selectedSortType={selectedSortType}
+          setFeedSortType={setFeedSortType}
           navigator={navigator}
         />
         <AndroidTabs
@@ -71,21 +85,29 @@ class AndroidTabNavigation extends Component {
         >
           <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
           <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
-          <CompetitionView tabLabel={{title:'Vibes', icon:'thumbs-up-down'}} />
+          <MoodView navigator={navigator} tabLabel={{title:'Vibes', icon:'trending-up'}} />
           <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
           <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
         </AndroidTabs>
+        {showCitySelection && <CitySelector />}
       </View>
     )
   }
 }
 
 
-const mapDispatchToProps = { changeTab, openCitySelection };
+const mapDispatchToProps = {
+  changeTab,
+  openCitySelection,
+  toggleCityPanel,
+  setFeedSortType,
+};
 
 const select = state => {
   return {
+    showCitySelection: getCityPanelShowState(state),
     currentCity: getCityId(state),
+    selectedSortType: getFeedSortType(state),
     currentTab: state.navigation.get('currentTab')
   }
 };

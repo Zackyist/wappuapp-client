@@ -22,8 +22,10 @@ import {
 
 
 import theme from '../../style/theme';
-import CitySelector from '../header/CitySelector';
+import CityToggle from '../header/CityToggle';
+import SortSelector from '../header/SortSelector';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Tabs from '../../constants/Tabs';
 
 let showShareActionSheet = function(url) {
   if (Platform.OS === 'ios') {
@@ -37,9 +39,8 @@ let showShareActionSheet = function(url) {
   }
 }
 
-let NavigationBarRouteMapper = {
+let NavigationBarRouteMapper = props => ({
   LeftButton: function(route, navigator, index, navState) {
-
     if (index > 0) {
       return (
         <TouchableHighlight
@@ -50,10 +51,15 @@ let NavigationBarRouteMapper = {
       )
     }
 
-    return <CitySelector />
+    return <CityToggle />
   },
 
   RightButton: function(route, navigator, index, navState) {
+
+    if (props.currentTab === Tabs.FEED) {
+      return (<SortSelector />);
+    }
+
     if (route.actions) {
       return (
         <TouchableHighlight
@@ -85,7 +91,7 @@ let NavigationBarRouteMapper = {
       </View>
     );
   }
-};
+});
 
 var styles = StyleSheet.create({
   navBarLogoWrap:{

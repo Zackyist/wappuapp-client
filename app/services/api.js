@@ -1,5 +1,6 @@
 import DeviceInfo from 'react-native-device-info';
 import { AsyncStorage } from 'react-native';
+import { isEmpty, isObject } from 'lodash';
 
 import Endpoints from '../constants/Endpoints';
 import { version as VERSION_NUMBER } from '../../package.json';
@@ -8,19 +9,24 @@ import * as ENV from '../../env';
 const USER_UUID = DeviceInfo.getUniqueID();
 const API_TOKEN = ENV.API_TOKEN;
 
-const fetchModels = (modelType, cityId) => {
+const fetchModels = (modelType, params) => {
   let url = Endpoints.urls[modelType];
-  if (cityId) {
-    url += `?cityId=${cityId}`;
+
+  if (!isEmpty(params) && isObject(params)) {
+    url += '?' + Object.keys(params).map(k => {
+      return params[k] ? (encodeURIComponent(k) + '=' + encodeURIComponent(params[k])) : ''
+    }).join('&');
   }
+
   return cachedFetch(url);
 };
 
-const fetchMoreFeed = (beforeId, cityId) => {
-  const params = { beforeId, limit: 20, cityId };
+const fetchMoreFeed = (beforeId, params) => {
+  const extendedParams = Object.assign({ beforeId, limit: 20 }, params);
+
   let url = Endpoints.urls.feed;
-  url += '?' + Object.keys(params).map(k => {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  url += '?' + Object.keys(extendedParams).map(k => {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(extendedParams[k]);
   }).join('&');
 
   return cachedFetch(url);
