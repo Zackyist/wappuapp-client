@@ -12,6 +12,8 @@ import {
   PanResponder,
   Platform
 } from 'react-native';
+import theme from '../../../style/theme'
+
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
@@ -19,12 +21,6 @@ const isIOS = Platform.OS === 'ios';
 const headerHeight = 60;
 const sliderHeight = height;
 
-const theme = {
-  primary: '#00d7d2',
-  secondary: '#ec449c',
-  beer: '#e5a74b',
-  beerDark: '#e29816',
-  beerLight: 'rgba(229, 167, 75, .8)',
 }
 
 class MoodSlider extends Component {
