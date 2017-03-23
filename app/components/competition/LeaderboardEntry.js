@@ -73,7 +73,7 @@ class LeaderboardEntry extends Component {
 
         <View style={styles.entryLogo}>
           <Image
-          source={{ uri: this.props.logo }}
+          source={this.props.logo === null ? null : { uri: this.props.logo }}
           style={styles.entryLogoImg} />
         </View>
 

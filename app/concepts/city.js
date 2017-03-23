@@ -75,8 +75,9 @@ export const openCitySelection = () => (dispatch, getState) => {
 export const NO_SELECTED_CITY_FOUND = 'city/NO_SELECTED_CITY_FOUND';
 export const initializeUsersCity = () => (dispatch, getState) => {
   const cityList = getCityList(getState());
-  const defaultCityId = cityList.getIn([0, 'id'], '').toString()
+  const defaultCityId = '1';
 
+  console.log('defaultCityId ' + JSON.stringify(defaultCityId));
 
   return AsyncStorage.getItem(cityKey)
     .then(city => {
@@ -112,7 +113,7 @@ export const getCityPanelShowState = state => state.city.get('showCityPanel');
 export const getCurrentCityName = createSelector(
    getCityId, getCityList,
    (cityId, cityList) => {
-      if (isNil(cityId)) {
+      if (isNil(cityId) || cityId === 1) {
         return '';
       }
       return cityList.find(city => city.get('id') === cityId).get('name');
