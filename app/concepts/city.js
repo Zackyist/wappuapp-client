@@ -1,6 +1,7 @@
 import { Alert, Platform, AsyncStorage } from 'react-native';
 import { createSelector } from 'reselect';
 import { fromJS } from 'immutable';
+import { isNil } from 'lodash';
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
 import { fetchFeed } from '../actions/feed';
@@ -108,6 +109,15 @@ export const toggleCityPanel = (close) => (dispatch, getState) => {
 export const getCityList = state => state.city.get('list');
 export const getCityId = state => state.city.get('id');
 export const getCityPanelShowState = state => state.city.get('showCityPanel');
+export const getCurrentCityName = createSelector(
+   getCityId, getCityList,
+   (cityId, cityList) => {
+      if (isNil(cityId)) {
+        return '';
+      }
+      return cityList.find(city => city.get('id') === cityId).get('name');
+    }
+);
 
 // # Reducer
 const initialState = fromJS({
