@@ -14,6 +14,7 @@ import * as LocationActions from '../actions/location';
 import * as TeamActions from '../actions/team';
 import * as RegistrationActions from '../actions/registration';
 import { initializeUsersCity, fetchCities } from '../concepts/city';
+import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
 import * as ENV from '../../env';
 import { checkForUpdates } from '../utils/updater';
 var HockeyApp = require('react-native-hockeyapp');
@@ -42,6 +43,11 @@ store.dispatch(RegistrationActions.getUser());
 store.dispatch(fetchCities())
 // load selectd city from local storage
 .then(() => store.dispatch(initializeUsersCity()))
+
+// load radio settings from local storage
+store.dispatch(initializeUsersRadio())
+// fetch radio stations
+.then(() => store.dispatch(fetchRadioStations()))
 
 
 class RootView extends Component {

@@ -15,7 +15,8 @@ const EndpointUrls = {
   actionTypes: `${ROOT_URL}/action_types`,
   announcements: `${ROOT_URL}/announcements`,
   vote: `${ROOT_URL}/vote`,
-  cities: `${ROOT_URL}/cities`
+  cities: `${ROOT_URL}/cities`,
+  radio: `${ROOT_URL}/radio`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);

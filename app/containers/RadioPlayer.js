@@ -25,9 +25,11 @@ import {
   getRadioUrl,
   getRadioStations,
   getActiveStationId,
+  getActiveStation,
   toggleRadioBar,
   setRadioSong,
   setRadioStatus,
+  setRadioStationActive
 } from '../concepts/radio';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
@@ -71,12 +73,18 @@ class RadioPlayer extends Component {
   }
 
   renderExpandedContent() {
-    const { song } = this.props;
+    const { song, stations, activeStationId } = this.props;
     return (
       <View style={styles.containerExpanded}>
         <View style={styles.tabs}>
-          <View style={[styles.tab, styles.tab__active]}><PlatformTouchable><Text style={styles.tabText}>Wappuradio</Text></PlatformTouchable></View>
-          <View style={styles.tab}><PlatformTouchable><Text style={styles.tabText}>Radiodiodi</Text></PlatformTouchable></View>
+          {stations && stations.map((station, index) =>
+            <View key={index} style={[styles.tab, station.get('id') === activeStationId ? styles.tab__active : {}]}>
+              <PlatformTouchable onPress={() => this.props.setRadioStationActive(station.get('id'))}>
+                <Text style={styles.tabText}>{station.get('name')}</Text>
+              </PlatformTouchable>
+            </View>
+          )}
+          {/*<View style={styles.tab}><PlatformTouchable><Text style={styles.tabText}>Radiodiodi</Text></PlatformTouchable></View>*/}
         </View>
 
         <View style={styles.radioContent}>
@@ -92,7 +100,7 @@ class RadioPlayer extends Component {
 
   render() {
     const { playerHeight } = this.state;
-    const { expanded, song, status, url, name } = this.props;
+    const { expanded, song, status, url, currentStation } = this.props;
 
     return (
       <Animated.View style={[styles.container, { height: playerHeight }]}>
@@ -111,7 +119,7 @@ class RadioPlayer extends Component {
           <PlayerUI
             setRadioStatus={this.props.setRadioStatus}
             setRadioSong={this.props.setRadioSong}
-            radioStationName={name}
+            radioStationName={currentStation ? currentStation.get('name') : ''}
             status={status}
             song={song}
             url={url}
@@ -182,6 +190,9 @@ const styles = StyleSheet.create({
   },
   tab: {
     alignItems: 'center',
+    borderBottomWidth: 2,
+    paddingTop: 2,
+    borderBottomColor: 'transparent'
   },
   tabText: {
     paddingRight: 20,
@@ -190,7 +201,6 @@ const styles = StyleSheet.create({
     color: theme.secondary
   },
   tab__active: {
-    borderBottomWidth: 2,
     borderBottomColor: theme.secondary
   },
   radioContent: {
@@ -212,6 +222,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   setRadioStatus,
   setRadioSong,
+  setRadioStationActive,
   toggleRadioBar,
 }
 
@@ -223,6 +234,7 @@ const mapStateToProps = createStructuredSelector({
   expanded: getRadioMode,
   stations: getRadioStations,
   activeStationId: getActiveStationId,
+  currentStation: getActiveStation,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(RadioPlayer);
