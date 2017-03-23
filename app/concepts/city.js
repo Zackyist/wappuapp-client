@@ -75,9 +75,7 @@ export const openCitySelection = () => (dispatch, getState) => {
 export const NO_SELECTED_CITY_FOUND = 'city/NO_SELECTED_CITY_FOUND';
 export const initializeUsersCity = () => (dispatch, getState) => {
   const cityList = getCityList(getState());
-  const defaultCityId = '1';
-
-  console.log('defaultCityId ' + JSON.stringify(defaultCityId));
+  const defaultCityId = cityList.first() ? cityList.first().get('id') : '2';
 
   return AsyncStorage.getItem(cityKey)
     .then(city => {
