@@ -136,7 +136,7 @@ class RegistrationView extends Component {
     const team = teams.find(team => team.get('id') === selectedTeam);
 
     if (team) {
-      return team.get('cityId') === selectedCity;
+      return team.get('city') === selectedCity;
     }
     return false;
   }
@@ -176,7 +176,7 @@ class RegistrationView extends Component {
               <View style={styles.inputFieldWrap}>
                 <ScrollView style={{flex:1, height: (IOS || height > 605) ? 210 : null}}>
                   {this.props.teams.map(team => {
-                    if (team.get('cityId') === this.state.selectedCity) {
+                    if (team.get('city') === this.state.selectedCity) {
                       return <Team
                         key={team.get('id')}
                         name={team.get('name')}
@@ -213,19 +213,18 @@ class RegistrationView extends Component {
         </View>
         <View style={{flexDirection: 'row', padding: 10}}>
           {this.props.cities.map((city, i) => {
-            if (i !== 0) {
-              return (
-                <View key={i} style={styles.item}>
-                  <TouchableOpacity
-                    style={[styles.button, {backgroundColor: this.state.selectedCity === city.get('id') ? theme.grey : 'white'}]}
-                    onPress={this.onSelectCity.bind(this, city.get('id'))}>
-                    <Text style={[styles.text, {color: this.state.selectedCity  === city.get('id')? 'white' : '#666'}]}>
-                      {city.get('name')}
-                    </Text>
-                  </TouchableOpacity>
-                </View>);
-              }
+            return (
+              <View key={i} style={styles.item}>
+                <TouchableOpacity
+                  style={[styles.button, {backgroundColor: this.state.selectedCity === city.get('id') ? theme.grey : 'white'}]}
+                  onPress={this.onSelectCity.bind(this, city.get('id'))}>
+                  <Text style={[styles.text, {color: this.state.selectedCity  === city.get('id')? 'white' : '#666'}]}>
+                    {city.get('name')}
+                  </Text>
+                </TouchableOpacity>
+              </View>);
             }
+
           )}
         </View>
       </View>
@@ -282,7 +281,7 @@ class RegistrationView extends Component {
           onSkipBtnClick={() => this.onSkip()}
           onDoneBtnClick={() => this.onRegister()}
           // showSkipButton={this.state.showSkipButton}
-          showDoneButton={this.state.index !== 2 || (this.props.isRegistrationViewOpen && this.teamIsValid())}
+          showDoneButton={this.state.index !== 2 || (this.props.isRegistrationInfoValid && this.teamIsValid())}
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
           leftTextColor={theme.white}
