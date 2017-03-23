@@ -48,9 +48,7 @@ class CheckInButton extends Component {
   }
 
   handlePress() {
-    this.props.checkIn();
     this.setState({status: CHECKED});
-
     this.state.springAnim.setValue(0);
      Animated.timing(
        this.state.springAnim,
@@ -58,33 +56,24 @@ class CheckInButton extends Component {
          toValue: 1,
          duration: 500,
          easing: Easing.elastic(1)}
-     ).start();
-  }
+     ).start(() => {
+       this.props.checkIn();
+     });
 
-  renderIcon(status) {
-    switch(status) {
-      case AVAILABLE:
-        return <Icon size={30} name={'pin-drop'} style={styles.icon}/>;
-      case CHECKED:
-        return <Icon size={30} name={'check'} style={styles.icon}/>;
-      default:
-        return <Icon size={20} name={'lock'} style={styles.icon}/>;
-    }
   }
 
   renderText(status) {
     switch(status) {
       case AVAILABLE:
-        return 'CHECK IN';
+        return <Text style={styles.text}>CHECK IN </Text>;
       case CHECKED:
-        return 'OK';
-      default:
-        return 'TOO FAR :<';
+        return <Icon size={20} name={'check'} style={styles.icon}/>;
+      case UNAVAILABLE:
+        return <Text style={styles.text}>TOO FAR </Text>;
     }
   }
 
   render() {
-
     const { validLocation, checkIn } = this.props;
     const { status } = this.state;
 
@@ -93,13 +82,10 @@ class CheckInButton extends Component {
       outputRange: [1, 1.2, 1]
     });
 
-    console.log('validLocation ' + validLocation);
-
     return (
-      <TouchableWithoutFeedback disabled={!validLocation} onPress={() => this.handlePress()}>
-        <Animated.View style={[styles.button, {opacity: validLocation ? 1 : 0.7, transform: [{scale: active}]}]}>
-          {this.renderIcon(status)}
-          <Text style={styles.text}>{this.renderText(status)}</Text>
+      <TouchableWithoutFeedback disabled={status !== AVAILABLE} onPress={() => this.handlePress()}>
+        <Animated.View style={[styles.button, {opacity: status === AVAILABLE ? 1 : 0.7, transform: [{scale: active}]}]}>
+          {this.renderText(status)}
         </Animated.View>
       </TouchableWithoutFeedback>
     );
@@ -109,7 +95,6 @@ class CheckInButton extends Component {
 const styles = StyleSheet.create({
   icon: {
     color: 'white',
-    marginRight: 5
   },
   text: {
     color: theme.light

@@ -75,6 +75,11 @@ const _postAction = (payload) => {
             type: SHOW_NOTIFICATION,
             payload: NotificationMessages.getRateLimitMessage(payload)
           });
+        } else if (e.response.status === 403) {
+          dispatch({
+            type: SHOW_NOTIFICATION,
+            payload: NotificationMessages.getInvalidEventMessage(payload)
+          });
         } else {
           dispatch({
             type: SHOW_NOTIFICATION,

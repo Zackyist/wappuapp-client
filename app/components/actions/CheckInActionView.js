@@ -22,6 +22,7 @@ import EventListItem from '../calendar/EventListItem';
 import { checkIn, closeCheckInView } from '../../actions/competition';
 
 import Button from '../../components/common/Button';
+import Notification from '../common/Notification';
 import CheckInButton from './CheckInButton';
 import theme from '../../style/theme';
 import * as CompetitionActions from '../../actions/competition';
@@ -57,9 +58,14 @@ class CheckInActionView extends Component {
     });
   }
 
+  checkIn(eventId) {
+    this.props.checkIn(eventId);
+    // this.props.closeCheckInView();
+  }
+
   getContent(events) {
-    const currentTime = moment('2017-04-22T11:30:00.000Z');
-    // const currentTime = moment();
+    // const currentTime = moment('2017-04-22T11:30:00.000Z');
+    const currentTime = moment();
 
     const activeEvents = events.filter((event) => {
       if (moment(event.get('startTime')).isBefore(currentTime) && moment(event.get('endTime')).isAfter(currentTime)) {
@@ -124,7 +130,7 @@ class CheckInActionView extends Component {
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
           <View style={styles.cancelButton}>
-            <Text style={{fontSize: 17, color: theme.white}}>CLOSE</Text>
+            <Text style={{fontSize: 14, color: theme.white}}>CLOSE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -133,22 +139,17 @@ class CheckInActionView extends Component {
 
   renderListItem(item, sectionId, rowId) {
     const { userLocation, checkIn } = this.props;
-    const eventLocation = {
-      longitude: item.location.x,
-      latitude: item.location.y
-    }
     let validLocation = false;
 
-    if ( userLocation && eventLocation ) {
-      const distance = location.getDiscanceInMeters(userLocation, eventLocation);
-      const radius = item.radius*1000;
-      validLocation = radius > distance;
+    if ( userLocation && item.location ) {
+      const distance = location.getDiscanceInMeters(userLocation, item.location);
+      validLocation = item.radius > distance;
     }
 
     return (
       <View style={{marginBottom: 5}}>
         <EventListItem item={item} rowId={+rowId} hideStatus={true}/>
-        <CheckInButton validLocation={validLocation} checkIn={() => checkIn(item.id)} />
+        <CheckInButton validLocation={validLocation} checkIn={() => this.checkIn(item.id)} />
       </View>);
   }
 
@@ -280,6 +281,8 @@ const select = store => {
   return {
     isCheckInViewOpen: store.competition.get('isCheckInViewOpen'),
     events: store.event.get('list'),
+    isNotificationVisible: store.competition.get('isNotificationVisible'),
+    notificationText: store.competition.get('notificationText'),
     userLocation: store.location.get('currentLocation')
   };
 };

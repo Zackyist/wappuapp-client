@@ -12,7 +12,7 @@ const getMessage = (payload) => {
       return 'That\'s cool!';
     }
     case ActionTypes.CHECK_IN_EVENT: {
-      return 'Check! Have fun!';
+      return '*Check* Whappu hard!';
     }
   }
 };
@@ -26,8 +26,13 @@ const getRateLimitMessage = (payload) => {
   return 'Hold your horses!'
 };
 
+const getInvalidEventMessage = (payload) => {
+  return 'Hold your horses! No double check-ins!'
+};
+
 export {
   getMessage,
   getErrorMessage,
-  getRateLimitMessage
+  getRateLimitMessage,
+  getInvalidEventMessage
 };

@@ -21,6 +21,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ParallaxView from 'react-native-parallax-view';
 import theme from '../../style/theme';
 import Toolbar from './EventDetailToolbar';
+import Notification from '../common/Notification';
 
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -436,6 +437,9 @@ const EventDetail = React.createClass({
           </View>
         </View>
       </ParallaxView>
+      <Notification visible={this.props.isNotificationVisible}>
+        {this.props.notificationText}
+      </Notification>
     </View>
   }
 
@@ -446,7 +450,9 @@ const mapDispatchToProps = { checkIn };
 
 const select = store => {
   return {
-    userLocation: store.location.get('currentLocation')
+    userLocation: store.location.get('currentLocation'),
+    isNotificationVisible: store.competition.get('isNotificationVisible'),
+    notificationText: store.competition.get('notificationText')
   }
 };
 
