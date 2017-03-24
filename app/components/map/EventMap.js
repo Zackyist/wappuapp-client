@@ -58,6 +58,14 @@ class EventMap extends Component {
     analytics.viewOpened(VIEW_NAME);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { currentCity } = this.props;
+    if (currentCity && currentCity !== nextProps.currentCity) {
+      const cityCoords = this.getCityCoords(nextProps.currentCity);
+      this.map.animateToCoordinate(cityCoords, 1);
+    }
+  }
+
   @autobind
   onEventMarkerPress(event) {
     this.props.navigator.push({
@@ -68,16 +76,20 @@ class EventMap extends Component {
     });
   }
 
-  @autobind
   getCityRegion(city) {
     const deltaSettings = {
      latitudeDelta: 0.2,
      longitudeDelta: 0.2
    };
+   const cityCoords = this.getCityCoords(city);
+   return Object.assign(deltaSettings, cityCoords);
+  }
+
+  @autobind
+  getCityCoords(city) {
    const cityName = city || this.props.currentCity;
    const isTampere = (cityName || '').toLowerCase() === 'tampere';
-   return Object.assign(deltaSettings,
-    isTampere ? CITY_COORDS.tampere : CITY_COORDS.otaniemi);
+   return isTampere ? CITY_COORDS.tampere : CITY_COORDS.otaniemi;
   }
 
   render() {
@@ -134,8 +146,7 @@ class EventMap extends Component {
           showsBuildings={false}
           showsIndoors={false}
           rotateEnabled={false}
-          // region={this.state.region}
-          // onRegionChange={this.onRegionChange}
+          ref={(map) => { this.map = map; }}
         >
           {markers}
         </MapView>
