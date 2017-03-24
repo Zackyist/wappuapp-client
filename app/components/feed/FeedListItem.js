@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   itemContent_byMyTeam: {
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
     marginLeft: FEED_ITEM_MARGIN_DISTANCE,
-    backgroundColor: '#edfcfb',
+    // backgroundColor: '#edfcfb',
   },
   itemContent_image: {
     marginLeft: FEED_ITEM_MARGIN_DEFAULT,
@@ -137,6 +137,10 @@ const styles = StyleSheet.create({
   itemAuthorTeam:{
     fontSize:11,
     color: '#aaa'
+  },
+  itemAuthorTeam__my: {
+    color: theme.primary,
+    fontWeight: 'bold'
   },
   feedItemListItemAuthorIcon:{
     color: '#bbb',
@@ -326,7 +330,7 @@ class FeedListItem extends Component {
         disabled={disabled}
         activeOpacity={0}
         onPress={() => this.voteThisItem(value)}>
-        <Text style={{color: disabled ? theme.grey : theme.secondary}}>
+        <Text style={{color: disabled ? theme.secondary : theme.grey}}>
           <Icon name={iconName} size={25}/>
         </Text>
       </TouchableOpacity>
@@ -407,7 +411,7 @@ class FeedListItem extends Component {
             {/*<Icon name='face' style={styles.feedItemListItemAuthorIcon} />*/}
             <View style={styles.feedItemListItemAuthor}>
               <Text style={styles.itemAuthorName}>{item.author.name}</Text>
-              <Text style={styles.itemAuthorTeam}>{item.author.team}</Text>
+              <Text style={[styles.itemAuthorTeam, itemByMyTeam ? styles.itemAuthorTeam__my : {}]}>{item.author.team}</Text>
             </View>
             <Text style={styles.itemTimestamp}>{ago}</Text>
           </View>
