@@ -80,7 +80,7 @@ var styles = StyleSheet.create({
   },
   activeIndicator: {
     opacity: 1,
-    backgroundColor: theme.accent,
+    backgroundColor: theme.accentLight,
   }
 });
 

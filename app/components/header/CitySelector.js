@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Image,
   Animated,
   Dimensions,
   Easing,
@@ -22,6 +23,11 @@ import {
 
 import theme from '../../style/theme';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
+
+const cityIcons = {
+  'helsinki': require('../../../assets/cities/icon-ota-amfi-accent.png'),
+  'tampere': require('../../../assets/cities/icon-tampere-accent.png')
+};
 
 const IOS = Platform.OS === 'ios';
 const { width } = Dimensions.get('window');
@@ -69,9 +75,16 @@ class CitySelector extends Component {
         <View style={styles.filterBtn}>
           <TouchableHighlight
             style={styles.buttonInner}
-            underlayColor={theme.primaryLight}
+            underlayColor={theme.secondaryLight}
             onPress={() => this.props.setCity(city.get('id')) }>
-            <MdIcon name={city.get('id') === 3 ? 'domain' : 'location-city'} style={styles.filterIcon} />
+            <Image
+              source={(city.get('name') || '').toLowerCase() === 'tampere'
+                ? cityIcons.tampere
+                : cityIcons.helsinki
+              }
+              style={styles.cityIcon}
+            />
+            {/*<MdIcon name={city.get('id') === 3 ? 'domain' : 'location-city'} style={styles.filterIcon} />*/}
           </TouchableHighlight>
         </View>
         <Text style={[styles.filterText, isActive ? styles.activeText : {}]}>{city.get('name')}</Text>
@@ -150,7 +163,7 @@ var styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: theme.primary,
+    backgroundColor: theme.secondary,
   },
   buttonInner: {
     width: 70,
@@ -167,12 +180,17 @@ var styles = StyleSheet.create({
     textAlign: 'center',
   },
   activeText: {
-    color: theme.primary,
+    color: theme.secondary,
     fontWeight: 'bold',
   },
   filterIcon: {
     color: theme.white,
     fontSize: 33,
+  },
+  cityIcon: {
+    top: -3,
+    width: 50,
+    height: 50,
   }
 });
 

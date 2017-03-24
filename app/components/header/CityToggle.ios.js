@@ -56,10 +56,10 @@ var styles = StyleSheet.create({
   },
   cityIcon: {
     // tintColor: theme.white,
-    top: 0,
+    top: -1,
     left: 5,
-    width: 40,
-    height: 40,
+    width: 38,
+    height: 38,
   }
 });
 

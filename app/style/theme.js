@@ -11,6 +11,7 @@ const theme = {
   secondaryLight: '#dd4997',
   secondaryDark:  '#ce3686',
   accent:         '#FFFB38',
+  accentLight:    '#FEFF77',
   danger:         '#FF5240',
   stable:         '#f6f6f6',
   light:          '#fff',
