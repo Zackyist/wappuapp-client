@@ -57,7 +57,7 @@ var styles = StyleSheet.create({
   cityIcon: {
     // tintColor: theme.white,
     top: -1,
-    left: 5,
+    left: 7,
     width: 38,
     height: 38,
   }
