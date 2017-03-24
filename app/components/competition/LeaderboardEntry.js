@@ -28,7 +28,7 @@ class LeaderboardEntry extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { width: 25 };
+    this.state = { width: 5 };
   }
 
   componentWillMount() {
@@ -38,7 +38,7 @@ class LeaderboardEntry extends Component {
   componentDidMount() {
     // Increase min width if the team has some points, so that if winner has
     // e.g. 40000, the team with 30 points does not have too short bar
-    const minWidth = this.props.team.get('score') > 10 ? 46 : 26;
+    const minWidth = this.props.team.get('score') > 10 ? 46 : 6;
 
     this.setTimeout(() => {
       LayoutAnimation.spring();
@@ -97,10 +97,11 @@ class LeaderboardEntry extends Component {
               styles.bar,
               {width: this.state.width }
               ]} />
-
+            {/*
             <Text style={[styles.entryTitleScore, styles.entryTitleScoreOver]}>
-            {this.props.team.get('score')}
+            this.props.team.get('score')
             </Text>
+            */}
 
           </View>
         </View>
@@ -175,22 +176,22 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     color:'#fff',
     textShadowColor:'#873a6d',
-    textShadowOffset: {width: 0, height: 1},
+    textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 1
   },
   barWrap:{
     backgroundColor:'transparent',
-    marginTop:3,
+    marginTop:6,
     marginBottom:5,
     overflow:'hidden',
-    height:Platform.OS === 'ios' ? 30 : 26,
+    height:Platform.OS === 'ios' ? 10 : 26,
     flex:1,
   },
   bar:{
-    height:Platform.OS === 'ios' ? 30 : 26,
+    height:Platform.OS === 'ios' ? 10 : 26,
     backgroundColor:theme.secondary,
     position:'absolute',
-    borderRadius:3,
+    borderRadius: 3,
     left:0,
     top:0,
     bottom:0,
