@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import _ from 'lodash';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,20 +20,24 @@ import MDIcon from 'react-native-vector-icons/MaterialIcons';
 import analytics from '../../services/analytics';
 import * as MarkerActions from '../../actions/marker';
 import * as EventActions from '../../actions/event';
-import EventDetail from '../calendar/EventDetail';
+import EventDetail from '../calendar/EventDetailView';
 import Loader from '../common/Loader';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 import LoadingStates from '../../constants/LoadingStates';
+import { getCurrentCityName } from '../../concepts/city';
 
-// Disable map on some devices
-const DeviceInfo = require('react-native-device-info');
-const Manufacturer = DeviceInfo.getManufacturer();
-const OSVersion = DeviceInfo.getSystemVersion();
-const disableMap = false; /*
-  Platform.OS === 'android' && parseInt(OSVersion) >= 6 &&
-  (Manufacturer.indexOf('Sony') >= 0 || Manufacturer === 'OnePlus');
-*/
+const disableMap = false;
+const CITY_COORDS = {
+  tampere: {
+    latitude: 61.4931758,
+    longitude: 23.7602363,
+  },
+  otaniemi: {
+    latitude: 60.1841396,
+    longitude: 24.827895
+  }
+};
 
 const MARKER_IMAGES = {
   EVENT: require('../../../assets/marker.png'),
@@ -46,12 +51,14 @@ const MARKER_IMAGES = {
 const VIEW_NAME = 'EventMap';
 
 class EventMap extends Component {
+
   componentDidMount() {
     this.props.dispatch(EventActions.fetchEvents());
     this.props.dispatch(MarkerActions.fetchMarkers());
     analytics.viewOpened(VIEW_NAME);
   }
 
+  @autobind
   onEventMarkerPress(event) {
     this.props.navigator.push({
       component: EventDetail,
@@ -59,6 +66,18 @@ class EventMap extends Component {
       model: event,
       disableTopPadding: true
     });
+  }
+
+  @autobind
+  getCityRegion(city) {
+    const deltaSettings = {
+     latitudeDelta: 0.2,
+     longitudeDelta: 0.2
+   };
+   const cityName = city || this.props.currentCity;
+   const isTampere = (cityName || '').toLowerCase() === 'tampere';
+   return Object.assign(deltaSettings,
+    isTampere ? CITY_COORDS.tampere : CITY_COORDS.otaniemi);
   }
 
   render() {
@@ -88,7 +107,7 @@ class EventMap extends Component {
     const markers = locations.map((location, i) => {
       return <MapView.Marker
         centerOffset={{x: 0, y: location.type === 'EVENT' ? -20 : 0}}
-        anchor={{x: 0.5, y: location.type === 'EVENT' ? 0.9 : 0.5}}
+        anchor={{x: 0.5, y: location.type === 'EVENT' ? 0.5 : 0.5}}
         image={MARKER_IMAGES[location.type]}
         key={i} coordinate={location.location}
       >
@@ -104,20 +123,19 @@ class EventMap extends Component {
       return ( this._renderDisabledMapAnnouncement(firstFutureEvent) );
     }
 
+    const initialRegion = this.getCityRegion();
+
     return (
       <View style={{flex:1}}>
         <MapView style={styles.map}
-          initialRegion={{
-            latitude: 61.4931758,
-            longitude: 23.7602363,
-            latitudeDelta: 0.2,
-            longitudeDelta: 0.2,
-          }}
+          initialRegion={initialRegion}
           showsUserLocation={Platform.OS === 'android' || this.props.locateMe}
           showsPointsOfInterest={false}
           showsBuildings={false}
           showsIndoors={false}
           rotateEnabled={false}
+          // region={this.state.region}
+          // onRegionChange={this.onRegionChange}
         >
           {markers}
         </MapView>
@@ -146,7 +164,7 @@ class EventMap extends Component {
   }
 
   _renderEventMarker(event) {
-    return <MapView.Callout onPress={this.onEventMarkerPress.bind(this, event)}>
+    return <MapView.Callout onPress={() => this.onEventMarkerPress(event)} style={{ flex: 1, position: 'relative' }}>
       <TouchableHighlight
         underlayColor='transparent'
         style={styles.calloutTouchable}
@@ -154,7 +172,7 @@ class EventMap extends Component {
         <View style={styles.callout}>
           <View>
             <View style={styles.calloutTitleWrap}>
-              <Text style={styles.calloutTitle}>{event.name}</Text>
+              <Text style={styles.calloutTitle}>Test{event.name}</Text>
               <Icon style={styles.calloutIcon} name='ios-arrow-forward' />
             </View>
             <Text style={[styles.calloutInfo,{color:'#aaa', marginBottom:10}]}>
@@ -175,7 +193,7 @@ class EventMap extends Component {
       }
     }
 
-    return <MapView.Callout {...calloutProps}>
+    return <MapView.Callout {...calloutProps} style={{ flex: 1, position: 'relative' }}>
       <TouchableHighlight
         underlayColor='transparent'
         style={styles.calloutTouchable}
@@ -194,7 +212,7 @@ class EventMap extends Component {
   _renderStaticUrlMarkerView(location) {
     return <View>
       <View style={styles.calloutTitleWrap}>
-        <Text style={styles.calloutTitle}>{location.title}</Text>
+        <Text style={styles.calloutTitle}>TEST{location.title}</Text>
         <Icon style={styles.calloutIcon} name='ios-arrow-forward' />
       </View>
 
@@ -323,13 +341,16 @@ const styles = StyleSheet.create({
   },
   callout: {
     padding: 0,
-    flex:1,
+    flex: 1,
+    flexGrow: 1,
     justifyContent:'space-between',
     alignItems:'flex-start',
     flexDirection:'row'
   },
   calloutTouchable: {
-    padding: 6
+    padding: 6,
+    flex: 1,
+    flexGrow: 1,
   },
   calloutTitleWrap:{
     flex:1,
@@ -448,6 +469,7 @@ const styles = StyleSheet.create({
 const select = store => {
 
   return {
+    currentCity: getCurrentCityName(store),
     locateMe: store.event.get('locateMe'),
     showFilter: store.event.get('showFilter'),
     events: store.event.get('list'),
