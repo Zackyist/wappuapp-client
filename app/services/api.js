@@ -32,7 +32,7 @@ const fetchMoreFeed = (beforeId, params) => {
   return cachedFetch(url);
 };
 
-const postAction = (params, location) => {
+const postAction = (params, location, queryParams) => {
   let payload = Object.assign({}, params, { user: DeviceInfo.getUniqueID() });
 
   // Add location to payload, if it exists
@@ -40,7 +40,7 @@ const postAction = (params, location) => {
     payload.location = location;
   }
 
-  return _post(Endpoints.urls.action, payload);
+  return _post(Endpoints.urls.action, payload, queryParams);
 };
 
 const putUser = payload => {
@@ -129,8 +129,8 @@ function isErrorResponse(status) {
   return status && status >= 400;
 }
 
-const _post = (url, body) => {
-  return wapuFetch(url, {
+const _post = (url, body, query) => {
+  return wapuFetch(queryParametrize(url, query), {
     method: 'post',
     headers: {
       Accept: 'application/json',
@@ -161,6 +161,18 @@ const _delete = (url, body) => {
     body: JSON.stringify(body)
   }).then(checkResponseStatus);
 };
+
+const queryParametrize = (url, query) => {
+  let queryParametrizedUrl = url;
+
+  if (isObject(query) && !isEmpty(query)) {
+    queryParametrizedUrl += '?' + Object.keys(query).map(k => {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
+    }).join('&');
+  }
+
+  return queryParametrizedUrl;
+}
 
 export default {
   deleteFeedItem,

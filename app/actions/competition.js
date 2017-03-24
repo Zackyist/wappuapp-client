@@ -1,10 +1,12 @@
 'use strict';
 
+import { isNil } from 'lodash';
 import api from '../services/api';
 import ActionTypes from '../constants/ActionTypes';
 import * as NotificationMessages from '../utils/notificationMessage';
 import { refreshFeed } from './feed';
 import { sortFeedChronological } from '../concepts/sortType';
+import { getCityId } from '../concepts/city';
 import {createRequestActionTypes} from '.';
 
 const {
@@ -33,10 +35,14 @@ const closeTextActionView = () => {
 };
 
 const _postAction = (payload) => {
-  return (dispatch, getStore) => {
-     dispatch({ type: POST_ACTION_REQUEST });
+  return (dispatch, getState) => {
+    dispatch({ type: POST_ACTION_REQUEST });
 
-    return api.postAction(payload, getStore().location.get('currentLocation'))
+    const state = getState();
+    const cityId = getCityId(state);
+    const queryParams = !isNil(cityId) ? { cityId } : {};
+
+    return api.postAction(payload, state.location.get('currentLocation'), queryParams)
       .then(response => {
          setTimeout(() => {
 
