@@ -12,14 +12,14 @@ const {
 const SHOW_TEAM_SELECTOR = 'SHOW_TEAM_SELECTOR';
 
 const fetchTeams = () => (dispatch, getState) => {
-  // let cityId = getCityId(getState());
-  //
-  // if (cityId === 1) {
-  //   cityId = null;
-  // }
+  const cityId = getCityId(getState());
+
+  if (!cityId) {
+    return;
+  }
 
   dispatch({ type: GET_TEAMS_REQUEST });
-  return api.fetchModels('teams', null)
+  return api.fetchModels('teams', { cityId })
     .then(teams => dispatch({ type: GET_TEAMS_SUCCESS, payload: teams }))
     .catch(e => dispatch({ type: GET_TEAMS_FAILURE, error: true, payload: e }));
 };
