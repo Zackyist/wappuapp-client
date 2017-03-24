@@ -199,7 +199,7 @@ class ActionButtons extends Component {
       TEXT: 'textsms',
       IMAGE: 'photo-camera',
       SIMA: 'local-bar',
-      CHECK_IN_EVENT: 'add-location',
+      CHECK_IN_EVENT: 'location-on',
       default: 'image'
     };
     return mapping[type] || mapping['default'];
