@@ -15,8 +15,8 @@ import theme from '../../style/theme';
 // import MdIcon from 'react-native-vector-icons/MaterialIcons';
 
 const cityIcons = {
-  'helsinki': require('../../../assets/cities/icon-ota-amfi3.png'),
-  'tampere': require('../../../assets/cities/icon-tampere.png')
+  'helsinki': require('../../../assets/cities/icon-ota-amfi-accent.png'),
+  'tampere': require('../../../assets/cities/icon-tampere-accent.png')
 };
 
 const CitySelector = ({
@@ -55,7 +55,7 @@ var styles = StyleSheet.create({
     fontSize: 24,
   },
   cityIcon: {
-    tintColor: theme.white,
+    // tintColor: theme.white,
     top: 0,
     left: 5,
     width: 40,
