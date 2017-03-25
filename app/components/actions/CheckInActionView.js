@@ -6,6 +6,7 @@ import {
   View,
   Text,
   ListView,
+  Image,
   Platform,
   Dimensions,
   StyleSheet,
@@ -17,7 +18,7 @@ import moment from 'moment';
 import location from '../../services/location';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import EventListItem from '../calendar/EventListItem';
 import { checkIn, closeCheckInView } from '../../actions/competition';
 
@@ -87,21 +88,24 @@ class CheckInActionView extends Component {
   noActiveEventsView() {
     return (
       <View style={styles.eventContainer}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.noActiveEventsText}>No active events nearby!</Text>
-        </View>
+          <Image style={{
+            height: 200,
+            width: 200,
+            marginBottom: 10,
+            backgroundColor: '#ddd',
+            borderWidth: 6,
+            borderColor: theme.primary,
+            borderRadius: 100}}  source={require('../../../assets/sad-wappu-panda.png')}/>
 
-        <View style={styles.rowContainer}>
-          <View style={styles.iconContainer}>
-            <Icon name={IOS ? 'ios-clock' : 'md-clock'}  size={50} style={{color: theme.light}} />
-            <Icon name={IOS ? 'ios-locate' : 'md-locate'}  size={50} style={{color: theme.light}} />
-          </View>
+          <Text style={{fontSize: 40, textAlign: 'center', color: theme.white}}>OH NO!</Text>
+          <Text style={[styles.text]}>No ongoing events available. Try again later.</Text>
 
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>It's all about time & place!</Text>
-            <Text style={styles.text}>You can check-in to currently ongoing events that have the same location as you.</Text>
+
+        <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
+          <View style={styles.cancelButton}>
+            <Text style={{fontSize: 14, color: theme.white}}>CLOSE</Text>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -110,12 +114,12 @@ class CheckInActionView extends Component {
     return (
       <View style={styles.eventContainer}>
         <View style={styles.headerContainer}>
-          <Icon name={IOS ? 'ios-pin' : 'md-pin'} style={{color: theme.white}} size={30}/>
+          <Icon name={'pin-drop'} style={{color: theme.white}} size={30}/>
           <Text style={styles.title}>CHECK IN</Text>
         </View>
 
         <View style={{height: 60}}>
-          <Text style={[styles.text, {padding: 10}]}>You can only check-in to events if you are in the event area.</Text>
+          <Text style={[styles.text, {fontSize: 13, padding: 10}]}>You can only check-in to events if you are in the event area.</Text>
         </View>
 
         <ListView
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     paddingTop:30,
   },
   modalBackgroundStyle: {
-    backgroundColor: theme.secondary
+    backgroundColor: theme.secondaryLight
   },
   eventContainer: {
     alignItems: 'center',
@@ -205,33 +209,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  noActiveEventsText: {
-    fontSize: 27,
-    color: theme.light,
-    textAlign: 'center',
-    fontWeight: 'bold'
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  iconContainer: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  textContainer: {
-    flex: 5,
-    paddingTop: 5,
-    paddingLeft: 15,
-    alignSelf:'stretch',
-  },
   title: {
     color: theme.light,
     fontWeight: 'bold',
-    paddingLeft: 10,
+    paddingLeft: 0,
     fontSize: 30,
   },
   text: {
@@ -246,16 +227,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     backgroundColor: theme.primaryDarker,
-    alignSelf: 'stretch'
+    alignSelf: 'stretch',
+    borderBottomWidth: 2,
+    borderTopWidth: 2,
+    borderColor: '#ddd'
   },
   cancelButton: {
-    position: 'relative',
-    bottom: 15,
+    position: 'absolute',
+    bottom: 20,
+    left: width/2-60,
     padding: 5,
-    paddingTop: 10,
+    paddingTop: 8,
     paddingBottom: 10,
+    justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
+    borderWidth: 2,
+    borderColor: theme.grey,
     backgroundColor: theme.primaryDarker,
     width: 120,
     shadowColor: '#000000',
@@ -269,6 +257,7 @@ const styles = StyleSheet.create({
   listView: {
     flexGrow: 1,
     marginTop: 0,
+    marginBottom: 5,
   }
 });
 
