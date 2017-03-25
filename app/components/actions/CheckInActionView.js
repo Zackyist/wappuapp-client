@@ -61,7 +61,7 @@ class CheckInActionView extends Component {
 
   checkIn(eventId) {
     this.props.checkIn(eventId);
-    // this.props.closeCheckInView();
+    this.props.closeCheckInView();
   }
 
   getContent(events) {
