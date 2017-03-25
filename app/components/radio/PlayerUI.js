@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Platform
 } from 'react-native';
+import autobind from 'autobind-decorator';
 
 import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -77,7 +78,9 @@ class Player extends Component {
       break;
       case STOPPED:
       case ERROR:
-      ReactNativeAudioStreaming.play(url, {showIniOSMediaCenter: true, showInAndroidNotifications: true});
+      if (url) {
+        ReactNativeAudioStreaming.play(url, { showIniOSMediaCenter: true, showInAndroidNotifications: true });
+      }
       break;
       case BUFFERING:
       ReactNativeAudioStreaming.stop();
@@ -85,18 +88,41 @@ class Player extends Component {
     }
   }
 
+  @autobind
+  renderPlayerText() {
+    const {url, song, radioStationName} = this.props;
+      if (!radioStationName) {
+        return null;
+      }
+      if (!url && !song) {
+        return <Text style={styles.stationTitle}>{radioStationName.toUpperCase()} IS AVAILABLE SOON</Text>
+      }
+      if (!!url && !song) {
+        return <Text style={styles.stationTitle}>LISTEN TO {radioStationName.toUpperCase()}</Text>
+      }
+      if (!!song) {
+        return <Text style={styles.songName}>{song}</Text>
+      }
+  }
+
   render() {
     let icon = null;
-    const { status, song, radioStationName } = this.props;
+    const { status, song, radioStationName, url } = this.props;
+    const iconStyle = [styles.icon];
+
+    if (!url) {
+      iconStyle.push(styles.icon__disabled)
+    }
+
     switch (status) {
       case STREAMING:
       case PLAYING:
-        icon = <Icon name="pause-circle-outline" style={styles.icon} />;
+        icon = <Icon name="pause-circle-outline" style={iconStyle} />;
         break;
       case ERROR:
       case PAUSED:
       case STOPPED:
-        icon = <Icon name="play-circle-outline" style={styles.icon} />;
+        icon = <Icon name="play-circle-outline" style={iconStyle} />;
         break;
       case BUFFERING:
       case BUFFERING_START:
@@ -110,15 +136,17 @@ class Player extends Component {
         break;
     }
 
+    if (!url) {
+      icon = <Icon name="access-time" style={iconStyle} />;
+    }
+
     return (
       <View style={styles.container}>
         <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this._onPress}>
         {icon}
         </TouchableOpacity>
         <View style={styles.textContainer}>
-          {!song && <Text style={styles.stationTitle}>LISTEN TO {radioStationName.toUpperCase()}</Text>}
-          {false && !!song && <Text style={styles.stationTitle}>NOW ON {radioStationName.toUpperCase()}</Text>}
-          {!!song && <Text style={styles.songName}>{song}</Text>}
+          {this.renderPlayerText()}
         </View>
       </View>
       );
@@ -137,6 +165,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 15,
     color: theme.secondary,
+  },
+  icon__disabled: {
+    color: '#ccc'
   },
   loader: {
     marginLeft: 5,
@@ -165,7 +196,7 @@ const styles = StyleSheet.create({
 });
 
 Player.propTypes = {
-  url: PropTypes.string.isRequired,
+  url: PropTypes.string,
   status: PropTypes.string,
   song: PropTypes.string,
   setRadioStatus: PropTypes.func,

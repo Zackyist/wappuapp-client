@@ -10,6 +10,7 @@ import {
   Animated,
   Easing,
   Platform,
+  Linking,
   Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -22,10 +23,10 @@ import {
   getRadioStatus,
   getRadioSong,
   getRadioName,
-  getRadioUrl,
   getRadioStations,
   getActiveStationId,
   getActiveStation,
+  getNowPlaying,
   toggleRadioBar,
   setRadioSong,
   setRadioStatus,
@@ -73,7 +74,7 @@ class RadioPlayer extends Component {
   }
 
   renderExpandedContent() {
-    const { song, stations, activeStationId } = this.props;
+    const { song, stations, activeStationId, currentStation } = this.props;
     return (
       <View style={styles.containerExpanded}>
         <View style={styles.tabs}>
@@ -88,7 +89,15 @@ class RadioPlayer extends Component {
         </View>
 
         <View style={styles.radioContent}>
-          <Text style={styles.songName}>{song}</Text>
+          <View style={{ flex: 1 }}><Text style={styles.songName}>{'Aamukahvia ananaspuusta'}</Text></View>
+
+          {!!currentStation.get('website') &&
+            <View style={styles.radioWebsite}>
+              <PlatformTouchable onPress={() => Linking.openURL(currentStation.get('website'))}>
+                <Text style={styles.websiteUrl}>See more in {currentStation.get('website')}</Text>
+              </PlatformTouchable>
+            </View>
+          }
         </View>
 
         <TouchableOpacity onPress={this.close} style={styles.close} >
@@ -100,7 +109,7 @@ class RadioPlayer extends Component {
 
   render() {
     const { playerHeight } = this.state;
-    const { expanded, song, status, url, currentStation } = this.props;
+    const { expanded, song, status, nowPlaying, currentStation } = this.props;
 
     return (
       <Animated.View style={[styles.container, { height: playerHeight }]}>
@@ -121,8 +130,8 @@ class RadioPlayer extends Component {
             setRadioSong={this.props.setRadioSong}
             radioStationName={currentStation ? currentStation.get('name') : ''}
             status={status}
-            song={song}
-            url={url}
+            song={nowPlaying ? `${nowPlaying.get('programHost')} ${nowPlaying.get('programTitle')}` : ''}
+            url={currentStation ? currentStation.get('stream') : ''}
           />
         </TouchableOpacity>
         }
@@ -204,16 +213,25 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.secondary
   },
   radioContent: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#FF0000',
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center'
+  },
+  radioWebsite: {
+    flexGrow: 1,
+    flex: 1,
+    alignItems: 'center'
+  },
+  websiteUrl: {
+    fontSize: 20,
+    color: theme.primary,
   },
   songName: {
     padding: 5,
     textAlign: 'center',
     fontWeight: '900',
-    fontSize: 80,
+    fontSize: 40,
     color: theme.secondary,
   }
 
@@ -227,9 +245,9 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = createStructuredSelector({
-  url: getRadioUrl,
   name: getRadioName,
   status: getRadioStatus,
+  nowPlaying: getNowPlaying,
   song: getRadioSong,
   expanded: getRadioMode,
   stations: getRadioStations,

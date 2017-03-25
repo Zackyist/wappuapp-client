@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 import { createSelector } from 'reselect';
-import { fromJS, List } from 'immutable';
+import { fromJS, List, Map } from 'immutable';
 import { isNil } from 'lodash';
 import api from '../services/api';
 import { getCityId } from './city';
@@ -21,7 +21,6 @@ export const getRadioStatus = state => state.radio.get('status');
 export const getRadioSong = state => state.radio.get('song');
 export const getRadioMode = state => state.radio.get('expanded');
 export const getRadioName = state => state.radio.get('name');
-export const getRadioUrl = state => state.radio.get('url');
 export const getActiveStationId = state => state.radio.get('activeStationId');
 export const getRadioStations = state => state.radio.get('stations') || List([]);
 
@@ -32,9 +31,13 @@ export const isRadioPlaying = createSelector(
 
 export const getActiveStation = createSelector(
   getActiveStationId, getRadioStations,
-  (activeId, stations) => stations.find(item => item.get('id') === activeId)
+  (activeId, stations) => stations.find(item => item.get('id') === activeId) || Map()
 );
 
+export const getNowPlaying = createSelector(
+  getActiveStation,
+  (station) => station.get('nowPlaying') || Map()
+);
 
 // # Action creators
 const SET_RADIO_SONG = 'radio/SET_RADIO_SONG';
@@ -56,8 +59,10 @@ export const setRadioStationActive = (stationId) => dispatch => {
 }
 
 const TOGGLE_RADIO_BAR = 'radio/TOGGLE_RADIO_BAR';
-export const toggleRadioBar = (expanded) => ({ type: TOGGLE_RADIO_BAR, payload: expanded });
-
+export const toggleRadioBar = expanded => dispatch => {
+  dispatch(fetchRadioStations());
+  dispatch(({ type: TOGGLE_RADIO_BAR, payload: expanded }));
+}
 export const closeRadio = () => (dispatch) => {
   dispatch(setRadioStatus(STOPPED))
   dispatch(setRadioSong(''))
@@ -134,7 +139,6 @@ const placeholderRadioStations = [
 
 // # Reducer
 const initialState = fromJS({
-  url: 'http://stream.basso.fi:8000/stream',
   // url: 'http://stream.wappuradio.fi:80/wappuradio.mp3',
   status: STOPPED,
   expanded: false,
@@ -154,6 +158,7 @@ export default function radio(state = initialState, action) {
     }
 
     case SET_RADIO_STATIONS: {
+      console.log(action.payload);
       return state.set('stations', fromJS(action.payload));
     }
 
