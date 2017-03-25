@@ -8,6 +8,7 @@ import {
   View,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   Linking,
   Image,
   Dimensions,
@@ -237,11 +238,17 @@ class Profile extends Component {
   renderImageMadeByItem() {
     return (
       <View style={[styles.listItem, styles.listItemSeparator, styles.madeby]}>
-        <Image resizeMode="contain" style={[styles.madebyIcon, {width: 45, height: 45}]} source={require('../../../assets/madeby/jayna.png')} />
+        <TouchableOpacity onPress={() => Linking.openURL('https://www.jayna.fi/')}>
+          <Image resizeMode="contain" style={[styles.madebyIcon, {width: 45, height: 45}]} source={require('../../../assets/madeby/jayna.png')} />
+        </TouchableOpacity>
         <Text style={styles.madebyText}>×</Text>
-        <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 70, height: 30}]} source={require('../../../assets/madeby/futurice.png')} />
+        <TouchableOpacity onPress={() => Linking.openURL('https://futurice.com/')}>
+          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 70, height: 30}]} source={require('../../../assets/madeby/futurice.png')} />
+        </TouchableOpacity>
         <Text style={styles.madebyText}>×</Text>
-        <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 108, height: 35 }]} source={require('../../../assets/madeby/ttyy.png')} />
+        <TouchableOpacity onPress={() => Linking.openURL('https://ttyy.fi/')}>
+          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 108, height: 35 }]} source={require('../../../assets/madeby/ttyy.png')} />
+        </TouchableOpacity>
       </View>
     )
   }
