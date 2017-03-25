@@ -9,6 +9,8 @@ import {
   ListView,
   TouchableHighlight,
   Linking,
+  Image,
+  Dimensions,
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -23,6 +25,7 @@ import theme from '../../style/theme';
 import { fetchLinks } from '../../actions/profile';
 import { openRegistrationView } from '../../actions/registration';
 
+const {width} = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
 const styles = StyleSheet.create({
   container: {
@@ -45,15 +48,15 @@ const styles = StyleSheet.create({
   listItemSeparator: {
     marginBottom: 15,
     elevation: 1,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0,
     borderBottomColor: '#eee',
-    // shadowColor: '#000000',
-    // shadowOpacity: 0.1,
-    // shadowRadius: 1,
-    // shadowOffset: {
-    //   height: 1,
-    //   width: 0
-    // },
+    shadowColor: '#000000',
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 1,
+      width: 0
+    },
   },
   listItemButton:{
     flex:1,
@@ -108,6 +111,25 @@ const styles = StyleSheet.create({
     bottom:0,
     height:1,
     backgroundColor:'#f4f4f4'
+  },
+  madeby: {
+    padding: 7,
+    paddingTop: 25,
+    paddingBottom: 30,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  madebyIcon: {
+    tintColor: theme.dark,
+    width: 100,
+    height: 20,
+  },
+  madebyText: {
+    padding: 2,
+    color: theme.primary,
+    fontSize: 28,
+    fontWeight: '300'
   }
 });
 
@@ -212,17 +234,33 @@ class Profile extends Component {
     );
   }
 
+  renderImageMadeByItem() {
+    return (
+      <View style={[styles.listItem, styles.listItemSeparator, styles.madeby]}>
+        <Image resizeMode="contain" style={[styles.madebyIcon, {width: 45, height: 45}]} source={require('../../../assets/madeby/jayna.png')} />
+        <Text style={styles.madebyText}>×</Text>
+        <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 70, height: 30}]} source={require('../../../assets/madeby/futurice.png')} />
+        <Text style={styles.madebyText}>×</Text>
+        <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 108, height: 35 }]} source={require('../../../assets/madeby/ttyy.png')} />
+      </View>
+    )
+  }
+
   @autobind
   renderItem(item) {
     if (item.link) {
       return this.renderLinkItem(item);
+    } else if (item.type === 'IMAGES') {
+      return this.renderImageMadeByItem();
     }
     return this.renderModalItem(item);
   }
 
   render() {
-    const listData = [{title:this.props.name,
-      icon:'person-outline', link:'', rightIcon:'create'}].concat(this.props.links.toJS())
+    const { name, links, terms } = this.props;
+
+    const userItem = { title: name, icon: 'person-outline', link: '', rightIcon: 'create'};
+    const listData = [userItem].concat(links.toJS(), [{ type: 'IMAGES' }], terms.toJS());
 
     return (
       <View style={styles.container}>
@@ -244,6 +282,7 @@ const select = store => {
       teams: store.team.get('teams'),
       name: store.registration.get('name'),
       links: store.profile.get('links'),
+      terms: store.profile.get('terms'),
     }
 };
 
