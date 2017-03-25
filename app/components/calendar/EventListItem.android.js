@@ -131,7 +131,7 @@ export default class EventListItem extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, hideStatus } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
     const startDay = time.getEventDay(item.startTime);
     const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
@@ -142,14 +142,16 @@ export default class EventListItem extends Component {
         <View style={styles.gridListItemContent}>
           <Text style={styles.gridListItemTitle}>{item.name}</Text>
 
-          <View style={[styles.gridListItemIconsWrapper,
-            {marginBottom: item.teemu || timepoint.onGoing || timepoint.startsSoon ? 5 : 0}
-          ]}>
-            {item.teemu && <Text style={styles.gridListItemIcon}>
-            <Icon name='school' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
-            {timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Käynnissä ny!</Text>}
-            {timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Alkaa kohta!</Text>}
-          </View>
+          {!hideStatus &&
+            <View style={[styles.gridListItemIconsWrapper,
+              {marginBottom: item.teemu || timepoint.onGoing || timepoint.startsSoon ? 5 : 0}
+            ]}>
+              {item.teemu && <Text style={styles.gridListItemIcon}>
+              <Icon name='school' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
+              {timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Käynnissä ny!</Text>}
+              {timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Alkaa kohta!</Text>}
+            </View>
+          }
 
           <View style={styles.gridListItemImgWrap}>
             <Image

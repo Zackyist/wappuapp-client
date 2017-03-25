@@ -8,6 +8,9 @@ import {
   View,
   Platform,
   Linking,
+  TouchableWithoutFeedback,
+  Animated,
+  Easing,
   TouchableHighlight,
   Image
 } from 'react-native';
@@ -18,12 +21,23 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ParallaxView from 'react-native-parallax-view';
 import theme from '../../style/theme';
 import Toolbar from './EventDetailToolbar';
+import Notification from '../common/Notification';
 
+import moment from 'moment';
+import { connect } from 'react-redux';
 import analytics from '../../services/analytics';
+import { checkIn } from '../../actions/competition';
 import time from '../../utils/time';
 import locationService from '../../services/location';
 import Button from '../common/Button';
 import Fab from '../common/Fab';
+
+import {
+  INACTIVE,
+  UNAVAILABLE,
+  AVAILABLE,
+  CHECKED
+} from '../../constants/CheckInStates';
 
 import PlatformTouchable from '../common/PlatformTouchable';
 const IOS = Platform.OS === 'ios';
@@ -190,6 +204,17 @@ const styles = StyleSheet.create({
     elevation:2,
     paddingBottom:10
   },
+  buttonText: {
+    fontSize: 13,
+    textAlign: 'center',
+    color: theme.accent,
+    backgroundColor: 'transparent',
+    fontWeight: 'bold'
+  },
+  icon: {
+    textAlign: 'center',
+    color: theme.accent,
+  },
   gridListItemImgColorLayer: {
     //position: 'absolute',
     //left: 0, top: 0, bottom: 0, right: 0,
@@ -203,12 +228,80 @@ const EventDetail = React.createClass({
     route: PropTypes.object.isRequired
   },
 
+  getInitialState () {
+      return {
+        springAnim: new Animated.Value(0),
+        checked: false,
+      };
+    },
+
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
   },
 
   onPressBack() {
     this.props.navigator.pop();
+  },
+
+  onCheckIn() {
+    this.setState({checked: true});
+
+    this.state.springAnim.setValue(0);
+     Animated.timing(
+       this.state.springAnim,
+       {
+         toValue: 1,
+         duration: 500,
+         easing: Easing.elastic(1)}
+     ).start();
+    this.props.checkIn(this.props.route.model.id);
+  },
+
+  getEventStatus() {
+    const model = this.props.route.model;
+
+    const isActive = this.isEventActive(model);
+    const isLocationValid = this.isLocationValid(model);
+
+    if (!isActive) {
+      return INACTIVE;
+    } else if (!isLocationValid) {
+      return UNAVAILABLE;
+    } else if (this.state.checked) {
+      return CHECKED;
+    } else {
+      return AVAILABLE;
+    }
+  },
+
+  isEventActive(event) {
+    const currentTime = moment();
+    return (moment(event.startTime).isBefore(currentTime) && moment(event.endTime).isAfter(currentTime));
+  },
+
+  isLocationValid(event) {
+    const { userLocation } = this.props;
+
+    if ( userLocation && event.location ) {
+      const distance = locationService.getDiscanceInMeters(userLocation, event.location);
+      const isLocationValid = event.radius > distance;
+      return isLocationValid
+    }
+    return false;
+  },
+
+
+  getText(status) {
+    switch(status) {
+      case AVAILABLE:
+        return <Text style={styles.buttonText}>CHECK IN!</Text>;
+      case INACTIVE:
+        return <Text style={styles.buttonText}>CLOSED!</Text>;
+      case CHECKED:
+        return <Icon size={50} name={IOS ? 'ios-checkmark' : 'md-checkmark'} style={styles.icon}/>;
+      case UNAVAILABLE:
+        return <Text style={styles.buttonText}>GET CLOSER!</Text>;
+    }
   },
 
   render: function() {
@@ -221,7 +314,13 @@ const EventDetail = React.createClass({
       paddingTop: 0
     };
 
+    const eventStatus = this.getEventStatus();
     const coverImage =  model.coverImage;
+
+    const active = this.state.springAnim.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 1.2, 1]
+    });
 
     return <View style={[styles.wrapper, wrapperStyleAdd]}>
       {!IOS ?
@@ -247,17 +346,25 @@ const EventDetail = React.createClass({
       >
         <View style={styles.eventContent}>
 
-          <Fab onPress={() => console.log('checkin')} styles={{ position:'absolute', right: 20, top: -51, elevation: 2,
-              shadowColor: '#000000',
-              shadowOpacity: 0.15,
-              shadowRadius: 1,
-              shadowOffset: {
-                height: 2,
-                width: 0
-              },zIndex:99, borderRadius: 40, padding: 10, width: 80, height: 80, backgroundColor: theme.secondary}}
-            disabled={false} underlayColor={theme.secondaryLight}>
-            <Text style={{ textAlign: 'center', color: theme.accent, backgroundColor: 'transparent', fontWeight: 'bold' }}>CHECK IN!</Text>
-          </Fab>
+          <TouchableWithoutFeedback disabled={eventStatus !== AVAILABLE} onPress={() => this.onCheckIn()}>
+            <Animated.View style={{
+                opacity: eventStatus === AVAILABLE ? 1 : 0.8,
+                transform: [{scale: active}],
+                position:'absolute',
+                right: 20,
+                justifyContent: 'center',
+                top: -51,
+                elevation: 2,
+                shadowColor: '#000000',
+                shadowOpacity: 0.15,
+                shadowRadius: 1,
+                shadowOffset: {
+                  height: 2,
+                  width: 0
+                },zIndex:99, borderRadius: 40, padding: 10, width: 80, height: 80, backgroundColor: theme.secondary}}>
+                {this.getText(eventStatus)}
+            </Animated.View>
+          </TouchableWithoutFeedback>
 
           <View style={styles.gridListItemMetaWrap}>
 
@@ -330,9 +437,24 @@ const EventDetail = React.createClass({
           </View>
         </View>
       </ParallaxView>
+      <Notification visible={this.props.isNotificationVisible}>
+        {this.props.notificationText}
+      </Notification>
     </View>
   }
 
 });
 
-export default EventDetail;
+const mapDispatchToProps = { checkIn };
+
+
+const select = store => {
+  return {
+    userLocation: store.location.get('currentLocation'),
+    isNotificationVisible: store.competition.get('isNotificationVisible'),
+    notificationText: store.competition.get('notificationText')
+  }
+};
+
+
+export default connect(select, mapDispatchToProps)(EventDetail);

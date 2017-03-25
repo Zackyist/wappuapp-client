@@ -39,7 +39,8 @@ import {
   updateCooldowns,
   postImage,
   postAction,
-  openTextActionView
+  openTextActionView,
+  openCheckInView
 } from '../../actions/competition';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
@@ -180,6 +181,10 @@ class FeedList extends Component {
         return this.chooseImage();
       case 'TEXT':
         return this.props.openTextActionView();
+      case 'CHECK_IN_EVENT': {
+        console.log('Check-in!');
+        return this.props.openCheckInView();
+      }
       default:
         return this.props.postAction(type);
     }
@@ -269,6 +274,7 @@ const mapDispatchToProps = {
   openTextActionView,
   removeFeedItem,
   voteFeedItem,
+  openCheckInView,
   openLightBox
 };
 

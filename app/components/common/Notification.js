@@ -91,7 +91,7 @@ class Notification extends Component {
     Animated.timing(this.state.translate, {
       duration: 300,
       easing: Easing.ease,
-      toValue: { x: 0, y: 0 }
+      toValue: { x: 0, y: 15 }
     }).start();
   }
 

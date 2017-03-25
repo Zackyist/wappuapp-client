@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import AndroidTabNavigation from './Navigation';
 import RegistrationView from '../components/registration/RegistrationView';
 import TextActionView from '../components/actions/TextActionView';
+import CheckInActionView from '../components/actions/CheckInActionView';
 import errorAlert from '../utils/error-alert';
 import LightBox from '../components/lightbox/Lightbox';
 
@@ -60,6 +61,7 @@ class MainView extends Component {
         />
         <RegistrationView />
         <LightBox />
+        <CheckInActionView />
         <TextActionView />
       </View>
     )

@@ -22,6 +22,8 @@ const {
 
 const OPEN_TEXTACTION_VIEW = 'OPEN_TEXTACTION_VIEW';
 const CLOSE_TEXTACTION_VIEW = 'CLOSE_TEXTACTION_VIEW';
+const OPEN_CHECKIN_VIEW = 'OPEN_CHECKIN_VIEW';
+const CLOSE_CHECKIN_VIEW = 'CLOSE_CHECKIN_VIEW';
 const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 const HIDE_NOTIFICATION = 'HIDE_NOTIFICATION';
 const UPDATE_COOLDOWNS = 'UPDATE_COOLDOWNS';
@@ -32,6 +34,15 @@ const openTextActionView = () => {
 
 const closeTextActionView = () => {
   return { type: CLOSE_TEXTACTION_VIEW };
+};
+
+const openCheckInView = () => {
+  return { type : OPEN_CHECKIN_VIEW };
+};
+
+const closeCheckInView = () => {
+  console.log('CLOSE');
+  return { type: CLOSE_CHECKIN_VIEW };
 };
 
 const _postAction = (payload) => {
@@ -70,6 +81,11 @@ const _postAction = (payload) => {
             type: SHOW_NOTIFICATION,
             payload: NotificationMessages.getRateLimitMessage(payload)
           });
+        } else if (e.response.status === 403) {
+          dispatch({
+            type: SHOW_NOTIFICATION,
+            payload: NotificationMessages.getInvalidEventMessage(payload)
+          });
         } else {
           dispatch({
             type: SHOW_NOTIFICATION,
@@ -105,6 +121,13 @@ const postImage = image => {
   });
 };
 
+const checkIn = eventId => {
+  return _postAction({
+    type: ActionTypes.CHECK_IN_EVENT,
+    eventId: eventId
+  });
+}
+
 const fetchActionTypes = () => {
   return dispatch => {
     dispatch({ type: GET_ACTION_TYPES_REQUEST });
@@ -126,6 +149,8 @@ export {
   GET_ACTION_TYPES_SUCCESS,
   GET_ACTION_TYPES_FAILURE,
   OPEN_TEXTACTION_VIEW,
+  OPEN_CHECKIN_VIEW,
+  CLOSE_CHECKIN_VIEW,
   CLOSE_TEXTACTION_VIEW,
   SHOW_NOTIFICATION,
   HIDE_NOTIFICATION,
@@ -133,6 +158,9 @@ export {
   postAction,
   postText,
   postImage,
+  openCheckInView,
+  checkIn,
+  closeCheckInView,
   openTextActionView,
   closeTextActionView,
   fetchActionTypes,

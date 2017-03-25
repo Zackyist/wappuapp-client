@@ -96,7 +96,7 @@ export default class EventListItem extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, hideStatus } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
     const { coverImage } = item;
     // const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
@@ -125,12 +125,13 @@ export default class EventListItem extends Component {
             </View>
           }
 
+          {!hideStatus &&
           <View style={styles.gridListItemIconsWrapper}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
               <Icon name='school' size={15} /> Emäteemu!</Text>}
             {timepoint.onGoing && <Text style={styles.gridListItemIcon}>Käynnissä ny!</Text>}
             {timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Alkaa kohta!</Text>}
-          </View>
+          </View>}
         </View>
       </View>
     </TouchableHighlight>);
