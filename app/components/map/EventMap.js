@@ -34,6 +34,11 @@ const disableMap = false; /*
   (Manufacturer.indexOf('Sony') >= 0 || Manufacturer === 'OnePlus');
 */
 
+import {
+  OTANIEMI,
+  TAMPERE
+} from '../../constants/MapCoordinates';
+
 const MARKER_IMAGES = {
   EVENT: require('../../../assets/marker.png'),
   RESTAURANT: require('../../../assets/marker__food.png'),
@@ -63,7 +68,7 @@ class EventMap extends Component {
 
   render() {
     const allEvents = [].concat(this.props.events.toJS());
-
+    const mapPosition = this.props.city === 2 ? OTANIEMI : TAMPERE;
     const firstFutureEvent = _
       .chain(allEvents)
       .filter(item => time.isEventInFuture(item.endTime))
@@ -107,12 +112,8 @@ class EventMap extends Component {
     return (
       <View style={{flex:1}}>
         <MapView style={styles.map}
-          initialRegion={{
-            latitude: 61.4931758,
-            longitude: 23.7602363,
-            latitudeDelta: 0.2,
-            longitudeDelta: 0.2,
-          }}
+          key={mapPosition.latitude + mapPosition.longitude} /* This so that the map would update whenever the coordinates change. */
+          initialRegion={mapPosition}
           showsUserLocation={Platform.OS === 'android' || this.props.locateMe}
           showsPointsOfInterest={false}
           showsBuildings={false}
@@ -449,6 +450,7 @@ const select = store => {
 
   return {
     locateMe: store.event.get('locateMe'),
+    city: store.city.get('id'),
     showFilter: store.event.get('showFilter'),
     events: store.event.get('list'),
     markers: store.marker.get('list'),
