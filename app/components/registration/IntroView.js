@@ -69,7 +69,7 @@ class InstructionView extends Component {
                   <View style={styles.textContainer}>
                     <Text style={styles.subTitle}>Pick your city to start</Text>
                     <Text style={styles.text}>
-                      City you select will have an effect on the feed. You may change your answer whenever you want.</Text>
+                      City you select will have an effect on the feed. You may change your selection whenever you want.</Text>
                   </View>
                 </View>
 
