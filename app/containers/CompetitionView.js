@@ -13,8 +13,10 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
+
 import theme from '../style/theme';
 import { fetchTeams } from '../actions/team';
+import { getCityTeams } from '../reducers/team';
 import analytics from '../services/analytics';
 import LeaderboardEntry from '../components/competition/LeaderboardEntry';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -122,7 +124,7 @@ const mapDispatchToProps = { fetchTeams };
 const select = store => {
   return {
     isRefreshing: store.team.get('isRefreshing'),
-    teams: store.team.get('teams'),
+    teams: getCityTeams(store),
     actionTypes: store.competition.get('actionTypes')
   };
 };

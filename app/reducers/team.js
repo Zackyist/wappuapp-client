@@ -1,5 +1,8 @@
 'use strict';
 import { fromJS, List } from 'immutable';
+import { createSelector } from 'reselect';
+
+import { getCityId } from '../concepts/city';
 
 import {
   GET_TEAMS_REQUEST,
@@ -48,6 +51,13 @@ export default function team(state = initialState, action) {
   }
 };
 
-
-// # Selectors
+//
+// Selectors
+//
 export const getTeams = state => state.team.get('teams', List());
+
+export const getCityTeams = createSelector(
+  getTeams, getCityId,
+  (teams, cityId) => teams.filter(team => team.get('city') === cityId)
+);
+

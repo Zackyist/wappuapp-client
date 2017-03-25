@@ -1,7 +1,7 @@
 import { Alert, Platform, AsyncStorage } from 'react-native';
 import { createSelector } from 'reselect';
-import { fromJS } from 'immutable';
-import { isNil } from 'lodash';
+import { fromJS, List } from 'immutable';
+import { isNil, parseInt } from 'lodash';
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
 import { fetchFeed } from '../actions/feed';
@@ -12,6 +12,22 @@ import { fetchEvents } from '../actions/event';
 import { APP_STORAGE_KEY } from '../../env';
 const cityKey = `${APP_STORAGE_KEY}:city`;
 const IOS = Platform.OS === 'ios';
+
+
+// # Selectors
+export const getCityList = state => state.city.get('list', List());
+export const getCityId = state => state.city.get('id');
+export const getCityPanelShowState = state => state.city.get('showCityPanel');
+export const getCurrentCityName = createSelector(
+   getCityId, getCityList,
+   (cityId, cityList) => {
+      if (isNil(cityId) || cityId === 1) {
+        return '';
+      }
+      return cityList.find(city => city.get('id') === cityId).get('name');
+    }
+);
+
 
 // # Action creators
 
@@ -80,7 +96,7 @@ export const initializeUsersCity = () => (dispatch, getState) => {
   return AsyncStorage.getItem(cityKey)
     .then(city => {
       const activeCity = city ? JSON.parse(city) : defaultCityId;
-      const isDefault = parseInt(activeCity) === 1;
+      const isDefault = parseInt(activeCity, 10) === 1;
       dispatch({ type: NO_SELECTED_CITY_FOUND, payload: isDefault});
       return dispatch(setCity(activeCity));
     })
@@ -103,21 +119,6 @@ export const toggleCityPanel = (close) => (dispatch, getState) => {
   return dispatch({ type: TOGGLE_CITY_PANEL, payload: !open });
 }
 
-
-// # Selectors
-export const getCityList = state => state.city.get('list');
-export const getCityId = state => state.city.get('id');
-export const getCityPanelShowState = state => state.city.get('showCityPanel');
-export const getCurrentCityName = createSelector(
-   getCityId, getCityList,
-   (cityId, cityList) => {
-      if (isNil(cityId) || cityId === 1) {
-        return '';
-      }
-      return cityList.find(city => city.get('id') === cityId).get('name');
-    }
-);
-
 // # Reducer
 const initialState = fromJS({
   id: null,
@@ -132,7 +133,7 @@ export default function city(state = initialState, action) {
     }
 
     case SET_CITY: {
-      return state.set('id', parseInt(action.payload));
+      return state.set('id', parseInt(action.payload, 10));
     }
 
     case TOGGLE_CITY_PANEL: {

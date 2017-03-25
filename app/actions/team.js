@@ -2,8 +2,10 @@
 
 import api from '../services/api';
 import {createRequestActionTypes} from '.';
-import { getCityId } from '../concepts/city';
 
+//
+// Action Types
+//
 const {
   GET_TEAMS_REQUEST,
   GET_TEAMS_SUCCESS,
@@ -11,15 +13,13 @@ const {
 } = createRequestActionTypes('GET_TEAMS');
 const SHOW_TEAM_SELECTOR = 'SHOW_TEAM_SELECTOR';
 
-const fetchTeams = () => (dispatch, getState) => {
-  const cityId = getCityId(getState());
 
-  if (!cityId) {
-    return;
-  }
-
+//
+// Action Creators
+//
+const fetchTeams = () => (dispatch) => {
   dispatch({ type: GET_TEAMS_REQUEST });
-  return api.fetchModels('teams', { cityId })
+  return api.fetchModels('teams')
     .then(teams => dispatch({ type: GET_TEAMS_SUCCESS, payload: teams }))
     .catch(e => dispatch({ type: GET_TEAMS_FAILURE, error: true, payload: e }));
 };

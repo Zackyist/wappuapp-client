@@ -158,7 +158,6 @@ export default function radio(state = initialState, action) {
     }
 
     case SET_RADIO_STATIONS: {
-      console.log(action.payload);
       return state.set('stations', fromJS(action.payload));
     }
 
