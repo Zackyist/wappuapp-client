@@ -32,9 +32,9 @@ export const getLimitLineData = createSelector(
 );
 
 export const getKpiValues = state => fromJS({
-  own: 33.6,
-  team: 44.1,
-  total: 58.5,
+  Own: 33.6,
+  Team: 44.1,
+  Total: 58.5,
 });
 
 
