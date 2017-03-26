@@ -32,12 +32,11 @@ const IOS = Platform.OS === 'ios';
 class Player extends Component {
 
   static defaultProps = {
-    radioStationName: 'wappuradio',
+    radioStationName: '',
   }
 
   constructor(props) {
     super(props);
-    this._onPress = this._onPress.bind(this);
     this.state = {
       status: STOPPED,
       song: ''
@@ -51,63 +50,42 @@ class Player extends Component {
         // We just want meta update for song name
         if (evt.status === METADATA_UPDATED && evt.key === 'StreamTitle') {
           setRadioSong(evt.value);
-        } else if (evt.status != METADATA_UPDATED) {
+        } else if (this.props.status !== evt.status && evt.status !== METADATA_UPDATED) {
           // TODO
           // evt can also contain progress & duration
           // check if useful, would be cool
           setRadioStatus(evt.status);
         }
       }
-      );
+    );
 
     ReactNativeAudioStreaming.getStatus((error, { status }) => {
       (error) ? console.log(error) : setRadioStatus(status)
     });
   }
 
-  _onPress() {
-    const { status, url } = this.props;
-
-    switch (status) {
-      case PLAYING:
-      case STREAMING:
-      ReactNativeAudioStreaming.pause();
-      break;
-      case PAUSED:
-      ReactNativeAudioStreaming.resume();
-      break;
-      case STOPPED:
-      case ERROR:
-      if (url) {
-        ReactNativeAudioStreaming.play(url, { showIniOSMediaCenter: true, showInAndroidNotifications: true });
-      }
-      break;
-      case BUFFERING:
-      ReactNativeAudioStreaming.stop();
-      break;
-    }
-  }
-
   @autobind
   renderPlayerText() {
-    const {url, song, radioStationName} = this.props;
-      if (!radioStationName) {
-        return null;
-      }
-      if (!url && !song) {
-        return <Text style={styles.stationTitle}>{radioStationName.toUpperCase()} IS AVAILABLE SOON</Text>
-      }
-      if (!!url && !song) {
-        return <Text style={styles.stationTitle}>LISTEN TO {radioStationName.toUpperCase()}</Text>
-      }
-      if (!!song) {
-        return <Text style={styles.songName}>{song}</Text>
-      }
+    const {url, song, radioStationName, isPlaying} = this.props;
+    if (!radioStationName) {
+      return null;
+    }
+    if (!url && !song) {
+      return <Text style={styles.stationTitle}>{radioStationName.toUpperCase()} IS AVAILABLE SOON</Text>
+    }
+    if (!!url && !isPlaying) {
+      return <Text style={styles.stationTitle}>LISTEN TO {radioStationName.toUpperCase()}</Text>
+    }
+    if (!!song) {
+      return <Text style={styles.songName}>{song}</Text>
+    } else if (isPlaying) {
+      return <Text style={styles.songName}>{radioStationName.toUpperCase()}</Text>
+    }
   }
 
   render() {
     let icon = null;
-    const { status, song, radioStationName, url } = this.props;
+    const { status, url, onRadioPress } = this.props;
     const iconStyle = [styles.icon];
 
     if (!url) {
@@ -142,7 +120,7 @@ class Player extends Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={this._onPress}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={onRadioPress}>
         {icon}
         </TouchableOpacity>
         <View style={styles.textContainer}>

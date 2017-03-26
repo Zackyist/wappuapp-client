@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   StyleSheet,
+  TouchableHighlight,
   TouchableOpacity,
   Animated,
   Easing,
@@ -15,13 +16,10 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import Icon from 'react-native-vector-icons/Ionicons';
-const IOS = Platform.OS === 'ios';
 
 import {
   getRadioMode,
   getRadioStatus,
-  getRadioSong,
   getRadioName,
   getRadioStations,
   getActiveStationId,
@@ -30,16 +28,34 @@ import {
   toggleRadioBar,
   setRadioSong,
   setRadioStatus,
-  setRadioStationActive
+  setRadioStationActive,
+  onRadioPress,
+  isRadioPlaying
 } from '../concepts/radio';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
 import PlayerUI from '../components/radio/PlayerUI';
 import PlatformTouchable from '../components/common/PlatformTouchable';
+import ModalBackgroundView from '../components/common/ModalBackgroundView';
 
-const { height } = Dimensions.get('window');
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 48 : height - 130;
+
+import {
+  PLAYING,
+  STREAMING,
+  PAUSED,
+  STOPPED,
+  ERROR,
+  BUFFERING,
+  START_PREPARING,
+  BUFFERING_START,
+} from '../constants/RadioStates';
+
+const IOS = Platform.OS === 'ios';
+const { height, width } = Dimensions.get('window');
+
+const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 50 : height - 130;
 const PLAYER_HEIGHT = IOS ? 40 : 40;
 
 class RadioPlayer extends Component {
@@ -47,7 +63,7 @@ class RadioPlayer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playerHeight: new Animated.Value(PLAYER_HEIGHT)
+      playerHeight: new Animated.Value(PLAYER_HEIGHT),
     };
   }
 
@@ -69,14 +85,53 @@ class RadioPlayer extends Component {
   }
 
   animateRadioBar(nextState) {
-    Animated.timing(this.state.playerHeight,
-      { duration: 200, easing: Easing.quad, toValue: nextState ? PLAYER_HEIGHT_EXPANDED : PLAYER_HEIGHT}).start();
+      Animated.spring(this.state.playerHeight,
+        { duration: 250, toValue: nextState ? PLAYER_HEIGHT_EXPANDED : PLAYER_HEIGHT}).start();
+  }
+
+  @autobind
+  onRadioButtonPress() {
+    const radioEnabled = !!this.props.currentStation.get('stream');
+
+    if (radioEnabled) {
+      this.props.onRadioPress()
+    }
+
   }
 
   renderExpandedContent() {
-    const { song, stations, activeStationId, currentStation } = this.props;
+    const { stations, activeStationId, currentStation, nowPlaying, status } = this.props;
+
+    const url = currentStation.get('stream');
+
+    const buttonStyle = [styles.button];
+    if (!url) {
+      buttonStyle.push(styles.button__disabled)
+    }
+
+    let icon = null;
+    switch (status) {
+      case STREAMING:
+      case PLAYING:
+      case BUFFERING:
+      case BUFFERING_START:
+      case START_PREPARING:
+        icon = <Icon name="pause" style={styles.playIcon} />;
+        break;
+      case ERROR:
+      case PAUSED:
+      case STOPPED:
+        icon = <Icon name="play-arrow" style={styles.playIcon} />;
+        break;
+    }
+
+    if (!url) {
+      icon = <Icon name="access-time" style={styles.playIcon} />
+    }
+
+
     return (
-      <View style={styles.containerExpanded}>
+      <ModalBackgroundView blurType="light" style={styles.containerExpanded}>
         <View style={styles.tabs}>
           {stations && stations.map((station, index) =>
             <View key={index} style={[styles.tab, station.get('id') === activeStationId ? styles.tab__active : {}]}>
@@ -85,43 +140,66 @@ class RadioPlayer extends Component {
               </PlatformTouchable>
             </View>
           )}
-          {/*<View style={styles.tab}><PlatformTouchable><Text style={styles.tabText}>Radiodiodi</Text></PlatformTouchable></View>*/}
         </View>
 
         <View style={styles.radioContent}>
-          <View style={{ flex: 1 }}><Text style={styles.songName}>{'Aamukahvia ananaspuusta'}</Text></View>
+        <View style={styles.radioProgram}>
+            <Text style={styles.programTitle}>
+             {nowPlaying.get('programTitle') || ' '}
+            </Text>
+
+            <Text style={styles.programHost}>
+              {url ? nowPlaying.get('programHost') || ' ' : `${currentStation.get('name')} is Available Soon`}
+            </Text>
+
+            <TouchableHighlight underlayColor={url ? theme.secondaryLight : theme.grey} onPress={this.onRadioButtonPress} style={buttonStyle}>
+              <Text style={styles.buttonText}>
+               {icon}
+              </Text>
+            </TouchableHighlight>
+          </View>
 
           {!!currentStation.get('website') &&
             <View style={styles.radioWebsite}>
               <PlatformTouchable onPress={() => Linking.openURL(currentStation.get('website'))}>
-                <Text style={styles.websiteUrl}>See more in {currentStation.get('website')}</Text>
+                <Text style={styles.websiteUrl}>
+                  {/*<Icon name="link" style={styles.websiteIcon}/>*/}
+                  See full program in <Text style={styles.websiteUrlAccent}>
+                    {currentStation.get('website', '').replace('https://', '').replace('/', '')}
+                  </Text>
+                </Text>
               </PlatformTouchable>
             </View>
           }
         </View>
 
         <TouchableOpacity onPress={this.close} style={styles.close} >
-          <Icon name="ios-arrow-up-outline" style={styles.closeArrow} />
+          <Icon name="expand-less" style={styles.closeArrow} />
         </TouchableOpacity>
-      </View>
+      </ModalBackgroundView>
     )
+  }
+
+  formatSongTitle(nowPlaying) {
+    const host = nowPlaying.get('programHost') || '';
+    const title = nowPlaying.get('programTitle') || '';
+
+    if (!title && !host) {
+      return null;
+    }
+
+    return title || host;
   }
 
   render() {
     const { playerHeight } = this.state;
-    const { expanded, song, status, nowPlaying, currentStation } = this.props;
+    const { expanded, isPlaying, status, nowPlaying, currentStation } = this.props;
 
     return (
-      <Animated.View style={[styles.container, { height: playerHeight }]}>
-        {false && expanded && <Image
-          resizeMode={'contain'}
-          source={require('../../assets/radio.png')}
-          // source={require('../../assets/rakkauden-wappuradio.png')}
-          style={styles.bgImage} />
-        }
+      <Animated.View style={[styles.container, !expanded ? styles.containerCompact : {}, { height: playerHeight }]}>
         {expanded && this.renderExpandedContent()}
 
-        {!expanded && <TouchableOpacity
+        {<TouchableOpacity
         activeOpacity={1}
         onPress={this.toggle}
         style={styles.pressable}>
@@ -130,8 +208,10 @@ class RadioPlayer extends Component {
             setRadioSong={this.props.setRadioSong}
             radioStationName={currentStation ? currentStation.get('name') : ''}
             status={status}
-            song={nowPlaying ? `${nowPlaying.get('programHost')} ${nowPlaying.get('programTitle')}` : ''}
+            onRadioPress={this.props.onRadioPress}
+            song={this.formatSongTitle(nowPlaying)}
             url={currentStation ? currentStation.get('stream') : ''}
+            isPlaying={isPlaying}
           />
         </TouchableOpacity>
         }
@@ -152,16 +232,12 @@ const styles = StyleSheet.create({
     height: PLAYER_HEIGHT,
     zIndex: 0,
     top: IOS ? 20 : 0,
-    backgroundColor: theme.white, // 'rgba(255, 255, 255, .95)',
+    backgroundColor: 'rgba(255, 255, 255, .2)',
     overflow: 'hidden',
     elevation: 1,
   },
-  bgImage: {
-    position: 'absolute',
-    height: PLAYER_HEIGHT_EXPANDED - 250,
-    bottom: 35,
-    opacity: 0.8,
-    tintColor: theme.secondary,
+  containerCompact: {
+    backgroundColor: theme.white
   },
   pressable: {
     paddingLeft: 10,
@@ -174,25 +250,35 @@ const styles = StyleSheet.create({
 
   // expanded
   containerExpanded: {
-    flex: 1,
-    justifyContent: 'flex-start',
-  },
-  close: {
+
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    alignItems: 'center',
+    top: 0,
+    zIndex: 10,
+    flex: 1,
+    justifyContent: 'flex-start',
+    backgroundColor: theme.transparent
+  },
+  close: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    padding: 8,
+    paddingBottom: 14,
+    width: 60,
+    alignItems: 'flex-end',
   },
   closeArrow: {
-    fontSize: 30,
-    marginBottom: 5,
-    color: 'rgba(0, 0, 0, .3)',
+    fontSize: 33,
+    paddingRight: 10,
+    color: 'rgba(0, 0, 0, .4)',
     backgroundColor: 'transparent'
   },
   tabs: {
-    borderBottomColor: '#eee',
-    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)',
+    borderBottomWidth: IOS ? 0 : 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -201,6 +287,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 2,
     paddingTop: 2,
+    backgroundColor: 'transparent',
     borderBottomColor: 'transparent'
   },
   tabText: {
@@ -213,26 +300,80 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.secondary
   },
   radioContent: {
-    backgroundColor: '#FF0000',
+    backgroundColor: theme.transparent,
+    flexGrow: 1,
+  },
+  radioProgram: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center'
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexGrow: 2,
+    backgroundColor: 'transparent',
+    paddingBottom: 50,
+  },
+  radioProgramBg: {
+    flex: 1,
   },
   radioWebsite: {
-    flexGrow: 1,
-    flex: 1,
-    alignItems: 'center'
+    backgroundColor: IOS ? 'transparent' : theme.lightgrey,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 0,
+    borderBottomWidth: 2,
+    borderBottomColor: theme.secondary,
   },
   websiteUrl: {
-    fontSize: 20,
-    color: theme.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'rgba(0, 0, 0, .5)',
   },
-  songName: {
-    padding: 5,
+  websiteUrlAccent: {
+    color: theme.black
+  },
+  programHost: {
+    color: 'rgba(0, 0, 0, .5)',
+    fontWeight: '500',
+    fontSize: 16,
+  },
+  programTitle: {
+    padding: 7,
+    paddingTop: 0,
     textAlign: 'center',
-    fontWeight: '900',
-    fontSize: 40,
-    color: theme.secondary,
+    fontWeight: '600',
+    fontSize: 21,
+    color: theme.black,
+  },
+  button: {
+    marginTop: 25,
+    backgroundColor: theme.secondary,
+    height: width / 3,
+    width: width / 3,
+    borderRadius: width / 6,
+    elevation: 2,
+    borderWidth: 0,
+    borderColor: '#f6f6f6',
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    shadowOffset: {
+      height: 7,
+      width: 0
+    },
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    backgroundColor: 'transparent',
+    fontSize: 100,
+    fontWeight: 'bold',
+    color: theme.white
+  },
+  playIcon: {
+    fontSize: width / 6,
+  },
+  button__disabled: {
+    backgroundColor: theme.grey,
   }
 
 });
@@ -242,13 +383,14 @@ const mapDispatchToProps = {
   setRadioSong,
   setRadioStationActive,
   toggleRadioBar,
+  onRadioPress,
 }
 
 const mapStateToProps = createStructuredSelector({
   name: getRadioName,
   status: getRadioStatus,
   nowPlaying: getNowPlaying,
-  song: getRadioSong,
+  isPlaying: isRadioPlaying,
   expanded: getRadioMode,
   stations: getRadioStations,
   activeStationId: getActiveStationId,
