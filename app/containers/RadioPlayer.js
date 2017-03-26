@@ -3,17 +3,17 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   Text,
   StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
   Animated,
-  Easing,
   Platform,
   Linking,
-  Dimensions
+  Dimensions,
+  SegmentedControlIOS
 } from 'react-native';
+import { findIndex } from 'lodash';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -99,6 +99,14 @@ class RadioPlayer extends Component {
 
   }
 
+  @autobind
+  changeRadioStationTabIOS(event, stationsTabs) {
+    const { stations } = this.props;
+    const index = event.nativeEvent.selectedSegmentIndex;
+    const nextStation = stations.find(s => s.get('name') === stationsTabs[index]);
+    this.props.setRadioStationActive(nextStation.get('id'))
+  }
+
   renderExpandedContent() {
     const { stations, activeStationId, currentStation, nowPlaying, status } = this.props;
 
@@ -129,9 +137,20 @@ class RadioPlayer extends Component {
       icon = <Icon name="access-time" style={styles.playIcon} />
     }
 
+    const stationsTabs = stations ? stations.map(s => s.get('name')).toJS() : [];
 
     return (
       <ModalBackgroundView blurType="light" style={styles.containerExpanded}>
+        {IOS ?
+        <View style={styles.iosTabs}>
+          <SegmentedControlIOS
+            tintColor={theme.secondary}
+            selectedIndex={findIndex(stationsTabs, stationName => stationName === currentStation.get('name'))}
+            values={stationsTabs}
+            onChange={(event) => this.changeRadioStationTabIOS(event, stationsTabs)}
+          />
+        </View>
+        :
         <View style={styles.tabs}>
           {stations && stations.map((station, index) =>
             <View key={index} style={[styles.tab, station.get('id') === activeStationId ? styles.tab__active : {}]}>
@@ -141,6 +160,7 @@ class RadioPlayer extends Component {
             </View>
           )}
         </View>
+        }
 
         <View style={styles.radioContent}>
         <View style={styles.radioProgram}>
@@ -265,7 +285,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    padding: 8,
+    padding: 0,
     paddingBottom: 14,
     width: 60,
     alignItems: 'flex-end',
@@ -275,6 +295,9 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     color: 'rgba(0, 0, 0, .4)',
     backgroundColor: 'transparent'
+  },
+  iosTabs: {
+    margin: 15,
   },
   tabs: {
     borderBottomColor: 'rgba(0,0,0,0.05)',
