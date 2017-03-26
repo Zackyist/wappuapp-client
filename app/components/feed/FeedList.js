@@ -50,7 +50,7 @@ const IOS = Platform.OS === 'ios';
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#f2f2f2'
+    backgroundColor: theme.lightgrey
   },
   feedContainer: {
     flexDirection: 'column',
