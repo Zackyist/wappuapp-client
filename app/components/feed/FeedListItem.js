@@ -178,20 +178,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#faf5ee'
   },
   itemTextWrapper__admin: {
-    paddingLeft: 25,
+    paddingTop: 0,
+    paddingBottom: 5,
+    paddingLeft: 15,
     paddingRight: 15
   },
   feedItemListItemInfo__admin: {
     paddingLeft: 0,
-    paddingBottom: 18,
+    paddingBottom: 14,
   },
   feedItemListItemAuthor__admin:  {
-    paddingLeft: 25,
+    paddingLeft: 15,
   },
   itemTimestamp__admin:{
     color: '#b5afa6'
   },
   feedItemListText__admin: {
+    textAlign: 'left',
     color: '#7d776e',
     fontWeight: 'bold',
     fontSize: 12,
@@ -357,8 +360,8 @@ class FeedListItem extends Component {
           <View style={[styles.feedItemListItemInfo, styles.feedItemListItemInfo__admin]}>
             <View style={[styles.feedItemListItemAuthor, styles.feedItemListItemAuthor__admin]}>
               <Text style={styles.itemAuthorName}>Whappu</Text>
-              <Text style={[styles.itemTimestamp, styles.itemTimestamp__admin]}>{ago}</Text>
             </View>
+            <Text style={[styles.itemTimestamp, styles.itemTimestamp__admin]}>{ago}</Text>
           </View>
 
           {item.type === 'IMAGE' ?
