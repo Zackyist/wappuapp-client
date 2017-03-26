@@ -24,6 +24,7 @@ import { openRegistrationView } from '../../actions/registration';
 const { height, width } = Dimensions.get('window');
 const FEED_ITEM_MARGIN_DISTANCE = 0;
 const FEED_ITEM_MARGIN_DEFAULT = 0;
+const FEED_ADMIN_ITEM_MARGIN_DEFAULT = 15;
 const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
@@ -111,7 +112,8 @@ const styles = StyleSheet.create({
 
   },
   feedItemListItemImg__admin: {
-    width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
+    width: width - (2 * FEED_ADMIN_ITEM_MARGIN_DEFAULT),
+    borderRadius: 5,
   },
   feedItemListItemInfo: {
     flex: 1,
