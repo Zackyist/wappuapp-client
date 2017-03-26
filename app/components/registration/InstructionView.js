@@ -53,12 +53,6 @@ class InstructionView extends Component {
                 text={'Competition ends at 12:00AM on 1st of May.'}
                 secondaryText={'Winner will be announced later on the day.'}/>
 
-              {simplified &&
-                <Text style={styles.text}>
-                  <Text style={{fontWeight: 'bold'}}>Join </Text>
-                  <Text>by finishing up your registration. Just looking around? It's okay, just</Text>
-                  <Text style={{fontWeight: 'bold'}}> skip. </Text>
-                </Text>}
             </View>
           </ScrollView>
 

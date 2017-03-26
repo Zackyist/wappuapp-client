@@ -21,6 +21,7 @@ import AppIntro from 'react-native-app-intro';
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
 import InstructionView from './InstructionView';
+import SkipView from './SkipView';
 import IntroView from './IntroView';
 import Modal from 'react-native-modalbox';
 import Team from './Team';
@@ -270,8 +271,8 @@ class RegistrationView extends Component {
         <AppIntro
           onSkipBtnClick={() => this.onClose()}
           onDoneBtnClick={() => this.onRegister()}
-          // showSkipButton={this.state.showSkipButton}
-          showDoneButton={this.state.index !== 2 || (this.props.isRegistrationInfoValid && this.teamIsValid())}
+          showSkipButton={false}
+          showDoneButton={this.state.index !== 3 || (this.props.isRegistrationInfoValid && this.teamIsValid())}
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
           leftTextColor={theme.white}
@@ -281,6 +282,9 @@ class RegistrationView extends Component {
           </View>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
             <InstructionView simplified={true} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
+          </View>
+          <View style={[styles.slide, { backgroundColor: '#fff' }]}>
+            <SkipView skip={this.onClose} />
           </View>
           <View style={[styles.slide, { backgroundColor: '#fff' }]}>
             {this._renderNameSelectContainer()}
