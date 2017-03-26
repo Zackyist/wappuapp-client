@@ -52,11 +52,16 @@ export const getNowPlayingLeft = createSelector(
 );
 
 // # Action creators
+
+const pause = () => ReactNativeAudioStreaming.pause();
+const stop = () => ReactNativeAudioStreaming.stop();
 const play = () => (dispatch, getState) => {
   const state = getState();
   const url = getActiveStation(state).get('stream');
   if (url) {
     ReactNativeAudioStreaming.play(url, { showIniOSMediaCenter: true, showInAndroidNotifications: true });
+  } else {
+    stop();
   }
 }
 
@@ -68,8 +73,7 @@ const resume = () => (dispatch, getState) => {
   }
 }
 
-const pause = () => ReactNativeAudioStreaming.pause();
-const stop = () => ReactNativeAudioStreaming.stop();
+
 export const onRadioPress = () => (dispatch, getState) => {
   const state = getState();
   const status = getRadioStatus(state);
@@ -112,7 +116,6 @@ export const setRadioStationActive = (stationId) => (dispatch, getState) => {
   // continue playing if radio is playing
   const isPlaying = isRadioPlaying(getState());
   if (isPlaying) {
-    pause();
     setTimeout(() => {
       dispatch(play());
     }, 100);
