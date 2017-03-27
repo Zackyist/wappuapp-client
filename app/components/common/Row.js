@@ -6,7 +6,6 @@ import {
   Text,
   StyleSheet,
   Platform,
-  PropTypes
 } from 'react-native';
 import theme from '../../style/theme';
 const IOS = Platform.OS === 'ios';
@@ -20,7 +19,7 @@ class Row extends Component {
     return (
     <View style={[styles.row, this.props.style]}>
       {this.props.icon && <View style={styles.rowIconContainer}>
-        <Icon name={this.props.icon}  style={[styles.rowIcon, {color: theme.white}]} />
+        <Icon name={this.props.icon} style={styles.rowIcon} />
       </View>}
 
       <View style={styles.rowTextContainer}>
@@ -52,17 +51,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row'
   },
-  rowNumberContainer: {
-    paddingLeft: 10,
-    paddingTop:6,
-    borderWidth:2,
-    borderColor:theme.white,
-    borderRadius:25,
-    width:50,
-    height:50,
-    paddingRight: 10,
-    top: 2
-  },
   rowNumberText: {
     fontSize: 28,
     color: theme.white,
@@ -71,18 +59,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   rowIconContainer: {
-    width: 60,
-    height: 60,
-    backgroundColor:theme.primary,
-    borderRadius:30,
-    marginRight:5,
-    marginLeft:10,
+    width: 56,
+    height: 56,
+    backgroundColor: theme.white,
+    borderRadius: 30,
+    marginRight: 5,
+    marginLeft: 10,
     justifyContent:'center'
   },
   rowIcon: {
     textAlign:'center',
     backgroundColor: 'rgba(0,0,0,0)',
-    fontSize: 28
+    color: theme.primary,
+    fontSize: 30
   },
   rowTextContainer: {
     flex: 1,
@@ -91,12 +80,12 @@ const styles = StyleSheet.create({
   },
   rowTitle:{
     color: theme.white,
-    fontWeight:'bold',
-    fontSize: 18,
+    fontWeight: 'bold',
+    fontSize: 15,
     marginBottom: 4,
   },
   rowText: {
-    color: IOS ? '#555' : '#888',
+    color: 'rgba(0,0,0,0.5)',
     fontSize: 14,
     fontWeight: 'normal'
   },

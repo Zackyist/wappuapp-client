@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
+import MdIcon from 'react-native-vector-icons/MaterialIcons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -25,26 +26,36 @@ class SkipView extends Component {
 
     return (
        <View style={styles.container}>
-          <ScrollView style={{flex:1, width: null, height: null}}>
-              <View style={{alignItems: 'center'}}>
-                <Image style={{marginTop: 80, height: 180, width: 180}}  source={require('../../../assets/whappu-text.png')}/>
-              </View>
+          {/*
+          <View style={styles.topArea}>
+            <View style={styles.iconWrap}>
+              <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
+              <MdIcon style={styles.icon} name={'loyalty'} />
+            </View>
+          </View>
+          */}
 
+          <ScrollView style={{flex:1, width: null, height: null}}>
               <View style={styles.content}>
                 <View style={styles.textContainer}>
-                  <Text style={styles.subTitle}>To join or not to join?</Text>
-                  <Text style={styles.text}>
-                    <Text style={{fontWeight: 'bold'}}>Join </Text>
-                    <Text>by finishing up your registration. Just looking around? It's okay, just</Text>
-                    <Text style={{fontWeight: 'bold'}}> skip. </Text>
-                    <Text>You can always register later.</Text>
-                  </Text>
+                  <Text style={styles.subTitle}>CHOOSE YOUR TEAM</Text>
+                    <Text style={styles.text}>
+                      <Text style={{fontWeight: 'bold'}}>Edit your profile </Text>
+                      to finish registration.
+                    </Text>
+
+                    <Text style={styles.text}>Just looking around? It's okay, just press
+                      <Text style={{fontWeight: 'bold'}}> Done. </Text>
+                      You can always edit your profile later.
+                    </Text>
+
+                    <Text style={[styles.text, { fontWeight: 'bold' }]}>Whappu starts now!</Text>
                 </View>
               </View>
             </ScrollView>
-            <TouchableWithoutFeedback onPress={this.props.skip}>
+            <TouchableWithoutFeedback onPress={this.props.onPressProfileLink}>
               <View style={styles.cancelButton}>
-                <Text style={{fontSize: 16, fontWeight: 'bold', color: theme.white}}>SKIP</Text>
+                <Text style={{fontSize: 16, fontWeight: 'bold', color: theme.white}}>EDIT YOUR PROFILE</Text>
               </View>
             </TouchableWithoutFeedback>
         </View>
@@ -55,23 +66,68 @@ class SkipView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.secondary,
     alignSelf: 'stretch',
-    paddingBottom: 30,
+    backgroundColor: theme.secondary,
   },
   content: {
-    marginTop: 30,
     margin: 20,
+    marginTop: 25,
+    marginBottom: 15,
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
+  },
+  topArea: {
+    backgroundColor: theme.secondary,
+    minHeight: height / 2.5,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  iconWrap: {
+    overflow: 'hidden',
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,.1)',
+    left: width / 2 - 100,
+    top: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   icon: {
-    flex: 1,
-    color: 'white',
-    alignItems: 'center',
+    // width: 200,
+    // left: width / 2 - 100,
+    // top: 50,
+    // position: 'absolute',
     textAlign: 'center',
+    opacity: 1,
+    backgroundColor: theme.transparent,
+    fontSize: 150,
+    width: 150,
+    height: 150,
+    // tintColor: theme.white,
+    color: theme.white,
   },
+  subIcon: {
+    backgroundColor: theme.transparent,
+    color: theme.accentLight,
+    fontSize: 60,
+    right: 50,
+    top: 30,
+    position: 'absolute'
+  },
+  bgImage: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    width: 200,
+    height: 200,
+    bottom: 0,
+    opacity: 0.3
+  },
+
   textContainer: {
     flex: 3,
     marginHorizontal: 40,
@@ -79,35 +135,37 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: 10,
-    // fontFamily: 'arial',
-    color: 'white',
-    fontSize: 22,
+    color: theme.accentLight,
+    fontWeight: '600',
+    fontSize: 15,
+    marginBottom: 15,
   },
   text: {
-    fontSize: 12,
-    color: 'white'
+    marginBottom: 20,
+    fontSize: 13,
+    lineHeight: 18,
+    color: theme.white,
+    textAlign: 'center',
   },
   cancelButton: {
     position: 'absolute',
-    bottom: 80,
-    left: width/2-60,
+    bottom: 90,
+    left: width / 2 - 100,
     padding: 5,
     paddingTop: 8,
     paddingBottom: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
-    borderWidth: 2,
+    borderRadius: 25,
+    borderWidth: 0,
     borderColor: theme.grey,
     backgroundColor: theme.primary,
-    width: 120,
+    width: 200,
     shadowColor: '#000000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 1,
     shadowOffset: {
-      height: 5,
+      height: 3,
       width: 0
     }
   }

@@ -36,7 +36,7 @@ const dismissIntroduction = () => {
   return { type: DISMISS_INTRODUCTION };
 };
 
-const putUser = (city) => {
+const putUser = () => {
   return (dispatch, getStore) => {
     dispatch({ type: CREATE_USER_REQUEST });
     const uuid = DeviceInfo.getUniqueID();
@@ -46,7 +46,6 @@ const putUser = (city) => {
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_REGISTRATION_VIEW });
-        dispatch(setCity(city));
       })
       .catch(error => dispatch({ type: CREATE_USER_FAILURE, error: error }));
   };

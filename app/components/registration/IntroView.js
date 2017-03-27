@@ -10,10 +10,22 @@ import {
   Easing,
   TouchableWithoutFeedback,
   Platform,
-  ScrollView
+  ScrollView,
+  Dimensions
 } from 'react-native';
 import theme from '../../style/theme';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+
+import Toolbar from './RegistrationToolbar';
+import Button from '../../components/common/Button';
+import Row from '../../components/common/Row';
+import Icon from 'react-native-vector-icons/Ionicons';
+import MdIcon from 'react-native-vector-icons/MaterialIcons';
+
+const { width, height } = Dimensions.get('window');
+const cityIcons = {
+  'helsinki': require('../../../assets/cities/icon-ota-amfi-accent.png'),
+  'tampere': require('../../../assets/cities/icon-tampere-accent.png')
+};
 
 const IOS = Platform.OS === 'ios';
 
@@ -47,38 +59,57 @@ class InstructionView extends Component {
 
     return (
        <View style={containerStyles}>
+
+          <View style={styles.topArea}>
+            {/*
+              <Icon style={styles.icon} name={'md-globe'} />
+            <Image style={{marginTop: 20, height: 50, width: 50}}  source={require('../../../assets/whappu-flat.png')}/>
+              <Image style={styles.icon} source={require('../../../assets/heart.png')} />
+            */}
+            <View style={styles.iconWrap}>
+              <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
+              <Icon style={styles.icon} name={'md-globe'} />
+              <MdIcon style={styles.subIcon} name={'location-on'} />
+            </View>
+          </View>
+
           <ScrollView style={{flex:1, width: null, height: null}}>
-              <View style={[styles.container, styles.contentContainer]}>
+            <View style={styles.container}>
+              <View style={styles.bottomArea}>
 
-                <View style={{alignItems: 'center'}}>
-                  <Image style={{marginTop: 50, height: 140, width: 150}}  source={require('../../../assets/header/4.png')}/>
-                </View>
-
-                <View style={styles.content}>
-                  <Icon style={styles.icon} name={'location-on'} size={50}/>
-                  <View style={styles.textContainer}>
-                    <Text style={styles.subTitle}>Pick your city to start</Text>
-                    <Text style={styles.text}>
+                  <View style={styles.content}>
+                    <View style={styles.textContainer}>
+                      <Text style={styles.subTitle}>PICK YOUR CITY</Text>
+                      <Text style={styles.text}>
                       City you select will have an effect on the feed. You may change your selection whenever you want.</Text>
+                    </View>
                   </View>
-                </View>
+                  <View style={styles.cities}>
+                    {this.props.cities.map((city, i) => {
+                      const isCitySelected = city.get('id') === this.props.selectedCity;
+                      return <TouchableWithoutFeedback
+                        key={i}
+                        onPress={this.handlePress.bind(this, city.get('id'))}>
+                        <Animated.View style={[styles.touchable, {transform: [{ scale: isCitySelected ? active : unactive }] }]}>
+                          <View style={styles.circle}>
+                            {isCitySelected && <MdIcon name={'done'} style={styles.checked} />}
 
-                <View style={styles.cities}>
-                  {this.props.cities.map((city, i) => {
-                    return <TouchableWithoutFeedback
-                      key={i}
-                      onPress={this.handlePress.bind(this, city.get('id'))}>
-                      <Animated.View style={[styles.touchable, {transform: [{scale: city.get('id') === this.props.selectedCity ? active : unactive}] }]}>
-                        <View style={styles.circle}>
-                          <Icon style={styles.cityIcon} name={'location-city'} size={50}/>
-                          <Text style={styles.cityTitle}>
-                            {city.get('name')}
-                          </Text>
-                          {this.props.selectedCity === city.get('id') && <Icon name={'check'} style={styles.checked} size={30}/>}
-                        </View>
-                      </Animated.View>
-                    </TouchableWithoutFeedback>}
-                  )}
+                            <Image
+                              source={(city.get('name') || '').toLowerCase() === 'tampere'
+                                ? cityIcons.tampere
+                                : cityIcons.helsinki
+                              }
+                              style={styles.cityIcon}
+                            />
+
+                            <Text style={[styles.cityText, isCitySelected ? styles.activeCityText : {}]}>
+                              {city.get('name')}
+                            </Text>
+                          </View>
+                        </Animated.View>
+                      </TouchableWithoutFeedback>}
+                    )}
+                  </View>
                 </View>
 
               </View>
@@ -93,66 +124,131 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.secondary,
     alignSelf: 'stretch',
-    paddingBottom: 30
   },
-  header: {
-    fontWeight: 'bold',
-    color: theme.secondary,
-    marginTop: 30,
-    marginLeft: IOS ? 25 : 15,
-    fontSize: 28
+  area: {
+    alignItems: 'stretch'
   },
-  content: {
-    marginTop: 30,
-    flex: 1,
-    flexDirection: 'row',
+  topArea: {
+    backgroundColor: theme.secondary,
+    minHeight: height / 2.5,
     alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  bottomArea: {
+    flex: 1,
+  },
+  iconWrap: {
+    overflow: 'hidden',
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,.1)',
+    left: width / 2 - 100,
+    top: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   icon: {
-    flex: 1,
-    color: 'white',
-    alignItems: 'center',
+    // width: 200,
+    // left: width / 2 - 100,
+    // top: 50,
+    // position: 'absolute',
     textAlign: 'center',
+    opacity: 1,
+    backgroundColor: theme.transparent,
+    fontSize: 150,
+    width: 150,
+    height: 150,
+    // tintColor: theme.white,
+    color: theme.white,
+  },
+  subIcon: {
+    backgroundColor: theme.transparent,
+    color: theme.accentLight,
+    fontSize: 60,
+    right: 50,
+    top: 30,
+    position: 'absolute'
+  },
+  bgImage: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    width: 200,
+    height: 200,
+    bottom: 0,
+    opacity: 0.3
+  },
+  content: {
+    margin: 20,
+    marginTop: 25,
+    marginBottom: 15,
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   textContainer: {
-    flex: 3,
-    marginLeft: 0,
+    alignItems: 'center',
     flexDirection: 'column'
   },
   subTitle: {
-    fontFamily: 'arial',
-    color: 'white',
-    fontSize: 22,
+    color: theme.accentLight,
+    fontWeight: '600',
+    fontSize: 15,
+    marginBottom: 15,
   },
   text: {
-    fontSize: 12,
-    color: 'white',
-    paddingRight: 15
+    fontSize: 13,
+    lineHeight: 18,
+    color: theme.white,
+    textAlign: 'center',
   },
   cities: {
-    marginTop: 40,
+    marginTop: 0,
     justifyContent: 'center',
     flexDirection: 'row',
     flex: 1
   },
   touchable: {
-    height: 120,
-    width: 120,
-    margin: 10,
-    borderRadius: 60,
+    height: 100,
+    width: 100,
+    margin: 20,
+    borderRadius: 50,
+    // shadowColor: '#000',
+    // shadowOpacity: 0.2,
+    // shadowRadius: 3,
+    // shadowOffset: {
+    //   height: 3,
+    //   width: 0
+    // },
   },
   circle: {
     flex: 1,
-    backgroundColor: theme.primary,
-    padding: 20,
+    backgroundColor: theme.secondary,
+    padding: 12,
+    paddingTop: 16,
     borderWidth: 2,
-    borderStyle: 'dotted',
     borderColor: theme.white,
     alignItems: 'center',
-    borderRadius: 60,
+    borderRadius: 50,
   },
   cityIcon: {
-    color: 'white'
+    width: 40,
+    height: 40,
+    zIndex: 4,
+  },
+  cityText: {
+    fontSize: 12,
+    color: theme.white,
+    fontWeight: '500',
+    marginBottom: 10,
+    backgroundColor: 'transparent',
+    zIndex: 3,
+  },
+  activeCityText: {
+    color: theme.accentLight
   },
   cityTitle: {
     fontSize: 15,
@@ -161,10 +257,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   checked: {
+    zIndex: 2,
     position: 'absolute',
-    top: 10,
-    right: 5,
-    color: 'white',
+    bottom: 5,
+    right: 35,
+    fontSize: 25,
+    color: theme.accentLight,
+    opacity: 1,
     backgroundColor: 'rgba(0,0,0,0)',
   },
   bottomButtons:{
@@ -174,7 +273,7 @@ const styles = StyleSheet.create({
     marginBottom:0,
     marginLeft:0,
     marginRight:0,
-    height:50,
+    height: 50,
     alignItems:'stretch',
     position:'absolute',
     bottom:0,
