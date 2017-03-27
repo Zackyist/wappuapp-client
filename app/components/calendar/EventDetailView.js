@@ -7,6 +7,7 @@ import {
   Dimensions,
   View,
   Platform,
+  TouchableOpacity,
   Linking,
   TouchableWithoutFeedback,
   Animated,
@@ -32,6 +33,10 @@ import locationService from '../../services/location';
 import Button from '../common/Button';
 import Fab from '../common/Fab';
 
+import { fetchFeed,
+  openLightBox
+} from '../../actions/feed';
+import { fetchImages } from '../../actions/event';
 import {
   INACTIVE,
   UNAVAILABLE,
@@ -41,6 +46,8 @@ import {
 
 import PlatformTouchable from '../common/PlatformTouchable';
 const IOS = Platform.OS === 'ios';
+const { width, height } = Dimensions.get('window');
+
 
 const VIEW_NAME = 'EventDetail';
 
@@ -219,6 +226,13 @@ const styles = StyleSheet.create({
     //position: 'absolute',
     //left: 0, top: 0, bottom: 0, right: 0,
     flex: 1
+  },
+  imageContainer:{
+    marginTop: 10,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
   }
 });
 
@@ -237,6 +251,7 @@ const EventDetail = React.createClass({
 
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
+    this.props.fetchImages(this.props.route.model.id);
   },
 
   onPressBack() {
@@ -435,6 +450,31 @@ const EventDetail = React.createClass({
           <View style={styles.navigationButtonWrapper}>
             <Button style={{borderRadius:0}} onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
           </View>
+
+          {this.props.images.size > 0 &&
+            <View>
+              <View style={{flex: 1, marginTop: 10, backgroundColor: theme.secondary}}>
+                <Text style={{textAlign: 'center', color: theme.white, margin: 10, fontWeight: 'bold'}}>Images posted from the event</Text>
+              </View>
+              <View style={styles.imageContainer}>
+                {this.props.images.map(image => {
+                  if (image.get('type') === 'IMAGE') {
+                  return <View key={image.get('id')}>
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPress={() => this.props.openLightBox(image)}
+                    >
+                    <Image
+                      key={image.get('id')}
+                      style={{height: width/3, width: width/3}}
+                      source={{uri: image.get('url')}}/>
+                    </TouchableOpacity>
+                    </View>;
+                  }}
+                )}
+              </View>
+            </View>
+          }
         </View>
       </ParallaxView>
       <Notification visible={this.props.isNotificationVisible}>
@@ -445,12 +485,13 @@ const EventDetail = React.createClass({
 
 });
 
-const mapDispatchToProps = { checkIn };
+const mapDispatchToProps = { checkIn, fetchImages, openLightBox };
 
 
 const select = store => {
   return {
     userLocation: store.location.get('currentLocation'),
+    images: store.event.get('images'),
     isNotificationVisible: store.competition.get('isNotificationVisible'),
     notificationText: store.competition.get('notificationText')
   }

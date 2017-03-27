@@ -49,7 +49,11 @@ const putMood = (params) => {
   return _put(Endpoints.urls.mood, payload);
 };
 
-
+const getImages = eventId => {
+  return wapuFetch(Endpoints.urls.event(eventId))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+}
 
 const putUser = payload => {
   return _put(Endpoints.urls.user(payload.uuid), payload);
@@ -190,5 +194,6 @@ export default {
   postAction,
   putUser,
   putMood,
-  getUser
+  getUser,
+  getImages
 };

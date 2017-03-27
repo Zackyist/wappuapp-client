@@ -5,6 +5,7 @@ const ROOT_URL = ENV.API_URL;
 const EndpointUrls = {
   markers: `${ROOT_URL}/markers`,
   events: `${ROOT_URL}/events`,
+  event: (eventId) => `${ROOT_URL}/events/${eventId}`, 
   feed: `${ROOT_URL}/feed`,
   feedItem: (itemId) => `${ROOT_URL}/feed/${itemId}`,
   leaderboard: `${ROOT_URL}/leaderboard`,
