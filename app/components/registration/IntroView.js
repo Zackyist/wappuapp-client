@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
   iconWrap: {
     overflow: 'hidden',
     position: 'absolute',
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: 190,
+    height: 190,
+    borderRadius: 95,
     backgroundColor: 'rgba(255,255,255,.1)',
-    left: width / 2 - 100,
-    top: 50,
+    left: width / 2 - 95,
+    top: width / 8,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.transparent,
     color: theme.accentLight,
     fontSize: 60,
-    right: 50,
-    top: 30,
+    right: 40,
+    top: 10,
     position: 'absolute'
   },
   bgImage: {
@@ -176,8 +176,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    width: 200,
-    height: 200,
+    width: 190,
+    height: 190,
     bottom: 0,
     opacity: 0.3
   },

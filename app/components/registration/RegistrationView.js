@@ -181,7 +181,7 @@ class RegistrationView extends Component {
             {!simplified && this._renderCitySelect()}
             <View style={styles.inputGroup}>
               <View style={[styles.inputLabel, {backgroundColor: !simplified ? theme.white : '#eee'}]}>
-                <Text style={styles.inputLabelText}>Choose your Guild</Text>
+                <Text style={styles.inputLabelText}>Choose your Team</Text>
               </View>
 
               <View style={styles.inputFieldWrap}>
@@ -224,7 +224,7 @@ class RegistrationView extends Component {
         <View style={styles.inputLabel}>
           <Text style={styles.inputLabelText}>{`Choose your City`}</Text>
         </View>
-        <View style={{flexDirection: 'row', padding: 10}}>
+        <View style={{flexDirection: 'row', padding: 10, paddingTop: 5 }}>
           {this.props.cities.map((city, i) => {
             const isCitySelected = selectedCity === city.get('id');
             return (
@@ -313,8 +313,8 @@ class RegistrationView extends Component {
                 <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
                 <Icon style={styles.icon} name={'face'} />
                 <Icon style={styles.subIcon} name={'chat-bubble-outline'} />
-                <Icon style={[styles.subIcon, { top: -15, left: 65, fontSize: 60 }]} name={'stars'} />
-                <Icon style={[styles.subIcon, { top: 20, left: -5, fontSize: 60 }]} name={'photo-camera'} />
+                <Icon style={[styles.subIcon, { top: -20, left: 65, fontSize: 50 }]} name={'event'} />
+                <Icon style={[styles.subIcon, { top: 20, left: -15, fontSize: 50 }]} name={'photo-camera'} />
               </View>
             </View>
             <View level={-40} >
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   button: {
-    height: 40,
+    height: 35,
     borderRadius: 2,
     flex: 1,
     alignSelf: 'stretch',
@@ -526,12 +526,12 @@ const styles = StyleSheet.create({
   iconWrap: {
     // overflow: 'hidden',
     position: 'absolute',
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: 190,
+    height: 190,
+    borderRadius: 95,
     backgroundColor: 'rgba(255,255,255,.1)',
-    left: width / 2 - 100,
-    top: 50,
+    left: width / 2 - 95,
+    top: width / 8,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -562,9 +562,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: 0,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
+    width: 190,
+    height: 190,
+    borderRadius: 95,
     overflow: 'hidden',
     bottom: 0,
     opacity: 0.3
