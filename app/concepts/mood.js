@@ -14,7 +14,7 @@ import ActionTypes from '../constants/ActionTypes';
 export const getMoodData = state => state.mood.get('data', List()) || List();
 export const getLimitLine = state => state.mood.get('limitLine');
 
-const showAfter = '2017-03-21';
+const showAfter = '2017-03-26';
 const showAfterISO = moment(showAfter).toISOString();
 const getValidMoodData = createSelector(
   getMoodData, (data) => {
@@ -84,16 +84,18 @@ const {
   GET_MOOD_DATA_FAILURE
 } = createRequestActionTypes('GET_MOOD_DATA');
 export const fetchMoodData = () => (dispatch, getState) => {
-  // const state = getState();
-  // const cityId = getCityId(state);
 
-  // if (!cityId) {
-  //   return;
-  // }
+  const state = getState();
+  const cityId = getCityId(state);
+
+  if (!cityId) {
+    return;
+  }
+
 
   dispatch({ type: GET_MOOD_DATA_REQUEST });
 
-  return api.fetchModels('mood')
+  return api.fetchModels('mood', { cityId })
   .then(data => {
     dispatch({
       type: SET_MOOD_DATA,
@@ -154,6 +156,7 @@ const initialState = fromJS({
 export default function mood(state = initialState, action) {
   switch (action.type) {
     case SET_MOOD_DATA: {
+      console.log(action.payload);
       return state.set('data', fromJS(action.payload));
     }
 
