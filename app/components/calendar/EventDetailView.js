@@ -115,16 +115,18 @@ const styles = StyleSheet.create({
   },
 
   navigationButtonWrapper: {
-    margin: -20,
+    margin: 15,
     marginTop: 0,
     marginBottom:0,
+    borderRadius: 3,
     backgroundColor: theme.light
   },
   navigationButton: {
     height: 50,
     backgroundColor: '#E9E9E9',
     borderColor: '#C7C7C7',
-    borderWidth: 2
+    borderWidth: 10,
+    borderRadius: 2,
   },
   navigationButtonText: {
     fontSize: 20,
@@ -230,12 +232,28 @@ const styles = StyleSheet.create({
     flex: 1
   },
   imageContainer:{
+    margin: 2,
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 30,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
+  },
+  imageTitle: {
+    textAlign: 'left',
+    color: theme.grey,
+    margin: 20,
+    marginBottom: 10,
+    marginLeft: 20,
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
+  imageTitleWrap: {
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    flex: 1,
+    marginTop: 25
   }
 });
 
@@ -456,13 +474,13 @@ const EventDetail = React.createClass({
             <Text style={styles.detailEventDescription}>{model.description}</Text>
           </View>
           <View style={styles.navigationButtonWrapper}>
-            <Button style={{borderRadius:0}} onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
+            <Button onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
           </View>
 
           {this.props.images.size > 0 &&
             <View>
-              <View style={{flex: 1, marginTop: 10, backgroundColor: theme.secondary}}>
-                <Text style={{textAlign: 'center', color: theme.white, margin: 10, fontWeight: 'bold'}}>Images posted from the event</Text>
+              <View style={styles.imageTitleWrap}>
+                <Text style={styles.imageTitle}>Images posted from the event</Text>
               </View>
               <View style={styles.imageContainer}>
                 {this.props.images.map(image => {
@@ -474,7 +492,7 @@ const EventDetail = React.createClass({
                     >
                     <Image
                       key={image.get('id')}
-                      style={{height: width / 3 - 4, width: width / 3 - 4, margin: 2}}
+                      style={{height: width / 3 - 8, width: width / 3 - 8, margin: 3}}
                       source={{uri: image.get('url')}}/>
                     </TouchableOpacity>
                     </View>;
