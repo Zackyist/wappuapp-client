@@ -21,6 +21,7 @@ import autobind from 'autobind-decorator';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import EventListItem from '../calendar/EventListItem';
 import { checkIn, closeCheckInView } from '../../actions/competition';
+import { getCurrentCityName } from '../../concepts/city';
 
 import CheckInButton from './CheckInButton';
 import theme from '../../style/theme';
@@ -83,6 +84,7 @@ class CheckInActionView extends Component {
   }
 
   noActiveEventsView() {
+
     return (
       <View style={[styles.eventContainer, {paddingBottom: 90}]}>
         <Image style={{
@@ -95,7 +97,7 @@ class CheckInActionView extends Component {
           borderRadius: 100}}  source={require('../../../assets/sad-wappu-panda.png')}/>
 
         <Text style={{fontSize: 40, textAlign: 'center', color: theme.white}}>OH NO!</Text>
-        <Text style={[styles.text]}>No ongoing events available.</Text>
+        <Text style={[styles.text]}>No ongoing events available in {this.props.city}.</Text>
         <Text style={[styles.text]}>Try again later.</Text>
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
@@ -267,6 +269,7 @@ const select = store => {
   return {
     isCheckInViewOpen: store.competition.get('isCheckInViewOpen'),
     events: store.event.get('list'),
+    city: getCurrentCityName(store),
     userLocation: store.location.get('currentLocation')
   };
 };
