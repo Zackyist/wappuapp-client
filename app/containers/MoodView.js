@@ -27,7 +27,7 @@ import Fab from '../components/common/Fab';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
 import { openRegistrationView } from '../actions/registration';
-import { getUsersCityName } from '../concepts/city';
+import { getCurrentCityName } from '../concepts/city';
 
 const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
@@ -135,7 +135,7 @@ const mapStateToProps = state => {
     teamMoodData: getTeamMoodData(state),
     limitLineData: getLimitLineData(state),
     moodKpiValues: getKpiValues(state),
-    cityName: getUsersCityName(state),
+    cityName: getCurrentCityName(state),
     isNotificationVisible: state.competition.get('isNotificationVisible'),
     notificationText: state.competition.get('notificationText'),
     isRegistrationInfoValid
