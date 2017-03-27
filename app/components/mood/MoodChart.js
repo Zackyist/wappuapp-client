@@ -8,11 +8,11 @@ const { height } = Dimensions.get('window');
 
 class MoodChart extends Component {
   render() {
-    const { data, limitLineData } = this.props;
+    const { cityData, ownData, teamData, limitLineData } = this.props;
 
     return (
       <View style={styles.container}>
-        <Chart limitLineData={limitLineData} data={data} height={(height / 2.5) - 50} front={true} lineColor={theme.accent} />
+        <Chart limitLineData={limitLineData} data={cityData} height={(height / 2.5) - 50} front={true} lineColor={theme.accent} />
       </View>
     );
   }

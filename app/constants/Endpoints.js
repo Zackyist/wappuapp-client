@@ -17,6 +17,7 @@ const EndpointUrls = {
   vote: `${ROOT_URL}/vote`,
   cities: `${ROOT_URL}/cities`,
   radio: `${ROOT_URL}/radio`,
+  mood: `${ROOT_URL}/mood`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);

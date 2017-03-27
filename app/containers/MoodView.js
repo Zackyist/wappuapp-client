@@ -3,21 +3,23 @@
 import React, { Component } from 'react';
 import {
   View,
-  Image,
   Text,
   StyleSheet,
   Platform,
   Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import {
-  getMoodDataForChart,
+  getOwnMoodData,
+  getTeamMoodData,
+  getCityMoodData,
   getLimitLineData,
-  getKpiValues
+  getKpiValues,
+  fetchMoodData
 } from '../concepts/mood';
+
+import Notification from '../components/common/Notification';
 import MoodChart from '../components/mood/MoodChart';
 import MoodKpis from '../components/mood/MoodKpis';
 import MoodSlider from '../components/mood/MoodSlider';
@@ -37,6 +39,10 @@ class MoodView extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.fetchMoodData()
+  }
+
   @autobind
   navigateToMoodSlider() {
     this.props.navigator.push({
@@ -47,11 +53,12 @@ class MoodView extends Component {
   }
 
   render() {
-    const { moodData, limitLineData, moodKpiValues } = this.props;
+    const { cityMoodData, ownMoodData, teamMoodData, limitLineData, moodKpiValues,
+      isNotificationVisible, notificationText } = this.props;
 
     return (
       <View style={styles.container}>
-        <MoodChart data={moodData} limitLineData={limitLineData} />
+        <MoodChart cityData={cityMoodData} ownData={ownMoodData} teamData={teamMoodData} limitLineData={limitLineData} />
 
         <Fab
           onPress={this.navigateToMoodSlider}
@@ -65,6 +72,10 @@ class MoodView extends Component {
         </Fab>
 
         <MoodKpis kpiValues={moodKpiValues} />
+
+        <Notification visible={isNotificationVisible}>
+          {notificationText}
+        </Notification>
       </View>
     );
   }
@@ -107,12 +118,16 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { fetchMoodData };
 
-const mapStateToProps = createStructuredSelector({
-  moodData: getMoodDataForChart,
-  limitLineData: getLimitLineData,
-  moodKpiValues: getKpiValues
+const mapStateToProps = state => ({
+  cityMoodData: getCityMoodData(state),
+  ownMoodData: getOwnMoodData(state),
+  teamMoodData: getTeamMoodData(state),
+  limitLineData: getLimitLineData(state),
+  moodKpiValues: getKpiValues(state),
+  isNotificationVisible: state.competition.get('isNotificationVisible'),
+  notificationText: state.competition.get('notificationText')
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoodView);

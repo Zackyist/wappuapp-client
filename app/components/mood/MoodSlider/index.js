@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  ScrollView,
+  TextInput,
   Text,
   View,
   Image,
@@ -10,11 +10,15 @@ import {
   Animated,
   Easing,
   PanResponder,
-  Platform
+  Platform,
+  KeyboardAvoidingView
 } from 'react-native';
+
+import { connect } from 'react-redux';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import { isNil } from 'lodash';
 
+import { submitMood } from '../../../concepts/mood';
 import Header from '../../common/Header'
 import theme from '../../../style/theme'
 
@@ -25,21 +29,7 @@ const isIOS = Platform.OS === 'ios';
 const headerHeight = 60;
 const footerHeight = 60;
 const sliderHeight = height;
-
-
-const shadeColor = (color, percent) => {
-  var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-  return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
-}
-
-const blendColors = (c0, c1, p) => {
-  var f=parseInt(c0.slice(1),16),t=parseInt(c1.slice(1),16),R1=f>>16,G1=f>>8&0x00FF,B1=f&0x0000FF,R2=t>>16,G2=t>>8&0x00FF,B2=t&0x0000FF;
-  return "#"+(0x1000000+(Math.round((R2-R1)*p)+R1)*0x10000+(Math.round((G2-G1)*p)+G1)*0x100+(Math.round((B2-B1)*p)+B1)).toString(16).slice(1);
-}
-
 const scale = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const scaleColors = scale.map(i => blendColors(theme.danger, theme.primary , i * 0.1 ));
-// const scaleColors = scale.map(i => shadeColor(theme.secondaryLight, i * 0.03 )).reverse();
 
 class MoodSlider extends Component {
   constructor(props) {
@@ -50,10 +40,14 @@ class MoodSlider extends Component {
       bubblePosition: new Animated.Value(0),
       buttonScale: new Animated.Value(0),
       confirmScale: new Animated.Value(0),
-      showConfirm: false
+      showConfirm: false,
+      description: ''
     };
+
     this.moodSlider = this.moodSlider.bind(this);
+    this.confirm = this.confirm.bind(this);
     this.submit = this.submit.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
   }
 
 
@@ -143,7 +137,7 @@ class MoodSlider extends Component {
       Math.min(sliderHeight - position, sliderHeight - headerHeight)
     );
 
-    this.setState({ mood });
+    this.setState({ mood, showConfirm: false });
 
     // Animate submit button
     if (isNil(oldMood)) {
@@ -155,13 +149,32 @@ class MoodSlider extends Component {
      Animated.spring(this.state.buttonScale, { toValue: 1, duration: 550 }).start();
   }
 
-  submit() {
-    const { mood } = this.state;
-    const moodPercentage = (mood - footerHeight) / (sliderHeight - headerHeight - footerHeight);
-
+  confirm() {
     this.setState({ showConfirm: true });
-    Animated.timing(this.state.confirmScale, { toValue: 1, duration: 300, easing: Easing.ease }).start();
+    Animated.spring(this.state.confirmScale, { toValue: 1, duration: 200 }).start();
   }
+
+  submit() {
+    const { mood, description } = this.state;
+    const { navigator } = this.props;
+    const rating = parseInt((mood - footerHeight) / (sliderHeight - headerHeight - footerHeight) * 100, 10) / 10;
+
+    const moodSubmitPackage = Object.assign(
+      { rating },
+      description ? { description } : {}
+    );
+
+    this.props.submitMood(moodSubmitPackage)
+    .then(a => {
+      navigator.pop();
+    });
+
+  }
+
+  onChangeText(description) {
+    this.setState({ description, rating: 10 })
+  }
+
 
   render() {
 
@@ -192,11 +205,13 @@ class MoodSlider extends Component {
 
     return (
       <View style={styles.container}>
+
         {!isIOS && <Header backgroundColor={theme.secondary} title="Rate your Wappuvibe" navigator={this.props.navigator} />}
 
-        {mood !== null &&
+
+        {!showConfirm && mood !== null &&
           <Animated.View style={[styles.buttonWrap, { transform: [{ scale: buttonScale }] }]}>
-            <TouchableHighlight underlayColor={'#f2f2f2'} onPress={this.submit} style={styles.button}>
+            <TouchableHighlight underlayColor={'#f2f2f2'} onPress={this.confirm} style={styles.button}>
               <Text style={styles.buttonText}>
                 <MdIcon size={30} name="keyboard-arrow-right" />
               </Text>
@@ -204,20 +219,36 @@ class MoodSlider extends Component {
           </Animated.View>
         }
 
-        {/* */}
         {showConfirm &&
-          <Animated.View style={[styles.confirmForm, {
-            borderRadius:  confirmScale.interpolate({ inputRange: [0, 0.9, 1], outputRange: [300, 300, 0] }),
-            height:  confirmScale.interpolate({ inputRange: [0, 1], outputRange: [60, 150] }),
-            width:  confirmScale.interpolate({ inputRange: [0, 1], outputRange: [60, width] }),
-            left: confirmScale.interpolate({ inputRange: [0, 1], outputRange: [width - 100, 0] }),
-            right: confirmScale.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }),
-            transform:[
-              { scale: confirmScale },
-              // { translateX: confirmScale.interpolate({ inputRange: [0, 1], outputRange: [width - 80, 0] })  }
-            ]}]}>
+          <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={-40} style={styles.confirmForm}>
 
-          </Animated.View>
+            <Animated.View style={[styles.confirmFormBg, { opacity: confirmScale, transform:[ { scale: confirmScale }] }]}>
+            <TextInput
+              autoFocus={false}
+              multiLine={true}
+              autoCapitalize={'sentences'}
+              underlineColorAndroid={'transparent'}
+              clearButtonMode={'while-editing'}
+              returnKeyType={'send'}
+              onSubmitEditing={this.submit}
+              onChangeText={this.onChangeText}
+              style={styles.inputField}
+              numberOfLines={3}
+              placeholderTextColor={'rgba(0,0,0, 0.3)'}
+              placeholder="Describe Your Wappuvibe..."
+              value={this.state.description}
+            />
+
+            <View style={styles.buttonWrap}>
+              <TouchableHighlight underlayColor={theme.primary} onPress={this.submit} style={[styles.button, styles.submitButton]}>
+                <Text style={[styles.buttonText, styles.submitButtonText]}>
+                  <MdIcon size={30} name={'done'} />
+                </Text>
+              </TouchableHighlight>
+            </View>
+            </Animated.View>
+          </KeyboardAvoidingView>
+
         }
 
         <View style={styles.main} {...this._panResponder.panHandlers}>
@@ -237,9 +268,7 @@ class MoodSlider extends Component {
                   bottom: sliderEffectiveHeight * (i * 10 / 100),
               }]}>
               <Text
-                style={[styles.axisLabelText, {
-                  // color: scaleColors[index]
-                } ]}
+                style={styles.axisLabelText}
               >
                 {i * 10}
               </Text>
@@ -316,7 +345,6 @@ class MoodSlider extends Component {
           </View>
           }
         </View>
-
       </View>
     );
   }
@@ -456,7 +484,7 @@ const styles = StyleSheet.create({
     zIndex: 9,
   },
   button: {
-    backgroundColor: theme.white,
+    backgroundColor: theme.stable,
     height: 66,
     width: 66,
     borderRadius: 33,
@@ -477,20 +505,42 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: theme.primary
   },
+  submitButton: {
+    backgroundColor: theme.primaryLight,
+  },
+  submitButtonText: {
+    color: theme.white,
+  },
   confirmForm: {
     backgroundColor: theme.white,
     position: 'absolute',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    // width: 60,
+    height: 100,
     bottom: 0,
     left: 0,
     right: 0,
-    zIndex: 11,
-    borderTopWidth: 2,
-    borderTopColor: theme.primary,
+    zIndex: 8,
+    justifyContent: 'center'
+  },
+  confirmFormBg: {
+    height: 100,
+    backgroundColor: theme.white,
+    justifyContent: 'center',
+    paddingRight: 120,
+  },
+  inputField: {
+    backgroundColor: theme.lightgrey,
+    height: 40,
+    fontSize: 14,
+    position: 'relative',
+    borderRadius: 5,
+    padding: 10,
+    left: 15,
   }
 });
 
-export default MoodSlider;
+const mapDispatchToProps = { submitMood };
+const mapStateToProps = state => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MoodSlider);
 
