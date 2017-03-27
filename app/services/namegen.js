@@ -12,7 +12,25 @@ const TEAMS = {
   'tamark': ['Arkkitehtoninen', 'Suurpiirteinen', 'Pimeä', 'Taiteellinen', 'Tarkka', 'Tummanpuhuva'],
   'taraki': ['Rakentava', 'Kestopuinen', 'Keltakypäräinen', 'Rakentava', 'Poraava', 'Tummansininen'],
   'tite': ['Binäärinen', 'Tietotekninen', 'Koodintuoksuinen', 'Tummasieluinen', 'Looginen', 'Yönmusta'],
-  'yki': ['Ympäristöystävällinen', 'Ympäröivä', 'Metsämansikkainen', 'Skutsinvihreä']
+  'yki': ['Ympäristöystävällinen', 'Ympäröivä', 'Metsämansikkainen', 'Skutsinvihreä'],
+  'arkkitehtikilta': ['Esteettinen','Alaston Esteetön','Suunnitelmallinen Maalarinvalkoinen'],
+  'athene': ['Informatiivinen', 'Avoin', 'Iloinen', 'Verkostoituva', 'Oliivinvihreä'],
+  'automaatio- ja systeemitekniikan kilta': ['Säätävä', 'Kimblenjanoinen', 'Smurffinen', 'Aivan samasti', 'Violetti'],
+  'fyysikkokilta': ['Fyysinen', 'Laskelmoiva', 'Matemaattinen', 'Tieteilijä', 'Luonnonvalkoinen', 'Hiukkas', 'Kvantti'],
+  'inkubio': ['Laikukas', 'Ammuva', 'Luonnollinen', 'Bioottinen', 'Punaruseka'],
+  'kemistikilta': ['Poreileva', 'Reagoiva', 'Virtaava', 'Liuennut', 'Punainen', 'Tislattu'],
+  'koneinsinöörikilta': ['Poreileva', 'Reagoiva', 'Virtaava', 'Liuennut', 'Punainen', 'Tislattu'],
+  'ky ry': ['Sijoittava', 'Yrittävä', 'Perinteikäs', 'Klassinen', 'Dollarinvihreä', 'Johtava'],
+  'maanmittarikilta': ['Mittaava', 'Laskelmallinen', 'Rakastava', 'Kaavoittava', 'Mattamusta'],
+  'prodeko': ['Tuottava', 'Diskonttaava', 'Startuppaava', 'Logistinen', 'Sateenkaarinen'],
+  'prosessiteekkarit': ['Prosessoiva', 'Kavitoiva', 'Syövyttävä', 'Pumppaava', 'Vihreä'],
+  'puunjalostajakilta': ['Tamminen', 'Vaahterainen', 'Koivuinen Sellisti', 'Keltainen', 'Killankeltainen', 'Mustalipeäinen', 'Metsäinen', 'Mekanisti', 'Bio', 'Valkaistu'],
+  'rakennusinsinöörikilta': ['Rakentava', 'Pimeä', 'Jalonen', 'Tummansininen'],
+  'sähköinsinöörikilta': ['Sähköinen', 'Sähäkkä', 'Jännittävä', 'Varautunut', 'Valkoinen', 'Potentiaalinen'],
+  'teknologföreningen': ['Bolognesentuoksuinen', 'Rapuinen', 'Betoninen', 'Glad', 'Tekniikanpunainen'],
+  'tietokilta': ['Koodaava', 'Tekninen', 'Funktionaalinen', 'Määrätietoinen', 'Kiiltävänmusta'],
+  'tokyo ry': ['Taiteellinen', 'Impressionistinen', 'Moderni', 'Värikäs', 'Muotoileva', 'Luova', 'Naivistinen', 'Cubistinen'],
+  'vuorimieskilta': ['Timantinkova', 'Metallinen', 'Teräksinen', 'Rautainen', 'Sininen']
 };
 
 const FIRST_NAMES = [
