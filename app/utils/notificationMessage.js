@@ -14,6 +14,9 @@ const getMessage = (payload) => {
     case ActionTypes.CHECK_IN_EVENT: {
       return '*Check* Whappu hard!';
     }
+    case ActionTypes.MOOD: {
+      return 'Vibe added!';
+    }
   }
 };
 

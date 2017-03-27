@@ -12,7 +12,13 @@ class MoodChart extends Component {
 
     return (
       <View style={styles.container}>
-        <Chart limitLineData={limitLineData} data={cityData} height={(height / 2.5) - 50} front={true} lineColor={theme.accent} />
+        <Chart
+          limitLineData={limitLineData}
+          cityData={cityData}
+          ownData={ownData}
+          teamData={teamData}
+          height={(height / 2.5) - 50}
+          lineColor={theme.accent} />
       </View>
     );
   }

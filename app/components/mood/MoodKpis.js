@@ -18,14 +18,14 @@ const IOS = Platform.OS === 'ios';
 class MoodKpis extends Component {
 
   render() {
-    const { kpiValues } = this.props;
+    const { kpiValues, cityName } = this.props;
 
     const KPI_VALUES = ['ratingPersonal', 'ratingTeam', 'ratingCity'];
-    const KPI_LABELS = ['Own', 'Team', 'City']; // TODO set chosen city to label
+    const KPI_LABELS = ['Own', 'Team', cityName || 'City'];
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>VIBE TODAY</Text>
+        <Text style={styles.title}>VIBES TODAY</Text>
         <View style={styles.data}>
         {KPI_VALUES.map((value, index) =>
           <View style={styles.col} key={value}>

@@ -26,6 +26,8 @@ import MoodSlider from '../components/mood/MoodSlider';
 import Fab from '../components/common/Fab';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
+import { openRegistrationView } from '../actions/registration';
+import { getUsersCityName } from '../concepts/city';
 
 const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
@@ -45,16 +47,20 @@ class MoodView extends Component {
 
   @autobind
   navigateToMoodSlider() {
-    this.props.navigator.push({
-      showName: true,
-      component: MoodSlider,
-      name: 'How Whappu'
-    });
+    if (!this.props.isRegistrationInfoValid) {
+      this.props.openRegistrationView();
+    } else {
+      this.props.navigator.push({
+        showName: true,
+        component: MoodSlider,
+        name: 'How Whappu'
+      });
+    }
   }
 
   render() {
     const { cityMoodData, ownMoodData, teamMoodData, limitLineData, moodKpiValues,
-      isNotificationVisible, notificationText } = this.props;
+      isNotificationVisible, notificationText, cityName } = this.props;
 
     return (
       <View style={styles.container}>
@@ -71,7 +77,7 @@ class MoodView extends Component {
           </Text>
         </Fab>
 
-        <MoodKpis kpiValues={moodKpiValues} />
+        <MoodKpis kpiValues={moodKpiValues} cityName={cityName} />
 
         <Notification visible={isNotificationVisible}>
           {notificationText}
@@ -118,17 +124,23 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapDispatchToProps = { fetchMoodData };
+const mapDispatchToProps = { fetchMoodData, openRegistrationView };
 
-const mapStateToProps = state => ({
-  cityMoodData: getCityMoodData(state),
-  ownMoodData: getOwnMoodData(state),
-  teamMoodData: getTeamMoodData(state),
-  limitLineData: getLimitLineData(state),
-  moodKpiValues: getKpiValues(state),
-  isNotificationVisible: state.competition.get('isNotificationVisible'),
-  notificationText: state.competition.get('notificationText')
-});
+const mapStateToProps = state => {
+  const isRegistrationInfoValid = state.registration.get('name') !== '' &&
+    state.registration.get('selectedTeam') > 0;
+  return {
+    cityMoodData: getCityMoodData(state),
+    ownMoodData: getOwnMoodData(state),
+    teamMoodData: getTeamMoodData(state),
+    limitLineData: getLimitLineData(state),
+    moodKpiValues: getKpiValues(state),
+    cityName: getUsersCityName(state),
+    isNotificationVisible: state.competition.get('isNotificationVisible'),
+    notificationText: state.competition.get('notificationText'),
+    isRegistrationInfoValid
+  }
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoodView);
 
