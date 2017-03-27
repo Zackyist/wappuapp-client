@@ -25,6 +25,7 @@ const theme = {
   sima:           '#e5a74b',
   simaDark:       '#e29816',
   simaLight:      'rgba(229, 167, 75, .8)',
+  transparent:    'transparent'
 };
 
 module.exports = theme;
