@@ -210,7 +210,7 @@ class ActionButtons extends Component {
       TEXT: 'Write a message',
       IMAGE: 'Take a photo',
       SIMA: 'Have a sima',
-      CHECK_IN_EVENT: 'Check in event',
+      CHECK_IN_EVENT: 'Check into event',
       default: 'image'
     };
     return mapping[type] || mapping['default'];
