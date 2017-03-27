@@ -19,8 +19,9 @@ import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import { isNil } from 'lodash';
 
 import { submitMood } from '../../../concepts/mood';
-import Header from '../../common/Header'
-import theme from '../../../style/theme'
+import Header from '../../common/Header';
+import theme from '../../../style/theme';
+import getVibeDescription from '../../../services/vibe-descriptions';
 
 
 const { height, width } = Dimensions.get('window');
@@ -41,7 +42,7 @@ class MoodSlider extends Component {
       buttonScale: new Animated.Value(0),
       confirmScale: new Animated.Value(0),
       showConfirm: false,
-      description: ''
+      description: '',
     };
 
     this.moodSlider = this.moodSlider.bind(this);
@@ -172,7 +173,7 @@ class MoodSlider extends Component {
   }
 
   onChangeText(description) {
-    this.setState({ description, rating: 10 })
+    this.setState({ description })
   }
 
 
@@ -202,6 +203,7 @@ class MoodSlider extends Component {
 
     const moodPercentage = (mood - footerHeight) / (sliderHeight - headerHeight - footerHeight);
     const moodResult = parseInt(moodPercentage * 100, 10);
+    const vibeDescription = getVibeDescription(moodResult);
 
     return (
       <View style={styles.container}>
@@ -253,9 +255,12 @@ class MoodSlider extends Component {
 
         <View style={styles.main} {...this._panResponder.panHandlers}>
           {mood !== null
-            ? <Text style={[styles.moodNumber, moodPercentage >= 0.95 ? { color: theme.black } : {}]}>
-                {moodResult}<Text style={styles.decimals}>%</Text>
-              </Text>
+            ? <View style={styles.moodNumberWrap}>
+                <Text style={[styles.moodNumber, moodPercentage >= 0.95 ? { color: theme.black } : {}]}>
+                  {moodResult}<Text style={styles.decimals}>%</Text>
+                </Text>
+                <Text style={styles.vibeDescription}>"{vibeDescription}"</Text>
+              </View>
             : <View style={styles.guideWrap}>
                 <MdIcon style={styles.guideIcon} size={60} name="swap-vert" />
                 <Text style={styles.guide}>Start by touching the screen...</Text>
@@ -407,17 +412,28 @@ const styles = StyleSheet.create({
     position:'absolute',
     borderColor: 'rgba(255, 255, 255, .05)'
   },
-
+  moodNumberWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    flexGrow: 1,
+    // top: -100,
+    // right: (width / 2) - 80,z
+    backgroundColor: 'transparent',
+    zIndex: 9,
+  },
   moodNumber: {
-    zIndex: 2,
     backgroundColor: 'transparent',
     fontSize: 90,
-    top: -100,
-    right: (width / 2) - 80,
     textAlign: 'right',
     fontWeight: '100',
     fontFamily: !isIOS ? 'sans-serif-light' : undefined,
-    color: 'rgba(0,0,0,.5)'
+    color: 'rgba(0,0,0,.5)',
+  },
+  vibeDescription: {
+    fontSize: 12,
+    opacity: 0.8,
+    backgroundColor: 'transparent',
   },
   decimals: {
     color: 'rgba(0,0,0,.3)',
