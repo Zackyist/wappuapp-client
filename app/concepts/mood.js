@@ -156,7 +156,6 @@ const initialState = fromJS({
 export default function mood(state = initialState, action) {
   switch (action.type) {
     case SET_MOOD_DATA: {
-      console.log(action.payload);
       return state.set('data', fromJS(action.payload));
     }
 
