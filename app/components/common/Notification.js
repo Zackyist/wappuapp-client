@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 18
+    paddingBottom: 18,
   },
   message: {
     color: '#fff',
@@ -91,7 +91,7 @@ class Notification extends Component {
     Animated.timing(this.state.translate, {
       duration: 300,
       easing: Easing.ease,
-      toValue: { x: 0, y: 15 }
+      toValue: { x: 0, y: 0 }
     }).start();
   }
 
