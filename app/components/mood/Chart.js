@@ -28,13 +28,14 @@ class Chart extends Component {
 
   render() {
 
-    const { data, limitLineData, height, lineColor, front } = this.props;
-    const dataJS = data && data.toJS ? data.toJS() : null;
+    const { cityData, ownData, teamData, limitLineData, height, lineColor, front } = this.props;
+
+    const cityDataJS = cityData && cityData.toJS ? cityData.toJS() : null;
+    const ownDataJS = ownData && ownData.toJS ? ownData.toJS() : null;
+    const teamDataJS = teamData && teamData.toJS ? teamData.toJS() : null;
     const limitLineDataJS = limitLineData ? limitLineData.toJS() : null;
 
-    console.log(dataJS);
-
-    const opacity = front ? 0.1 : 1;
+    // const opacity = front ? 0.1 : 1;
     const color = lineColor || theme.white;
     const xAxisLabels = limitLineDataJS.map(datum => datum.date);
 
@@ -66,9 +67,9 @@ class Chart extends Component {
         />
 
 
-        {data &&
+        {cityDataJS &&
         <VictoryLine
-          data={dataJS}
+          data={cityDataJS}
           height={height}
           x="date"
           y={(datum) => datum.value}
@@ -85,6 +86,47 @@ class Chart extends Component {
           }}
         />
         }
+        {teamDataJS &&
+        <VictoryLine
+          data={teamDataJS}
+          height={height}
+          x="date"
+          y={(datum) => datum.value}
+          interpolation="natural"
+          padding={0}
+          style={{
+            data: {
+              // opacity,
+              // fill: color,
+              stroke: theme.dark,
+              strokeWidth: 3
+            },
+            labels: { fontSize: 12 }
+          }}
+        />
+        }
+
+        {ownDataJS &&
+        <VictoryLine
+          data={ownDataJS}
+          height={height}
+          x="date"
+          y={(datum) => datum.value}
+          interpolation="natural"
+          padding={0}
+          style={{
+            data: {
+              // opacity,
+              // fill: color,
+              stroke: theme.white,
+              strokeWidth: 3
+            },
+            labels: { fontSize: 12 }
+          }}
+        />
+        }
+
+
 
         <VictoryAxis
           orientation="left"
