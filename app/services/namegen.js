@@ -20,7 +20,7 @@ const TEAMS = {
   'inkubio': ['Laikukas', 'Ammuva', 'Luonnollinen', 'Bioottinen', 'Punaruseka'],
   'kemistikilta': ['Poreileva', 'Reagoiva', 'Virtaava', 'Liuennut', 'Punainen', 'Tislattu'],
   'koneinsinöörikilta': ['Poreileva', 'Reagoiva', 'Virtaava', 'Liuennut', 'Punainen', 'Tislattu'],
-  'ky ry': ['Sijoittava', 'Yrittävä', 'Perinteikäs', 'Klassinen', 'Dollarinvihreä', 'Johtava'],
+  'ky': ['Sijoittava', 'Yrittävä', 'Perinteikäs', 'Klassinen', 'Dollarinvihreä', 'Johtava'],
   'maanmittarikilta': ['Mittaava', 'Laskelmallinen', 'Rakastava', 'Kaavoittava', 'Mattamusta'],
   'prodeko': ['Tuottava', 'Diskonttaava', 'Startuppaava', 'Logistinen', 'Sateenkaarinen'],
   'prosessiteekkarit': ['Prosessoiva', 'Kavitoiva', 'Syövyttävä', 'Pumppaava', 'Vihreä'],
@@ -29,7 +29,7 @@ const TEAMS = {
   'sähköinsinöörikilta': ['Sähköinen', 'Sähäkkä', 'Jännittävä', 'Varautunut', 'Valkoinen', 'Potentiaalinen'],
   'teknologföreningen': ['Bolognesentuoksuinen', 'Rapuinen', 'Betoninen', 'Glad', 'Tekniikanpunainen'],
   'tietokilta': ['Koodaava', 'Tekninen', 'Funktionaalinen', 'Määrätietoinen', 'Kiiltävänmusta'],
-  'tokyo ry': ['Taiteellinen', 'Impressionistinen', 'Moderni', 'Värikäs', 'Muotoileva', 'Luova', 'Naivistinen', 'Cubistinen'],
+  'tokyo': ['Taiteellinen', 'Impressionistinen', 'Moderni', 'Värikäs', 'Muotoileva', 'Luova', 'Naivistinen', 'Cubistinen'],
   'vuorimieskilta': ['Timantinkova', 'Metallinen', 'Teräksinen', 'Rautainen', 'Sininen']
 };
 
