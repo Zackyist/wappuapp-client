@@ -24,10 +24,12 @@ import Header from '../common/Header';
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
 import { fetchLinks } from '../../actions/profile';
+import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
 
 const {width} = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -239,15 +241,15 @@ class Profile extends Component {
     return (
       <View style={[styles.listItem, styles.listItemSeparator, styles.madeby]}>
         <TouchableOpacity onPress={() => Linking.openURL('https://www.jayna.fi/')}>
-          <Image resizeMode="contain" style={[styles.madebyIcon, {width: 45, height: 45}]} source={require('../../../assets/madeby/jayna.png')} />
+          <Image resizeMode="contain" style={[styles.madebyIcon, {width: 50, height: 50}]} source={require('../../../assets/madeby/jayna.png')} />
         </TouchableOpacity>
         <Text style={styles.madebyText}>×</Text>
         <TouchableOpacity onPress={() => Linking.openURL('https://futurice.com/')}>
-          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 70, height: 30}]} source={require('../../../assets/madeby/futurice.png')} />
+          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 88, height: 45}]} source={require('../../../assets/madeby/futurice.png')} />
         </TouchableOpacity>
         <Text style={styles.madebyText}>×</Text>
         <TouchableOpacity onPress={() => Linking.openURL('https://ttyy.fi/')}>
-          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 108, height: 35 }]} source={require('../../../assets/madeby/ttyy.png')} />
+          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 54, height: 54 }]} source={require('../../../assets/madeby/ttyy-plain.png')} />
         </TouchableOpacity>
       </View>
     )
@@ -264,10 +266,15 @@ class Profile extends Component {
   }
 
   render() {
-    const { name, links, terms } = this.props;
+    const { name, links, terms, cityName } = this.props;
+
+    const linksForCity = links.filter(link => {
+      const showCity = link.get('showCity');
+      return !showCity || ((cityName || '').toLowerCase() === showCity)
+    });
 
     const userItem = { title: name, icon: 'person-outline', link: '', rightIcon: 'create'};
-    const listData = [userItem].concat(links.toJS(), [{ type: 'IMAGES' }], terms.toJS());
+    const listData = [userItem].concat(linksForCity.toJS(), [{ type: 'IMAGES' }], terms.toJS());
 
     return (
       <View style={styles.container}>
@@ -290,6 +297,7 @@ const select = store => {
       name: store.registration.get('name'),
       links: store.profile.get('links'),
       terms: store.profile.get('terms'),
+      cityName: getCurrentCityName(store)
     }
 };
 
