@@ -43,6 +43,7 @@ class MoodSlider extends Component {
       confirmScale: new Animated.Value(0),
       showConfirm: false,
       description: '',
+      vibeDescription: ''
     };
 
     this.moodSlider = this.moodSlider.bind(this);
@@ -138,12 +139,24 @@ class MoodSlider extends Component {
       Math.min(sliderHeight - position, sliderHeight - headerHeight)
     );
 
-    this.setState({ mood, showConfirm: false });
+    const oldMoodPercentage = this.calculateMoodPercentage(oldMood);
+    const newMoodPercentage = this.calculateMoodPercentage(mood);
+
+    const moodNotChanged = oldMoodPercentage === newMoodPercentage;
+
+    const nextState = Object.assign({ mood, showConfirm: false},
+      moodNotChanged ? {} : { vibeDescription: getVibeDescription(newMoodPercentage) })
+    this.setState(nextState);
 
     // Animate submit button
     if (isNil(oldMood)) {
       this.animateButton();
     }
+  }
+
+  calculateMoodPercentage(mood) {
+    const moodPercentage = (mood - footerHeight) / (sliderHeight - headerHeight - footerHeight);
+    return parseInt(moodPercentage * 100, 10);
   }
 
   animateButton() {
@@ -179,7 +192,7 @@ class MoodSlider extends Component {
 
   render() {
 
-    const { mood, bubblePosition, showConfirm, buttonScale, confirmScale } = this.state;
+    const { mood, bubblePosition, showConfirm, buttonScale, confirmScale, vibeDescription } = this.state;
 
     const bubbleVerticalPositions = [
       bubblePosition.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [100, 50, 20, -20, -40] }),
@@ -201,9 +214,7 @@ class MoodSlider extends Component {
 
     const sliderEffectiveHeight = sliderHeight - headerHeight - footerHeight - 5;
 
-    const moodPercentage = (mood - footerHeight) / (sliderHeight - headerHeight - footerHeight);
-    const moodResult = parseInt(moodPercentage * 100, 10);
-    const vibeDescription = getVibeDescription(moodResult);
+    const moodResult = this.calculateMoodPercentage(mood);
 
     return (
       <View style={styles.container}>
@@ -256,10 +267,12 @@ class MoodSlider extends Component {
         <View style={styles.main} {...this._panResponder.panHandlers}>
           {mood !== null
             ? <View style={styles.moodNumberWrap}>
-                <Text style={[styles.moodNumber, moodPercentage >= 0.95 ? { color: theme.black } : {}]}>
+                <Text style={styles.moodNumber}>
                   {moodResult}<Text style={styles.decimals}>%</Text>
                 </Text>
-                <Text style={styles.vibeDescription}>"{vibeDescription}"</Text>
+                <View style={styles.vibeWrap}>
+                  {!!vibeDescription && <Text style={styles.vibeDescription}>"{vibeDescription}"</Text>}
+                </View>
               </View>
             : <View style={styles.guideWrap}>
                 <MdIcon style={styles.guideIcon} size={60} name="swap-vert" />
@@ -413,26 +426,34 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, .05)'
   },
   moodNumberWrap: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
     flexDirection: 'column',
-    flexGrow: 1,
-    // top: -100,
-    // right: (width / 2) - 80,z
+    minHeight: 200,
+    top: -24,
     backgroundColor: 'transparent',
     zIndex: 9,
   },
   moodNumber: {
+    right: (width / 2) - 83,
     backgroundColor: 'transparent',
     fontSize: 90,
     textAlign: 'right',
     fontWeight: '100',
     fontFamily: !isIOS ? 'sans-serif-light' : undefined,
-    color: 'rgba(0,0,0,.5)',
+    color: 'rgba(0,0,0,.6)',
+  },
+  vibeWrap: {
+    flex: 1,
+    alignSelf: 'stretch',
+    backgroundColor: 'transparent',
+    marginLeft: 50,
+    marginRight: 50,
   },
   vibeDescription: {
-    fontSize: 12,
-    opacity: 0.8,
+    textAlign: 'center',
+    fontSize: 13,
+    opacity: 0.75,
     backgroundColor: 'transparent',
   },
   decimals: {

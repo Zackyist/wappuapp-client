@@ -1,4 +1,4 @@
-import { findIndex, get, parseInt, random } from 'lodash';
+import { findIndex, filter, get, parseInt, random } from 'lodash';
 
 const DEFAULT_DESCRIPTION = 'It starts to feel like an actual Whappu!';
 const VIBE_DESCRIPTIONS = [
@@ -48,22 +48,23 @@ const VIBE_DESCRIPTIONS = [
   { percentage: 100, description: 'Always go full Whappu!' },
   { percentage: 100, description: 'Hell yeah, it\'s wappu now!' },
   { percentage: 100, description: 'It\'s over 9000!!!!' }
-];
+].reverse();
 
 const getVibeDescription = (percentageValue = 50) => {
   const percentageKey = parseInt(percentageValue, 10);
   let descriptionIndex = 0;
 
   if (percentageKey === 100) {
-    const perfectScores = VIBE_DESCRIPTIONS.filter(d => d.percentage === 100).length;
-    descriptionIndex = random(0, perfectScores - 1);
-  } else {
-    descriptionIndex = findIndex(VIBE_DESCRIPTIONS, p => p.percentage >= percentageKey);
+    const perfectScores = filter(VIBE_DESCRIPTIONS, (d) => d.percentage === 100);
+    descriptionIndex = random(0, perfectScores.length - 1);
+    return get(perfectScores[descriptionIndex], 'description', DEFAULT_DESCRIPTION)
   }
 
-  return get(VIBE_DESCRIPTIONS[descriptionIndex], 'description', DEFAULT_DESCRIPTION);
 
+  descriptionIndex = findIndex(VIBE_DESCRIPTIONS, p => p.percentage <= percentageKey);
+  return get(VIBE_DESCRIPTIONS[descriptionIndex], 'description', DEFAULT_DESCRIPTION);
 }
+
 
 
 export default getVibeDescription;
