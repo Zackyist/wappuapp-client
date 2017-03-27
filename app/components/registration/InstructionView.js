@@ -49,7 +49,7 @@ class InstructionView extends Component {
                 icon={IOS ? 'ios-trophy' : 'md-trophy'}
                 number={3}
                 title={'Winner takes it all'}
-                text={'Competition ends at 12:00AM on 1st of May.'}
+                text={'Competition ends at 12:00PM on 30th of April.'}
                 secondaryText={'Winner will be announced later on the day.'}/>
 
             </View>

@@ -60,7 +60,7 @@ class CompetitionView extends Component {
             Be active in the Buzz and lead your guild to the victory!
             </Text>
             <Text style={[styles.leaderboardIntroText, styles.leaderboardIntroText__grey]}>
-            The competition ends at 12:00AM on 1st of May.
+            The competition ends at 12:00PM on 30th of April.
             </Text>
           </View>
         </View>
