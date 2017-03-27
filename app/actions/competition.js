@@ -41,7 +41,6 @@ const openCheckInView = () => {
 };
 
 const closeCheckInView = () => {
-  console.log('CLOSE');
   return { type: CLOSE_CHECKIN_VIEW };
 };
 

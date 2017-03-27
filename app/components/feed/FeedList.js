@@ -182,7 +182,6 @@ class FeedList extends Component {
       case 'TEXT':
         return this.props.openTextActionView();
       case 'CHECK_IN_EVENT': {
-        console.log('Check-in!');
         return this.props.openCheckInView();
       }
       default:
