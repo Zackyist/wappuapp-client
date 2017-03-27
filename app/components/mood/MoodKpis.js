@@ -8,6 +8,7 @@ import {
   Platform,
 } from 'react-native';
 
+import { isNil } from 'lodash';
 import { VictoryPie } from 'victory-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
@@ -19,13 +20,14 @@ class MoodKpis extends Component {
   render() {
     const { kpiValues } = this.props;
 
-    const RENDER_VALUES = ['Own', 'Team', 'Total'];
+    const KPI_VALUES = ['ratingPersonal', 'ratingTeam', 'ratingCity'];
+    const KPI_LABELS = ['Own', 'Team', 'City']; // TODO set chosen city to label
 
     return (
       <View style={styles.container}>
         <Text style={styles.title}>VIBE TODAY</Text>
         <View style={styles.data}>
-        {RENDER_VALUES.map(value =>
+        {KPI_VALUES.map((value, index) =>
           <View style={styles.col} key={value}>
             <View style={styles.doughnut}>
             <VictoryPie
@@ -40,7 +42,7 @@ class MoodKpis extends Component {
                   ? '#eee'
                   : (d.y > 50 ? theme.primary : theme.secondary)
                 },
-                labels: {fontSize: 0}
+                labels: { fontSize: 0, opacity: 0 }
               }}
               innerRadius={39}
               padding={0}
@@ -51,9 +53,9 @@ class MoodKpis extends Component {
             />
             </View>
             <Text style={[styles.kpi, { color: kpiValues.get(value) > 50 ? theme.primary : theme.secondary }]}>
-              {kpiValues.get(value)}%
+              {!isNil(kpiValues.get(value)) ? `${kpiValues.get(value)}%` : 'N/A'}
             </Text>
-            <Text style={styles.label}>{(value||'')}</Text>
+            <Text style={styles.label}>{KPI_LABELS[index] || ''}</Text>
           </View>
         )}
         </View>
@@ -88,9 +90,10 @@ const styles = StyleSheet.create({
     top: 0,
   },
   col: {
+    minWidth: 94,
     padding: 20,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   label: {
     color: theme.dark,
@@ -103,7 +106,8 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     fontFamily: !IOS ? 'sans-serif-light' : undefined,
     fontSize: 18,
-    right: -5, // percentage sign
+    textAlign: 'center',
+    right: 0, // percentage sign
     marginTop: 12,
   }
 });

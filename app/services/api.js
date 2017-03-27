@@ -43,6 +43,14 @@ const postAction = (params, location, queryParams) => {
   return _post(Endpoints.urls.action, payload, queryParams);
 };
 
+const putMood = (params) => {
+  let payload = Object.assign({}, params, { user: DeviceInfo.getUniqueID() });
+
+  return _put(Endpoints.urls.mood, payload);
+};
+
+
+
 const putUser = payload => {
   return _put(Endpoints.urls.user(payload.uuid), payload);
 };
@@ -181,5 +189,6 @@ export default {
   fetchMoreFeed,
   postAction,
   putUser,
+  putMood,
   getUser
 };

@@ -1,13 +1,21 @@
 import { AsyncStorage } from 'react-native';
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
-import { isNil } from 'lodash';
+import { isNil, random } from 'lodash';
+import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
+
 import api from '../services/api';
 import { getCityId } from './city';
 import {
   PLAYING,
   STREAMING,
+  PAUSED,
   STOPPED,
+  ERROR,
+  METADATA_UPDATED,
+  BUFFERING,
+  START_PREPARING,
+  BUFFERING_START,
 } from '../constants/RadioStates';
 
 import { APP_STORAGE_KEY } from '../../env';
@@ -18,7 +26,6 @@ import { createRequestActionTypes } from '../actions/';
 
 // # Selectors
 export const getRadioStatus = state => state.radio.get('status');
-export const getRadioSong = state => state.radio.get('song');
 export const getRadioMode = state => state.radio.get('expanded');
 export const getRadioName = state => state.radio.get('name');
 export const getActiveStationId = state => state.radio.get('activeStationId');
@@ -39,7 +46,56 @@ export const getNowPlaying = createSelector(
   (station) => station.get('nowPlaying') || Map()
 );
 
+export const getNowPlayingLeft = createSelector(
+  getActiveStation,
+  (station) => station.getIn(['nowPlaying', 'left'], null)
+);
+
 // # Action creators
+
+const pause = () => ReactNativeAudioStreaming.pause();
+const stop = () => ReactNativeAudioStreaming.stop();
+const play = () => (dispatch, getState) => {
+  const state = getState();
+  const url = getActiveStation(state).get('stream');
+  if (url) {
+    ReactNativeAudioStreaming.play(url, { showIniOSMediaCenter: true, showInAndroidNotifications: true });
+  } else {
+    stop();
+  }
+}
+
+const resume = () => (dispatch, getState) => {
+  const state = getState();
+  const url = getActiveStation(state).get('stream');
+  if (url) {
+    ReactNativeAudioStreaming.resume();
+  }
+}
+
+
+export const onRadioPress = () => (dispatch, getState) => {
+  const state = getState();
+  const status = getRadioStatus(state);
+
+  switch (status) {
+    case PLAYING:
+    case STREAMING:
+      pause();
+      break;
+    case PAUSED:
+      dispatch(play());
+      break;
+    case STOPPED:
+    case ERROR:
+      dispatch(play());
+      break;
+    case BUFFERING:
+      stop();
+      break;
+  }
+}
+
 const SET_RADIO_SONG = 'radio/SET_RADIO_SONG';
 export const setRadioSong = (song) => ({ type: SET_RADIO_SONG, payload: song });
 
@@ -50,12 +106,21 @@ const SET_RADIO_STATIONS = 'radio/SET_RADIO_STATIONS';
 export const setRadioStations = (stations) => ({ type: SET_RADIO_STATIONS, payload: stations });
 
 const SET_RADIO_STATION_ACTIVE = 'radio/SET_RADIO_STATION_ACTIVE';
-export const setRadioStationActive = (stationId) => dispatch => {
-  dispatch({ type: SET_RADIO_STATION_ACTIVE, payload: stationId });
+export const setRadioStationActive = (stationId) => (dispatch, getState) => {
+  dispatch({ type: SET_RADIO_STATION_ACTIVE, payload: stationId })
 
   // set to local storage
   AsyncStorage.setItem(radioKey, JSON.stringify(stationId));
-  // .then(() => dispatch(changePlayingStream())); TODO
+  dispatch(setSongUpdater());
+
+  // continue playing if radio is playing
+  const isPlaying = isRadioPlaying(getState());
+  if (isPlaying) {
+    setTimeout(() => {
+      dispatch(play());
+    }, 100);
+  }
+
 }
 
 const TOGGLE_RADIO_BAR = 'radio/TOGGLE_RADIO_BAR';
@@ -85,11 +150,9 @@ export const fetchRadioStations = () => dispatch => {
     });
     dispatch({ type: GET_RADIO_STATIONS_SUCCESS });
   })
-  .then(() => {
-    dispatch(setDefaultRadioByCity())
-  })
+  .then(() => dispatch(setDefaultRadioByCity()))
+  .then(() => dispatch(setSongUpdater()))
   .catch(error => dispatch({ type: GET_RADIO_STATIONS_FAILURE, error: true, payload: error }));
-
 };
 
 const setDefaultRadioByCity = () => (dispatch, getState) => {
@@ -109,40 +172,44 @@ const setDefaultRadioByCity = () => (dispatch, getState) => {
   return dispatch(setRadioStationActive(stationId));
 }
 
+// Song/Program updater
+let songUpdater = null;
+const MINIMUM_UPDATE_INTERVAL = 20; // seconds
+const RANDOM_SECONDS_ADDED = 10; // seconds
+const setSongUpdater = () => (dispatch, getState) => {
+  if (!isNil(songUpdater)) {
+    clearTimeout(songUpdater);
+  }
+
+  const playingLeft = getNowPlayingLeft(getState());
+  const refreshTime = Math.max(playingLeft, MINIMUM_UPDATE_INTERVAL * 1000);
+  const randomOffset = random(0, RANDOM_SECONDS_ADDED) * 1000;
+
+  songUpdater = setTimeout(() =>
+    dispatch(fetchRadioStations()), refreshTime + randomOffset);
+}
+
 export const initializeUsersRadio = () => (dispatch, getState) =>
   AsyncStorage.getItem(radioKey)
-  .then(radio => {
-    const activeRadio = radio ? JSON.parse(radio) : null;
+  .then(station => {
+    const activeStation = station ? JSON.parse(station) : null;
 
-    if (!isNil(activeRadio)) {
-      return dispatch(setRadioStationActive(activeRadio));
+    if (!isNil(activeStation)) {
+      return dispatch(setRadioStationActive(activeStation));
     } else {
       return dispatch(setDefaultRadioByCity());
     }
   })
-  .catch(error => { console.log('error when setting city') });
+  .catch(error => { console.log('error setting radio') });
 
-/*
-const placeholderRadioStations = [
-  {
-    radioId: 1,
-    cityId: 3,
-    cityName: 'Tampere'
-  },
-  {
-    radioId: 2,
-    cityId: 2,
-    cityName: 'Helsinki'
-  },
-];
-*/
+
 
 // # Reducer
 const initialState = fromJS({
+  // url: 'http://stream.basso.fi:8000/stream',
   // url: 'http://stream.wappuradio.fi:80/wappuradio.mp3',
   status: STOPPED,
   expanded: false,
-  song: '',
   stations: null,
   activeStationId: null,
 });

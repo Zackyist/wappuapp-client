@@ -28,13 +28,15 @@ class Chart extends Component {
 
   render() {
 
-    let { data, limitLineData, height, lineColor, front } = this.props;
-    data = data ? data.toJS() : null;
-    limitLineData = limitLineData ? limitLineData.toJS() : null;
+    const { data, limitLineData, height, lineColor, front } = this.props;
+    const dataJS = data && data.toJS ? data.toJS() : null;
+    const limitLineDataJS = limitLineData ? limitLineData.toJS() : null;
+
+    console.log(dataJS);
 
     const opacity = front ? 0.1 : 1;
     const color = lineColor || theme.white;
-    const xAxisLabels = limitLineData.map(datum => datum.date);
+    const xAxisLabels = limitLineDataJS.map(datum => datum.date);
 
     return (
     <View style={styles.container}>
@@ -50,7 +52,7 @@ class Chart extends Component {
           x="date"
           labels={['Thermal Whappu']}
           height={height}
-          data={limitLineData}
+          data={limitLineDataJS}
           y={(datum) => datum.value}
           padding={0}
           style={{
@@ -66,10 +68,10 @@ class Chart extends Component {
 
         {data &&
         <VictoryLine
-          data={data}
+          data={dataJS}
           height={height}
           x="date"
-          y={(datum) => datum.avg}
+          y={(datum) => datum.value}
           interpolation="natural"
           padding={0}
           style={{

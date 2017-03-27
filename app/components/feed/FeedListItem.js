@@ -24,6 +24,7 @@ import { openRegistrationView } from '../../actions/registration';
 const { height, width } = Dimensions.get('window');
 const FEED_ITEM_MARGIN_DISTANCE = 0;
 const FEED_ITEM_MARGIN_DEFAULT = 0;
+const FEED_ADMIN_ITEM_MARGIN_DEFAULT = 15;
 const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
@@ -111,7 +112,8 @@ const styles = StyleSheet.create({
 
   },
   feedItemListItemImg__admin: {
-    width: width - (2 * FEED_ITEM_MARGIN_DEFAULT),
+    width: width - (2 * FEED_ADMIN_ITEM_MARGIN_DEFAULT),
+    borderRadius: 5,
   },
   feedItemListItemInfo: {
     flex: 1,
@@ -178,20 +180,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#faf5ee'
   },
   itemTextWrapper__admin: {
-    paddingLeft: 25,
+    paddingTop: 0,
+    paddingBottom: 5,
+    paddingLeft: 15,
     paddingRight: 15
   },
   feedItemListItemInfo__admin: {
     paddingLeft: 0,
-    paddingBottom: 18,
+    paddingBottom: 14,
   },
   feedItemListItemAuthor__admin:  {
-    paddingLeft: 25,
+    paddingLeft: 15,
   },
   itemTimestamp__admin:{
     color: '#b5afa6'
   },
   feedItemListText__admin: {
+    textAlign: 'left',
     color: '#7d776e',
     fontWeight: 'bold',
     fontSize: 12,
@@ -357,8 +362,8 @@ class FeedListItem extends Component {
           <View style={[styles.feedItemListItemInfo, styles.feedItemListItemInfo__admin]}>
             <View style={[styles.feedItemListItemAuthor, styles.feedItemListItemAuthor__admin]}>
               <Text style={styles.itemAuthorName}>Whappu</Text>
-              <Text style={[styles.itemTimestamp, styles.itemTimestamp__admin]}>{ago}</Text>
             </View>
+            <Text style={[styles.itemTimestamp, styles.itemTimestamp__admin]}>{ago}</Text>
           </View>
 
           {item.type === 'IMAGE' ?

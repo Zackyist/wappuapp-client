@@ -42,7 +42,7 @@ class FeedView extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: theme.lightgrey }}>
         <Navigator
         style={styles.navigator}
         initialRoute={{
