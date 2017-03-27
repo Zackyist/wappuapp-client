@@ -33,9 +33,11 @@ import locationService from '../../services/location';
 import Button from '../common/Button';
 import Fab from '../common/Fab';
 
-import { fetchFeed,
+import {
+  fetchFeed,
   openLightBox
 } from '../../actions/feed';
+import { openRegistrationView } from '../../actions/registration';
 import { fetchImages } from '../../actions/event';
 import {
   INACTIVE,
@@ -259,17 +261,22 @@ const EventDetail = React.createClass({
   },
 
   onCheckIn() {
-    this.setState({checked: true});
 
-    this.state.springAnim.setValue(0);
-     Animated.timing(
-       this.state.springAnim,
-       {
-         toValue: 1,
-         duration: 500,
-         easing: Easing.elastic(1)}
-     ).start();
-    this.props.checkIn(this.props.route.model.id);
+    if (this.props.isRegistrationInfoValid === false) {
+      this.props.openRegistrationView();
+    } else {
+      this.setState({checked: true});
+
+      this.state.springAnim.setValue(0);
+       Animated.timing(
+         this.state.springAnim,
+         {
+           toValue: 1,
+           duration: 500,
+           easing: Easing.elastic(1)}
+       ).start();
+      this.props.checkIn(this.props.route.model.id);
+    }
   },
 
   getEventStatus() {
@@ -485,13 +492,18 @@ const EventDetail = React.createClass({
 
 });
 
-const mapDispatchToProps = { checkIn, fetchImages, openLightBox };
+const mapDispatchToProps = { checkIn, fetchImages, openLightBox, openRegistrationView };
 
 
 const select = store => {
+
+  const isRegistrationInfoValid = store.registration.get('name') !== '' &&
+    store.registration.get('selectedTeam') > 0;
+
   return {
     userLocation: store.location.get('currentLocation'),
     images: store.event.get('images'),
+    isRegistrationInfoValid,
     isNotificationVisible: store.competition.get('isNotificationVisible'),
     notificationText: store.competition.get('notificationText')
   }
