@@ -10,11 +10,12 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
 import Profile from '../components/profile/Profile';
+
 const theme = require('../style/theme');
 
 const styles = StyleSheet.create({
   navigator: {
-    paddingTop: Platform.OS === 'ios' ? 24 : 0
+    paddingTop: Platform.OS === 'ios' ? 20 : 0
   },
   navbar: {
     backgroundColor: theme.secondary,

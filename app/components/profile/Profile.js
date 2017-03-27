@@ -26,6 +26,8 @@ import theme from '../../style/theme';
 import { fetchLinks } from '../../actions/profile';
 import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
+import feedback from '../../services/feedback';
+
 
 const {width} = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
@@ -191,7 +193,7 @@ class Profile extends Component {
         activeOpacity={0.6}
         delayPressIn={0}
         style={styles.listItemButton}
-        onPress={() => item.onPress ? item.onPress() : this.onLinkPress(item.link, item.title, item.showInWebview)}>
+        onPress={() => item.mailto ? feedback.sendEmail(item.mailto) : this.onLinkPress(item.link, item.title, item.showInWebview)}>
         <View style={linkItemStyles}>
           <View style={styles.listItem}>
             <Icon style={styles.listItemIcon} name={item.icon} />
@@ -257,7 +259,7 @@ class Profile extends Component {
 
   @autobind
   renderItem(item) {
-    if (item.link) {
+    if (item.link || item.mailto) {
       return this.renderLinkItem(item);
     } else if (item.type === 'IMAGES') {
       return this.renderImageMadeByItem();

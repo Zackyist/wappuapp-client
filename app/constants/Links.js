@@ -1,9 +1,8 @@
-import feedback from '../services/feedback';
 const ROOT_URL = 'https://wappu.futurice.com';
 
 const links = [
   {title: 'Fuksi Survival Kit', showCity: 'tampere', link: `https://ttyy.fi/me-ollaan-teekkareita/teekkarikulttuuri/wappu/fuksi-survival-kit/`, icon: 'local-hospital', showInWebview: true},
-  {title: 'Feedback', onPress: feedback.sendFeedback, link: ' ', icon: 'send'},
+  {title: 'Feedback', mailto: 'wappu@futurice.com', icon: 'send'},
   {title: 'Source Code', link: `https://github.com/futurice/wappuapp-client`, icon: 'code', showInWebview: true},
   {title: 'from Tammerforce', showCity: 'tampere', link: `https://tammerforce.com`, icon: 'favorite-border', showInWebview: true},
   {title: 'Wanna work at Futurice?',
