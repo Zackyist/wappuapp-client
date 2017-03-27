@@ -56,14 +56,13 @@ class CheckInButton extends Component {
       case AVAILABLE:
         return <Text style={styles.text}>CHECK IN </Text>;
       case CHECKED:
-        return <Icon size={20} name={'check'} style={styles.icon}/>;
+        return <Icon size={26} name={'check'} style={styles.icon}/>;
       case UNAVAILABLE:
         return <Text style={styles.text}>TOO FAR </Text>;
     }
   }
 
   render() {
-    const { validLocation, checkIn } = this.props;
     const { status } = this.state;
 
     const active = this.state.springAnim.interpolate({
@@ -73,7 +72,7 @@ class CheckInButton extends Component {
 
     return (
       <TouchableWithoutFeedback disabled={status !== AVAILABLE} onPress={() => this.handlePress()}>
-        <Animated.View style={[styles.button, {opacity: status === AVAILABLE ? 1 : 0.7, transform: [{scale: active}]}]}>
+        <Animated.View style={[styles.button, status === UNAVAILABLE ? styles.buttonDisabled : {}, { transform: [{scale: active}]}]}>
           {this.renderText(status)}
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -91,18 +90,22 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems:'center',
-    borderWidth: 2,
-    borderRadius: 2,
+    borderWidth: 0,
+    borderRadius: IOS ? 20 : 2,
     borderColor: theme.white,
     height: 40,
     width: 120,
     position: 'absolute',
-    bottom: 10,
-    right: 10,
+    bottom: 15,
+    right: 15,
     overflow: 'hidden',
     padding: 2,
     justifyContent: 'center',
-    backgroundColor: theme.primaryDarker,
+    backgroundColor: theme.primary,
+  },
+  buttonDisabled: {
+    opacity: 0.9,
+    backgroundColor: theme.grey,
   }
 });
 

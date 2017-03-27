@@ -17,7 +17,7 @@ import {
 import moment from 'moment';
 import location from '../../services/location';
 import { connect } from 'react-redux';
-import autobind from 'autobind-decorator';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import EventListItem from '../calendar/EventListItem';
 import { checkIn, closeCheckInView } from '../../actions/competition';
@@ -25,7 +25,7 @@ import { getCurrentCityName } from '../../concepts/city';
 
 import CheckInButton from './CheckInButton';
 import theme from '../../style/theme';
-import * as CompetitionActions from '../../actions/competition';
+
 const IOS = Platform.OS === 'ios';
 
 const { width, height } = Dimensions.get('window');
@@ -84,25 +84,21 @@ class CheckInActionView extends Component {
   }
 
   noActiveEventsView() {
-
     return (
-      <View style={[styles.eventContainer, {paddingBottom: 90}]}>
-        <Image style={{
-          height: 200,
-          width: 200,
-          marginBottom: 10,
-          backgroundColor: '#ddd',
-          borderWidth: 6,
-          borderColor: theme.primaryDarker,
-          borderRadius: 100}}  source={require('../../../assets/sad-wappu-panda.png')}/>
+      <View style={styles.eventContainer}>
+          <Image style={{
+            height: 180,
+            width: 180,
+            marginBottom: 0,
+            }} source={require('../../../assets/sad-wappu-panda.png')}/>
 
         <Text style={{fontSize: 40, textAlign: 'center', color: theme.white}}>OH NO!</Text>
         <Text style={[styles.text]}>No ongoing events available in {this.props.city}.</Text>
         <Text style={[styles.text]}>Try again later.</Text>
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
-          <View style={styles.cancelButton}>
-            <Text style={{fontSize: 14, fontWeight: 'bold', color: theme.white}}>CLOSE</Text>
+          <View style={[styles.cancelButton, { bottom: 25 }]}>
+            <Text style={styles.cancelButtonText}><Icon name="close" style={styles.cancelButtonText} /></Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -113,12 +109,12 @@ class CheckInActionView extends Component {
     return (
       <View style={styles.eventContainer}>
         <View style={styles.headerContainer}>
-          <Icon name={'pin-drop'} style={{color: theme.white}} size={30}/>
+          <Icon name="pin-drop" style={{color: theme.accentLight, marginRight: 5 }} size={30}/>
           <Text style={styles.title}>CHECK IN</Text>
         </View>
 
-        <View style={{height: 60}}>
-          <Text style={[styles.text, {fontSize: 13, padding: 10}]}>You can only check-in to events if you are in the event area.</Text>
+        <View style={{minHeight: 40}}>
+          <Text style={[styles.text, {fontSize: 12, padding: 10}]}>You can only check-in to events if you are in the event area</Text>
         </View>
 
         <ListView
@@ -134,6 +130,7 @@ class CheckInActionView extends Component {
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
           <View style={styles.cancelButton}>
             <Text style={{fontSize: 14, fontWeight: 'bold', color: theme.white}}>CLOSE</Text>
+            <Text style={styles.cancelButtonText}><Icon name="arrow-back" style={styles.cancelButtonText} /></Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -141,17 +138,19 @@ class CheckInActionView extends Component {
   }
 
   renderListItem(item, sectionId, rowId) {
-    const { userLocation, checkIn } = this.props;
+    const { userLocation } = this.props;
     let validLocation = false;
+    let distanceInKm = null;
 
     if ( userLocation && item.location ) {
       const distance = location.getDiscanceInMeters(userLocation, item.location);
       validLocation = item.radius > distance;
+      distanceInKm = location.getDistance(userLocation, item.location);
     }
 
     return (
-      <View style={{marginBottom: 5}}>
-        <EventListItem item={item} rowId={+rowId} hideStatus={true}/>
+      <View>
+        <EventListItem currentDistance={distanceInKm} item={item} rowId={+rowId} hideStatus={true}/>
         <CheckInButton validLocation={validLocation} checkIn={() => this.checkIn(item.id)} />
       </View>);
   }
@@ -159,7 +158,7 @@ class CheckInActionView extends Component {
   renderHeader() {
     return (
       <View style={styles.listHeader}>
-        <Text style={[styles.title, {fontSize: 20}]}>ONGOING</Text>
+        <Text style={[styles.title, styles.subtitle]}>ONGOING</Text>
       </View>
     );
 
@@ -205,46 +204,55 @@ const styles = StyleSheet.create({
     flex: 1
   },
   headerContainer: {
+    backgroundColor: theme.secondaryLight,
     flexDirection: 'row',
     alignItems: 'center'
   },
   title: {
-    color: theme.light,
-    fontWeight: 'bold',
+    color: theme.white,
+    fontWeight: 'normal',
     paddingLeft: 0,
     fontSize: 30,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: theme.secondaryLight
   },
   text: {
     color: theme.light
   },
   header: {
     fontSize: 30,
-    color: theme.light,
+    color: theme.secondaryLight,
     textAlign: 'center'
   },
   listHeader: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: 10,
-    backgroundColor: theme.primaryDarker,
+    paddingLeft: 20,
+    backgroundColor: theme.white,
     alignSelf: 'stretch',
-    borderBottomWidth: 2,
-    borderTopWidth: 2,
-    borderColor: '#ddd'
   },
   cancelButton: {
     position: 'absolute',
-    bottom: 20,
-    left: width/2-60,
-    padding: 5,
-    paddingTop: 8,
-    paddingBottom: 10,
+    bottom: 15,
+    left: width / 2 - 26,
+    // padding: 5,
+    // paddingTop: 10,
+    // paddingBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 20,
-    borderWidth: 2,
+    borderRadius: 26,
+    borderWidth: 0,
     borderColor: theme.grey,
+<<<<<<< HEAD
     backgroundColor: theme.primary,
     width: 120,
+=======
+    backgroundColor: theme.lightgrey,
+    width: 52,
+    height: 52,
+>>>>>>> Checkin view styling
     shadowColor: '#000000',
     shadowOpacity: 0.1,
     shadowRadius: 1,
@@ -253,10 +261,21 @@ const styles = StyleSheet.create({
       width: 0
     }
   },
+  cancelButtonText: {
+    fontSize: 22,
+    color: theme.dark,
+  },
   listView: {
     flexGrow: 1,
     marginTop: 0,
-    marginBottom: 5,
+    marginBottom: 0,
+  },
+  emptyStateTitle: {
+    fontSize: 30,
+    marginBottom: 10,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: theme.accentLight
   }
 });
 
