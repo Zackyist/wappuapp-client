@@ -129,7 +129,6 @@ class CheckInActionView extends Component {
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
           <View style={styles.cancelButton}>
-            <Text style={{fontSize: 14, fontWeight: 'bold', color: theme.white}}>CLOSE</Text>
             <Text style={styles.cancelButtonText}><Icon name="arrow-back" style={styles.cancelButtonText} /></Text>
           </View>
         </TouchableWithoutFeedback>
@@ -245,14 +244,9 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     borderWidth: 0,
     borderColor: theme.grey,
-<<<<<<< HEAD
-    backgroundColor: theme.primary,
-    width: 120,
-=======
     backgroundColor: theme.lightgrey,
     width: 52,
     height: 52,
->>>>>>> Checkin view styling
     shadowColor: '#000000',
     shadowOpacity: 0.1,
     shadowRadius: 1,
