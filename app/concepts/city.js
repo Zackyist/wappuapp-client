@@ -7,6 +7,8 @@ import {createRequestActionTypes} from '../actions';
 import { fetchFeed } from '../actions/feed';
 import { fetchTeams } from '../actions/team';
 import { fetchEvents } from '../actions/event';
+import { getTeams } from '../reducers/team';
+import { getUserTeamId } from '../reducers/registration';
 
 
 import { APP_STORAGE_KEY } from '../../env';
@@ -28,6 +30,27 @@ export const getCurrentCityName = createSelector(
     }
 );
 
+export const getCityIdByTeam = createSelector(
+  getUserTeamId, getTeams,
+  (teamId, teams) => {
+    const usersTeamInfo = teams.find(team => team.get('id') === teamId);
+
+    if (!usersTeamInfo) {
+      return null;
+    }
+
+    return usersTeamInfo.get('city');
+  });
+
+export const getUsersCityName = createSelector(
+  getCityIdByTeam, getCityList,
+  (cityId, cities) => {
+
+    if (!cities || cities.isEmpty()) {
+      return null;
+    }
+    return cities.find(c => c.get('id') === cityId).get('name', '')
+  });
 
 // # Action creators
 
@@ -108,7 +131,7 @@ export const fetchCitySpecificContent = () => dispatch =>
   Promise.all([
     dispatch(fetchFeed()),
     dispatch(fetchEvents()),
-    dispatch(fetchTeams())
+    dispatch(fetchTeams()),
   ])
   .then(() => dispatch({ type: FETCH_CITY_CONTENT_SUCCESS }))
 
