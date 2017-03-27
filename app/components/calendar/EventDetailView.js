@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
   },
   imageContainer:{
     marginTop: 10,
+    marginBottom: 10,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -473,7 +474,7 @@ const EventDetail = React.createClass({
                     >
                     <Image
                       key={image.get('id')}
-                      style={{height: width/3, width: width/3}}
+                      style={{height: width / 3 - 4, width: width / 3 - 4, margin: 2}}
                       source={{uri: image.get('url')}}/>
                     </TouchableOpacity>
                     </View>;
