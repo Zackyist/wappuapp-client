@@ -22,8 +22,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import EventListItem from '../calendar/EventListItem';
 import { checkIn, closeCheckInView } from '../../actions/competition';
 
-import Button from '../../components/common/Button';
-import Notification from '../common/Notification';
 import CheckInButton from './CheckInButton';
 import theme from '../../style/theme';
 import * as CompetitionActions from '../../actions/competition';
@@ -65,8 +63,7 @@ class CheckInActionView extends Component {
   }
 
   getContent(events) {
-    const currentTime = moment('2017-01-22T11:30:00.000Z');
-    // const currentTime = moment();
+    const currentTime = moment();
 
     const activeEvents = events.filter((event) => {
       if (moment(event.get('startTime')).isBefore(currentTime) && moment(event.get('endTime')).isAfter(currentTime)) {
@@ -270,8 +267,6 @@ const select = store => {
   return {
     isCheckInViewOpen: store.competition.get('isCheckInViewOpen'),
     events: store.event.get('list'),
-    isNotificationVisible: store.competition.get('isNotificationVisible'),
-    notificationText: store.competition.get('notificationText'),
     userLocation: store.location.get('currentLocation')
   };
 };

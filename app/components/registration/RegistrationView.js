@@ -435,14 +435,6 @@ const styles = StyleSheet.create({
     height: 110,
     width: 110
   },
-  introductionContainer: {
-    margin: 10,
-    marginTop: 20
-  },
-  introductionSecondaryText: {
-    marginTop: 10,
-    color: '#555'
-  },
   slide: {
     flex: 1,
     justifyContent: 'center',

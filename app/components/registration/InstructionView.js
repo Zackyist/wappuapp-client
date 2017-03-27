@@ -10,10 +10,8 @@ import {
   ScrollView
 } from 'react-native';
 import theme from '../../style/theme';
-import Toolbar from './RegistrationToolbar';
 import Button from '../../components/common/Button';
 import Row from '../../components/common/Row';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 const IOS = Platform.OS === 'ios';
 
@@ -26,6 +24,7 @@ class InstructionView extends Component {
       <View style={containerStyles}>
           <ScrollView style={{flex:1, width: null, height: null}}>
             <View style={[styles.container, styles.contentContainer]}>
+
               <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={styles.header}>
                   How to
@@ -74,27 +73,13 @@ const styles = StyleSheet.create({
     paddingBottom: 30
   },
   simplified: {
-    // marginBottom: 40,
     alignSelf: 'stretch'
   },
-  innerContainer: {
-    flex: 1,
-    paddingTop: IOS ? 15 : 15,
-  },
   header: {
-    // fontWeight: 'bold',
     textAlignVertical: 'center',
-    // fontFamily: 'arial',
     color: theme.white,
     marginTop: 15,
-    // marginLeft: IOS ? 25 : 15,
     fontSize: 25
-  },
-  text: {
-    textAlign: 'center',
-    color: theme.white,
-    fontSize: 17,
-    padding: 30
   },
   bottomButtons:{
     flex:1,

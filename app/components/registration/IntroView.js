@@ -13,9 +13,6 @@ import {
   ScrollView
 } from 'react-native';
 import theme from '../../style/theme';
-import Toolbar from './RegistrationToolbar';
-import Button from '../../components/common/Button';
-import Row from '../../components/common/Row';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const IOS = Platform.OS === 'ios';
@@ -36,30 +33,23 @@ class InstructionView extends Component {
         this.state.springAnim,
         {
           toValue: 1,
-          duration: 500,
+          duration: 800,
           easing: Easing.elastic(1)}
       ).start();
-
    }
 
   render() {
     const containerStyles = [styles.container, styles.modalBackgroundStyle];
     const size = this.state.springAnim;
 
-    const active = this.state.springAnim.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [1, 1.2, 1]
-    });
-
-    const unactive = this.state.springAnim.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [1, 1, 1]
-    });
+    const active = this.state.springAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.2, 1] });
+    const unactive = this.state.springAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1, 1] });
 
     return (
        <View style={containerStyles}>
           <ScrollView style={{flex:1, width: null, height: null}}>
               <View style={[styles.container, styles.contentContainer]}>
+
                 <View style={{alignItems: 'center'}}>
                   <Image style={{marginTop: 50, height: 140, width: 150}}  source={require('../../../assets/header/4.png')}/>
                 </View>
@@ -81,7 +71,7 @@ class InstructionView extends Component {
                       <Animated.View style={[styles.touchable, {transform: [{scale: city.get('id') === this.props.selectedCity ? active : unactive}] }]}>
                         <View style={styles.circle}>
                           <Icon style={styles.cityIcon} name={'location-city'} size={50}/>
-                          <Text style={{fontSize: 15, color: 'white', fontWeight: 'bold', marginBottom: 10}}>
+                          <Text style={styles.cityTitle}>
                             {city.get('name')}
                           </Text>
                           {this.props.selectedCity === city.get('id') && <Icon name={'check'} style={styles.checked} size={30}/>}
@@ -90,6 +80,7 @@ class InstructionView extends Component {
                     </TouchableWithoutFeedback>}
                   )}
                 </View>
+
               </View>
             </ScrollView>
         </View>
@@ -122,12 +113,10 @@ const styles = StyleSheet.create({
     color: 'white',
     alignItems: 'center',
     textAlign: 'center',
-    // borderWidth: 1
   },
   textContainer: {
     flex: 3,
     marginLeft: 0,
-    // borderWidth: 1,
     flexDirection: 'column'
   },
   subTitle: {
@@ -165,6 +154,12 @@ const styles = StyleSheet.create({
   cityIcon: {
     color: 'white'
   },
+  cityTitle: {
+    fontSize: 15,
+    color: 'white',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   checked: {
     position: 'absolute',
     top: 10,
@@ -191,7 +186,6 @@ const styles = StyleSheet.create({
     flex:1,
     marginLeft:0,
   }
-
 });
 
 export default InstructionView;

@@ -6,13 +6,10 @@ import {
   View,
   Animated,
   Text,
-  ListView,
   Platform,
   Easing,
   TouchableWithoutFeedback,
-  Dimensions,
   StyleSheet,
-  BackAndroid,
   Modal
 } from 'react-native';
 
@@ -22,20 +19,13 @@ import {
   CHECKED
 } from '../../constants/CheckInStates';
 
-import moment from 'moment';
 import location from '../../services/location';
-import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import EventListItem from '../calendar/EventListItem';
-import { checkIn } from '../../actions/competition';
 
-import Button from '../../components/common/Button';
 import theme from '../../style/theme';
 import * as CompetitionActions from '../../actions/competition';
 const IOS = Platform.OS === 'ios';
-
-const { width, height } = Dimensions.get('window');
 
 class CheckInButton extends Component {
 
@@ -59,7 +49,6 @@ class CheckInButton extends Component {
      ).start(() => {
        this.props.checkIn();
      });
-
   }
 
   renderText(status) {
@@ -117,6 +106,4 @@ const styles = StyleSheet.create({
   }
 });
 
-
-
-export default connect()(CheckInButton);
+export default CheckInButton;
