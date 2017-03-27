@@ -65,8 +65,8 @@ class CheckInActionView extends Component {
   }
 
   getContent(events) {
-    // const currentTime = moment('2017-04-22T11:30:00.000Z');
-    const currentTime = moment();
+    const currentTime = moment('2017-01-22T11:30:00.000Z');
+    // const currentTime = moment();
 
     const activeEvents = events.filter((event) => {
       if (moment(event.get('startTime')).isBefore(currentTime) && moment(event.get('endTime')).isAfter(currentTime)) {
@@ -87,23 +87,23 @@ class CheckInActionView extends Component {
 
   noActiveEventsView() {
     return (
-      <View style={styles.eventContainer}>
-          <Image style={{
-            height: 200,
-            width: 200,
-            marginBottom: 10,
-            backgroundColor: '#ddd',
-            borderWidth: 6,
-            borderColor: theme.primary,
-            borderRadius: 100}}  source={require('../../../assets/sad-wappu-panda.png')}/>
+      <View style={[styles.eventContainer, {paddingBottom: 90}]}>
+        <Image style={{
+          height: 200,
+          width: 200,
+          marginBottom: 10,
+          backgroundColor: '#ddd',
+          borderWidth: 6,
+          borderColor: theme.primaryDarker,
+          borderRadius: 100}}  source={require('../../../assets/sad-wappu-panda.png')}/>
 
-          <Text style={{fontSize: 40, textAlign: 'center', color: theme.white}}>OH NO!</Text>
-          <Text style={[styles.text]}>No ongoing events available. Try again later.</Text>
-
+        <Text style={{fontSize: 40, textAlign: 'center', color: theme.white}}>OH NO!</Text>
+        <Text style={[styles.text]}>No ongoing events available.</Text>
+        <Text style={[styles.text]}>Try again later.</Text>
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
           <View style={styles.cancelButton}>
-            <Text style={{fontSize: 14, color: theme.white}}>CLOSE</Text>
+            <Text style={{fontSize: 14, fontWeight: 'bold', color: theme.white}}>CLOSE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -134,7 +134,7 @@ class CheckInActionView extends Component {
 
         <TouchableWithoutFeedback onPress={this.props.closeCheckInView}>
           <View style={styles.cancelButton}>
-            <Text style={{fontSize: 14, color: theme.white}}>CLOSE</Text>
+            <Text style={{fontSize: 14, fontWeight: 'bold', color: theme.white}}>CLOSE</Text>
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 2,
     borderColor: theme.grey,
-    backgroundColor: theme.primaryDarker,
+    backgroundColor: theme.primary,
     width: 120,
     shadowColor: '#000000',
     shadowOpacity: 0.1,
