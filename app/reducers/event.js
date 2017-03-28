@@ -37,11 +37,7 @@ export default function event(state = initialState, action) {
     case TOGGLE_EVENT_MAP_LOCATE:
       return state.set('locateMe', !state.get('locateMe'));
     case GET_EVENT_IMAGES_REQUEST:
-      return state.set('listState', 'loading');
-    case GET_EVENT_IMAGES_SUCCESS:
-      return state.set('listState', 'ready');
-    case GET_EVENT_IMAGES_FAILURE:
-      return state.set('listState', 'failed');
+      return state.set('images', Immutable.List());
     case SET_EVENT_IMAGES:
       return state.set('images', Immutable.fromJS(action.payload));
     default:
