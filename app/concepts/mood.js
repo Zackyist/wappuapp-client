@@ -85,17 +85,17 @@ const {
 } = createRequestActionTypes('GET_MOOD_DATA');
 export const fetchMoodData = () => (dispatch, getState) => {
 
-  const state = getState();
-  const cityId = getCityId(state);
+  // const state = getState();
+  // const cityId = getCityId(state);
 
-  if (!cityId) {
-    return;
-  }
+  // if (!cityId) {
+  //   return;
+  // }
 
 
   dispatch({ type: GET_MOOD_DATA_REQUEST });
 
-  return api.fetchModels('mood', { cityId })
+  return api.fetchModels('mood') /*, { cityId }*/
   .then(data => {
     dispatch({
       type: SET_MOOD_DATA,
