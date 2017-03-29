@@ -59,10 +59,20 @@ class LightBox extends Component {
     this.props.closeLightBox();
   }
 
+  parseUrl(url) {
+    const urlParts = url.split('/');
+    const imageId = urlParts[urlParts.length-1];
+
+    return 'https://wappu.futurice.com/i/' + imageId;
+  }
+
   onShare(imgUrl) {
+    const url = this.parseUrl(imgUrl);
+
     const shareOptions = {
-      url: imgUrl,
-      message: 'Futubileet16'
+      title: 'Whappu',
+      url: url,
+      message: 'Whappu'
     };
 
     Share.open(shareOptions);
