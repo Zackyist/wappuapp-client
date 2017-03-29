@@ -103,6 +103,7 @@ let NavigationBarRouteMapper = props => ({
     return (
       <View style={styles.navBarLogoWrap}>
         <Image
+          resizeMode={'contain'}
           source={require('../../../assets/whappu-logo-2017.png')}
           style={styles.navBarLogo} />
       </View>
@@ -130,8 +131,8 @@ var styles = StyleSheet.create({
     textAlign:'center',
   },
   navBarLogo:{
-    top: 2,
-    width:55,
+    top: 3,
+    width:60,
     height:35,
   },
   navBarTitle:{
