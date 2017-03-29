@@ -6,7 +6,8 @@ import {
   Text,
   StyleSheet,
   Platform,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -17,6 +18,7 @@ import {
   getLimitLineData,
   getCurrentTeamName,
   getKpiValues,
+  isMoodLoading,
   fetchMoodData
 } from '../concepts/mood';
 
@@ -29,18 +31,12 @@ import theme from '../style/theme';
 import autobind from 'autobind-decorator';
 import { openRegistrationView } from '../actions/registration';
 import { getCurrentCityName } from '../concepts/city';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
 
 class MoodView extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      test: true
-    };
-  }
 
   componentDidMount() {
     this.props.fetchMoodData()
@@ -62,10 +58,13 @@ class MoodView extends Component {
 
   render() {
     const { cityMoodData, ownMoodData, teamMoodData, limitLineData, moodKpiValues,
-      isNotificationVisible, notificationText, cityName, teamName } = this.props;
+      isNotificationVisible, notificationText, cityName, teamName, isLoading } = this.props;
+
 
     return (
-      <View style={styles.container}>
+      <View style={styles.container} >
+
+        <ActivityIndicator style={styles.loader} animating={isLoading} size={'large'} color={theme.accentLight} />
         <MoodChart cityData={cityMoodData} ownData={ownMoodData} teamData={teamMoodData} limitLineData={limitLineData} />
 
         <Fab
@@ -79,7 +78,19 @@ class MoodView extends Component {
           </Text>
         </Fab>
 
+        <Fab
+          onPress={this.props.fetchMoodData}
+          styles={styles.buttonSmall}
+          disabled={false}
+          underlayColor={theme.white}
+        >
+          <Text style={styles.smallButtonText}>
+            <Icon name={IOS ? 'ios-refresh' : 'md-refresh'} size={IOS ? 24 : 22} />
+          </Text>
+        </Fab>
+
         <MoodKpis kpiValues={moodKpiValues} cityName={cityName} teamName={teamName} />
+
 
         <Notification visible={isNotificationVisible} topOffset={20}>
           {notificationText}
@@ -94,6 +105,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingTop: IOS ? 20 : 0,
     backgroundColor: theme.white,
+  },
+  loader: {
+    width: 50,
+    position: 'absolute',
+    zIndex: 3,
+    left: width / 2 - 25,
+    top: 50,
   },
   button: {
     flexDirection: 'column',
@@ -117,6 +135,34 @@ const styles = StyleSheet.create({
       width: 0
     },
   },
+  buttonSmall: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    position: 'absolute',
+    right: 25,
+    zIndex: 2,
+    top: (height / 2.5) - (IOS ? 0 : 20),
+    backgroundColor: theme.stable,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+  },
+  smallButtonText: {
+    color: theme.midgrey,
+    backgroundColor: 'transparent',
+    textAlign: 'center',
+    padding: 9,
+  },
   buttonText: {
     color: theme.secondary,
     backgroundColor: 'transparent',
@@ -139,6 +185,7 @@ const mapStateToProps = state => {
     moodKpiValues: getKpiValues(state),
     cityName: getCurrentCityName(state),
     teamName: getCurrentTeamName(state),
+    isLoading: isMoodLoading(state),
     isNotificationVisible: state.competition.get('isNotificationVisible'),
     notificationText: state.competition.get('notificationText'),
     isRegistrationInfoValid

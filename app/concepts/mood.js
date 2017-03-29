@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import moment from 'moment';
-import { isNil, times } from 'lodash';
+import { isNil } from 'lodash';
 
 import api from '../services/api';
 import { createRequestActionTypes } from '../actions/';
@@ -23,6 +23,7 @@ import ActionTypes from '../constants/ActionTypes';
 export const getMoodData = state => state.mood.get('data', List()) || List();
 export const getLimitLine = state => state.mood.get('limitLine');
 export const isMoodSending = state => state.mood.get('moodSending');
+export const isMoodLoading = state => state.mood.get('isLoading');
 
 const showAfter = '2017-03-23';
 const showAfterISO = moment(showAfter).toISOString();
@@ -169,6 +170,15 @@ export default function mood(state = initialState, action) {
       return state.set('data', fromJS(action.payload));
     }
 
+    case GET_MOOD_DATA_REQUEST: {
+      return state.set('isLoading', true);
+    }
+    case GET_MOOD_DATA_SUCCESS:
+    case GET_MOOD_DATA_FAILURE: {
+      return state.set('isLoading', false);
+    }
+
+
     case TOGGLE_MOOD_SLIDER: {
       return state.set('showMoodSlider', action.payload);
     }
@@ -180,7 +190,6 @@ export default function mood(state = initialState, action) {
     case PUT_MOOD_SUCCESS:
     case PUT_MOOD_FAILURE: {
       return state.set('moodSending', false);
-
     }
 
     default: {
