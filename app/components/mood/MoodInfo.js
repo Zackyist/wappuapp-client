@@ -16,9 +16,9 @@ class MoodInfo extends Component {
           </View>
         </View>
 
-        <Text style={styles.paragraph}>In practice, subjective fuzzy Wappu means that Wappu is not either binary true or false but each individual has their own Wappu feeling between the closed interval of <Text style={styles.bold}>[0, 100]</Text>. For instance, Wappu vibe of <Text style={styles.bold}>0%</Text> means that one has no Wappu feeling at all, <Text style={styles.bold}>71%</Text> means that one has quite awesome Wappu feeling and <Text style={styles.bold}>100%</Text> means that one is going full ahead!</Text>
+        <Text style={styles.paragraph}>In practice, subjective fuzzy Wappu means that Wappu is not either binary true or false but each individual has their own Wappu feeling between the closed interval of <Text style={styles.bold}>[0, 100]</Text>. For instance, Wappu vibe of <Text style={styles.bold}>0%</Text> means that one has no Wappu feeling at all, <Text style={styles.bold}>71%</Text> means that one has quite awesome Wappu feeling already and <Text style={styles.bold}>100%</Text> means that one is going full ahead!</Text>
 
-        <Text style={styles.paragraph}>The meaning of this Wappu vibe is to collect the feelings of Wappu-goers starting from the <Text style={styles.bold}>6.4. to 2.5</Text>. Vibe data can be used to analyse the Wappu behaviour of different Wappu-subgroups. Ultimately, the meaning is to share great Wappu vibe with others.</Text>
+        <Text style={styles.paragraph}>The meaning of this Wappu vibe is to collect the feelings of Wappu-goers. Vibe data can be used to analyse the Wappu behaviour of different Wappu-subgroups. Ultimately, the meaning is to share great Wappu vibe with others.</Text>
 
         <Text style={styles.paragraph}>You can add one vibe per day. You will get information of the progress Wappu Vibe of your own, your team, your city. Start by <Text style={styles.bold}>adding your first vibe!</Text></Text>
 

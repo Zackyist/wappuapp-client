@@ -62,13 +62,14 @@ let NavigationBarRouteMapper = props => ({
       return (<SortSelector />);
     }
 
-    if (props.currentTab === Tabs.FEELING) {
+    if (props.currentTab === Tabs.FEELING && !route.hideNavButton) {
       return (<TouchableOpacity
         onPress={() => {
           navigator.push({
             component: MoodInfo,
             name: 'Wappu Vibe',
-            showName: true
+            showName: true,
+            hideNavButton: true
           });
         }}
         >
@@ -102,7 +103,7 @@ let NavigationBarRouteMapper = props => ({
     return (
       <View style={styles.navBarLogoWrap}>
         <Image
-          source={require('../../../assets/header/4.png')}
+          source={require('../../../assets/whappu-logo-2017.png')}
           style={styles.navBarLogo} />
       </View>
     );
@@ -129,9 +130,9 @@ var styles = StyleSheet.create({
     textAlign:'center',
   },
   navBarLogo:{
-    top: 0,
-    width:58,
-    height:38,
+    top: 2,
+    width:55,
+    height:35,
   },
   navBarTitle:{
     padding:10,

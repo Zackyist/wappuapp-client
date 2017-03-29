@@ -79,7 +79,7 @@ class Chart extends Component {
               // opacity,
               // fill: color,
               stroke: theme.dark,
-              strokeWidth: 1
+              strokeWidth: 2
             },
             labels: { fontSize: 12 }
           }}
@@ -98,7 +98,7 @@ class Chart extends Component {
               // opacity,
               // fill: color,
               stroke: theme.accent,
-              strokeWidth: 1
+              strokeWidth: 2
             },
             labels: { fontSize: 12 }
           }}
