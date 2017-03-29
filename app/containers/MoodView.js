@@ -15,6 +15,7 @@ import {
   getTeamMoodData,
   getCityMoodData,
   getLimitLineData,
+  getCurrentTeamName,
   getKpiValues,
   fetchMoodData
 } from '../concepts/mood';
@@ -27,7 +28,7 @@ import Fab from '../components/common/Fab';
 import theme from '../style/theme';
 import autobind from 'autobind-decorator';
 import { openRegistrationView } from '../actions/registration';
-import { getUsersCityName } from '../concepts/city';
+import { getCurrentCityName } from '../concepts/city';
 
 const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
@@ -60,7 +61,7 @@ class MoodView extends Component {
 
   render() {
     const { cityMoodData, ownMoodData, teamMoodData, limitLineData, moodKpiValues,
-      isNotificationVisible, notificationText, cityName } = this.props;
+      isNotificationVisible, notificationText, cityName, teamName } = this.props;
 
     return (
       <View style={styles.container}>
@@ -77,9 +78,9 @@ class MoodView extends Component {
           </Text>
         </Fab>
 
-        <MoodKpis kpiValues={moodKpiValues} cityName={cityName} />
+        <MoodKpis kpiValues={moodKpiValues} cityName={cityName} teamName={teamName} />
 
-        <Notification visible={isNotificationVisible}>
+        <Notification visible={isNotificationVisible} topOffset={20}>
           {notificationText}
         </Notification>
       </View>
@@ -135,7 +136,8 @@ const mapStateToProps = state => {
     teamMoodData: getTeamMoodData(state),
     limitLineData: getLimitLineData(state),
     moodKpiValues: getKpiValues(state),
-    cityName: getUsersCityName(state),
+    cityName: getCurrentCityName(state),
+    teamName: getCurrentTeamName(state),
     isNotificationVisible: state.competition.get('isNotificationVisible'),
     notificationText: state.competition.get('notificationText'),
     isRegistrationInfoValid

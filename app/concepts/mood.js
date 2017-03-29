@@ -1,20 +1,30 @@
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import moment from 'moment';
-import { isNil } from 'lodash';
+import { isNil, times } from 'lodash';
 
 import api from '../services/api';
-import { getCityId } from './city';
 import { createRequestActionTypes } from '../actions/';
+import { getCityId } from './city';
+import { getUserTeamId, getUserId } from '../reducers/registration';
+import { getTeams } from '../reducers/team';
 import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from '../actions/competition';
+
+
 import * as NotificationMessages from '../utils/notificationMessage';
 import ActionTypes from '../constants/ActionTypes';
+
+const placeHolderMoodData = times(27).map((item, index) => ({
+  date: moment('2017-05-02').subtract(index, 'd').format('YYYY-MM-DD'),
+  value: index > 8 ? (70 - index * 2) + Math.floor(Math.random() * 5) : null
+})).reverse();
 
 // # Selectors
 export const getMoodData = state => state.mood.get('data', List()) || List();
 export const getLimitLine = state => state.mood.get('limitLine');
+export const isMoodSending = state => state.mood.get('moodSending');
 
-const showAfter = '2017-03-26';
+const showAfter = '2017-04-06';
 const showAfterISO = moment(showAfter).toISOString();
 const getValidMoodData = createSelector(
   getMoodData, (data) => {
@@ -34,10 +44,7 @@ const formatValue = value => {
 const processMoodData = (data, type) => (data || [])
 .map(datum => ({
   date: moment(datum.get('date')).format('YYYY-MM-DD'),
-  value: moment(datum.get('date')).format('YYYY-MM-DD') === '2017-03-28' ? 60 :
-    moment(datum.get('date')).format('YYYY-MM-DD') === '2017-03-30' ? 70 :
-    moment(datum.get('date')).format('YYYY-MM-DD') === '2017-03-31' ? 65 :
-    moment(datum.get('date')).format('YYYY-MM-DD') === '2017-04-01' ? 55 : formatValue(datum.get(type))
+  value: formatValue(datum.get(type))
 
 }));
 
@@ -49,6 +56,7 @@ export const getMoodDataForChart = (type = 'ratingPersonal') => createSelector(
 export const getOwnMoodData = getMoodDataForChart('ratingPersonal');
 export const getTeamMoodData = getMoodDataForChart('ratingTeam');
 export const getCityMoodData = getMoodDataForChart('ratingCity');
+// export const getCityMoodData = state => fromJS(placeHolderMoodData);
 
 export const getLimitLineData = createSelector(
   getLimitLine, getValidMoodData,
@@ -60,7 +68,7 @@ export const getLimitLineData = createSelector(
 
 
 export const getKpiValues = createSelector(
-  getValidMoodData,
+  getMoodData,
   (data) => {
     const today = moment();
     const todayData = data.find(datum => moment(datum.get('date')).isSame(today, 'day')) || Map();
@@ -71,6 +79,12 @@ export const getKpiValues = createSelector(
       ratingCity: formatValue(todayData.get('ratingCity')),
     });
   });
+
+
+export const getCurrentTeamName = createSelector(
+  getTeams, getUserTeamId,
+  (teams, teamId) => (teams.find(t => t.get('id') === teamId) || List()).get('name')
+)
 
 // # Action creators
 export const TOGGLE_MOOD_SLIDER = 'mood/TOGGLE_MOOD_SLIDER';
@@ -85,17 +99,17 @@ const {
 } = createRequestActionTypes('GET_MOOD_DATA');
 export const fetchMoodData = () => (dispatch, getState) => {
 
-  // const state = getState();
-  // const cityId = getCityId(state);
+  const state = getState();
+  const cityId = getCityId(state);
+  const teamId = getUserTeamId(state);
+  const userId = getUserId(state);
 
-  // if (!cityId) {
-  //   return;
-  // }
+  const moodParams = cityId && teamId && userId ? { cityId, teamId, userId } : {}
 
 
   dispatch({ type: GET_MOOD_DATA_REQUEST });
 
-  return api.fetchModels('mood') /*, { cityId }*/
+  return api.fetchModels('mood', moodParams)
   .then(data => {
     dispatch({
       type: SET_MOOD_DATA,
@@ -142,15 +156,11 @@ export const submitMood = (payload) => (dispatch, getState) => {
 
 
 // # Reducer
-// const placeHolderMoodData = times(27).map((item, index) => ({
-//   date: moment('2017-05-02').subtract(index, 'd').format('YYYY-MM-DD'),
-//   avg: index > 8 ? (70 - index * 2) + Math.floor(Math.random() * 5) : null
-// })).reverse();
-
 const initialState = fromJS({
   data: [],
   limitLine: 50,
-  showMoodSlider: false
+  showMoodSlider: false,
+  moodSending: false,
 });
 
 export default function mood(state = initialState, action) {
@@ -161,6 +171,16 @@ export default function mood(state = initialState, action) {
 
     case TOGGLE_MOOD_SLIDER: {
       return state.set('showMoodSlider', action.payload);
+    }
+
+    case PUT_MOOD_REQUEST: {
+      return state.set('moodSending', true);
+    }
+
+    case PUT_MOOD_SUCCESS:
+    case PUT_MOOD_FAILURE: {
+      return state.set('moodSending', false);
+
     }
 
     default: {
