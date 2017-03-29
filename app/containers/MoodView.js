@@ -54,7 +54,8 @@ class MoodView extends Component {
       this.props.navigator.push({
         showName: true,
         component: MoodSlider,
-        name: 'Whappu Vibe today'
+        name: 'Whappu Vibe today',
+        hideNavButton: true
       });
     }
   }
