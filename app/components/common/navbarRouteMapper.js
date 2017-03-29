@@ -67,7 +67,7 @@ let NavigationBarRouteMapper = props => ({
         onPress={() => {
           navigator.push({
             component: MoodInfo,
-            name: 'Wappu Vibe',
+            name: 'Whappu Vibe',
             showName: true,
             hideNavButton: true
           });
