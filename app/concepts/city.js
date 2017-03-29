@@ -18,7 +18,7 @@ const IOS = Platform.OS === 'ios';
 
 
 // # Selectors
-export const getCityList = state => state.city.get('list', List());
+export const getCityList = state => state.city.get('list', List()) || List();
 export const getCityId = state => state.city.get('id');
 export const getCityPanelShowState = state => state.city.get('showCityPanel');
 export const getCurrentCityName = createSelector(
@@ -27,7 +27,10 @@ export const getCurrentCityName = createSelector(
       if (isNil(cityId) || cityId === 1) {
         return '';
       }
-      return cityList.find(city => city.get('id') === cityId).get('name');
+
+      const currentCity = cityList.find(c => c.get('id') === cityId) || List()
+
+      return currentCity.get('name');
     }
 );
 
@@ -50,7 +53,11 @@ export const getUsersCityName = createSelector(
     if (!cities || cities.isEmpty()) {
       return null;
     }
-    return cities.find(c => c.get('id') === cityId).get('name', '')
+
+    const usersCity = cities.find(c => c.get('id') === cityId) || List();
+
+    return usersCity.get('name', '');
+
   });
 
 // # Action creators
