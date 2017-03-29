@@ -36,6 +36,7 @@ class EventsView extends Component {
           tabBarUnderlineColor={theme.secondary}
           tabBarBackgroundColor={theme.white}
           tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
+          prerenderingSiblingsNumber={0}
           renderTabBar={() => <TabBarItems />}
         >
           <CalendarView
