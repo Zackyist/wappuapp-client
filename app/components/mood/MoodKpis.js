@@ -10,7 +10,6 @@ import {
 
 import { isNil } from 'lodash';
 import { VictoryPie } from 'victory-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 
 const IOS = Platform.OS === 'ios';
@@ -18,10 +17,11 @@ const IOS = Platform.OS === 'ios';
 class MoodKpis extends Component {
 
   render() {
-    const { kpiValues, cityName } = this.props;
+    const { kpiValues, teamName, cityName } = this.props;
 
     const KPI_VALUES = ['ratingPersonal', 'ratingTeam', 'ratingCity'];
-    const KPI_LABELS = ['Own', 'Team', cityName || 'City'];
+    const KPI_LABELS = ['Your', teamName || 'Team', cityName || 'City'];
+    const KPI_COLORS = [theme.white, theme.accent, theme.dark];
 
     return (
       <View style={styles.container}>
@@ -55,7 +55,10 @@ class MoodKpis extends Component {
             <Text style={[styles.kpi, { color: kpiValues.get(value) > 50 ? theme.primary : theme.secondary }]}>
               {!isNil(kpiValues.get(value)) ? `${kpiValues.get(value)}%` : 'N/A'}
             </Text>
-            <Text style={styles.label}>{KPI_LABELS[index] || ''}</Text>
+            <View style={styles.label}>
+              <View style={[styles.bullet, { backgroundColor: KPI_COLORS[index] }]} />
+              <Text style={styles.labelText}>{KPI_LABELS[index] || ''}</Text>
+            </View>
           </View>
         )}
         </View>
@@ -86,7 +89,7 @@ const styles = StyleSheet.create({
   },
   doughnut: {
     position: 'absolute',
-    left: 5,
+    left: 24,
     top: 0,
   },
   col: {
@@ -96,10 +99,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {
+    marginTop: 40,
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 94,
+  },
+  labelText: {
     color: theme.dark,
     fontSize: 12,
     fontWeight: 'bold',
-    marginTop: 40,
+    textAlign: 'center'
   },
   kpi: {
     color: theme.secondary,
@@ -109,6 +120,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     right: 0, // percentage sign
     marginTop: 12,
+  },
+  bullet: {
+    borderWidth: 2,
+    borderColor: '#ddd',
+    marginLeft: -15,
+    marginRight: 5,
+    top: 0,
+    backgroundColor: theme.secondary,
+    width: 11,
+    height: 11,
+    borderRadius: 6
   }
 });
 

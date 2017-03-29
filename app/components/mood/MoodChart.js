@@ -18,7 +18,7 @@ class MoodChart extends Component {
           ownData={ownData}
           teamData={teamData}
           height={(height / 2.5) - 50}
-          lineColor={theme.accent} />
+        />
       </View>
     );
   }

@@ -28,7 +28,7 @@ class Chart extends Component {
 
   render() {
 
-    const { cityData, ownData, teamData, limitLineData, height, lineColor, front } = this.props;
+    const { cityData, ownData, teamData, limitLineData, height, front } = this.props;
 
     const cityDataJS = cityData && cityData.toJS ? cityData.toJS() : null;
     const ownDataJS = ownData && ownData.toJS ? ownData.toJS() : null;
@@ -36,7 +36,6 @@ class Chart extends Component {
     const limitLineDataJS = limitLineData ? limitLineData.toJS() : null;
 
     // const opacity = front ? 0.1 : 1;
-    const color = lineColor || theme.white;
     const xAxisLabels = limitLineDataJS.map(datum => datum.date);
 
     return (
@@ -79,8 +78,8 @@ class Chart extends Component {
             data: {
               // opacity,
               // fill: color,
-              stroke: color,
-              strokeWidth: 3
+              stroke: theme.dark,
+              strokeWidth: 1
             },
             labels: { fontSize: 12 }
           }}
@@ -98,8 +97,8 @@ class Chart extends Component {
             data: {
               // opacity,
               // fill: color,
-              stroke: theme.dark,
-              strokeWidth: 3
+              stroke: theme.accent,
+              strokeWidth: 1
             },
             labels: { fontSize: 12 }
           }}
@@ -119,7 +118,7 @@ class Chart extends Component {
               // opacity,
               // fill: color,
               stroke: theme.white,
-              strokeWidth: 3
+              strokeWidth: 1
             },
             labels: { fontSize: 12 }
           }}
@@ -136,7 +135,7 @@ class Chart extends Component {
             axisLabel: {fontSize: 16, padding: 20},
             // grid: {stroke: (t) => t === 10 ? "red" : "grey"},
             // ticks: {stroke: "grey"},
-            tickLabels: {fontSize: 9, fill: 'rgba(0,0,0,.4)', opacity: 0.9 }
+            tickLabels: {fontSize: 8, fill: 'rgba(0,0,0,.4)', opacity: 0.9 }
           }}
         />
 
@@ -150,7 +149,7 @@ class Chart extends Component {
           style={{
             axis: {stroke: 'rgba(0,0,0,0)'},
             axisLabel: {fontSize: 10, padding: 10},
-            tickLabels: {fontSize: 9, padding: 0, fill: 'rgba(0,0,0,.4)',  }
+            tickLabels: {fontSize: 8, padding: 0, fill: 'rgba(0,0,0,.4)',  }
           }}
         />
 
