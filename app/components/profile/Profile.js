@@ -7,6 +7,7 @@ import {
   Text,
   View,
   ListView,
+  ScrollView,
   TouchableHighlight,
   TouchableOpacity,
   Linking,
@@ -84,11 +85,19 @@ const styles = StyleSheet.create({
   avatar: {
     justifyContent: 'center',
     alignItems: 'center',
-    left: -10,
+    left: -8,
+    top: -1,
     width: 40,
     height: 40,
     backgroundColor: theme.stable,
     borderRadius: 20,
+  },
+  avatarInitialLetter: {
+    backgroundColor: theme.primary
+  },
+  avatarText: {
+    color: theme.accentLight,
+    fontSize: 18,
   },
   listItemIconRight:{
     position: 'absolute',
@@ -180,7 +189,7 @@ class Profile extends Component {
     }
   }
 
-  renderLinkItem(item) {
+  renderLinkItem(item, index) {
     const linkItemStyles = [styles.listItemButton];
 
     if (item.separatorAfter || item.last) {
@@ -189,6 +198,7 @@ class Profile extends Component {
 
     return (
       <PlatformTouchable
+        key={index}
         underlayColor={'#eee'}
         activeOpacity={0.6}
         delayPressIn={0}
@@ -207,16 +217,21 @@ class Profile extends Component {
 
 
 
-  renderModalItem(item) {
+  renderModalItem(item, index) {
     const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
+    const hasName = !!item.title;
+    const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)) : null;
 
     return (
-      <TouchableHighlight style={[styles.listItemButton, styles.listItemSeparator]} underlayColor={theme.primary}
+      <TouchableHighlight key={index} style={[styles.listItemButton, styles.listItemSeparator]} underlayColor={theme.primary}
         onPress={this.openRegistration}>
         <View style={[styles.listItem, styles.listItem__hero]}>
           <View style={styles.avatarColumn}>
-            <View style={styles.avatar}>
-              <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+            <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
+              {hasName
+                ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
+                : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+              }
             </View>
           </View>
           <View style={{flexDirection:'column',flex:1}}>
@@ -239,9 +254,9 @@ class Profile extends Component {
     );
   }
 
-  renderImageMadeByItem() {
+  renderImageMadeByItem(index) {
     return (
-      <View style={[styles.listItem, styles.listItemSeparator, styles.madeby]}>
+      <View key={index} style={[styles.listItem, styles.listItemSeparator, styles.madeby]}>
         <TouchableOpacity onPress={() => Linking.openURL('https://www.jayna.fi/')}>
           <Image resizeMode="contain" style={[styles.madebyIcon, {width: 50, height: 50}]} source={require('../../../assets/madeby/jayna.png')} />
         </TouchableOpacity>
@@ -258,13 +273,13 @@ class Profile extends Component {
   }
 
   @autobind
-  renderItem(item) {
+  renderItem(item, index) {
     if (item.link || item.mailto) {
-      return this.renderLinkItem(item);
+      return this.renderLinkItem(item, index);
     } else if (item.type === 'IMAGES') {
-      return this.renderImageMadeByItem();
+      return this.renderImageMadeByItem(index);
     }
-    return this.renderModalItem(item);
+    return this.renderModalItem(item, index);
   }
 
   render() {
@@ -280,10 +295,16 @@ class Profile extends Component {
 
     return (
       <View style={styles.container}>
-        <ListView style={[styles.scrollView]}
+        <ScrollView style={styles.scrollView}>
+          {listData.map(this.renderItem)}
+        </ScrollView>
+
+      {/*
+      <ListView style={[styles.scrollView]}
           dataSource={this.state.dataSource.cloneWithRows(listData)}
           renderRow={this.renderItem}
         />
+      */}
       </View>
       );
 
