@@ -317,7 +317,7 @@ class RegistrationView extends Component {
                 <Icon style={[styles.subIcon, { top: 20, left: -15, fontSize: 50 }]} name={'photo-camera'} />
               </View>
             </View>
-            <View level={-40} >
+            <View level={-10} >
               <InstructionView simplified={true} closeRegistrationView={this.onClose} />
             </View>
           </View>
@@ -329,7 +329,7 @@ class RegistrationView extends Component {
                 <Icon style={[styles.subIcon, { left: 115, top: -15, }]} name={'wb-sunny'} />
               </View>
             </View>
-            <View level={-40} >
+            <View level={-10} >
               <SkipView onPressProfileLink={() => {
                 this.onClose();
                 setTimeout(() => {
