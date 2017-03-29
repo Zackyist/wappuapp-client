@@ -8,7 +8,7 @@ const links = [
   {title: 'Source Code', link: `https://github.com/futurice/wappuapp-client`, icon: 'code', showInWebview: false},
   {title: 'from Tammerforce', showCity: 'tampere', link: `https://tammerforce.com`, icon: 'favorite-border', showInWebview: false},
   {title: 'Wanna work at Futurice?',
-    link: 'http://futurice.com/careers?utm_source=wappuapp&utm_medium=app&utm_campaign=wappu2017',
+    link: 'https://futurice.com/careers?utm_source=wappuapp&utm_medium=app&utm_campaign=wappu2017',
     icon: 'star', separatorAfter: true}
 ];
 
