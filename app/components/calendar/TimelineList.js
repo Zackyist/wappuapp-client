@@ -22,7 +22,6 @@ import location from '../../services/location';
 import theme from '../../style/theme';
 import { fetchAnnouncements } from '../../actions/announcement';
 import { fetchEvents } from '../../actions/event';
-import LoadingStates from '../../constants/LoadingStates';
 import EventListItem from './EventListItem';
 import AnnouncementListItem from './AnnouncementListItem';
 import EventDetail from './EventDetailView';
@@ -65,12 +64,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   sectionHeaderAnnouncement: {
-    // backgroundColor: theme.secondary,
+    backgroundColor: IOS ? 'rgba(255,255,255,.88)' : 'transparent',
     marginTop: 0,
     padding: IOS ? 20 : 15,
     flexGrow: 1,
   },
   sectionHeaderAnnouncementText:{
+    backgroundColor: 'transparent',
     color: theme.secondary
   },
   sectionHeaderText: {
@@ -156,11 +156,16 @@ class TimelineList extends Component {
       event => moment(event.startTime).startOf('day').unix());
     const eventSectionsOrder = _.orderBy(_.keys(listSections));
 
-    // Add the announcements-section to the listSections
-    listSections[ANNOUNCEMENTS_SECTION] = announcements;
+    let listOrder;
 
-    // Make the order to be that the first section is the announcements, then comes event sections
-    const listOrder = [ANNOUNCEMENTS_SECTION, ...eventSectionsOrder];
+    if (announcements.length > 0) {
+      // Add the announcements-section to the listSections
+      listSections[ANNOUNCEMENTS_SECTION] = announcements;
+      // Make the order to be that the first section is the announcements, then comes event sections
+      listOrder = [ANNOUNCEMENTS_SECTION, ...eventSectionsOrder];
+    } else {
+      listOrder = [...eventSectionsOrder]
+    }
 
     this.setState({
       dataSource: this.state.dataSource.cloneWithRowsAndSections(listSections, listOrder)
