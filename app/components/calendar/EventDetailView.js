@@ -242,12 +242,12 @@ const styles = StyleSheet.create({
   },
   imageTitle: {
     textAlign: 'left',
-    color: theme.grey,
+    color: theme.midgrey,
     margin: 20,
-    marginBottom: 10,
+    marginBottom: 7,
     marginLeft: 20,
-    fontSize: 18,
-    fontWeight: 'bold'
+    fontSize: 15,
+    fontWeight: '600'
   },
   imageTitleWrap: {
     borderTopWidth: 1,
