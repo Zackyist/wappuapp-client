@@ -184,7 +184,7 @@ class RegistrationView extends Component {
                 <Text style={styles.inputLabelText}>Choose your Team</Text>
               </View>
 
-              <View style={styles.inputFieldWrap}>
+              <View style={[styles.inputFieldWrap, { paddingBottom: 0 }]}>
                 <ScrollView style={{flex:1, height: (IOS || height > 605) ? 210 : null}}>
                   {this.props.teams.map(team => {
                     if (team.get('city') === this.state.selectedCity) {
@@ -387,6 +387,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex:1,
     paddingTop:15,
+    paddingBottom: 50,
     margin: 0,
     borderRadius: 5
   },
