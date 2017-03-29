@@ -2,8 +2,6 @@
 import { fromJS, List } from 'immutable';
 import { createSelector } from 'reselect';
 
-import { getCityId } from '../concepts/city';
-
 import {
   GET_TEAMS_REQUEST,
   GET_TEAMS_SUCCESS,

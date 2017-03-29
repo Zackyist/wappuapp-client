@@ -75,7 +75,9 @@ export default function registration(state = initialState, action) {
         'isRegistrationViewOpen': action.payload
       })
     case GET_USER_SUCCESS:
+      console.log(action.payload);
       return state.merge({
+        'userId': action.payload.id,
         'name': action.payload.name,
         'selectedTeam': action.payload.team,
         'uuid': action.payload.uuid,
@@ -87,6 +89,7 @@ export default function registration(state = initialState, action) {
 }
 
 // # Selectors
+export const getUserId = state => state.registration.get('userId');
 export const getUserTeamId = state => state.registration.get('selectedTeam', 0);
 export const getUserTeam = createSelector(getUserTeamId, getTeams,
   (teamId, teams) => teams.find(item => item.get('id') === teamId))
