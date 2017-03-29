@@ -70,7 +70,7 @@ class Notification extends Component {
   componentWillReceiveProps(nextProps) {
 
     if (nextProps.visible && !this.props.visible) {
-      this.fadeIn();
+      this.fadeIn(nextProps.topOffset);
     } else {
       if (!nextProps.visible && this.props.visible) {
         this.fadeOut();
@@ -87,11 +87,11 @@ class Notification extends Component {
     return false;
   }
 
-  fadeIn() {
+  fadeIn(topOffset = 0) {
     Animated.timing(this.state.translate, {
       duration: 300,
       easing: Easing.ease,
-      toValue: { x: 0, y: 0 }
+      toValue: { x: 0, y: topOffset }
     }).start();
   }
 
