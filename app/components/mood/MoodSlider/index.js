@@ -240,7 +240,6 @@ class MoodSlider extends Component {
             <Animated.View style={[styles.confirmFormBg, { opacity: confirmScale, transform:[ { scale: confirmScale }] }]}>
             <TextInput
               autoFocus={false}
-              multiLine={true}
               autoCapitalize={'sentences'}
               underlineColorAndroid={'transparent'}
               clearButtonMode={'while-editing'}
@@ -248,7 +247,7 @@ class MoodSlider extends Component {
               onSubmitEditing={this.submit}
               onChangeText={this.onChangeText}
               style={styles.inputField}
-              numberOfLines={3}
+              maxLength={131}
               placeholderTextColor={'rgba(0,0,0, 0.3)'}
               placeholder="Describe Your Wappuvibe..."
               value={this.state.description}
