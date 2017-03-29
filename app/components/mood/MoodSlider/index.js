@@ -11,6 +11,7 @@ import {
   Easing,
   PanResponder,
   Platform,
+  ActivityIndicator,
   KeyboardAvoidingView
 } from 'react-native';
 
@@ -18,7 +19,7 @@ import { connect } from 'react-redux';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import { isNil } from 'lodash';
 
-import { submitMood } from '../../../concepts/mood';
+import { submitMood, isMoodSending } from '../../../concepts/mood';
 import Header from '../../common/Header';
 import theme from '../../../style/theme';
 import getVibeDescription from '../../../services/vibe-descriptions';
@@ -193,6 +194,7 @@ class MoodSlider extends Component {
   render() {
 
     const { mood, bubblePosition, showConfirm, buttonScale, confirmScale, vibeDescription } = this.state;
+    const { isMoodSending } = this.props;
 
     const bubbleVerticalPositions = [
       bubblePosition.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [100, 50, 20, -20, -40] }),
@@ -226,7 +228,7 @@ class MoodSlider extends Component {
           <Animated.View style={[styles.buttonWrap, { transform: [{ scale: buttonScale }] }]}>
             <TouchableHighlight underlayColor={'#f2f2f2'} onPress={this.confirm} style={styles.button}>
               <Text style={styles.buttonText}>
-                <MdIcon size={30} name="keyboard-arrow-right" />
+                <MdIcon size={38} name="keyboard-arrow-right" />
               </Text>
             </TouchableHighlight>
           </Animated.View>
@@ -253,11 +255,16 @@ class MoodSlider extends Component {
             />
 
             <View style={styles.buttonWrap}>
+            {isMoodSending
+            ?
+              <ActivityIndicator style={styles.loader} size={'large'} color={theme.primary} />
+            :
               <TouchableHighlight underlayColor={theme.primary} onPress={this.submit} style={[styles.button, styles.submitButton]}>
                 <Text style={[styles.buttonText, styles.submitButtonText]}>
                   <MdIcon size={30} name={'done'} />
                 </Text>
               </TouchableHighlight>
+            }
             </View>
             </Animated.View>
           </KeyboardAvoidingView>
@@ -548,6 +555,11 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: theme.white,
   },
+  loader: {
+    top: 17,
+    left: 10,
+
+  },
   confirmForm: {
     backgroundColor: theme.white,
     position: 'absolute',
@@ -577,7 +589,9 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = { submitMood };
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  isMoodSending: isMoodSending(state)
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoodSlider);
 
