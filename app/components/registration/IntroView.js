@@ -81,7 +81,7 @@ class InstructionView extends Component {
                     <View style={styles.textContainer}>
                       <Text style={styles.subTitle}>PICK YOUR CITY</Text>
                       <Text style={styles.text}>
-                      City you select will have an effect on the feed. You may change your selection whenever you want.</Text>
+                      Don't worry, you can change your selection later.</Text>
                     </View>
                   </View>
                   <View style={styles.cities}>
@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconWrap: {
-    overflow: 'hidden',
     position: 'absolute',
     width: 190,
     height: 190,
@@ -178,6 +177,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: 190,
     height: 190,
+    borderRadius: 95,
     bottom: 0,
     opacity: 0.3
   },
