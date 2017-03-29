@@ -34,8 +34,10 @@ class InstructionView extends Component {
                   <Text style={styles.text}>Team with the best Whappu-buzz wins a juicy prize!</Text>
                   <Text style={styles.subTitle}>Enjoy sima</Text>
                   <Text style={styles.text}>Otherwise you might get thirsty!</Text>
+                {/*
                   <Text style={styles.subTitle}>Winner takes it all</Text>
                   <Text style={styles.text}>Competition ends at 12:00PM on 30th of April. Winner will be announced later on the day!</Text>
+                */}
                 </View>
               </View>
 
