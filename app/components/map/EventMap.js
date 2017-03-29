@@ -118,7 +118,7 @@ class EventMap extends Component {
     });
     const markers = locations.map((location, i) => {
       return <MapView.Marker
-        centerOffset={{x: 0, y: location.type === 'EVENT' ? -10 : 0}}
+        centerOffset={{x: 0, y: location.type === 'EVENT' ? 0 : 0}}
         anchor={{x: 0.5, y: location.type === 'EVENT' ? 0.5 : 0.5}}
         image={MARKER_IMAGES[location.type]}
         key={i} coordinate={location.location}
@@ -223,7 +223,7 @@ class EventMap extends Component {
   _renderStaticUrlMarkerView(location) {
     return <View>
       <View style={styles.calloutTitleWrap}>
-        <Text style={styles.calloutTitle}>TEST{location.title}</Text>
+        <Text style={styles.calloutTitle}>{location.title}</Text>
         <Icon style={styles.calloutIcon} name='ios-arrow-forward' />
       </View>
 
