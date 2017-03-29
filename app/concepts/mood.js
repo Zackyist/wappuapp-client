@@ -14,17 +14,17 @@ import { SHOW_NOTIFICATION, HIDE_NOTIFICATION } from '../actions/competition';
 import * as NotificationMessages from '../utils/notificationMessage';
 import ActionTypes from '../constants/ActionTypes';
 
-const placeHolderMoodData = times(27).map((item, index) => ({
-  date: moment('2017-05-02').subtract(index, 'd').format('YYYY-MM-DD'),
-  value: index > 8 ? (70 - index * 2) + Math.floor(Math.random() * 5) : null
-})).reverse();
+// const placeHolderMoodData = times(27).map((item, index) => ({
+//   date: moment('2017-05-02').subtract(index, 'd').format('YYYY-MM-DD'),
+//   value: index > 8 ? (70 - index * 2) + Math.floor(Math.random() * 5) : null
+// })).reverse();
 
 // # Selectors
 export const getMoodData = state => state.mood.get('data', List()) || List();
 export const getLimitLine = state => state.mood.get('limitLine');
 export const isMoodSending = state => state.mood.get('moodSending');
 
-const showAfter = '2017-04-06';
+const showAfter = '2017-03-23';
 const showAfterISO = moment(showAfter).toISOString();
 const getValidMoodData = createSelector(
   getMoodData, (data) => {
