@@ -136,7 +136,7 @@ class TextActionView extends Component {
           */}
             <TextInput
               autoFocus={true}
-              multiLine={true}
+              multiline={true}
               autoCapitalize={'sentences'}
               underlineColorAndroid={'transparent'}
               clearButtonMode={'while-editing'}
@@ -145,7 +145,8 @@ class TextActionView extends Component {
               style={styles.inputField}
               onChangeText={this.onChangeText}
               numberOfLines={3}
-              placeholderTextColor={'rgba(255,255,255, 0.7)'}
+              maxLength={151}
+              placeholderTextColor={'rgba(255,255,255, 0.65)'}
               placeholder="Say something..."
               value={this.state.text} />
 
@@ -242,6 +243,8 @@ const styles = StyleSheet.create({
   inputField: {
     fontSize: 18,
     margin: 0,
+    marginLeft: 10,
+    marginTop: 75,
     color:'#FFF',
     textAlign: 'center',
     height: 150,
