@@ -215,6 +215,34 @@ class Profile extends Component {
     );
   }
 
+  renderComponentItem(item, index) {
+    const linkItemStyles = [styles.listItemButton];
+    const { navigator } = this.props;
+    const { component, title } = item;
+
+    if (item.separatorAfter || item.last) {
+      linkItemStyles.push(styles.listItemSeparator)
+    }
+
+    return (
+      <PlatformTouchable
+        key={index}
+        underlayColor={'#eee'}
+        activeOpacity={0.6}
+        delayPressIn={0}
+        style={styles.listItemButton}
+        onPress={() => navigator.push({ name: title, component, showName: true })}>
+        <View style={linkItemStyles}>
+          <View style={styles.listItem}>
+            <Icon style={styles.listItemIcon} name={item.icon} />
+            <Text style={styles.listItemText}>{item.title}</Text>
+            {!item.separatorAfter && !item.last && <View style={styles.listItemBottomLine} />}
+          </View>
+        </View>
+      </PlatformTouchable>
+    );
+  }
+
 
 
   renderModalItem(item, index) {
@@ -274,7 +302,9 @@ class Profile extends Component {
 
   @autobind
   renderItem(item, index) {
-    if (item.link || item.mailto) {
+    if (item.component) {
+      return this.renderComponentItem(item, index);
+    } else if (item.link || item.mailto) {
       return this.renderLinkItem(item, index);
     } else if (item.type === 'IMAGES') {
       return this.renderImageMadeByItem(index);

@@ -1,3 +1,5 @@
+import TermsView from '../components/terms/Terms';
+
 const ROOT_URL = 'https://wappu.futurice.com';
 
 const links = [
@@ -11,7 +13,7 @@ const links = [
 ];
 
 const terms = [
-  {title: 'Terms of Service', link: `${ROOT_URL}/terms`, icon: 'info-outline', showInWebview: false},
+  {title: 'Terms of Service', link: `${ROOT_URL}/terms`, icon: 'info-outline', component: TermsView, showInWebview: false},
   {title: 'Privacy', link: `${ROOT_URL}/privacy`, icon: 'lock-outline', showInWebview: false},
   {title: 'Licenses', link: `${ROOT_URL}/licenses`, icon: 'help-outline', showInWebview: false, last: true},
 ];
