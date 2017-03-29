@@ -118,7 +118,7 @@ class Chart extends Component {
               // opacity,
               // fill: color,
               stroke: theme.white,
-              strokeWidth: 1
+              strokeWidth: 2
             },
             labels: { fontSize: 12 }
           }}
