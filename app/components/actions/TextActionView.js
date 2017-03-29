@@ -11,6 +11,7 @@ import {
   Animated,
   StyleSheet,
   BackAndroid,
+  KeyboardAvoidingView,
   Modal
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -125,7 +126,7 @@ class TextActionView extends Component {
 
 
           <Animated.View style={[styles.innerContainer, {opacity:this.state.formAnimation}]}>
-
+          <KeyboardAvoidingView behavior={'position'} keyboardVerticalOffset={-100} style={styles.inputContainer}>
           {/*
             <View>
               <View style={styles.title}>
@@ -141,6 +142,7 @@ class TextActionView extends Component {
               underlineColorAndroid={'transparent'}
               clearButtonMode={'while-editing'}
               returnKeyType={'send'}
+              blurOnSubmit={true}
               onSubmitEditing={this.onSendText}
               style={styles.inputField}
               onChangeText={this.onChangeText}
@@ -173,6 +175,7 @@ class TextActionView extends Component {
                 Post
               </Button>
             </View>
+            </KeyboardAvoidingView>
           </Animated.View>
         </View>
       </Modal>
@@ -185,13 +188,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop:0,
-    paddingBottom:IOS ? 49 : 0
+    paddingBottom:IOS ? 0 : 0,
+    justifyContent: 'center'
   },
   innerContainer: {
     padding:10,
-    paddingBottom: 60,
+    paddingBottom: 10,
     flex:1,
     justifyContent: 'center'
+  },
+  inputContainer: {
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    flexGrow: 1,
   },
   title:{
     padding: 10,
@@ -217,7 +226,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: IOS ? 'stretch' : 'flex-end',
     justifyContent: IOS ? 'center' : 'flex-end',
-    position: IOS ? 'absolute' : 'absolute',
+    position: 'absolute',
     bottom:0,
     right:0,
     left:0,
@@ -244,10 +253,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     margin: 0,
     marginLeft: 10,
-    marginTop: 75,
+    marginTop: 110,
     color:'#FFF',
     textAlign: 'center',
-    height: 150,
+    height: 220,
     width: width - 40,
   },
   bottomInfo:{
