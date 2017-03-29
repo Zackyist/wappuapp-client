@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontSize: 13,
+    marginBottom: 2,
     fontWeight: 'bold',
     color: theme.white,
     textAlign: 'center',
