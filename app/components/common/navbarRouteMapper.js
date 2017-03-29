@@ -17,13 +17,15 @@ import {
   ActionSheetIOS,
   Platform,
   Image,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from 'react-native';
 
 
 import theme from '../../style/theme';
 import CityToggle from '../header/CityToggle';
 import SortSelector from '../header/SortSelector';
+import MoodInfo from '../mood/MoodInfo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Tabs from '../../constants/Tabs';
 
@@ -58,6 +60,20 @@ let NavigationBarRouteMapper = props => ({
 
     if (props.currentTab === Tabs.FEED) {
       return (<SortSelector />);
+    }
+
+    if (props.currentTab === Tabs.FEELING) {
+      return (<TouchableOpacity
+        onPress={() => {
+          navigator.push({
+            component: MoodInfo,
+            name: 'Wappu Vibe',
+            showName: true
+          });
+        }}
+        >
+          <Icon name='ios-information-circle-outline' style={[styles.navBarIcon, { paddingRight: 12, paddingTop: 8}]} />
+        </TouchableOpacity>);
     }
 
     if (route.actions) {
