@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   DeviceEventEmitter,
   ActivityIndicator,
-  Platform
+  Platform,
+  Dimensions
 } from 'react-native';
 import autobind from 'autobind-decorator';
 
@@ -27,6 +28,7 @@ import {
 } from '../../constants/RadioStates';
 
 const IOS = Platform.OS === 'ios';
+const { width } = Dimensions.get('window');
 
 // Player UI Component
 class Player extends Component {
@@ -120,7 +122,7 @@ class Player extends Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={onRadioPress}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={onRadioPress}>
         {icon}
         </TouchableOpacity>
         <View style={styles.textContainer}>
@@ -133,8 +135,18 @@ class Player extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    width,
+    alignSelf: 'stretch',
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'flex-start',
+    backgroundColor: 'transparent',
+  },
+  button: {
+    paddingLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'stretch',
     backgroundColor: 'transparent',
   },
   icon: {

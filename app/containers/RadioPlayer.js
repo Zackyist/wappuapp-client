@@ -260,11 +260,9 @@ const styles = StyleSheet.create({
     backgroundColor: theme.white
   },
   pressable: {
-    paddingLeft: 10,
     paddingRight: 10,
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center',
     flexDirection: 'row',
   },
 
