@@ -126,7 +126,7 @@ class TextActionView extends Component {
 
 
           <Animated.View style={[styles.innerContainer, {opacity:this.state.formAnimation}]}>
-          <KeyboardAvoidingView behavior={'position'} keyboardVerticalOffset={-100} style={styles.inputContainer}>
+          <KeyboardAvoidingView behavior={IOS ? 'position' : 'height'} keyboardVerticalOffset={IOS ? -100 : 30} style={styles.inputContainer}>
           {/*
             <View>
               <View style={styles.title}>
@@ -187,15 +187,15 @@ class TextActionView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop:0,
-    paddingBottom:IOS ? 0 : 0,
+    paddingTop: 0,
+    paddingBottom: 0,
     justifyContent: 'center'
   },
   innerContainer: {
-    padding:10,
+    padding: IOS ? 10 : 0,
     paddingBottom: 10,
     flex:1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   inputContainer: {
     backgroundColor: 'transparent',
@@ -227,12 +227,12 @@ const styles = StyleSheet.create({
     alignItems: IOS ? 'stretch' : 'flex-end',
     justifyContent: IOS ? 'center' : 'flex-end',
     position: 'absolute',
-    bottom:0,
-    right:0,
-    left:0,
-    padding:10,
-    paddingBottom: IOS ? 0 : 10,
-    paddingLeft:20,
+    bottom: IOS ? 0 : 10,
+    right: 0,
+    left: 0,
+    padding: 20,
+    paddingBottom: 0,
+    paddingLeft: 20,
     paddingRight: 20,
     borderTopWidth: IOS ? 0 : 1,
     borderTopColor:'rgba(0,0,0,.1)',
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     margin: 0,
     marginLeft: 10,
-    marginTop: 110,
+    marginTop: IOS ? 110 : 0,
     color:'#FFF',
     textAlign: 'center',
     height: 220,
