@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     top: 10,
   },
   eventContent: {
-    marginTop: 10
+    marginTop: 10,
   },
   gridListItemMetaWrap:{
     paddingBottom:10,
@@ -254,6 +254,26 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
     flex: 1,
     marginTop: 25
+  },
+  checkInButton: {
+    position:'absolute',
+    right: 20,
+    justifyContent: 'center',
+    top: IOS ? -51 : 70,
+    elevation: 3,
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+    zIndex:99,
+    borderRadius: 40,
+    padding: 10,
+    width: 80,
+    height: 80,
+    backgroundColor: theme.secondary
   }
 });
 
@@ -335,33 +355,42 @@ const EventDetail = React.createClass({
   getText(status) {
     switch(status) {
       case AVAILABLE:
-        return <Text style={styles.buttonText}>CHECK IN!</Text>;
+        return <Text style={styles.buttonText}>CHECK IN</Text>;
       case INACTIVE:
-        return <Text style={styles.buttonText}>CLOSED!</Text>;
+        return <Text style={styles.buttonText}>NOT ONGOING</Text>;
       case CHECKED:
         return <Icon size={50} name={IOS ? 'ios-checkmark' : 'md-checkmark'} style={styles.icon}/>;
       case UNAVAILABLE:
-        return <Text style={styles.buttonText}>GET CLOSER!</Text>;
+        return <Text style={styles.buttonText}>GET CLOSER</Text>;
     }
   },
 
-  render: function() {
-    // TODO: stylize the "meta-elements"
+  renderCheckinButton() {
+    const eventStatus = this.getEventStatus();
+    const active = this.state.springAnim.interpolate({
+      inputRange: [0, 0.5, 1],
+      outputRange: [1, 1.2, 1]
+    });
+    return (
+      <TouchableWithoutFeedback disabled={eventStatus !== AVAILABLE} onPress={() => this.onCheckIn()}>
+        <Animated.View style={[styles.checkInButton, {
+          opacity: eventStatus === AVAILABLE ? 1 : 0.9,
+          transform: [{scale: active}],
+        }]}>
+          {this.getText(eventStatus)}
+        </Animated.View>
+      </TouchableWithoutFeedback>
+    );
+  },
 
-    const model = this.props.route.model;
-    const currentDistance = this.props.route.currentDistance;
+  render: function() {
+    const { model, currentDistance } = this.props.route;
     const timepoint = time.formatEventTime(model.startTime, model.endTime, { formatLong: true });
     const wrapperStyleAdd = {
       paddingTop: 0
     };
 
-    const eventStatus = this.getEventStatus();
     const coverImage =  model.coverImage;
-
-    const active = this.state.springAnim.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [1, 1.2, 1]
-    });
 
     return <View style={[styles.wrapper, wrapperStyleAdd]}>
       {!IOS ?
@@ -373,40 +402,21 @@ const EventDetail = React.createClass({
           windowHeight={300}
           style={{backgroundColor:'#eee'}}
           header={(
-            <View style={{flex:1}}>
+            <View style={{ flex:1, elevation: 3 }}>
               <LinearGradient
                 locations={[0,0.6,0.9]}
                 colors={['transparent', 'rgba(0,0,0,.1)', 'rgba(40,10,5,.5)']}
                 style={styles.gridListItemImgColorLayer}>
-              <Text style={styles.header}>
-                  {model.name}
-              </Text>
+                <Text style={styles.header}>
+                    {model.name}
+                </Text>
+                {!IOS && this.renderCheckinButton()}
               </LinearGradient>
             </View>
           )}
       >
         <View style={styles.eventContent}>
-
-          <TouchableWithoutFeedback disabled={eventStatus !== AVAILABLE} onPress={() => this.onCheckIn()}>
-            <Animated.View style={{
-                opacity: eventStatus === AVAILABLE ? 1 : 0.8,
-                transform: [{scale: active}],
-                position:'absolute',
-                right: 20,
-                justifyContent: 'center',
-                top: -51,
-                elevation: 2,
-                shadowColor: '#000000',
-                shadowOpacity: 0.15,
-                shadowRadius: 1,
-                shadowOffset: {
-                  height: 2,
-                  width: 0
-                },zIndex:99, borderRadius: 40, padding: 10, width: 80, height: 80, backgroundColor: theme.secondary}}>
-                {this.getText(eventStatus)}
-            </Animated.View>
-          </TouchableWithoutFeedback>
-
+          {IOS && this.renderCheckinButton()}
           <View style={styles.gridListItemMetaWrap}>
 
             <View style={styles.gridListItemMeta}>
