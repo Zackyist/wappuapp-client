@@ -19,7 +19,7 @@ import location from '../../services/location';
 import { connect } from 'react-redux';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import EventListItem from '../calendar/EventListItem';
+import EventListItem from '../calendar/CheckInListItem';
 import { checkIn, closeCheckInView } from '../../actions/competition';
 import { getCurrentCityName } from '../../concepts/city';
 
