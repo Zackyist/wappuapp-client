@@ -23,8 +23,6 @@ import com.cmcewen.blurview.BlurViewPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.horcrux.svg.RNSvgPackage;
-import com.slowpath.hockeyapp.RNHockeyAppModule;
-import com.slowpath.hockeyapp.RNHockeyAppPackage;
 
 import java.util.Arrays;
 import java.util.List;
