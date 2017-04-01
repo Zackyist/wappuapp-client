@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Easing,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Platform,
   ScrollView,
   Dimensions
@@ -62,9 +63,9 @@ class InstructionView extends Component {
 
           <View style={styles.topArea}>
             {/*
-              <Icon style={styles.icon} name={'md-globe'} />
+            <Icon style={styles.icon} name={'md-globe'} />
             <Image style={{marginTop: 20, height: 50, width: 50}}  source={require('../../../assets/whappu-flat.png')}/>
-              <Image style={styles.icon} source={require('../../../assets/heart.png')} />
+            <Image style={styles.icon} source={require('../../../assets/heart.png')} />
             */}
             <View style={styles.iconWrap}>
               <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
@@ -87,8 +88,10 @@ class InstructionView extends Component {
                   <View style={styles.cities}>
                     {this.props.cities.map((city, i) => {
                       const isCitySelected = city.get('id') === this.props.selectedCity;
-                      return <TouchableWithoutFeedback
+                      return <TouchableOpacity
                         key={i}
+                        activeOpacity={0.5}
+                        style={styles.button}
                         onPress={this.handlePress.bind(this, city.get('id'))}>
                         <Animated.View style={[styles.touchable, {transform: [{ scale: isCitySelected ? active : unactive }] }]}>
                           <View style={styles.circle}>
@@ -107,7 +110,7 @@ class InstructionView extends Component {
                             </Text>
                           </View>
                         </Animated.View>
-                      </TouchableWithoutFeedback>}
+                      </TouchableOpacity>}
                     )}
                   </View>
                 </View>
@@ -123,7 +126,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.secondary,
-    alignSelf: 'stretch',
+    alignSelf: 'stretch'
   },
   area: {
     alignItems: 'stretch'
@@ -211,18 +214,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1
   },
+  button: {
+    height: 120,
+    width: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 20,
+    borderRadius: 50,
+  },
   touchable: {
     height: 100,
     width: 100,
-    margin: 20,
     borderRadius: 50,
-    // shadowColor: '#000',
-    // shadowOpacity: 0.2,
-    // shadowRadius: 3,
-    // shadowOffset: {
-    //   height: 3,
-    //   width: 0
-    // },
   },
   circle: {
     flex: 1,

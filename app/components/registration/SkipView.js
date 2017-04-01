@@ -12,9 +12,7 @@ import {
   Dimensions
 } from 'react-native';
 import theme from '../../style/theme';
-import Button from '../../components/common/Button';
-import Icon from 'react-native-vector-icons/Ionicons';
-import MdIcon from 'react-native-vector-icons/MaterialIcons';
+import PlatformTouchable from '../../components/common/PlatformTouchable';
 
 const { width, height } = Dimensions.get('window');
 
@@ -44,8 +42,8 @@ class SkipView extends Component {
                       to finish registration.
                     </Text>
 
-                    <Text style={styles.text}>Just looking around? It's okay, just press
-                      <Text style={{fontWeight: 'bold'}}> Done. </Text>
+                    <Text style={styles.text}>Just looking around? It's okay, just
+                      <Text style={{fontWeight: 'bold'}}> Skip. </Text>
                       You can always edit your profile later.
                     </Text>
 
@@ -53,11 +51,11 @@ class SkipView extends Component {
                 </View>
               </View>
             </ScrollView>
-            <TouchableWithoutFeedback onPress={this.props.onPressProfileLink}>
-              <View style={styles.cancelButton}>
+            <PlatformTouchable onPress={this.props.onPressProfileLink}>
+              <View style={styles.editButton}>
                 <Text style={{fontSize: 16, fontWeight: 'bold', color: theme.white}}>EDIT YOUR PROFILE</Text>
               </View>
-            </TouchableWithoutFeedback>
+            </PlatformTouchable>
         </View>
     );
   }
@@ -147,16 +145,17 @@ const styles = StyleSheet.create({
     color: theme.white,
     textAlign: 'center',
   },
-  cancelButton: {
+  editButton: {
     position: 'absolute',
-    bottom: 90,
+    bottom: 100,
     left: width / 2 - 100,
     padding: 5,
     paddingTop: 8,
     paddingBottom: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 25,
+    borderRadius: IOS ? 25 : 2,
+    elevation: 3,
     borderWidth: 0,
     borderColor: theme.grey,
     backgroundColor: theme.primary,
