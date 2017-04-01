@@ -91,8 +91,7 @@ class MoodView extends Component {
 
         <MoodKpis kpiValues={moodKpiValues} cityName={cityName} teamName={teamName} />
 
-
-        <Notification visible={isNotificationVisible} topOffset={20}>
+        <Notification visible={isNotificationVisible} topOffset={IOS ? 20 : 0}>
           {notificationText}
         </Notification>
       </View>
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     position: 'absolute',
-    top: (height / 2.5) - (IOS ? 20 : 40),
+    top: IOS ? (height / 2.5) - 20 :(height / 2.75) - 40,
     zIndex: 2,
     left: (width / 2) - 40,
     backgroundColor: theme.white,
@@ -143,7 +142,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 25,
     zIndex: 2,
-    top: (height / 2.5) - (IOS ? 0 : 20),
+    top: IOS ? (height / 2.5) - 0 :(height / 2.75) - 20,
     backgroundColor: theme.stable,
     width: 40,
     height: 40,
