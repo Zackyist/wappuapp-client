@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   Animated,
   Platform,
-  Linking,
   Dimensions,
-  SegmentedControlIOS
+  SegmentedControlIOS,
+  BackAndroid
 } from 'react-native';
 import { findIndex } from 'lodash';
 import { connect } from 'react-redux';
@@ -37,9 +37,9 @@ import autobind from 'autobind-decorator';
 import PlayerUI from '../components/radio/PlayerUI';
 import PlatformTouchable from '../components/common/PlatformTouchable';
 import ModalBackgroundView from '../components/common/ModalBackgroundView';
+import RadioWebsiteLink from '../components/radio/RadioWebsiteLink';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 
 import {
   PLAYING,
@@ -55,16 +55,25 @@ import {
 const IOS = Platform.OS === 'ios';
 const { height, width } = Dimensions.get('window');
 
-const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 50 : height - 130;
+const PLAYER_HEIGHT_EXPANDED = IOS ? height - 60 - 50 : height - 134;
 const PLAYER_HEIGHT = IOS ? 40 : 40;
 
 class RadioPlayer extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       playerHeight: new Animated.Value(PLAYER_HEIGHT),
     };
+  }
+
+  componentDidMount() {
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+      if (this.props.expanded) {
+        this.close()
+        return true;
+      }
+      return false;
+    })
   }
 
   @autobind
@@ -152,12 +161,12 @@ class RadioPlayer extends Component {
         </View>
         :
         <View style={styles.tabs}>
-          {stations && stations.map((station, index) =>
-            <View key={index} style={[styles.tab, station.get('id') === activeStationId ? styles.tab__active : {}]}>
-              <PlatformTouchable onPress={() => this.props.setRadioStationActive(station.get('id'))}>
-                <Text style={styles.tabText}>{station.get('name')}</Text>
-              </PlatformTouchable>
-            </View>
+          {!!stations && stations.map((station, index) =>
+            <PlatformTouchable delayPressIn={0} onPress={() => this.props.setRadioStationActive(station.get('id'))}>
+              <View key={index} style={[styles.tab, station.get('id') === activeStationId ? styles.tab__active : {}]}>
+                  <Text style={styles.tabText}>{station.get('name')}</Text>
+              </View>
+            </PlatformTouchable>
           )}
         </View>
         }
@@ -171,7 +180,6 @@ class RadioPlayer extends Component {
             <Text style={styles.programHost}>
               {url ? nowPlaying.get('programHost') || ' ' : `${currentStation.get('name')} is Available Soon`}
             </Text>
-
             <TouchableHighlight underlayColor={url ? theme.secondaryLight : theme.grey} onPress={this.onRadioButtonPress} style={buttonStyle}>
               <Text style={styles.buttonText}>
                {icon}
@@ -179,21 +187,10 @@ class RadioPlayer extends Component {
             </TouchableHighlight>
           </View>
 
-          {!!currentStation.get('website') &&
-            <View style={styles.radioWebsite}>
-              <PlatformTouchable onPress={() => Linking.openURL(currentStation.get('website'))}>
-                <Text style={styles.websiteUrl}>
-                  {/*<Icon name="link" style={styles.websiteIcon}/>*/}
-                  See full program in <Text style={styles.websiteUrlAccent}>
-                    {currentStation.get('website', '').replace('https://', '').replace('/', '')}
-                  </Text>
-                </Text>
-              </PlatformTouchable>
-            </View>
-          }
+          {!!currentStation.get('website') && <RadioWebsiteLink currentStation={currentStation} />}
         </View>
 
-        <TouchableOpacity onPress={this.close} style={styles.close} >
+        <TouchableOpacity onPress={this.close} style={styles.close} activeOpacity={IOS ? 0.3 : 0.6} >
           <Icon name="expand-less" style={styles.closeArrow} />
         </TouchableOpacity>
       </ModalBackgroundView>
@@ -219,7 +216,7 @@ class RadioPlayer extends Component {
       <Animated.View style={[styles.container, !expanded ? styles.containerCompact : {}, { height: playerHeight }]}>
         {expanded && this.renderExpandedContent()}
 
-        {<TouchableOpacity
+        {(IOS || !expanded) && <TouchableOpacity
         activeOpacity={1}
         onPress={this.toggle}
         style={styles.pressable}>
@@ -252,7 +249,7 @@ const styles = StyleSheet.create({
     height: PLAYER_HEIGHT,
     zIndex: 0,
     top: IOS ? 20 : 0,
-    backgroundColor: 'rgba(255, 255, 255, .2)',
+    backgroundColor: IOS ? 'rgba(255, 255, 255, .2)' : theme.white,
     overflow: 'hidden',
     elevation: 1,
   },
@@ -275,16 +272,17 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: 10,
+    elevation: 2,
     flex: 1,
     justifyContent: 'flex-start',
-    backgroundColor: theme.transparent
+    backgroundColor: IOS ? theme.transparent : theme.white
   },
   close: {
     position: 'absolute',
     bottom: 0,
     right: 0,
     padding: 0,
-    paddingBottom: 14,
+    paddingBottom: IOS ? 14 : 11,
     width: 60,
     alignItems: 'flex-end',
   },
@@ -331,26 +329,6 @@ const styles = StyleSheet.create({
     flexGrow: 2,
     backgroundColor: 'transparent',
     paddingBottom: 50,
-  },
-  radioProgramBg: {
-    flex: 1,
-  },
-  radioWebsite: {
-    backgroundColor: IOS ? 'transparent' : theme.lightgrey,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 0,
-    borderBottomWidth: 2,
-    borderBottomColor: theme.secondary,
-  },
-  websiteUrl: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: 'rgba(0, 0, 0, .5)',
-  },
-  websiteUrlAccent: {
-    color: theme.black
   },
   programHost: {
     color: 'rgba(0, 0, 0, .5)',
