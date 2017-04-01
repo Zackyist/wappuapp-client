@@ -10,6 +10,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 import Tabs from '../../constants/Tabs';
 import SortTypes from '../../constants/SortTypes';
+import MoodInfo from '../mood/MoodInfo';
+
+const cityIcons = {
+  'helsinki': require('../../../assets/cities/icon-ota-amfi-accent.png'),
+  'tampere': require('../../../assets/cities/icon-tampere-accent-sm.png')
+};
 
 const styles = StyleSheet.create({
   toolbar: {
@@ -42,20 +48,29 @@ var EventDetailToolbar = React.createClass({
     navigator: PropTypes.object.isRequired
   },
 
-  getActions(tab, sortType) {
+  getCityIcon(cityName) {
+    return (cityName || '').toLowerCase() === 'tampere' ? cityIcons.tampere : cityIcons.helsinki;
+  },
+
+  getActions(tab, sortType, cityName) {
 
     switch (tab) {
       case Tabs.FEED: {
         return [
-          { title: 'City', id:'city', show: 'always', iconName: 'location-city', iconColor },
+          { title: 'City', id:'city', show: 'always', icon: this.getCityIcon(cityName), iconColor },
           { title: `${sortType === SortTypes.SORT_NEW ? selectedActionText : '  '} Newest`, id: SortTypes.SORT_NEW, show: 'never' },
           { title: `${sortType === SortTypes.SORT_HOT ? selectedActionText : '  '} Trending`, id: SortTypes.SORT_HOT, show: 'never' },
         ]
       }
+      case Tabs.FEELING:
+        return [
+          { title: 'City', id:'city', show: 'always', icon: this.getCityIcon(cityName), iconColor },
+          { title: 'Info', id:'mood', show: 'always', iconName: 'help-outline', iconColor }
+        ];
+
       case Tabs.CALENDAR:
       case Tabs.ACTION:
-      case Tabs.FEELING:
-        return [{ title: 'City', id:'city', show: 'always', iconName: 'location-city', iconColor }]
+        return [{ title: 'City', id:'city', show: 'always', icon: this.getCityIcon(cityName), iconColor }]
       default:{
         return [];
       }
@@ -63,7 +78,7 @@ var EventDetailToolbar = React.createClass({
   },
 
   onActionSelected(position) {
-    // const { currentTab } === this.props;
+    const { currentTab, navigator } = this.props;
     switch (position) {
       case 0: {
         this.props.toggleCityPanel();
@@ -71,7 +86,13 @@ var EventDetailToolbar = React.createClass({
       }
 
       case 1: {
-        this.props.setFeedSortType(SortTypes.SORT_NEW);
+        if (currentTab === Tabs.FEELING) {
+          navigator.push({
+            component: MoodInfo
+          });
+        } else {
+          this.props.setFeedSortType(SortTypes.SORT_NEW);
+        }
         break;
       }
       case 2: {
@@ -94,6 +115,7 @@ var EventDetailToolbar = React.createClass({
       title,
       titleColor,
       currentTab,
+      currentCityName,
       selectedSortType,
     } = this.props;
 
@@ -104,7 +126,7 @@ var EventDetailToolbar = React.createClass({
 
     return (
       <Icon.ToolbarAndroid
-        actions={this.getActions(currentTab, selectedSortType)}
+        actions={this.getActions(currentTab, selectedSortType, currentCityName)}
         logo={require('../../../assets/header/4.png')}
         // actions={toolbarActions} TODO - SHARE
         // navIcon={require('../../../assets/logo-for-header.png')}
