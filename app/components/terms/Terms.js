@@ -1,14 +1,20 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform, Text } from 'react-native';
 import theme from '../../style/theme';
+import Header from '../common/Header';
+
+const isIOS = Platform.OS === 'ios';
 
 class Terms extends Component {
   render() {
 
     return (
+      <View style={{ flex: 1 }}>
+      {!isIOS && <Header backgroundColor={theme.secondary} title="Terms of Service" navigator={this.props.navigator} />}
       <ScrollView style={styles.container}>
+        <View style={styles.content}>
         <Text style={styles.paragraph}><Text style={styles.bold}>Terms and Conditions ("Terms")</Text></Text>
         <Text style={styles.paragraph}>Last updated: March 27, 2017</Text>
         <Text style={styles.paragraph}>Please read these Terms and Conditions ("Terms", "Terms and Conditions") carefully before using the Whappu mobile application and wappu.futurice.com site (the "Service") operated by Futurice Oy ("us", "we", or "our").</Text>
@@ -59,8 +65,10 @@ class Terms extends Component {
         <Text style={styles.paragraph}>By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service.</Text>
 
         <Text style={styles.paragraph}><Text style={styles.bold}>Contact Us</Text></Text>
-        <Text style={styles.paragraph}>If you have any questions about these Terms, please contact us via email wappu@futurice.com. Postal address: Kuninkaankatu 21, 33210 Tampere.</Text>
+        <Text style={styles.paragraph}>If you have any questions about these Terms, please contact us via email wappu@futurice.com. Postal address: Kelloportinkatu 1 D, 33100 Tampere.</Text>
+        </View>
       </ScrollView>
+      </View>
     );
   }
 };
@@ -70,10 +78,12 @@ class Terms extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    paddingTop: 40,
-    paddingBottom: 50,
     backgroundColor: theme.white
+  },
+  content: {
+    padding: isIOS ? 10 : 20,
+    paddingTop: isIOS ? 40 : 20,
+    paddingBottom: 50,
   },
   paragraph: {
     fontSize: 12,
