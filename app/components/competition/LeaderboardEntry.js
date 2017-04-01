@@ -17,6 +17,8 @@ import theme from '../../style/theme';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 
+const IOS = Platform.OS === 'ios';
+
 class LeaderboardEntry extends Component {
   // mixins: [TimerMixin],
   propTypes: {
@@ -113,8 +115,8 @@ class LeaderboardEntry extends Component {
 
 const styles = StyleSheet.create({
   entry: {
-    paddingTop:Platform.OS === 'ios' ? 30 : 32,
-    paddingBottom:Platform.OS === 'ios' ? 30 : 32,
+    paddingTop: IOS ? 30 : 32,
+    paddingBottom: IOS ? 30 : 32,
     backgroundColor:'#FFF',
     flexDirection:'row',
     alignItems:'center'
@@ -171,7 +173,7 @@ const styles = StyleSheet.create({
   entryTitleScoreOver:{
     position:'absolute',
     left:6,
-    top:Platform.OS === 'ios' ? 7 : 3,
+    top: IOS ? 7 : 3,
     fontSize:14,
     fontWeight:'bold',
     color:'#fff',
@@ -184,11 +186,11 @@ const styles = StyleSheet.create({
     marginTop:6,
     marginBottom:5,
     overflow:'hidden',
-    height:Platform.OS === 'ios' ? 10 : 26,
+    height:IOS ? 10 : 12,
     flex:1,
   },
   bar:{
-    height:Platform.OS === 'ios' ? 10 : 26,
+    height:IOS ? 10 : 12,
     backgroundColor:theme.secondary,
     position:'absolute',
     borderRadius: 3,
