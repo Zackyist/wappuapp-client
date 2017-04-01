@@ -5,12 +5,12 @@ import { View } from 'react-native'
 
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-import _ from 'lodash';
 
 import { changeTab } from '../actions/navigation';
 import {
   openCitySelection,
   getCityId,
+  getCurrentCityName,
   toggleCityPanel,
   getCityPanelShowState,
 } from '../concepts/city';
@@ -35,7 +35,7 @@ const ANDROID_TAB_ORDER = [
   Tabs.ACTION,
   Tabs.SETTINGS
 ];
-const initialTab = 0;
+const initialTab = 2;
 
 class AndroidTabNavigation extends Component {
 
@@ -53,6 +53,7 @@ class AndroidTabNavigation extends Component {
       navigator,
       currentTab,
       currentCity,
+      currentCityName,
       openCitySelection,
       showCitySelection,
       toggleCityPanel,
@@ -66,6 +67,7 @@ class AndroidTabNavigation extends Component {
           title={null}
           backgroundColor={theme.secondary}
           currentTab={currentTab}
+          currentCityName={currentCityName}
           openCitySelection={openCitySelection}
           toggleCityPanel={toggleCityPanel}
           selectedSortType={selectedSortType}
@@ -81,11 +83,12 @@ class AndroidTabNavigation extends Component {
           tabBarInactiveTextColor={'rgba(0, 0, 0, 0.5)'}
           locked={true}
           scrollWithoutAnimation={true}
+          prerenderingSiblingsNumber={0}
           renderTabBar={() => <IconTabBar />}
         >
           <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
           <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
-          <MoodView navigator={navigator} tabLabel={{title:'Vibes', icon:'trending-up'}} />
+          <MoodView navigator={navigator} tabLabel={{title:'Vibes', icon:'trending-up', iconSize: 26}} />
           <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
           <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
         </AndroidTabs>
@@ -107,6 +110,7 @@ const select = state => {
   return {
     showCitySelection: getCityPanelShowState(state),
     currentCity: getCityId(state),
+    currentCityName: getCurrentCityName(state),
     selectedSortType: getFeedSortType(state),
     currentTab: state.navigation.get('currentTab')
   }
