@@ -280,8 +280,8 @@ class MoodSlider extends Component {
           <View style={[styles.moodSection, { height: mood }]}>
             <Animated.View style={[styles.moodSlide,
                { transform: [
-                { rotate: isIOS ? bubblePosition.interpolate({ inputRange: [0, 0.5, 1], outputRange: ['-2.5deg', '2.5deg', '-2.5deg'] }) : '0deg' },
-                { scale: isIOS ? bubblePosition.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [1, 1.02, 1, 0.98, 1] }) : 1 }] }
+                { rotate: bubblePosition.interpolate({ inputRange: [0, 0.5, 1], outputRange: ['-2.5deg', '2.5deg', '-2.5deg'] }) },
+                { scale: bubblePosition.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [1, 1.02, 1, 0.98, 1] }) }] }
             ]} />
 
             <Animated.View style={[styles.raisin,
@@ -292,55 +292,43 @@ class MoodSlider extends Component {
               <Image style={{width: 70, height: 35 }} source={require('../../../../assets/raisin.png')} />
             </Animated.View>
 
-            {isIOS &&
-              <Animated.View style={[styles.raisin,
-                { opacity: 0.2, left: 50, right: null, bottom: (mood / 1.5) + 160, transform: [
-                  { translateY: bubbleOpacity[2].interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 5, 0] }) },
-                  { rotate: bubbleOpacity[1].interpolate({ inputRange: [0, 0.5, 1], outputRange: ['-5deg', '0deg', '-5deg'] }) },
-                  { scale: bubbleOpacity[2].interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.9, 0.85, 0.9] }) }] }]} >
-                <Image style={{width: 70, height: 35 }} source={require('../../../../assets/raisin.png')} />
-              </Animated.View>
-            }
+            <Animated.View style={[styles.raisin,
+              { opacity: 0.2, left: 50, right: null, bottom: (mood / 1.5) + 160, transform: [
+                { translateY: bubbleOpacity[2].interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 5, 0] }) },
+                { rotate: bubbleOpacity[1].interpolate({ inputRange: [0, 0.5, 1], outputRange: ['-5deg', '0deg', '-5deg'] }) },
+                { scale: bubbleOpacity[2].interpolate({ inputRange: [0, 0.5, 1], outputRange: [0.9, 0.85, 0.9] }) }] }]} >
+              <Image style={{width: 70, height: 35 }} source={require('../../../../assets/raisin.png')} />
+            </Animated.View>
 
 
-          {isIOS &&
             <Animated.View style={[styles.bubbleSet, { bottom: 100, left: width / 2 - 50, opacity: 1}]} >
               <Animated.View style={[styles.bubble, { width: 30, height: 30, borderRadius: 15, transform: [{ translateX: bubbleHorizontalPositions[0] }, { translateY: bubbleVerticalPositions[0] }], opacity: bubbleOpacity[0], borderWidth: 4, borderTopWidth:5, borderRightWidth:6, backgroundColor:'rgba(255,255,255, .3)'}]} />
               <Animated.View style={[styles.bubble, { width: 28, height: 28, borderRadius: 14, transform: [{ translateX: bubbleHorizontalPositions[1] }, { translateY: bubbleVerticalPositions[1] }], opacity: bubbleOpacity[1], borderWidth: 5, borderTopWidth:6, borderRightWidth:7, backgroundColor:'rgba(255,255,255, .3)'}]} />
               <Animated.View style={[styles.bubble, { width: 30, height: 30, borderRadius: 15, transform: [{ translateX: bubbleHorizontalPositions[2] }, { translateY: bubbleVerticalPositions[2] }], opacity: bubbleOpacity[2], borderWidth: 6, borderTopWidth:7, borderRightWidth:8, backgroundColor:'rgba(255,255,255, .3)'}]} />
             </Animated.View>
-          }
 
-          {isIOS &&
             <Animated.View style={[styles.bubbleSet, { top: width / 1.5 , left: width / 4 - 30, opacity: 1}]} >
               <Animated.View style={[styles.bubble, { width: 15, height: 15, borderRadius: 8, transform: [{ translateX: bubbleHorizontalPositions[2] }, { translateY: bubbleVerticalPositions[1] }], opacity: bubbleOpacity[0], borderWidth: 4, borderTopWidth:5, borderRightWidth:6, backgroundColor:'rgba(255,255,255, .3)'}]} />
               <Animated.View style={[styles.bubble, { width: 33, height: 33, borderRadius: 17, transform: [{ translateX: bubbleHorizontalPositions[0] }, { translateY: bubbleVerticalPositions[2] }], opacity: bubbleOpacity[1], borderWidth: 5, borderTopWidth:6, borderRightWidth:7, backgroundColor:'rgba(255,255,255, .3)'}]} />
             </Animated.View>
-          }
 
-          {isIOS &&
             <Animated.View style={[styles.bubbleSet, { top: width, left: width / 2 - 50, opacity: 1} ]} >
               <Animated.View style={[styles.bubble, { width: 10, height: 10, borderRadius: 5,  transform: [{ translateX: bubbleHorizontalPositions[1] }, { translateY: bubbleVerticalPositions[1] }], opacity: bubbleOpacity[2], borderWidth: 4, borderTopWidth:5, borderRightWidth:5, backgroundColor:'rgba(255,255,255, .25)'}]} />
               <Animated.View style={[styles.bubble, { width: 20, height: 20, borderRadius: 10, transform: [{ translateX: bubbleHorizontalPositions[2] }, { translateY: bubbleVerticalPositions[2] }], opacity: bubbleOpacity[1], borderWidth: 4, borderTopWidth:5, borderRightWidth:5, backgroundColor:'rgba(255,255,255, .25)'}]} />
               <Animated.View style={[styles.bubble, { width: 10, height: 10, borderRadius: 5, transform: [{ translateX: bubbleHorizontalPositions[0] }, { translateY: bubbleVerticalPositions[0] }], opacity: bubbleOpacity[0], borderWidth: 4, borderTopWidth:5, borderRightWidth:5, backgroundColor:'rgba(255,255,255, .25)'}]} />
             </Animated.View>
-          }
 
-          {isIOS &&
             <Animated.View style={[styles.bubbleSet, { top: 0, left: width / 1.5 - 50, opacity: 1} ]} >
               <Animated.View style={[styles.bubble, { width: 20, height: 20, borderRadius: 10,  transform: [{ translateX: bubbleHorizontalPositions[1] }, { translateY: bubbleVerticalPositions[2] }], opacity: bubbleOpacity[1], borderWidth: 4, borderTopWidth:5, borderRightWidth:6, backgroundColor:'rgba(255,255,255, .3)'}]} />
               <Animated.View style={[styles.bubble, { width: 30, height: 30, borderRadius: 15, transform: [{ translateX: bubbleHorizontalPositions[2] }, { translateY: bubbleVerticalPositions[0] }], opacity: bubbleOpacity[2], borderWidth: 5, borderTopWidth:6, borderRightWidth:7, backgroundColor:'rgba(255,255,255, .3)'}]} />
               <Animated.View style={[styles.bubble, { width: 10, height: 10, borderRadius: 5, transform: [{ translateX: bubbleHorizontalPositions[0] }, { translateY: bubbleVerticalPositions[1] }], opacity: bubbleOpacity[0], borderWidth: 6, borderTopWidth:7, borderRightWidth:8, backgroundColor:'rgba(255,255,255, .3)'}]} />
             </Animated.View>
-          }
 
-          {isIOS &&
             <Animated.View style={[styles.bubbleSet, { top: 150, left: width - 100, opacity: 1}]} >
               <Animated.View style={[styles.bubble, { width: 10, height: 10, borderRadius: 5,  transform: [{ translateX: bubbleHorizontalPositions[2] }, { translateY: bubbleVerticalPositions[1] }], opacity: bubbleOpacity[1], borderWidth: 4, borderTopWidth:5, borderRightWidth:6, backgroundColor:'rgba(255,255,255, .2)'}]} />
               <Animated.View style={[styles.bubble, { width: 15, height: 15, borderRadius: 7, transform: [{ translateX: bubbleHorizontalPositions[1] }, { translateY: bubbleVerticalPositions[0] }], opacity: bubbleOpacity[2], borderWidth: 5, borderTopWidth:6, borderRightWidth:7, backgroundColor:'rgba(255,255,255, .4)'}]} />
               <Animated.View style={[styles.bubble, { width: 13, height: 13, borderRadius: 8, transform: [{ translateX: bubbleHorizontalPositions[0] }, { translateY: bubbleVerticalPositions[2] }], opacity: bubbleOpacity[0], borderWidth: 6, borderTopWidth:7, borderRightWidth:8, backgroundColor:'rgba(255,255,255, .3)'}]} />
             </Animated.View>
-          }
 
           </View>
           }
