@@ -17,8 +17,10 @@ import { initializeUsersCity, fetchCities } from '../concepts/city';
 import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
 import * as ENV from '../../env';
 import { checkForUpdates } from '../utils/updater';
-var HockeyApp = require('react-native-hockeyapp');
+
 const IOS = Platform.OS === 'ios';
+// var HockeyApp = require('react-native-hockeyapp');
+
 
 const middlewares = [thunk];
 if (__DEV__) {
@@ -54,13 +56,13 @@ class RootView extends Component {
 
   componentWillMount() {
     if (IOS) {
-      HockeyApp.configure(HOCKEYAPP_ID, true);
+      // HockeyApp.configure(HOCKEYAPP_ID, true);
     }
   }
 
   componentDidMount() {
     if (IOS) {
-      HockeyApp.start();
+      // HockeyApp.start();
     }
 
     const locationOpts = {
