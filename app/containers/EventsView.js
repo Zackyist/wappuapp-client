@@ -29,7 +29,7 @@ class EventsView extends Component {
   render() {
 
     return (
-      <View style={{flexGrow: 1,}}>
+      <View style={{flexGrow: 1}}>
         <ScrollTabs
           initialPage={0}
           tabBarActiveTextColor={theme.secondary}

@@ -75,7 +75,6 @@ export default function registration(state = initialState, action) {
         'isRegistrationViewOpen': action.payload
       })
     case GET_USER_SUCCESS:
-      console.log(action.payload);
       return state.merge({
         'userId': action.payload.id,
         'name': action.payload.name,

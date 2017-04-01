@@ -21,7 +21,6 @@ const getMessage = (payload) => {
 };
 
 const getErrorMessage = (payload) => {
-  console.log(payload);
   return 'Oh no, an error occurred! :-(';
 };
 

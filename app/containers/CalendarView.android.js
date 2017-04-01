@@ -7,7 +7,6 @@ import {
   PropTypes
 } from 'react-native';
 import autobind from 'autobind-decorator';
-import TimelineList from '../components/calendar/TimelineList';
 import EventsView from './EventsView';
 
 var _navigator;
