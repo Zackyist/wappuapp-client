@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
   },
   listItem: {
     flex:1,
-    padding:20,
+    padding: 20,
     flexDirection:'row',
-    backgroundColor:'#FFF',
+    backgroundColor: IOS ? theme.white : theme.transparent,
   },
   listItem__hero:{
     paddingTop: 35,
@@ -65,7 +65,9 @@ const styles = StyleSheet.create({
     },
   },
   listItemButton:{
-    flex:1,
+    backgroundColor: IOS ? theme.transparent : theme.white,
+    flex: 1,
+    padding: 0,
   },
   listItemIcon: {
     fontSize: 22,
@@ -128,8 +130,9 @@ const styles = StyleSheet.create({
   },
   madeby: {
     padding: 7,
-    paddingTop: 25,
-    paddingBottom: 30,
+    backgroundColor: '#FFF',
+    paddingTop: 12,
+    paddingBottom: 17,
     justifyContent: 'space-around',
     flexDirection: 'row',
     alignItems: 'center'
@@ -248,54 +251,57 @@ class Profile extends Component {
   renderModalItem(item, index) {
     const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
     const hasName = !!item.title;
-    const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)) : null;
+    const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
 
     return (
-      <TouchableHighlight key={index} style={[styles.listItemButton, styles.listItemSeparator]} underlayColor={theme.primary}
-        onPress={this.openRegistration}>
-        <View style={[styles.listItem, styles.listItem__hero]}>
-          <View style={styles.avatarColumn}>
-            <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
-              {hasName
-                ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
-                : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
-              }
+      <PlatformTouchable delayPressIn={0} key={index} activeOpacity={0.8} onPress={this.openRegistration}>
+          <View style={[styles.listItemButton, styles.listItemSeparator]}>
+          <View style={[styles.listItem, styles.listItem__hero]}>
+            <View style={styles.avatarColumn}>
+              <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
+                {hasName
+                  ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
+                  : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+                }
+              </View>
             </View>
-          </View>
-          <View style={{flexDirection:'column',flex:1}}>
-            {
-              item.title ?
-              <Text style={[styles.listItemText, styles.listItemText__highlight]}>
-                {item.title}
-              </Text> :
-              <Text style={[styles.listItemText, styles.listItemText__downgrade]}>
-                Unnamed Whappu user
+            <View style={{flexDirection:'column',flex:1}}>
+              {
+                item.title ?
+                <Text style={[styles.listItemText, styles.listItemText__highlight]}>
+                  {item.title}
+                </Text> :
+                <Text style={[styles.listItemText, styles.listItemText__downgrade]}>
+                  Unnamed Whappu user
+                </Text>
+              }
+              <Text style={[styles.listItemText, styles.listItemText__small]}>
+                {currentTeam.name}
               </Text>
-            }
-            <Text style={[styles.listItemText, styles.listItemText__small]}>
-              {currentTeam.name}
-            </Text>
+            </View>
+            <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
           </View>
-          <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
         </View>
-      </TouchableHighlight>
+      </PlatformTouchable>
     );
   }
 
   renderImageMadeByItem(index) {
     return (
-      <View key={index} style={[styles.listItem, styles.listItemSeparator, styles.madeby]}>
-        <TouchableOpacity onPress={() => Linking.openURL('https://www.jayna.fi/')}>
-          <Image resizeMode="contain" style={[styles.madebyIcon, {width: 50, height: 50}]} source={require('../../../assets/madeby/jayna.png')} />
-        </TouchableOpacity>
-        <Text style={styles.madebyText}>×</Text>
-        <TouchableOpacity onPress={() => Linking.openURL('https://futurice.com/')}>
-          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 88, height: 45}]} source={require('../../../assets/madeby/futurice.png')} />
-        </TouchableOpacity>
-        <Text style={styles.madebyText}>×</Text>
-        <TouchableOpacity onPress={() => Linking.openURL('https://ttyy.fi/')}>
-          <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 54, height: 54 }]} source={require('../../../assets/madeby/ttyy-plain.png')} />
-        </TouchableOpacity>
+      <View key={index}  style={[styles.listItemButton, styles.listItemSeparator, styles.madeby]}>
+        <View style={[styles.listItem, styles.madeby]}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://www.jayna.fi/')}>
+            <Image resizeMode="contain" style={[styles.madebyIcon, {width: 50, height: 50}]} source={require('../../../assets/madeby/jayna.png')} />
+          </TouchableOpacity>
+          <Text style={styles.madebyText}>×</Text>
+          <TouchableOpacity onPress={() => Linking.openURL('https://futurice.com/')}>
+            <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 88, height: 45}]} source={require('../../../assets/madeby/futurice.png')} />
+          </TouchableOpacity>
+          <Text style={styles.madebyText}>×</Text>
+          <TouchableOpacity onPress={() => Linking.openURL('https://ttyy.fi/')}>
+            <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 54, height: 54 }]} source={require('../../../assets/madeby/ttyy-plain.png')} />
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
