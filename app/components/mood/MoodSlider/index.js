@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  TextInput,
   Text,
   View,
   Image,
@@ -10,9 +9,8 @@ import {
   Animated,
   Easing,
   PanResponder,
+  BackAndroid,
   Platform,
-  ActivityIndicator,
-  KeyboardAvoidingView
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -23,6 +21,7 @@ import { submitMood, isMoodSending } from '../../../concepts/mood';
 import Header from '../../common/Header';
 import theme from '../../../style/theme';
 import getVibeDescription from '../../../services/vibe-descriptions';
+import MoodSubmit from './MoodSubmit';
 
 
 const { height, width } = Dimensions.get('window');
@@ -53,9 +52,14 @@ class MoodSlider extends Component {
     this.onChangeText = this.onChangeText.bind(this);
   }
 
-
-
   componentDidMount() {
+    BackAndroid.addEventListener('hardwareBackPress', () => {
+      if (this.state.showConfirm) {
+        this.setState({ showConfirm: false })
+        return true;
+      }
+      return false;
+    });
 
     setTimeout(() => {
       this.animateBubbles();
@@ -221,11 +225,10 @@ class MoodSlider extends Component {
     return (
       <View style={styles.container}>
 
-        {!isIOS && <Header backgroundColor={theme.secondary} title="Rate your Wappuvibe" navigator={this.props.navigator} />}
+        {!isIOS && <Header backgroundColor={theme.secondary} title="Add Whappu Vibe" navigator={this.props.navigator} />}
 
-
-        {!showConfirm && mood !== null &&
-          <Animated.View style={[styles.buttonWrap, { transform: [{ scale: buttonScale }] }]}>
+        {mood !== null &&
+          <Animated.View style={[styles.buttonWrap, { transform: [{ scale: buttonScale }, { translateX: showConfirm ? 100 : 0 }] }]}>
             <TouchableHighlight underlayColor={'#f2f2f2'} onPress={this.confirm} style={styles.button}>
               <Text style={styles.buttonText}>
                 <MdIcon size={38} name="keyboard-arrow-right" />
@@ -234,42 +237,15 @@ class MoodSlider extends Component {
           </Animated.View>
         }
 
-        {showConfirm &&
-          <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={-40} style={styles.confirmForm}>
-
-            <Animated.View style={[styles.confirmFormBg, { opacity: confirmScale, transform:[ { scale: confirmScale }] }]}>
-            <TextInput
-              autoFocus={false}
-              autoCapitalize={'sentences'}
-              underlineColorAndroid={'transparent'}
-              clearButtonMode={'while-editing'}
-              returnKeyType={'send'}
-              onSubmitEditing={this.submit}
-              onChangeText={this.onChangeText}
-              style={styles.inputField}
-              maxLength={131}
-              placeholderTextColor={'rgba(0,0,0, 0.3)'}
-              placeholder="Describe Your Wappuvibe..."
-              value={this.state.description}
-            />
-
-            <View style={styles.buttonWrap}>
-            {isMoodSending
-            ?
-              <ActivityIndicator style={styles.loader} size={'large'} color={theme.primary} />
-            :
-              <TouchableHighlight underlayColor={theme.primary} onPress={this.submit} style={[styles.button, styles.submitButton]}>
-                <Text style={[styles.buttonText, styles.submitButtonText]}>
-                  <MdIcon size={30} name={'done'} />
-                </Text>
-              </TouchableHighlight>
-            }
-            </View>
-            </Animated.View>
-          </KeyboardAvoidingView>
-
+        {!!showConfirm &&
+          <MoodSubmit
+            confirmScale={confirmScale}
+            onChangeText={this.onChangeText}
+            submit={this.submit}
+            description={this.state.description}
+            isMoodSending={isMoodSending}
+          />
         }
-
         <View style={styles.main} {...this._panResponder.panHandlers}>
           {mood !== null
             ? <View style={styles.moodNumberWrap}>
@@ -304,8 +280,8 @@ class MoodSlider extends Component {
           <View style={[styles.moodSection, { height: mood }]}>
             <Animated.View style={[styles.moodSlide,
                { transform: [
-                { rotate: bubblePosition.interpolate({ inputRange: [0, 0.5, 1], outputRange: ['-2.5deg', '2.5deg', '-2.5deg'] }) },
-                { scale: bubblePosition.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [1, 1.02, 1, 0.98, 1] }) }] }
+                { rotate: isIOS ? bubblePosition.interpolate({ inputRange: [0, 0.5, 1], outputRange: ['-2.5deg', '2.5deg', '-2.5deg'] }) : '0deg' },
+                { scale: isIOS ? bubblePosition.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [1, 1.02, 1, 0.98, 1] }) : 1 }] }
             ]} />
 
             <Animated.View style={[styles.raisin,
@@ -369,6 +345,7 @@ class MoodSlider extends Component {
           </View>
           }
         </View>
+
       </View>
     );
   }
@@ -458,6 +435,7 @@ const styles = StyleSheet.create({
   },
   vibeDescription: {
     textAlign: 'center',
+    color: 'rgba(0,0,0,.6)',
     fontSize: 13,
     opacity: 0.75,
     backgroundColor: 'transparent',
@@ -519,11 +497,10 @@ const styles = StyleSheet.create({
   },
   buttonWrap: {
     position: 'absolute',
-    bottom: 30,
-    right: 30,
-    height: 54,
-    width: 54,
-    borderRadius: 27,
+    bottom: 20,
+    right: 20,
+    height: 70,
+    width: 70,
     zIndex: 9,
   },
   button: {
@@ -548,7 +525,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: theme.primary
   },
+  submitButtonWrap: {
+    bottom: 15,
+    right: 20,
+  },
   submitButton: {
+    elevation: 3,
     backgroundColor: theme.primaryLight,
   },
   submitButtonText: {
@@ -559,7 +541,7 @@ const styles = StyleSheet.create({
     left: 10,
 
   },
-  confirmForm: {
+  confirmFormWrap: {
     backgroundColor: theme.white,
     position: 'absolute',
     // width: 60,
@@ -568,6 +550,17 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 8,
+    elevation: 2
+  },
+  confirmForm: {
+    backgroundColor: theme.white,
+    // position: 'absolute',
+    // height: 100,
+    // bottom: 0,
+    // left: 0,
+    // right: 0,
+    // zIndex: 8,
+    // elevation: 2,
     justifyContent: 'center'
   },
   confirmFormBg: {

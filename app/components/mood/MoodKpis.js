@@ -20,7 +20,7 @@ class MoodKpis extends Component {
     const { kpiValues, teamName, cityName } = this.props;
 
     const KPI_VALUES = ['ratingPersonal', 'ratingTeam', 'ratingCity'];
-    const KPI_LABELS = ['Your', teamName || 'Team', cityName || 'City'];
+    const KPI_LABELS = ['You', teamName || 'Team', cityName || 'City'];
     const KPI_COLORS = [theme.white, theme.accent, theme.dark];
 
     return (
@@ -70,7 +70,8 @@ class MoodKpis extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'transparent',
-    paddingBottom: 10,
+    paddingTop: IOS ? 0 : 30,
+    paddingBottom: IOS ? 10 : 0,
     flexGrow: 1,
     alignItems: 'stretch',
     justifyContent: 'center',
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: IOS ? 20 : 15,
     color: theme.subtlegrey,
   },
   doughnut: {

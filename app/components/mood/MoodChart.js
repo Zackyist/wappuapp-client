@@ -5,6 +5,7 @@ import { View, StyleSheet, Platform, Dimensions } from 'react-native';
 import theme from '../../style/theme';
 import Chart from './Chart';
 const { height } = Dimensions.get('window');
+const IOS = Platform.OS === 'ios';
 
 class MoodChart extends Component {
   render() {
@@ -17,7 +18,7 @@ class MoodChart extends Component {
           cityData={cityData}
           ownData={ownData}
           teamData={teamData}
-          height={(height / 2.5) - 50}
+          height={(height / (IOS ? 2.5 : 2.75)) - 50}
         />
       </View>
     );
@@ -28,7 +29,7 @@ class MoodChart extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: height / 2.5,
+    height: height / (IOS ? 2.5 : 2.75),
     paddingTop: 10,
     paddingBottom: 50,
     backgroundColor: theme.secondary
