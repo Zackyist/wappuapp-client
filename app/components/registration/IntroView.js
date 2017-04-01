@@ -8,17 +8,14 @@ import {
   Image,
   StyleSheet,
   Easing,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   Platform,
   ScrollView,
   Dimensions
 } from 'react-native';
+
 import theme from '../../style/theme';
 
-import Toolbar from './RegistrationToolbar';
-import Button from '../../components/common/Button';
-import Row from '../../components/common/Row';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -53,20 +50,15 @@ class InstructionView extends Component {
 
   render() {
     const containerStyles = [styles.container, styles.modalBackgroundStyle];
-    const size = this.state.springAnim;
+    const { springAnim } = this.state;
 
-    const active = this.state.springAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.2, 1] });
-    const unactive = this.state.springAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1, 1] });
+    const active = springAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.2, 1] });
+    const unactive = springAnim.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1, 1] });
 
     return (
        <View style={containerStyles}>
 
           <View style={styles.topArea}>
-            {/*
-            <Icon style={styles.icon} name={'md-globe'} />
-            <Image style={{marginTop: 20, height: 50, width: 50}}  source={require('../../../assets/whappu-flat.png')}/>
-            <Image style={styles.icon} source={require('../../../assets/heart.png')} />
-            */}
             <View style={styles.iconWrap}>
               <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
               <Icon style={styles.icon} name={'md-globe'} />

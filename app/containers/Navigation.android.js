@@ -35,7 +35,7 @@ const ANDROID_TAB_ORDER = [
   Tabs.ACTION,
   Tabs.SETTINGS
 ];
-const initialTab = 2;
+const initialTab = 0;
 
 class AndroidTabNavigation extends Component {
 
