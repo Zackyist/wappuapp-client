@@ -1,7 +1,6 @@
 package com.wappuapp;
 
 import com.facebook.react.ReactActivity;
-import com.microsoft.codepush.react.CodePush;
 import com.horcrux.svg.RNSvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -11,7 +10,7 @@ import cl.json.RNSharePackage;
 import com.reactnative.photoview.PhotoViewPackage;
 import com.image.zoom.ReactImageZoom;
 import com.cmcewen.blurview.BlurViewPackage;
-import com.slowpath.hockeyapp.RNHockeyAppPackage;
+import com.airbnb.android.react.maps.MapsPackage;
 
 public class MainActivity extends ReactActivity {
 

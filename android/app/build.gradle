@@ -90,7 +90,7 @@ android {
     defaultConfig {
         applicationId "com.wappuapp"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         ndk {
@@ -126,13 +126,9 @@ android {
     }
 }
 
-repositories {
-    maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
-}
-
 dependencies {
-    compile project(':react-native-svg')
     compile project(':react-native-code-push')
+    compile project(':react-native-svg')
     compile project(':react-native-vector-icons')
     compile project(':react-native-device-info')
     compile project(':react-native-image-picker')
@@ -143,10 +139,20 @@ dependencies {
     compile project(':react-native-blur')
     compile project(':react-native-audio-streaming')
     compile project(':react-native-hockeyapp')
-    compile project(':react-native-maps')
+//     compile project(':react-native-maps')
+    compile(project(':react-native-maps')){
+      exclude group: 'com.google.android.gms', module: 'play-services-base'
+      exclude group: 'com.google.android.gms', module: 'play-services-maps'
+    }
+    compile 'com.google.android.gms:play-services-base:10.2.1'
+    compile 'com.google.android.gms:play-services-maps:10.2.1'
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
+}
+
+repositories {
+    maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
 }
 
 buildscript {
@@ -166,7 +172,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-android.packagingOptions {
-  exclude 'META-INF/LICENSE'
-  exclude 'META-INF/NOTICE'
-}
+// android.packagingOptions {
+//   exclude 'META-INF/LICENSE'
+//   exclude 'META-INF/NOTICE'
+// }
