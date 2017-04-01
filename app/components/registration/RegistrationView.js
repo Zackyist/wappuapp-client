@@ -11,7 +11,7 @@ import {
   Platform,
   TouchableOpacity,
   ScrollView,
-  BackAndroid
+  BackAndroid,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
@@ -39,7 +39,6 @@ import { setCity, getCityIdByTeam, getCityId } from '../../concepts/city';
 import { showChooseTeam } from '../../actions/team';
 import * as keyboard from '../../utils/keyboard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 
 const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
@@ -98,6 +97,7 @@ class RegistrationView extends Component {
   @autobind
   onSelectTeam(id) {
     this.props.selectTeam(id);
+    this.scrollToNameSelection();
   }
 
   @autobind
@@ -159,6 +159,17 @@ class RegistrationView extends Component {
     });
   }
 
+
+  @autobind
+  scrollToNameSelection() {
+    const regScroll = this.containerScrollViewRef;
+    if (regScroll && !IOS) {
+      setTimeout(() => {
+        regScroll.scrollTo({x: 0, y: 2000, animated: true});
+      }, 750);
+    }
+  }
+
   _renderNameSelectContainer() {
     const simplified = this.props.isIntroductionDismissed;
     const containerStyles = [styles.container, styles.modalBackgroundStyle, simplified && styles.simplified]
@@ -185,7 +196,7 @@ class RegistrationView extends Component {
               </View>
 
               <View style={[styles.inputFieldWrap, { paddingBottom: 0 }]}>
-                <ScrollView style={{flex:1, height: (IOS || height > 605) ? 210 : null}}>
+                <ScrollView style={{flex:1, height: IOS ? 210 : null}}>
                   {this.props.teams.map(team => {
                     if (team.get('city') === this.state.selectedCity) {
                       return <Team
@@ -293,18 +304,18 @@ class RegistrationView extends Component {
         backdropPressToClose={false}>
         <AppIntro
           skipBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18 }}>SKIP</Text>}
-          doneBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18 }}>DONE</Text>}
+          doneBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18, lineHeight: IOS ? 20 : 32 }}>SKIP</Text>}
           onSkipBtnClick={this.onClose}
           onDoneBtnClick={this.onClose}
-          showSkipButton={true}
+          showSkipButton={false}
           showDoneButton={this.state.index !== 3 || (this.props.isRegistrationInfoValid && this.teamIsValid())}
           onSlideChange={(index) => this.changeSlide(index)}
           defaultIndex={this.state.index}
           leftTextColor={theme.white}
           rightTextColor={theme.white}
           activeDotColor={theme.white}
-          nextBtnLabel={<Icon name="chevron-right" size={30} />}
-          style={{backgroundColor: theme.dark}}
+          nextBtnLabel={<Icon name="chevron-right" style={{ lineHeight: IOS ? 20 : 40 }} size={32} />}
+          style={{backgroundColor: theme.secondary }}
           dotColor={'rgba(255, 255, 255, .3)'}>
           <IntroView style={styles.slide} selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
           <View style={[styles.slide, styles.slideIntro]} >
@@ -313,8 +324,8 @@ class RegistrationView extends Component {
                 <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
                 <Icon style={styles.icon} name={'face'} />
                 <Icon style={styles.subIcon} name={'chat-bubble-outline'} />
-                <Icon style={[styles.subIcon, { top: -20, left: 65, fontSize: 50 }]} name={'event'} />
-                <Icon style={[styles.subIcon, { top: 20, left: -15, fontSize: 50 }]} name={'photo-camera'} />
+                <Icon style={[styles.subIcon, { top: IOS ? -20 : 0, left: IOS ? 65 : 70, fontSize: IOS ? 50 : 35 }]} name={'event'} />
+                <Icon style={[styles.subIcon, { top: 20, left: IOS ? -15 : 0, fontSize: 50 }]} name={'photo-camera'} />
               </View>
             </View>
             <View level={-10} >
@@ -326,14 +337,14 @@ class RegistrationView extends Component {
               <View style={styles.iconWrap}>
                 <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
                 <Icon style={styles.icon} name={'people-outline'} />
-                <Icon style={[styles.subIcon, { left: 115, top: -15, }]} name={'wb-sunny'} />
+                <Icon style={[styles.subIcon, { left: 115, top: IOS ? -15 : 0, }]} name={'wb-sunny'} />
               </View>
             </View>
             <View level={-10} >
               <SkipView onPressProfileLink={() => {
                 this.onClose();
                 setTimeout(() => {
-                    this.props.openRegistrationView();
+                  this.props.openRegistrationView();
                 }, 1000);
               }}
               />
@@ -501,7 +512,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
     alignItems: 'center',
-    backgroundColor: '#9DD6EB',
+    backgroundColor: theme.secondary,
     padding: 0,
   },
   text: {
@@ -517,9 +528,12 @@ const styles = StyleSheet.create({
   },
   topArea: {
     position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flex: 1,
     flexGrow: 1,
-    backgroundColor: theme.primary,
+    backgroundColor: theme.secondary,
     minHeight: height / 2.5,
     // alignItems: 'center',
     // justifyContent: 'flex-start',
@@ -553,9 +567,9 @@ const styles = StyleSheet.create({
   subIcon: {
     backgroundColor: theme.transparent,
     color: theme.accentLight,
-    fontSize: 90,
-    left: 140,
-    top: -5,
+    fontSize: IOS ? 90 : 60,
+    left: IOS ? 140 : 135,
+    top: IOS ? -5 : 10,
     position: 'absolute'
   },
   bgImage: {
