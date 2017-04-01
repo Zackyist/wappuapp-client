@@ -17,6 +17,7 @@ import { initializeUsersCity, fetchCities } from '../concepts/city';
 import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
 import * as ENV from '../../env';
 import { checkForUpdates } from '../utils/updater';
+import permissions from '../services/android-permissions';
 
 const IOS = Platform.OS === 'ios';
 // var HockeyApp = require('react-native-hockeyapp');
@@ -53,7 +54,11 @@ store.dispatch(initializeUsersRadio())
 
 
 class RootView extends Component {
+  constructor(props) {
+    super(props);
 
+    this.startLocationWatcher = this.startLocationWatcher.bind(this);
+  }
   componentWillMount() {
     if (IOS) {
       // HockeyApp.configure(HOCKEYAPP_ID, true);
@@ -65,22 +70,12 @@ class RootView extends Component {
       // HockeyApp.start();
     }
 
-    const locationOpts = {
-      enableHighAccuracy: false,
-      timeout: 20000,
-      maximumAge: 1000 * 60 * 5
-    };
-
-    navigator.geolocation.getCurrentPosition(
-      position => this.updateLocation,
-      error => console.log(error.message),
-      locationOpts
-    );
-    this.watchID = navigator.geolocation.watchPosition(
-      this.updateLocation,
-      error => console.log(error.message),
-      locationOpts
-    );
+    // Location watcher
+    if (IOS) {
+      this.startLocationWatcher();
+    } else {
+      permissions.requestLocationPermission(this.startLocationWatcher);
+    }
 
     // Statusbar style
     if (IOS) {
@@ -102,6 +97,25 @@ class RootView extends Component {
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  startLocationWatcher() {
+    const locationOpts = {
+      enableHighAccuracy: false,
+      timeout: 20000,
+      maximumAge: 1000 * 60 * 5
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      position => this.updateLocation,
+      error => console.log(error.message),
+      locationOpts
+    );
+    this.watchID = navigator.geolocation.watchPosition(
+      this.updateLocation,
+      error => console.log(error.message),
+      locationOpts
+    );
   }
 
   updateLocation(position) {
