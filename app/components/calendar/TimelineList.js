@@ -30,6 +30,7 @@ import Button from '../common/Button';
 const IOS = Platform.OS === 'ios';
 const VIEW_NAME = 'TimelineList';
 const ANNOUNCEMENTS_SECTION = 'announcements';
+const PAST_EVENTS_SECTION = 'past_events';
 
 const styles = StyleSheet.create({
   container: {
@@ -145,13 +146,22 @@ class TimelineList extends Component {
         return item;
       });
 
-    let events = eventsData.toJS()
+    const now = moment();
+    let events = eventsData
+      .filter(item => moment(item.get('endTime')).isSameOrAfter(now))
       .map(item => {
-        item.timelineType = 'event';
+        item.set('timelineType', 'event');
         return item;
-      });
+      }).toJS()
 
-    // TODO: Filter the past events away in here?
+    let pastEvents = eventsData
+      .filter(item => moment(item.get('endTime')).isBefore(now))
+      .map(item => {
+        item.set('timelineType', PAST_EVENTS_SECTION);
+        return item;
+      }).toJS()
+
+
     let listSections = _.groupBy(events,
       event => moment(event.startTime).startOf('day').unix());
 
@@ -164,6 +174,7 @@ class TimelineList extends Component {
 
     let listOrder;
 
+    // Add announcements
     if (announcements.length > 0) {
       // Add the announcements-section to the listSections
       listSections[ANNOUNCEMENTS_SECTION] = announcements;
@@ -171,6 +182,12 @@ class TimelineList extends Component {
       listOrder = [ANNOUNCEMENTS_SECTION, ...eventSectionsOrder];
     } else {
       listOrder = [...eventSectionsOrder]
+    }
+
+    // Past events
+    if (pastEvents.length > 0) {
+      listSections[PAST_EVENTS_SECTION] = pastEvents;
+      listOrder.push(PAST_EVENTS_SECTION);
     }
 
     this.setState({
@@ -199,6 +216,9 @@ class TimelineList extends Component {
     // Announcement-section
     if (sectionId === ANNOUNCEMENTS_SECTION) {
       sectionCaption = 'Announcement';
+    }
+    else if (sectionId === PAST_EVENTS_SECTION) {
+      sectionCaption = 'Past Events';
     }
     // Day-sections
     else if (sectionStartMoment.isSame(moment(), 'day')) {
@@ -233,6 +253,7 @@ class TimelineList extends Component {
         return <EventListItem
           item={item}
           rowId={+rowId}
+          pastEvent={sectionId === PAST_EVENTS_SECTION}
           currentDistance={currentDistance}
           handlePress={() => this.navigateToSingleEvent(item)}
         />;
