@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   navigationButtonWrapper: {
     margin: 15,
     marginTop: 0,
-    marginBottom:0,
+    marginBottom: 15,
     borderRadius: 3,
     backgroundColor: theme.light
   },
@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: theme.midgrey,
     margin: 20,
+    marginTop: 15,
     marginBottom: 7,
     marginLeft: 20,
     fontSize: 15,
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
     flex: 1,
-    marginTop: 25
+    marginTop: 5
   },
   checkInButton: {
     position:'absolute',
@@ -394,7 +395,7 @@ const EventDetail = React.createClass({
 
     return <View style={[styles.wrapper, wrapperStyleAdd]}>
       {!IOS ?
-      <Toolbar title={model.name} navigator={this.props.navigator} /> : null}
+      <Toolbar title={moment(model.startTime).format('ddd D.M.')} navigator={this.props.navigator} /> : null}
 
 
       <ParallaxView
