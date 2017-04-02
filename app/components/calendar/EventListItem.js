@@ -129,8 +129,8 @@ export default class EventListItem extends Component {
           <View style={styles.gridListItemIconsWrapper}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
               <Icon name='school' size={15} /> Emäteemu!</Text>}
-            {timepoint.onGoing && <Text style={styles.gridListItemIcon}>Käynnissä ny!</Text>}
-            {timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Alkaa kohta!</Text>}
+            {timepoint.onGoing && <Text style={styles.gridListItemIcon}>Ongoing!</Text>}
+            {timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Starts soon!</Text>}
           </View>}
         </View>
       </View>
