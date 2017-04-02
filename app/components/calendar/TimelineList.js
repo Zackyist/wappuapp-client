@@ -154,6 +154,12 @@ class TimelineList extends Component {
     // TODO: Filter the past events away in here?
     let listSections = _.groupBy(events,
       event => moment(event.startTime).startOf('day').unix());
+
+    // Set flag for last of day
+    _.map(listSections || [], eventsPerDay => {
+      eventsPerDay[eventsPerDay.length - 1].lastOfDay = true;
+    });
+
     const eventSectionsOrder = _.orderBy(_.keys(listSections));
 
     let listOrder;

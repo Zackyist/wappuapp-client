@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
   },
   gridListItemImg: {
     width: Dimensions.get('window').width - 130,
-    height: 80
+    height: 80,
+    borderRadius: 2
   },
   gridListItemContent: {
     flexGrow: 1,
@@ -76,8 +77,8 @@ const styles = StyleSheet.create({
   gridListItemDay: {
     fontWeight:'bold'
   },
-  gridListItemIconsWrapper__left:{
-
+  pastTime: {
+    color: '#888'
   },
   gridListItemIconsWrapper: {
     position: 'relative',
@@ -113,6 +114,9 @@ const styles = StyleSheet.create({
     borderRadius:13,
     top:0
   },
+  pastCircle: {
+    backgroundColor: theme.grey,
+  },
   timelineCircleInner: {
     borderRadius:7,
     width:14,
@@ -131,7 +135,7 @@ export default class EventListItem extends Component {
   }
 
   render() {
-    const { item, hideStatus } = this.props;
+    const { item, hideStatus, pastEvent } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
     const startDay = time.getEventDay(item.startTime);
     const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
@@ -146,10 +150,10 @@ export default class EventListItem extends Component {
             <View style={[styles.gridListItemIconsWrapper,
               {marginBottom: item.teemu || timepoint.onGoing || timepoint.startsSoon ? 5 : 0}
             ]}>
+              {!pastEvent && timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Ongoing!</Text>}
+              {!pastEvent && timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Starts soon!</Text>}
               {item.teemu && <Text style={styles.gridListItemIcon}>
               <Icon name='school' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
-              {timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Käynnissä ny!</Text>}
-              {timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Alkaa kohta!</Text>}
             </View>
           }
 
@@ -164,16 +168,13 @@ export default class EventListItem extends Component {
 
         </View>
 
-        <View style={styles.timeline} />
-        <View style={styles.timelineCircle}>
+        {!item.lastOfDay && <View style={styles.timeline} />}
+        <View style={[styles.timelineCircle, pastEvent ? styles.pastCircle : {}]}>
           <View style={styles.timelineCircleInner} />
         </View>
 
         <View style={styles.gridListItemMeta}>
-            {false && Platform.OS === 'android' &&
-            <Text style={[styles.gridListItemTime, styles.gridListItemDay]}>{startDay}</Text>
-            }
-            <Text style={styles.gridListItemTime}>{timepoint.time}</Text>
+            <Text style={[styles.gridListItemTime, pastEvent ? styles.pastTime : {}]}>{timepoint.time}</Text>
             <Text style={[styles.gridListItemTime, styles.gridListItemTimeEnd]}>{timepoint.endTime}</Text>
         </View>
 
