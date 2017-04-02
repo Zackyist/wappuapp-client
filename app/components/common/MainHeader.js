@@ -65,11 +65,12 @@ var EventDetailToolbar = React.createClass({
       case Tabs.FEELING:
         return [
           { title: 'City', id:'city', show: 'always', icon: this.getCityIcon(cityName), iconColor },
-          { title: 'Info', id:'mood', show: 'always', iconName: 'help-outline', iconColor }
+          { title: 'Info', id:'mood', show: 'always', iconName: 'info-outline', iconColor }
         ];
 
       case Tabs.CALENDAR:
       case Tabs.ACTION:
+      case Tabs.SETTINGS:
         return [{ title: 'City', id:'city', show: 'always', icon: this.getCityIcon(cityName), iconColor }]
       default:{
         return [];
