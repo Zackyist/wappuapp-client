@@ -53,7 +53,6 @@ const VIEW_NAME = 'EventMap';
 class EventMap extends Component {
 
   componentDidMount() {
-    this.props.dispatch(EventActions.fetchEvents());
     this.props.dispatch(MarkerActions.fetchMarkers());
     analytics.viewOpened(VIEW_NAME);
   }
