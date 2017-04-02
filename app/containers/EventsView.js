@@ -6,8 +6,6 @@ import {
   View,
   Platform,
 } from 'react-native';
-import { connect } from 'react-redux';
-import autobind from 'autobind-decorator';
 
 import theme from '../style/theme';
 import analytics from '../services/analytics';
@@ -18,6 +16,7 @@ import MapView from '../components/map/EventMap';
 
 const ScrollTabs = require('react-native-scrollable-tab-view');
 
+const IOS = Platform.OS === 'ios';
 const VIEW_NAME = 'EventsView';
 
 class EventsView extends Component {
@@ -29,13 +28,14 @@ class EventsView extends Component {
   render() {
 
     return (
-      <View style={{flexGrow: 1}}>
+      <View style={styles.container}>
         <ScrollTabs
           initialPage={0}
           tabBarActiveTextColor={theme.secondary}
           tabBarUnderlineColor={theme.secondary}
           tabBarBackgroundColor={theme.white}
           tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
+          locked={IOS}
           prerenderingSiblingsNumber={0}
           renderTabBar={() => <TabBarItems />}
         >
@@ -57,8 +57,7 @@ class EventsView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    backgroundColor: theme.white
+    flexGrow :1
   }
 });
 
