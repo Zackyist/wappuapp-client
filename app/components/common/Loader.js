@@ -21,10 +21,10 @@ const styles = StyleSheet.create({
 
 const Loader = props => (
   <ActivityIndicator
-    color={theme.primary}
+    color={props.color || theme.primary}
     animating={true}
     style={styles.activityIndicator}
-    size='small' />
+    size={props.size || 'small'} />
 );
 
 export default Loader;

@@ -50,7 +50,7 @@ class LightBox extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.isLightBoxOpen) {
-      this.setState({loading: true});
+      this.setState({ loading: true });
     }
   }
 
@@ -164,7 +164,7 @@ class LightBox extends Component {
             />
             {this.state.loading &&
             <View style={{position: 'absolute', left: width / 2 - 25, top: height / 2 - 25, alignItems: 'center', justifyContent: 'center', width: 50, height: 50}}>
-              <Loader color={theme.stable} />
+              <Loader color={theme.secondary} size='large' />
             </View>
             }
           </View>
