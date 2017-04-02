@@ -162,7 +162,7 @@ class RadioPlayer extends Component {
         :
         <View style={styles.tabs}>
           {!!stations && stations.map((station, index) =>
-            <PlatformTouchable delayPressIn={0} onPress={() => this.props.setRadioStationActive(station.get('id'))}>
+            <PlatformTouchable key={index} delayPressIn={0} onPress={() => this.props.setRadioStationActive(station.get('id'))}>
               <View key={index} style={[styles.tab, station.get('id') === activeStationId ? styles.tab__active : {}]}>
                   <Text style={styles.tabText}>{station.get('name')}</Text>
               </View>
@@ -180,6 +180,7 @@ class RadioPlayer extends Component {
             <Text style={styles.programHost}>
               {url ? nowPlaying.get('programHost') || ' ' : `${currentStation.get('name')} is Available Soon`}
             </Text>
+
             <TouchableHighlight underlayColor={url ? theme.secondaryLight : theme.grey} onPress={this.onRadioButtonPress} style={buttonStyle}>
               <Text style={styles.buttonText}>
                {icon}
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
     top: IOS ? 20 : 0,
     backgroundColor: IOS ? 'rgba(255, 255, 255, .2)' : theme.white,
     overflow: 'hidden',
-    elevation: 1,
+    elevation: 2,
   },
   containerCompact: {
     backgroundColor: theme.white
