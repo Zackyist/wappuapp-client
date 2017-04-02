@@ -307,15 +307,16 @@ class Profile extends Component {
   }
 
   @autobind
-  renderItem(item, index) {
+  renderItem(item) {
+    const key = item.id || item.title;
     if (item.component) {
-      return this.renderComponentItem(item, index);
+      return this.renderComponentItem(item, key);
     } else if (item.link || item.mailto) {
-      return this.renderLinkItem(item, index);
+      return this.renderLinkItem(item, key);
     } else if (item.type === 'IMAGES') {
-      return this.renderImageMadeByItem(index);
+      return this.renderImageMadeByItem(key);
     }
-    return this.renderModalItem(item, index);
+    return this.renderModalItem(item, key);
   }
 
   render() {
@@ -326,8 +327,8 @@ class Profile extends Component {
       return !showCity || ((cityName || '').toLowerCase() === showCity)
     });
 
-    const userItem = { title: name, icon: 'person-outline', link: '', rightIcon: 'create'};
-    const listData = [userItem].concat(linksForCity.toJS(), [{ type: 'IMAGES' }], terms.toJS());
+    const userItem = { title: name, icon: 'person-outline', link: '', rightIcon: 'create', id: 'user-edit'};
+    const listData = [userItem].concat(linksForCity.toJS(), [{ type: 'IMAGES', id: 'madeby' }], terms.toJS());
 
     return (
       <View style={styles.container}>
