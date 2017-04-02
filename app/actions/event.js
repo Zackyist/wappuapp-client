@@ -27,7 +27,7 @@ const fetchEvents = () => (dispatch, getState) => {
   }
 
   dispatch({ type: GET_EVENT_LIST_REQUEST });
-  return api.fetchModels('events', { cityId })
+  return api.fetchModels('events', { cityId, showPast: true })
   .then(events => {
     dispatch({
       type: SET_EVENT_LIST,
