@@ -56,8 +56,8 @@ class CompetitionView extends Component {
           </View>
           <View style={styles.leaderboardIntroTextWrap}>
             <Text style={styles.leaderboardIntroText}>
-            Current Whappu points for each guild.
-            Be active in the Buzz and lead your guild to the victory!
+            Current Whappu points for each team.
+            Be active in the Buzz and lead your team to the victory!
             </Text>
             <Text style={[styles.leaderboardIntroText, styles.leaderboardIntroText__grey]}>
             The competition ends at 12:00PM on 30th of April.
