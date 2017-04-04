@@ -23,7 +23,7 @@ function getGeoUrl(event) {
 
 // jscs:disable disallowImplicitTypeConversion
 function getDistance(userLocation, eventLocation) {
-  if (!userLocation) {
+  if (!userLocation || !eventLocation || !eventLocation.latitude || !eventLocation.longitude) {
     return '';
   }
 
