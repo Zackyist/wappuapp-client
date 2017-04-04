@@ -175,7 +175,7 @@ class LightBox extends Component {
                   <View><Icon style={{ color: theme.white, fontSize: 26 }} name="close" /></View>
                 </PlatformTouchable>
                 {itemAuthor && !isSystemUser &&
-                  <Text style={styles.header__title}>Pic from {itemAuthor}</Text>}
+                  <Text style={styles.header__title}>{itemAuthor}</Text>}
               </View>
           </View>
 
@@ -241,8 +241,8 @@ const styles = StyleSheet.create({
   },
   header__title: {
     color: theme.white,
-    marginLeft: 20,
-    fontSize: 15
+    marginLeft: 15,
+    fontSize: 14
   },
   toolbar: {
     flexDirection: 'row',
