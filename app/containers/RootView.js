@@ -84,14 +84,14 @@ class RootView extends Component {
       StatusBar.setBarStyle('light-content')
 
       // check for updates when app is resumed
-      AppState.addEventListener('change', state => {
-        if (state === 'active') {
-          checkForUpdates();
-        }
-      });
+      // AppState.addEventListener('change', state => {
+      //   if (state === 'active') {
+      //     checkForUpdates();
+      //   }
+      // });
 
-      // and check once on startup
-      checkForUpdates();
+      // // and check once on startup
+      // checkForUpdates();
     }
   }
 
