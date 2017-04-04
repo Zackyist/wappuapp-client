@@ -96,7 +96,7 @@ export default class EventListItem extends Component {
   }
 
   render() {
-    const { item, hideStatus } = this.props;
+    const { item, hideStatus, pastEvent } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
     const { coverImage } = item;
     // const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
@@ -114,7 +114,7 @@ export default class EventListItem extends Component {
         <View style={styles.gridListItemContent}>
           <Text style={styles.gridListItemTitle}>{item.name}</Text>
           <View style={styles.gridListItemMeta}>
-            <Text style={styles.gridListItemTime}>{timepoint.time} - {timepoint.endTime}</Text>
+            <Text style={styles.gridListItemTime}>{pastEvent && `${timepoint.date} `}{timepoint.time} - {timepoint.endTime}</Text>
             <Text style={styles.gridListItemPlace}>{item.locationName}</Text>
 
           </View>
@@ -129,8 +129,8 @@ export default class EventListItem extends Component {
           <View style={styles.gridListItemIconsWrapper}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
               <Icon name='school' size={15} /> Emäteemu!</Text>}
-            {timepoint.onGoing && <Text style={styles.gridListItemIcon}>Ongoing!</Text>}
-            {timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Starts soon!</Text>}
+            {!pastEvent && timepoint.onGoing && <Text style={styles.gridListItemIcon}>Ongoing!</Text>}
+            {!pastEvent && timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Starts soon!</Text>}
           </View>}
         </View>
       </View>
