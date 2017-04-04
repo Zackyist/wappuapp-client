@@ -463,8 +463,7 @@ const EventDetail = React.createClass({
             </View>
             }
 
-            {model.fbEventId &&
-                <PlatformTouchable
+            {!!model.fbEventId && <PlatformTouchable
                 activeOpacity={0.6} delayPressIn={1}
                 underlayColor={'#eee'}
                 onPress={() =>
