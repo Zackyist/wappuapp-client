@@ -13,7 +13,8 @@ import {
   Animated,
   Easing,
   TouchableHighlight,
-  Image
+  Image,
+  BackAndroid
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -31,12 +32,8 @@ import { checkIn } from '../../actions/competition';
 import time from '../../utils/time';
 import locationService from '../../services/location';
 import Button from '../common/Button';
-import Fab from '../common/Fab';
 
-import {
-  fetchFeed,
-  openLightBox
-} from '../../actions/feed';
+import { openLightBox } from '../../actions/feed';
 import { openRegistrationView } from '../../actions/registration';
 import { fetchImages } from '../../actions/event';
 import {
@@ -48,7 +45,7 @@ import {
 
 import PlatformTouchable from '../common/PlatformTouchable';
 const IOS = Platform.OS === 'ios';
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 
 const VIEW_NAME = 'EventDetail';
@@ -216,7 +213,7 @@ const styles = StyleSheet.create({
     paddingBottom:10
   },
   buttonText: {
-    fontSize: 13,
+    fontSize: 12,
     textAlign: 'center',
     color: theme.accent,
     backgroundColor: 'transparent',
@@ -294,6 +291,12 @@ const EventDetail = React.createClass({
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
     this.props.fetchImages(this.props.route.model.id);
+
+    // BackAndroid.addEventListener('hardwareBackPress', () => {
+    //   if (this.props.navigator) {
+    //     this.props.navigator.pop();
+    //   }
+    // });
   },
 
   onPressBack() {
