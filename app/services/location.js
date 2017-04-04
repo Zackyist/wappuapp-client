@@ -1,8 +1,12 @@
 import {Platform} from 'react-native';
 import geolib from 'geolib';
-import { round } from 'lodash';
+import { round, isNil } from 'lodash';
 
 function getGeoUrl(event) {
+  if (isNil(eventLocation) || isNil(eventLocation.latitude) || isNil(eventLocation.longitude)) {
+    return '';
+  }
+
   const ZOOM_LEVEL = '18';
 
   var geoUrl = null;
@@ -23,7 +27,7 @@ function getGeoUrl(event) {
 
 // jscs:disable disallowImplicitTypeConversion
 function getDistance(userLocation, eventLocation) {
-  if (!userLocation || !eventLocation || !eventLocation.latitude || !eventLocation.longitude) {
+  if (isNil(userLocation) || isNil(eventLocation) || isNil(eventLocation.latitude) || isNil(eventLocation.longitude)) {
     return '';
   }
 
@@ -34,7 +38,7 @@ function getDistance(userLocation, eventLocation) {
 }
 
 function getDiscanceInMeters(userLocation, eventLocation) {
-  if (!userLocation) {
+  if (isNil(userLocation) || isNil(eventLocation) || isNil(eventLocation.latitude) || isNil(eventLocation.longitude)) {
     return '';
   }
 
