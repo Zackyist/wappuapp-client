@@ -16,6 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import time from '../../utils/time';
 import theme from '../../style/theme';
+const placholderImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const styles = StyleSheet.create({
   gridListItem: {
@@ -159,7 +160,7 @@ export default class EventListItem extends Component {
 
           <View style={styles.gridListItemImgWrap}>
             <Image
-              source={{ uri: coverImage }}
+              source={coverImage ? { uri: coverImage } : placholderImage}
               style={styles.gridListItemImg} />
 
           </View>
