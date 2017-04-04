@@ -254,35 +254,37 @@ class Profile extends Component {
     const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
 
     return (
-      <PlatformTouchable delayPressIn={0} key={index} activeOpacity={0.8} onPress={this.openRegistration}>
-          <View style={[styles.listItemButton, styles.listItemSeparator]}>
-          <View style={[styles.listItem, styles.listItem__hero]}>
-            <View style={styles.avatarColumn}>
-              <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
-                {hasName
-                  ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
-                  : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
-                }
+      <View key={index} style={{flex:1}}>
+        <PlatformTouchable delayPressIn={0} activeOpacity={0.8} onPress={this.openRegistration}>
+            <View style={[styles.listItemButton, styles.listItemSeparator]}>
+            <View style={[styles.listItem, styles.listItem__hero]}>
+              <View style={styles.avatarColumn}>
+                <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
+                  {hasName
+                    ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
+                    : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+                  }
+                </View>
               </View>
-            </View>
-            <View style={{flexDirection:'column',flex:1}}>
-              {
-                item.title ?
-                <Text style={[styles.listItemText, styles.listItemText__highlight]}>
-                  {item.title}
-                </Text> :
-                <Text style={[styles.listItemText, styles.listItemText__downgrade]}>
-                  Unnamed Whappu user
+              <View style={{flexDirection:'column',flex:1}}>
+                {
+                  item.title ?
+                  <Text style={[styles.listItemText, styles.listItemText__highlight]}>
+                    {item.title}
+                  </Text> :
+                  <Text style={[styles.listItemText, styles.listItemText__downgrade]}>
+                    Unnamed Whappu user
+                  </Text>
+                }
+                <Text style={[styles.listItemText, styles.listItemText__small]}>
+                  {currentTeam.name}
                 </Text>
-              }
-              <Text style={[styles.listItemText, styles.listItemText__small]}>
-                {currentTeam.name}
-              </Text>
+              </View>
+              <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
             </View>
-            <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
           </View>
-        </View>
-      </PlatformTouchable>
+        </PlatformTouchable>
+      </View>
     );
   }
 
@@ -308,6 +310,10 @@ class Profile extends Component {
 
   @autobind
   renderItem(item) {
+    if (item.hidden) {
+      return null;
+    }
+
     const key = item.id || item.title;
     if (item.component) {
       return this.renderComponentItem(item, key);
@@ -322,13 +328,16 @@ class Profile extends Component {
   render() {
     const { name, links, terms, cityName } = this.props;
 
-    const linksForCity = links.filter(link => {
-      const showCity = link.get('showCity');
-      return !showCity || ((cityName || '').toLowerCase() === showCity)
+    const linksForCity = links.toJS().map(link => {
+      const showCity = link.showCity;
+      if (showCity && (cityName || '').toLowerCase() !== showCity) {
+        link.hidden = true;
+      }
+      return link;
     });
 
-    const userItem = { title: name, icon: 'person-outline', link: '', rightIcon: 'create', id: 'user-edit'};
-    const listData = [userItem].concat(linksForCity.toJS(), [{ type: 'IMAGES', id: 'madeby' }], terms.toJS());
+    const userItem = { title: name, icon: 'person-outline', rightIcon: 'create', id: 'user-edit'};
+    const listData = [userItem].concat(linksForCity, [{ type: 'IMAGES', id: 'madeby' }], terms.toJS());
 
     return (
       <View style={styles.container}>
