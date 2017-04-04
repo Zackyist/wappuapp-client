@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   tabs: {
-    elevation: 3,
+    elevation: 2,
     height: IOS ? 50 : 56,
     flexDirection: 'row',
     justifyContent: 'space-around'
