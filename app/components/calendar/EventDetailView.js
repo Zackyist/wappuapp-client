@@ -46,7 +46,7 @@ import {
 import PlatformTouchable from '../common/PlatformTouchable';
 const IOS = Platform.OS === 'ios';
 const { width } = Dimensions.get('window');
-
+const placholderImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const VIEW_NAME = 'EventDetail';
 
@@ -402,7 +402,7 @@ const EventDetail = React.createClass({
 
 
       <ParallaxView
-          backgroundSource={{uri: coverImage}}
+          backgroundSource={coverImage ? {uri: coverImage} : placholderImage}
           windowHeight={300}
           style={{backgroundColor:'#eee'}}
           header={(
