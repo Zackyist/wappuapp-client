@@ -396,6 +396,7 @@ const EventDetail = React.createClass({
     };
 
     const coverImage =  model.coverImage;
+    const eventGeoUrl = locationService.getGeoUrl(model);
 
     return <View style={[styles.wrapper, wrapperStyleAdd]}>
       {!IOS ?
@@ -492,9 +493,11 @@ const EventDetail = React.createClass({
           <View style={styles.content}>
             <Text style={styles.detailEventDescription}>{model.description}</Text>
           </View>
+          {!!eventGeoUrl &&
           <View style={styles.navigationButtonWrapper}>
-            <Button onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
+            <Button onPress={() => Linking.openURL(eventGeoUrl)}>Get me there!</Button>
           </View>
+          }
 
           {this.props.images.size > 0 &&
             <View>

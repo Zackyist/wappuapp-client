@@ -303,9 +303,6 @@ class EventDetail extends Component {
                 <Text style={styles.detailEventDescription}>{model.description}</Text>
               </View>
 
-              <View style={styles.navigationButtonWrapper}>
-                <Button style={{borderRadius:0}} onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
-              </View>
           </View>
       </ParallaxView>
     </View>

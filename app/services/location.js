@@ -3,14 +3,15 @@ import geolib from 'geolib';
 import { round, isNil } from 'lodash';
 
 function getGeoUrl(event) {
-  if (isNil(eventLocation) || isNil(eventLocation.latitude) || isNil(eventLocation.longitude)) {
+  if (isNil(event.location) || isNil(event.location.latitude) || isNil(event.location.longitude)) {
     return '';
   }
 
   const ZOOM_LEVEL = '18';
 
   var geoUrl = null;
-  const {latitude, longitude} = event.location;
+  let {latitude, longitude} = event.location;
+
   if (Platform.OS === 'ios') {
     // On iOS use Apple Maps
     geoUrl = 'http://maps.apple.com/';
