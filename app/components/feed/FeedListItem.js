@@ -58,11 +58,15 @@ const styles = StyleSheet.create({
     },
     backgroundColor: '#fff'
   },
+  itemContent_selected: {
+    backgroundColor: theme.stable
+  },
   itemContent_byMyTeam: {
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
     marginLeft: FEED_ITEM_MARGIN_DISTANCE,
     // backgroundColor: '#edfcfb',
   },
+
   itemContent_image: {
     marginLeft: FEED_ITEM_MARGIN_DEFAULT,
     marginRight: FEED_ITEM_MARGIN_DEFAULT,
@@ -214,7 +218,8 @@ class FeedListItem extends Component {
     super(props);
 
     this.state = {
-      myVote: 0
+      myVote: 0,
+      selected: false
     };
   }
 
@@ -353,8 +358,6 @@ class FeedListItem extends Component {
 
   renderAdminItem(item, ago) {
 
-    // return null; // <--- TODO HOX REMOVE THIS BEFORE LAUNCH
-
     return (
       <View style={styles.itemWrapper}>
         <View style={[styles.itemContent, styles.itemContent__admin]}>
@@ -391,6 +394,7 @@ class FeedListItem extends Component {
 
   render() {
     const { item } = this.props;
+    const { selected } = this.state;
     const ago = time.getTimeAgo(item.createdAt);
 
     if (item.author.type === 'SYSTEM') {
@@ -409,7 +413,8 @@ class FeedListItem extends Component {
         >
         <View style={[styles.itemContent,
           itemByMyTeam ? styles.itemContent_byMyTeam : {},
-          isItemImage ? styles.itemContent_image : {}
+          isItemImage ? styles.itemContent_image : {},
+          selected ? styles.itemContent_selected : {}
         ]}>
 
           <View style={styles.feedItemListItemInfo}>
