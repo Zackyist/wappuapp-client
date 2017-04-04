@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   content: {
     margin: 20,
-    marginTop: 25,
+    marginTop: 20,
     marginBottom: 15,
     flex: 1,
     flexDirection: 'column',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
 
   textContainer: {
     flex: 3,
-    marginHorizontal: 40,
+    marginHorizontal: 30,
     flexDirection: 'column'
   },
   subTitle: {
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   editButton: {
-    marginTop: 10,
-    marginBottom: 25,
+    marginTop: IOS ? 0 : 10,
+    marginBottom: 10,
     padding: 5,
     paddingTop: 8,
     paddingBottom: 8,

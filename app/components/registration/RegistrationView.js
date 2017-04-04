@@ -526,7 +526,7 @@ const styles = StyleSheet.create({
 
   slideIntro: {
     backgroundColor: theme.secondary,
-    paddingTop: height / 2.5,
+    paddingTop: height / 2.4,
   },
   topArea: {
     position: 'absolute',

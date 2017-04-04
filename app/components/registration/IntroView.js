@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
   topArea: {
     backgroundColor: theme.secondary,
-    minHeight: height / 2.5,
+    minHeight: height / 2.45,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   content: {
     margin: 20,
-    marginTop: 25,
+    marginTop: 20,
     marginBottom: 15,
     flex: 1,
     flexDirection: 'column',

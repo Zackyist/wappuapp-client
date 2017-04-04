@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   content: {
     margin: 20,
-    marginTop: 25,
+    marginTop: 20,
     marginBottom: 15,
     flex: 1,
     flexDirection: 'column',
