@@ -182,7 +182,7 @@ class LightBox extends Component {
           <View style={styles.toolbar}>
             <View style={styles.date}>
               <Text style={{color: theme.stable, fontSize: 12}}>
-                {created.format('DD.MM.YYYY')} at {created.format('HH:mm')}
+                {created.format('ddd DD.MM.YYYY')} at {created.format('HH:mm')}
               </Text>
             </View>
             <View style={{ justifyContent:'flex-end', flexDirection: 'row' }}>
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 0,
-    paddingRight: IOS ? 20 : 10,
+    paddingRight: IOS ? 10 : 10,
     paddingLeft: IOS ? 20 : 15,
     paddingBottom: IOS ? 35 : 0,
     position: 'absolute',
