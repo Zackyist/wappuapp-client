@@ -21,6 +21,28 @@ async function requestLocationPermission(cb) {
   }
 }
 
+async function requestCameraPermission(cb) {
+  try {
+    const granted = await PermissionsAndroid.requestPermission(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        'title': 'Whappu Camera Permission',
+        'message': 'Whappu needs access to camera ' +
+                   'to post images to feed.'
+      }
+    )
+    if (granted) {
+      console.log("You can use the Camera")
+      cb();
+    } else {
+      console.log("Camera permission denied")
+    }
+  } catch (err) {
+    console.warn(err)
+  }
+}
+
 export default {
   requestLocationPermission,
+  requestCameraPermission
 }
