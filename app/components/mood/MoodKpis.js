@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   data: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-around',
     flexDirection: 'row'
   },
@@ -104,8 +104,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'stretch',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    width: 94,
     minWidth: 94,
+    maxWidth: 94,
   },
   labelText: {
     color: theme.dark,
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     marginLeft: -15,
     marginRight: 5,
-    top: 0,
+    top: 2,
     backgroundColor: theme.secondary,
     width: 11,
     height: 11,
