@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     elevation: 1,
     borderBottomWidth: 0,
+    backgroundColor: theme.white,
     borderBottomColor: '#eee',
     shadowColor: '#000000',
     shadowOpacity: 0.1,
