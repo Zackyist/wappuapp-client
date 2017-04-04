@@ -52,7 +52,7 @@ class Player extends Component {
         // We just want meta update for song name
         if (evt.status === METADATA_UPDATED && evt.key === 'StreamTitle') {
           setRadioSong(evt.value);
-        } else if (this.props.status !== evt.status && evt.status !== METADATA_UPDATED) {
+        } else if (evt.status !== METADATA_UPDATED) {
           // TODO
           // evt can also contain progress & duration
           // check if useful, would be cool
