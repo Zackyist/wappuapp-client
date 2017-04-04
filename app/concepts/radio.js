@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import { isNil, random } from 'lodash';
@@ -18,8 +18,10 @@ import {
   BUFFERING_START,
 } from '../constants/RadioStates';
 
+
 import { APP_STORAGE_KEY } from '../../env';
 const radioKey = `${APP_STORAGE_KEY}:radio`;
+const IOS = Platform.OS === 'ios';
 
 import { createRequestActionTypes } from '../actions/';
 
@@ -109,13 +111,19 @@ const SET_RADIO_STATION_ACTIVE = 'radio/SET_RADIO_STATION_ACTIVE';
 export const setRadioStationActive = (stationId) => (dispatch, getState) => {
   dispatch({ type: SET_RADIO_STATION_ACTIVE, payload: stationId })
 
+  // Radio needs to be stopped in Android
+  //  when station is changed or app crashes
+  const isPlaying = isRadioPlaying(getState());
+  if (!IOS && isPlaying) {
+    stop();
+  }
+
   // set to local storage
   AsyncStorage.setItem(radioKey, JSON.stringify(stationId));
   dispatch(setSongUpdater());
 
-  // continue playing if radio is playing
-  const isPlaying = isRadioPlaying(getState());
-  if (isPlaying) {
+  // continue playing if radio is/was playing
+  if (IOS && isPlaying) {
     setTimeout(() => {
       dispatch(play());
     }, 100);
@@ -155,16 +163,19 @@ export const fetchRadioStations = () => dispatch => {
   .catch(error => dispatch({ type: GET_RADIO_STATIONS_FAILURE, error: true, payload: error }));
 };
 
-const setDefaultRadioByCity = () => (dispatch, getState) => {
+export const setDefaultRadioByCity = (city) => (dispatch, getState) => {
   const state = getState();
   const activeStation = getActiveStationId(state);
 
-  if (activeStation) {
+  // If user has already active station and city is not defined
+  // as function parameter, just break
+  if (activeStation && !city) {
     return;
   }
 
+  const cityId = city || getCityId(state);
+
   // Find station by city Id
-  const cityId = getCityId(state);
   const stations = getRadioStations(state);
   const nextStation = stations.find(s => s.get('cityId') === cityId) || stations.first();
   const stationId = nextStation.get('id');
@@ -174,7 +185,7 @@ const setDefaultRadioByCity = () => (dispatch, getState) => {
 
 // Song/Program updater
 let songUpdater = null;
-const MINIMUM_UPDATE_INTERVAL = 20; // seconds
+const MINIMUM_UPDATE_INTERVAL = 60; // seconds
 const RANDOM_SECONDS_ADDED = 10; // seconds
 const setSongUpdater = () => (dispatch, getState) => {
   if (!isNil(songUpdater)) {
@@ -185,6 +196,7 @@ const setSongUpdater = () => (dispatch, getState) => {
   const refreshTime = Math.max(playingLeft, MINIMUM_UPDATE_INTERVAL * 1000);
   const randomOffset = random(0, RANDOM_SECONDS_ADDED) * 1000;
 
+  console.log('Next update in (s)', (refreshTime + randomOffset) / 1000);
   songUpdater = setTimeout(() =>
     dispatch(fetchRadioStations()), refreshTime + randomOffset);
 }
