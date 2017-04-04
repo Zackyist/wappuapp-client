@@ -31,7 +31,6 @@ import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
 import Loading from './Loading';
 import ActionButtons from './ActionButtons';
-import TextActionView from '../../components/actions/TextActionView';
 import LoadingStates from '../../constants/LoadingStates';
 
 import ImageCaptureOptions from '../../constants/ImageCaptureOptions';

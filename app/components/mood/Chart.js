@@ -76,8 +76,6 @@ class Chart extends Component {
           padding={0}
           style={{
             data: {
-              // opacity,
-              // fill: color,
               stroke: theme.dark,
               strokeWidth: 2
             },
@@ -95,8 +93,6 @@ class Chart extends Component {
           padding={0}
           style={{
             data: {
-              // opacity,
-              // fill: color,
               stroke: theme.accent,
               strokeWidth: 2
             },
@@ -115,8 +111,6 @@ class Chart extends Component {
           padding={0}
           style={{
             data: {
-              // opacity,
-              // fill: color,
               stroke: theme.white,
               strokeWidth: 2
             },
@@ -133,8 +127,6 @@ class Chart extends Component {
           style={{
             axis: { strokeWidth: 0 },
             axisLabel: {fontSize: 16, padding: 20},
-            // grid: {stroke: (t) => t === 10 ? "red" : "grey"},
-            // ticks: {stroke: "grey"},
             tickLabels: {fontSize: 8, fill: 'rgba(0,0,0,.4)', opacity: 0.9 }
           }}
         />
@@ -166,11 +158,6 @@ const xAxisFormatter = (values, tick) => {
   }
 
   return moment(value, 'YYYY-MM-DD').format('DD');
-}
-
-function rgbaColor(color, percent) {
-  var f=parseInt(color.slice(1),16),R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-  return `rgba(${R}, ${G}, ${B}, ${percent})`;
 }
 
 export default Chart;
