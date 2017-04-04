@@ -49,13 +49,14 @@ class SkipView extends Component {
 
                     <Text style={[styles.text, { fontWeight: 'bold' }]}>Whappu starts now!</Text>
                 </View>
+                <PlatformTouchable onPress={this.props.onPressProfileLink}>
+                  <View style={styles.editButton}>
+                    <Text style={{fontSize: 16, fontWeight: 'bold', color: theme.white}}>EDIT YOUR PROFILE</Text>
+                  </View>
+                </PlatformTouchable>
               </View>
             </ScrollView>
-            <PlatformTouchable onPress={this.props.onPressProfileLink}>
-              <View style={styles.editButton}>
-                <Text style={{fontSize: 16, fontWeight: 'bold', color: theme.white}}>EDIT YOUR PROFILE</Text>
-              </View>
-            </PlatformTouchable>
+
         </View>
     );
   }
@@ -146,9 +147,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   editButton: {
-    position: 'absolute',
-    bottom: 100,
-    left: width / 2 - 100,
+    marginTop: 10,
+    marginBottom: 25,
     padding: 5,
     paddingTop: 8,
     paddingBottom: 8,

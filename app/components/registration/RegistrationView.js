@@ -36,6 +36,7 @@ import {
   closeRegistrationView
 } from '../../actions/registration';
 import { setCity, getCityIdByTeam, getCityId } from '../../concepts/city';
+import { setDefaultRadioByCity } from '../../concepts/radio';
 import { showChooseTeam } from '../../actions/team';
 import * as keyboard from '../../utils/keyboard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -129,6 +130,7 @@ class RegistrationView extends Component {
   onClose() {
     this.props.reset();
     this.props.setCity(this.state.selectedCity);
+    this.props.setDefaultRadioByCity(this.state.selectedCity);
     this.props.dismissIntroduction();
     this.props.closeRegistrationView();
   }
@@ -177,8 +179,8 @@ class RegistrationView extends Component {
     return (
       <View style={containerStyles}>
 
-        {!simplified ? <Toolbar icon={this.props.isRegistrationInfoValid ? 'done' : 'done'}
-          iconClick={this.props.isRegistrationInfoValid ? this.onCloseProfileEditor : this.onCloseProfileEditor}
+        {!simplified ? <Toolbar icon={'done'}
+          iconClick={this.onCloseProfileEditor}
           title='Fill your profile' />
         : <Text style={styles.header}>Create
             <Image style={styles.logo}  source={require('../../../assets/whappu-text.png')}/>
@@ -304,7 +306,7 @@ class RegistrationView extends Component {
         backdropPressToClose={false}>
         <AppIntro
           skipBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18 }}>SKIP</Text>}
-          doneBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18, lineHeight: IOS ? 20 : 32 }}>SKIP</Text>}
+          doneBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18, lineHeight: IOS ? 22 : 32 }}>SKIP</Text>}
           onSkipBtnClick={this.onClose}
           onDoneBtnClick={this.onClose}
           showSkipButton={false}
@@ -314,7 +316,7 @@ class RegistrationView extends Component {
           leftTextColor={theme.white}
           rightTextColor={theme.white}
           activeDotColor={theme.white}
-          nextBtnLabel={<Icon name="chevron-right" style={{ lineHeight: IOS ? 20 : 40 }} size={32} />}
+          nextBtnLabel={<Icon name="chevron-right" style={{ lineHeight: IOS ? 40 : 40 }} size={32} />}
           style={{backgroundColor: theme.secondary }}
           dotColor={'rgba(255, 255, 255, .3)'}>
           <IntroView style={styles.slide} selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
@@ -345,7 +347,7 @@ class RegistrationView extends Component {
                 this.onClose();
                 setTimeout(() => {
                   this.props.openRegistrationView();
-                }, 1000);
+                }, 750);
               }}
               />
             </View>
@@ -591,6 +593,7 @@ const mapDispatchToProps = {
   updateName,
   reset,
   setCity,
+  setDefaultRadioByCity,
   selectTeam,
   generateName,
   dismissIntroduction,
@@ -601,7 +604,7 @@ const mapDispatchToProps = {
 
 const select = store => {
 
-  const initialSetup =  store.city.get('id') === 1 || !store.city.get('id');
+  const initialSetup = store.city.get('id') === 1 || !store.city.get('id');
   return {
     isIntroductionDismissed: store.registration.get('isIntroductionDismissed'),
     isRegistrationViewOpen: store.registration.get('isRegistrationViewOpen'),
