@@ -10,7 +10,6 @@ import {
   Platform,
   Dimensions,
   StyleSheet,
-  BackAndroid,
   TouchableWithoutFeedback,
   Modal
 } from 'react-native';
@@ -46,16 +45,6 @@ class CheckInActionView extends Component {
 
   componentWillReceiveProps({events}) {
     this.getContent(events);
-  }
-
-  componentDidMount(){
-    BackAndroid.addEventListener('hardwareBackPress', () => {
-      if (this.props.isCheckInViewOpen) {
-        this.onCancel()
-        return true;
-      }
-      return false;
-    });
   }
 
   checkIn(eventId) {
@@ -173,7 +162,7 @@ class CheckInActionView extends Component {
 
     return (
       <Modal
-        // onRequestClose={this.props.closeCheckInView}
+        onRequestClose={this.props.closeCheckInView}
         visible={isCheckInViewOpen}
         animationType={'slide'}
       >
