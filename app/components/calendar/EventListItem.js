@@ -88,6 +88,8 @@ const styles = StyleSheet.create({
   }
 });
 
+const placholderImage = require('../../../assets/frontpage_header-bg.jpg');
+
 export default class EventListItem extends Component {
   propTypes: {
     item: PropTypes.object.isRequired,
@@ -106,7 +108,7 @@ export default class EventListItem extends Component {
       <View style={styles.gridListItem}>
         <View style={styles.gridListItemImgWrap}>
           <Image
-            source={{ uri: coverImage }}
+            source={coverImage ? { uri: coverImage } : placholderImage}
             style={styles.gridListItemImg} />
           <View style={styles.gridListItemImgColorLayer} />
         </View>
