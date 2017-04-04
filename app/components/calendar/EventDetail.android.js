@@ -281,11 +281,11 @@ class EventDetail extends Component {
             </View>
             }
 
-            { model.facebookId &&
+            { model.fbEventId &&
                 <TouchableHighlight
                 underlayColor={'#eee'}
                 onPress={() =>
-                  Linking.openURL(`https://www.facebook.com/events/${ model.facebookId }`)}
+                  Linking.openURL(`https://www.facebook.com/events/${ model.fbEventId }`)}
                 >
                   <View style={styles.detailEventInfoContainer}>
                     <View style={styles.detailEventInfoWrapper}>

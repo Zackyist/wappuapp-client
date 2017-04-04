@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   detailEventInfoAttending: {
-    fontSize:14,
+    top: -2,
+    fontSize: 15,
     color:theme.darkgrey,
     alignSelf: 'center'
   },
@@ -462,12 +463,12 @@ const EventDetail = React.createClass({
             </View>
             }
 
-            { model.facebookId &&
+            {model.fbEventId &&
                 <PlatformTouchable
                 activeOpacity={0.6} delayPressIn={1}
                 underlayColor={'#eee'}
                 onPress={() =>
-                  Linking.openURL(`https://www.facebook.com/${ model.facebookId }`)}
+                  Linking.openURL(`https://www.facebook.com/${ model.fbEventId }`)}
                 >
                   <View style={styles.gridListItemMeta}>
                     <View style={styles.gridListItemMeta__block}>
@@ -477,7 +478,12 @@ const EventDetail = React.createClass({
                     </View>
 
                     <View style={[styles.gridListItemMeta__block, {alignItems: 'flex-start'}]}>
-                      <Text style={styles.gridListItemMetaInfo__title}>Facebook page</Text>
+                      <Text style={styles.detailEventInfoAttending}>
+                        {model.attendingCount
+                          ? `${model.attendingCount} ${model.attendingCount ? 'attending' : null}`
+                          : 'Facebook page'
+                        }
+                      </Text>
                     </View>
                   </View>
                 </PlatformTouchable>
