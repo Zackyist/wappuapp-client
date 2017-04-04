@@ -1,5 +1,5 @@
 export default {
-  title: null,
+  title: 'Post Image',
   cancelButtonTitle: 'Cancel',
   takePhotoButtonTitle: 'Take a photo',
   chooseFromLibraryButtonTitle: 'Choose from library',
