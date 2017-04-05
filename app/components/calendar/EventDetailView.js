@@ -437,7 +437,7 @@ const EventDetail = React.createClass({
             </View>
 
             <TouchableHighlight underlayColor={'#eee'}
-              onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>
+              onPress={() => eventGeoUrl ? Linking.openURL(eventGeoUrl) : console.log('Event has no Map URL')}>
               <View style={styles.gridListItemMeta}>
                 <View style={styles.gridListItemMeta__block}>
                   <Text style={styles.gridListItemLeftIcon}><MaterialIcon style={styles.gridListItemIcon} name='location-on'/> </Text>
