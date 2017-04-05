@@ -19,7 +19,7 @@ import cl.json.RNSharePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
-import com.cmcewen.blurview.BlurViewPackage;
+// import com.cmcewen.blurview.BlurViewPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.horcrux.svg.RNSvgPackage;
@@ -50,7 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNDeviceInfo(),
           new VectorIconsPackage(),
           new LinearGradientPackage(),
-          new BlurViewPackage(),
+          //new BlurViewPackage(),
           new ImagePickerPackage(),
           new ReactImageZoom(),
           new RNSharePackage(),
