@@ -179,18 +179,21 @@ class RadioPlayer extends Component {
         }
 
         <View style={styles.radioContent}>
-        <View style={styles.radioProgram}>
+          <View style={styles.radioProgram}>
             <Text style={styles.programTitle}>
-             {nowPlaying.get('programTitle') || ' '}
+              {nowPlaying.get('programTitle') || ' '}
             </Text>
 
             <Text style={styles.programHost}>
-              {url ? nowPlaying.get('programHost') || ' ' : `${currentStation.get('name')} is Available Soon`}
+              {url
+              ? nowPlaying.get('programHost') || ' '
+              : `${currentStation ? currentStation.get('name', 'Radio') : 'Radio'} is Available Soon`
+              }
             </Text>
 
             <TouchableHighlight underlayColor={url ? theme.secondaryLight : theme.grey} onPress={this.onRadioButtonPress} style={buttonStyle}>
               <Text style={styles.buttonText}>
-               {icon}
+                {icon}
               </Text>
             </TouchableHighlight>
           </View>
