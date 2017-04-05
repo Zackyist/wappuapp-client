@@ -3,21 +3,12 @@
 import React, { Component } from 'react';
 import {
   Navigator,
-  BackAndroid,
   PropTypes
 } from 'react-native';
 import autobind from 'autobind-decorator';
 import EventsView from './EventsView';
 
 var _navigator;
-BackAndroid.addEventListener('hardwareBackPress', () => {
-  if (_navigator && _navigator.getCurrentRoutes().length > 1) {
-    _navigator.pop();
-    return true;
-  }
-  return false;
-});
-
 
 class TimelineListWrapper extends Component {
   propTypes: {

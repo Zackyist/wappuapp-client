@@ -67,13 +67,20 @@ class RadioPlayer extends Component {
   }
 
   componentDidMount() {
-    BackAndroid.addEventListener('hardwareBackPress', () => {
-      if (this.props.expanded) {
-        this.close()
-        return true;
-      }
-      return false;
-    })
+    BackAndroid.addEventListener('hardwareBackPress', this.closeOnBack)
+  }
+
+  componentWillUnmount() {
+    BackAndroid.removeEventListener('hardwareBackPress', this.closeOnBack);
+  }
+
+  @autobind
+  closeOnBack() {
+    if (this.props.expanded) {
+      this.close()
+      return true;
+    }
+    return false;
   }
 
   @autobind

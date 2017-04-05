@@ -14,7 +14,6 @@ import {
   Easing,
   TouchableHighlight,
   Image,
-  BackAndroid
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -292,12 +291,6 @@ const EventDetail = React.createClass({
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
     this.props.fetchImages(this.props.route.model.id);
-
-    // BackAndroid.addEventListener('hardwareBackPress', () => {
-    //   if (this.props.navigator) {
-    //     this.props.navigator.pop();
-    //   }
-    // });
   },
 
   onPressBack() {

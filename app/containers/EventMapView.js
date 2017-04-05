@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import {
   Navigator,
   StyleSheet,
-  BackAndroid,
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -28,13 +27,6 @@ const styles = StyleSheet.create({
 });
 
 var _navigator;
-BackAndroid.addEventListener('hardwareBackPress', () => {
-  if (_navigator && _navigator.getCurrentRoutes().length > 1) {
-    _navigator.pop();
-    return true;
-  }
-  return false;
-});
 
 class EventMapView extends Component {
   @autobind

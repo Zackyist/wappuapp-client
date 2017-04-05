@@ -10,7 +10,6 @@ import {
   Dimensions,
   Animated,
   StyleSheet,
-  BackAndroid,
   KeyboardAvoidingView,
   Modal
 } from 'react-native';
@@ -41,16 +40,6 @@ class TextActionView extends Component {
       formAnimation: new Animated.Value(1),
       okAnimation: new Animated.Value(0)
     }
-  }
-
-  componentDidMount(){
-    BackAndroid.addEventListener('hardwareBackPress', () => {
-      if (this.props.isTextActionViewOpen) {
-        this.onCancel()
-        return true;
-      }
-      return false;
-    })
   }
 
   showOK() {

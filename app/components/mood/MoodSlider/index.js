@@ -185,6 +185,8 @@ class MoodSlider extends Component {
 
     this.props.submitMood(moodSubmitPackage)
     .then(a => {
+      // Without resetting showConfirm state BackAndroid does not work properly
+      this.setState({ showConfirm: false });
       navigator.pop();
     });
 
