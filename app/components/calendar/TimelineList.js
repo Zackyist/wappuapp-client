@@ -165,9 +165,11 @@ class TimelineList extends Component {
     let listSections = _.groupBy(events,
       event => moment(event.startTime).startOf('day').unix());
 
-    // Set flag for last of day
+    // Set flag for last of day if more than one event
     _.map(listSections || [], eventsPerDay => {
-      eventsPerDay[eventsPerDay.length - 1].lastOfDay = true;
+      if (eventsPerDay.length > 1) {
+        eventsPerDay[eventsPerDay.length - 1].lastOfDay = true;
+      }
     });
 
     const eventSectionsOrder = _.orderBy(_.keys(listSections));
