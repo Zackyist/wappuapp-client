@@ -66,8 +66,8 @@ class RegistrationView extends Component {
 
   componentDidMount() {
     BackAndroid.addEventListener('hardwareBackPress', () => {
-      if (this.props.isRegistrationViewOpen) {
-        this.onClose()
+      if (this.props.isRegistrationViewOpen && this.props.isRegistrationInfoValid) {
+        this.onCloseProfileEditor()
         return true;
       }
       return false;
