@@ -18,6 +18,7 @@ import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 
 const IOS = Platform.OS === 'ios';
+const { width } = Dimensions.get('window');
 
 class LeaderboardEntry extends Component {
   // mixins: [TimerMixin],
@@ -163,6 +164,7 @@ const styles = StyleSheet.create({
   entryTitleName:{
     fontSize:18,
     fontWeight:'normal',
+    maxWidth: width - 110 - 40, // img - position
   },
   entryTitleScore:{
     backgroundColor:'transparent',
