@@ -26,6 +26,7 @@ import { fetchFeed,
 } from '../../actions/feed';
 
 import { getUserTeam } from '../../reducers/registration';
+import permissions from '../../services/android-permissions';
 
 import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
@@ -164,6 +165,19 @@ class FeedList extends Component {
 
   @autobind
   chooseImage() {
+    if (IOS) {
+      this.openImagePicker();
+    } else {
+      permissions.requestCameraPermission(() => {
+        setTimeout(() => {
+          this.openImagePicker();
+        });
+      });
+    }
+  }
+
+  @autobind
+  openImagePicker() {
     ImagePickerManager.showImagePicker(ImageCaptureOptions, (response) => {
       if (!response.didCancel && !response.error) {
         const image = 'data:image/jpeg;base64,' + response.data;

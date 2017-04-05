@@ -23,16 +23,26 @@ async function requestLocationPermission(cb) {
 
 async function requestCameraPermission(cb) {
   try {
-    const granted = await PermissionsAndroid.requestPermission(
+    const grantCamera = await PermissionsAndroid.requestPermission(
       PermissionsAndroid.PERMISSIONS.CAMERA,
       {
         'title': 'Whappu Camera Permission',
         'message': 'Whappu needs access to camera ' +
                    'to post images to feed.'
       }
-    )
-    if (granted) {
-      console.log("You can use the Camera")
+    );
+
+    const grantWrite = await PermissionsAndroid.requestPermission(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        'title': 'Whappu Storage Permission',
+        'message': 'Whappu needs access to storage ' +
+        'to post images to feed.'
+      }
+    );
+
+    if (grantCamera && grantWrite) {
+      console.log("You can use the Camera and storage")
       cb();
     } else {
       console.log("Camera permission denied")
