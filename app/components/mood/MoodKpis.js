@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   doughnut: {
     position: 'absolute',
     left: 24,
-    top: 0,
+    top: IOS ? 0 : 2,
   },
   col: {
     minWidth: 94,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     fontFamily: !IOS ? 'sans-serif-light' : undefined,
     fontSize: 18,
     textAlign: 'center',
-    right: 0, // percentage sign
+    right: -1, // percentage sign
     marginTop: 12,
   },
   bullet: {
