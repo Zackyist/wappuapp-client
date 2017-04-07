@@ -11,6 +11,7 @@ import {
   Platform,
   PropTypes,
   TouchableOpacity,
+  TouchableHighlight,
   View
 } from 'react-native';
 
@@ -21,6 +22,7 @@ import abuse from '../../services/abuse';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 import { openRegistrationView } from '../../actions/registration';
+
 const { height, width } = Dimensions.get('window');
 const FEED_ITEM_MARGIN_DISTANCE = 0;
 const FEED_ITEM_MARGIN_DEFAULT = 0;
@@ -91,12 +93,27 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     width: 100,
   },
+
+  itemVoteButtonWrap: {
+    flex: 1,
+    width: 28,
+    height: 28,
+    top: 2,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   itemVoteButton: {
     flex: 1,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center'
   },
   itemVoteValue: {
+    minWidth: 15,
+    textAlign: 'center',
     fontSize: 15,
     paddingVertical: 5,
     color: theme.grey
@@ -335,15 +352,18 @@ class FeedListItem extends Component {
     const disabled = voteWasChanged ? myVote === value : userVote === value;
 
     return (
-      <TouchableOpacity
-        style={styles.itemVoteButton}
+      <View style={styles.itemVoteButtonWrap}>
+      <TouchableHighlight
         disabled={disabled}
-        activeOpacity={0}
+        activeOpacity={1}
+        style={styles.itemVoteButton}
+        underlayColor={theme.stable}
         onPress={() => this.voteThisItem(value)}>
-        <Text style={{color: disabled ? theme.secondary : theme.grey}}>
-          <Icon name={iconName} size={25}/>
-        </Text>
-      </TouchableOpacity>
+          <Text style={{color: disabled ? theme.secondary : theme.grey}}>
+            <Icon name={iconName} size={25}/>
+          </Text>
+      </TouchableHighlight>
+      </View>
     );
   }
 
