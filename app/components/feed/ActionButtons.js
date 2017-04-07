@@ -111,6 +111,7 @@ class ActionButtons extends Component {
       plusButton: new Animated.Value(0),
       labels: BUTTON_POS.map(() => new Animated.Value(0)),
       actionButtonsOpen: false,
+      actionButtonsWidth: new Animated.Value(56),
       overlayOpacity: new Animated.Value(0)
     };
   }
@@ -151,6 +152,14 @@ class ActionButtons extends Component {
       ]).start();
     });
     Animated.spring(this.state.plusButton, { toValue: nextState === OPEN ? 1 : 0 }).start();
+
+    // buttonset width
+    Animated.timing(
+      this.state.actionButtonsWidth,
+      { duration:0, toValue: nextState === OPEN ? 220 : 56 }
+    ).start();
+
+
   }
 
   @autobind
@@ -239,7 +248,10 @@ class ActionButtons extends Component {
 
       const actionButtonStyles = [
         styles.buttonEnclosure,
-        { transform: this.state.buttons[i].getTranslateTransform() }
+        {
+          transform: this.state.buttons[i].getTranslateTransform(),
+          width: this.state.actionButtonsWidth
+        }
       ];
 
       return (
