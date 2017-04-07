@@ -11,7 +11,8 @@ import {
   StyleSheet,
   LayoutAnimation
 } from 'react-native';
-// import Immutable from 'immutable';
+import autobind from 'autobind-decorator';
+
 import theme from '../../style/theme';
 
 import reactMixin from 'react-mixin';
@@ -31,7 +32,7 @@ class LeaderboardEntry extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { width: 5 };
+    this.state = { width: 5, animatedFirstTime: false };
   }
 
   componentWillMount() {
@@ -39,18 +40,25 @@ class LeaderboardEntry extends Component {
   }
 
   componentDidMount() {
+
+    this.setTimeout(() => {
+      LayoutAnimation.spring();
+
+      const barWidth = this.getBarWidth();
+      this.setState({ width: barWidth, animatedFirstTime: true });
+    }, 1000);
+  }
+
+  @autobind
+  getBarWidth() {
     // Increase min width if the team has some points, so that if winner has
     // e.g. 40000, the team with 30 points does not have too short bar
     const minWidth = this.props.team.get('score') > 10 ? 46 : 6;
 
-    this.setTimeout(() => {
-      LayoutAnimation.spring();
-      const percentageToTopscore = (this.props.team.get('score') / this.props.topscore) || 0;
-      const barWrapWidth = Dimensions.get('window').width - 110; // 110 other content width
-      let barWidth = barWrapWidth * percentageToTopscore;
-      barWidth = Math.max(barWidth, minWidth); // minWidth for teams with low points
-      this.setState({ width: barWidth });
-    }, 1000);
+    const percentageToTopscore = (this.props.team.get('score') / this.props.topscore) || 0;
+    const barWrapWidth = Dimensions.get('window').width - 110; // 110 other content width
+    let barWidth = barWrapWidth * percentageToTopscore;
+    return Math.max(barWidth, minWidth); // minWidth for teams with low points);
   }
 
   getOrderSuffix(order) {
@@ -70,6 +78,8 @@ class LeaderboardEntry extends Component {
   render() {
 
     const orderSuffix = this.getOrderSuffix(this.props.position);
+    const { animatedFirstTime } = this.state;
+    const barWidth = animatedFirstTime ? this.getBarWidth() : this.state.width;
 
     return (
       <View style={styles.entry}>
@@ -98,7 +108,7 @@ class LeaderboardEntry extends Component {
 
             <View style={[
               styles.bar,
-              {width: this.state.width }
+              {width: barWidth }
               ]} />
             {/*
             <Text style={[styles.entryTitleScore, styles.entryTitleScoreOver]}>
