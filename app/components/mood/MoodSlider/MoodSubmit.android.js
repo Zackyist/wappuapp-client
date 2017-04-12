@@ -18,7 +18,6 @@ import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../../style/theme';
 
 const { height } = Dimensions.get('window');
-const isIOS = Platform.OS === 'ios';
 
 class MoodSubmit extends Component {
   render() {
@@ -28,11 +27,10 @@ class MoodSubmit extends Component {
     return (
       <View style={styles.confirmFormWrap}>
           <KeyboardAvoidingView
-            behavior={isIOS ? 'height' : 'height'}
-            keyboardVerticalOffset={isIOS ? -40 : 0}
+            behavior={'height'}
+            keyboardVerticalOffset={0}
             style={styles.confirmForm}
           >
-
             <Animated.View style={[styles.confirmFormBg, { opacity: confirmScale, transform:[ { scale: confirmScale }] }]}>
             <TextInput
               autoFocus={false}
