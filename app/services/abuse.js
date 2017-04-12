@@ -3,6 +3,15 @@ import { Linking } from 'react-native';
 const ABUSE_EMAIL_ADDRESS = '88c477b70c5d1a7d8d1a68bd2ec2402d@mail.flowdock.com';
 const ABUSE_EMAIL_SUBJECT = 'Whappu Flagged Content';
 
+
+// item.type === 'IMAGE', item.url
+function parseUrl(url) {
+  const urlParts = url.split('/');
+  const imageId = urlParts[urlParts.length - 1];
+
+  return 'https://wappu.futurice.com/i/' + imageId;
+}
+
 // Reports feed item via email
 function reportFeedItem(item) {
 
@@ -17,6 +26,10 @@ function reportFeedItem(item) {
 
   // Body
   emailURL += '&body=I want to report content with ID ' + item.id;
+  if (item.url) {
+    emailURL += ' \n\n ';
+    emailURL += parseUrl(item.url);
+  }
   emailURL += ' \n\n ';
   emailURL += '(Add voluntary explanation about content in here)';
 
