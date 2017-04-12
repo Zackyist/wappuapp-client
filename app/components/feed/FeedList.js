@@ -28,6 +28,7 @@ import { fetchFeed,
 import { getUserTeam } from '../../reducers/registration';
 import permissions from '../../services/android-permissions';
 
+import ImageEditor from './ImageEditor';
 import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
 import Loading from './Loading';
@@ -79,6 +80,7 @@ class FeedList extends Component {
       showScrollTopButton: false,
       listAnimation: new Animated.Value(0),
       dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
+      editableImage: null
     };
   }
 
@@ -180,10 +182,29 @@ class FeedList extends Component {
   openImagePicker() {
     ImagePickerManager.showImagePicker(ImageCaptureOptions, (response) => {
       if (!response.didCancel && !response.error) {
-        const image = 'data:image/jpeg;base64,' + response.data;
-        this.props.postImage(image);
+        const data = 'data:image/jpeg;base64,' + response.data;
+        const editableImage = {
+          data,
+          width: response.width,
+          height: response.height,
+          vertical: response.isVertical
+        };
+
+        this.setState({ editableImage });
+        // this.props.postImage(image);
       }
     });
+  }
+
+  @autobind
+  onImagePost(image, text, textPosition) {
+    this.props.postImage(image, text, textPosition);
+    this.resetPostImage();
+  }
+
+  @autobind
+  resetPostImage() {
+    this.setState({ editableImage: null });
   }
 
   @autobind
@@ -271,6 +292,12 @@ class FeedList extends Component {
         <Notification visible={this.props.isNotificationVisible}>
           {this.props.notificationText}
         </Notification>
+        <ImageEditor
+          onCancel={this.resetPostImage}
+          onImagePost={this.onImagePost}
+          animationType={'fade'}
+          image={this.state.editableImage}
+        />
       </View>
     );
   }

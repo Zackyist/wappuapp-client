@@ -113,11 +113,12 @@ const postText = text => {
   });
 };
 
-const postImage = image => {
-  return _postAction({
+const postImage = (image, imageText, imageTextPosition) => {
+  const postObject = Object.assign({
     type: ActionTypes.IMAGE,
-    imageData: image
-  });
+    imageData: image,
+  }, !!imageText ? { imageText, imageTextPosition } : {});
+  return _postAction(postObject);
 };
 
 const checkIn = eventId => {
