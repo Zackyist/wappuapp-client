@@ -418,7 +418,7 @@ class FeedListItem extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, openUserPhotos } = this.props;
     const { selected } = this.state;
     const ago = time.getTimeAgo(item.createdAt);
 
@@ -442,14 +442,13 @@ class FeedListItem extends Component {
           selected ? styles.itemContent_selected : {}
         ]}>
 
-          <View style={styles.feedItemListItemInfo}>
-            {/*<Icon name='face' style={styles.feedItemListItemAuthorIcon} />*/}
+          <TouchableOpacity style={styles.feedItemListItemInfo} onPress={() => openUserPhotos(item.author)}>
             <View style={styles.feedItemListItemAuthor}>
               <Text style={styles.itemAuthorName}>{item.author.name}</Text>
               <Text style={[styles.itemAuthorTeam, itemByMyTeam ? styles.itemAuthorTeam__my : {}]}>{item.author.team}</Text>
             </View>
             <Text style={styles.itemTimestamp}>{ago}</Text>
-          </View>
+          </TouchableOpacity>
 
           {isItemImage ?
             <View style={styles.itemImageWrapper}>

@@ -31,6 +31,7 @@ import permissions from '../../services/android-permissions';
 import ImageEditor from './ImageEditor';
 import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
+import UserView from '../user/UserView';
 import Loading from './Loading';
 import ActionButtons from './ActionButtons';
 import LoadingStates from '../../constants/LoadingStates';
@@ -199,6 +200,17 @@ class FeedList extends Component {
   }
 
   @autobind
+  openUserPhotos(user) {
+    if (user.id) {
+      this.props.navigator.push({
+        component: UserView,
+        name: `${user.name}`,
+        user
+      });
+    }
+  }
+
+  @autobind
   openImagePicker() {
     ImagePickerManager.showImagePicker(ImageCaptureOptions, (response) => {
       if (!response.didCancel && !response.error) {
@@ -280,6 +292,7 @@ class FeedList extends Component {
                 removeFeedItem={this.props.removeFeedItem}
                 voteFeedItem={this.props.voteFeedItem}
                 isRegistrationInfoValid={this.props.isRegistrationInfoValid}
+                openUserPhotos={this.openUserPhotos}
                 openLightBox={this.props.openLightBox} />
               }
               style={[styles.listView]}

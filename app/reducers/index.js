@@ -13,6 +13,7 @@ import radio from '../concepts/radio';
 import city from '../concepts/city';
 import mood from '../concepts/mood';
 import sortType from '../concepts/sortType';
+import user from '../concepts/user';
 
 export {
   errors,
@@ -29,5 +30,6 @@ export {
   radio,
   city,
   mood,
-  sortType
+  sortType,
+  user
 };
