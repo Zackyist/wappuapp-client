@@ -24,6 +24,11 @@
 * React Native + Redux
 * iOS and Android
 
+- Whappu 2017 architectural updates
+  - Selectors with [reselect](https://github.com/reactjs/reselect/) to access store
+  - Redux architecture using [ducks](https://github.com/erikras/ducks-modular-redux). See `/app/concepts`
+  - Data processing in concepts and minimize logic in views
+
 ## Release
 
 ### iOS
