@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import theme from '../../style/theme';
-// import Modal from 'react-native-modalbox';
+// import ModalBox from 'react-native-modalbox';
 import { removeFeedItem, closeLightBox } from '../../actions/feed';
 import abuse from '../../services/abuse';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -61,7 +61,7 @@ class LightBox extends Component {
 
   parseUrl(url) {
     const urlParts = url.split('/');
-    const imageId = urlParts[urlParts.length-1];
+    const imageId = urlParts[urlParts.length - 1];
 
     return 'https://wappu.futurice.com/i/' + imageId;
   }
@@ -135,8 +135,11 @@ class LightBox extends Component {
 
     return (
       <Modal
-        visible={isLightBoxOpen}
         onRequestClose={this.onClose}
+
+        visible={isLightBoxOpen}
+
+        backButtonClose={true}
         style={styles.modal}
         transparent={true}
         animationType={IOS ? 'none' : 'slide'}
