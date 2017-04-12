@@ -1,6 +1,7 @@
 'use strict';
 
-import Immutable from 'immutable';
+import { fromJS } from 'immutable';
+import { createSelector } from 'reselect';
 import {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
@@ -12,10 +13,17 @@ import {
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
-  SELECT_TEAM
+  SELECT_TEAM,
+  RESET
 } from '../actions/registration';
 
-const initialState = Immutable.fromJS({
+import {
+  NO_SELECTED_CITY_FOUND
+} from '../concepts/city';
+
+import { getTeams } from './team';
+
+const initialState = fromJS({
   isRegistrationViewOpen: false,
   name: '',
   selectedTeam: 0,
@@ -39,6 +47,11 @@ export default function registration(state = initialState, action) {
       return state.set('name', action.payload);
     case SELECT_TEAM:
       return state.set('selectedTeam', action.payload);
+    case RESET:
+      return state.merge({
+        'name': '',
+        'selectedTeam': 0
+      });
     case CREATE_USER_REQUEST:
       return state.merge({
         'isLoading': true,
@@ -57,8 +70,13 @@ export default function registration(state = initialState, action) {
         'isLoading': false,
         'isError': true
       });
+    case NO_SELECTED_CITY_FOUND:
+      return state.merge({
+        'isRegistrationViewOpen': action.payload
+      })
     case GET_USER_SUCCESS:
       return state.merge({
+        'userId': action.payload.id,
         'name': action.payload.name,
         'selectedTeam': action.payload.team,
         'uuid': action.payload.uuid,
@@ -68,3 +86,9 @@ export default function registration(state = initialState, action) {
       return state;
   }
 }
+
+// # Selectors
+export const getUserId = state => state.registration.get('userId');
+export const getUserTeamId = state => state.registration.get('selectedTeam', 0);
+export const getUserTeam = createSelector(getUserTeamId, getTeams,
+  (teamId, teams) => teams.find(item => item.get('id') === teamId))

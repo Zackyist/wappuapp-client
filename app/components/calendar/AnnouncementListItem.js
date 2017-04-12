@@ -1,7 +1,8 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-import React, {
+import React, { Component } from 'react';
+import {
   Image,
   StyleSheet,
   PropTypes,
@@ -16,7 +17,7 @@ import time from '../../utils/time';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor:'#eee',
   },
   card:{
@@ -37,14 +38,14 @@ const styles = StyleSheet.create({
     }
   },
   imgWrap:{
-    flex:1,
+    flexGrow: 1,
     backgroundColor: '#DDD',
     height:200,
     marginBottom:15,
     margin:-20,
   },
   img: {
-    flex:1,
+    flexGrow: 1,
   },
   text__title:{
     color: theme.secondary,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     fontSize:12,
   },
   textContainer:{
-    flex:1,
+    flexGrow: 1,
     padding:0,
     backgroundColor:theme.light,
   },
@@ -80,11 +81,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+export default class AnnouncementListItem extends Component {
 
   propTypes: {
-    item: PropTypes.object.isRequired
-  },
+    item: PropTypes.object
+  }
 
   // TODO: parse away the Finnish-part of the message?
   // TODO: set some fallback-image?
@@ -129,9 +130,9 @@ export default React.createClass({
         </View>
       </View>
     );
-  },
+  }
 
   handleUrlPress(url) {
     Linking.openURL(url);
   }
-});
+}

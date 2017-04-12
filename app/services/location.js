@@ -1,12 +1,17 @@
 import {Platform} from 'react-native';
 import geolib from 'geolib';
-import _ from 'lodash';
+import { round, isNil } from 'lodash';
 
 function getGeoUrl(event) {
+  if (isNil(event.location) || isNil(event.location.latitude) || isNil(event.location.longitude)) {
+    return '';
+  }
+
   const ZOOM_LEVEL = '18';
 
   var geoUrl = null;
-  const {latitude, longitude} = event.location;
+  let {latitude, longitude} = event.location;
+
   if (Platform.OS === 'ios') {
     // On iOS use Apple Maps
     geoUrl = 'http://maps.apple.com/';
@@ -23,17 +28,28 @@ function getGeoUrl(event) {
 
 // jscs:disable disallowImplicitTypeConversion
 function getDistance(userLocation, eventLocation) {
-  if (!userLocation) {
+  if (isNil(userLocation) || isNil(eventLocation) || isNil(eventLocation.latitude) || isNil(eventLocation.longitude)) {
     return '';
   }
 
   const distanceInMetres = geolib.getDistance(userLocation, eventLocation);
   const distanceInKilometres = distanceInMetres / 1000;
 
-  return '' + _.round(distanceInKilometres, 1) + ' km';
+  return '' + round(distanceInKilometres, 1) + ' km';
+}
+
+function getDiscanceInMeters(userLocation, eventLocation) {
+  if (isNil(userLocation) || isNil(eventLocation) || isNil(eventLocation.latitude) || isNil(eventLocation.longitude)) {
+    return '';
+  }
+
+  const distanceInMetres = geolib.getDistance(userLocation, eventLocation);
+
+  return distanceInMetres;
 }
 
 export default {
   getGeoUrl,
-  getDistance
+  getDistance,
+  getDiscanceInMeters
 };

@@ -1,6 +1,7 @@
-import CodePush from 'react-native-code-push';
+// import CodePush from 'react-native-code-push';
 
 export function checkForUpdates() {
+  /*
   if (!__DEV__) {
     CodePush.sync({
       updateDialog: {
@@ -19,5 +20,5 @@ export function checkForUpdates() {
       },
       installMode: CodePush.InstallMode.IMMEDIATE
     });
-  }
+  }*/
 }

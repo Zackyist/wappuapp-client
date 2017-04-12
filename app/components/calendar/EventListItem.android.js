@@ -1,8 +1,8 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-var React = require('react-native');
-var {
+import React, { Component } from 'react';
+import {
   Image,
   PropTypes,
   Platform,
@@ -11,15 +11,16 @@ var {
   Text,
   TouchableNativeFeedback,
   View
-} = React;
+} from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import time from '../../utils/time';
 import theme from '../../style/theme';
+const placholderImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const styles = StyleSheet.create({
   gridListItem: {
-    flex: 1,
+    flexGrow: 1,
     paddingLeft:97,
     backgroundColor:'#fff',
   },
@@ -31,10 +32,11 @@ const styles = StyleSheet.create({
   },
   gridListItemImg: {
     width: Dimensions.get('window').width - 130,
-    height: 80
+    height: 80,
+    borderRadius: 2
   },
   gridListItemContent: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 15,
     paddingBottom:25,
@@ -76,8 +78,8 @@ const styles = StyleSheet.create({
   gridListItemDay: {
     fontWeight:'bold'
   },
-  gridListItemIconsWrapper__left:{
-
+  pastTime: {
+    color: '#888'
   },
   gridListItemIconsWrapper: {
     position: 'relative',
@@ -113,6 +115,9 @@ const styles = StyleSheet.create({
     borderRadius:13,
     top:0
   },
+  pastCircle: {
+    backgroundColor: theme.grey,
+  },
   timelineCircleInner: {
     borderRadius:7,
     width:14,
@@ -123,16 +128,15 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+export default class EventListItem extends Component {
   propTypes: {
     item: PropTypes.object.isRequired,
     handlePress: PropTypes.func.isRequired,
     rowId: PropTypes.number
-  },
+  }
 
   render() {
-    const item = this.props.item;
-    const lastInSection = this.props.lastInSection;
+    const { item, hideStatus, pastEvent } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
     const startDay = time.getEventDay(item.startTime);
     const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
@@ -143,18 +147,20 @@ export default React.createClass({
         <View style={styles.gridListItemContent}>
           <Text style={styles.gridListItemTitle}>{item.name}</Text>
 
-          <View style={[styles.gridListItemIconsWrapper,
-            {marginBottom: item.teemu || timepoint.onGoing || timepoint.startsSoon ? 5 : 0}
-          ]}>
-            {item.teemu && <Text style={styles.gridListItemIcon}>
-            <Icon name='university' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
-            {timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Käynnissä ny!</Text>}
-            {timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Alkaa kohta!</Text>}
-          </View>
+          {!hideStatus &&
+            <View style={[styles.gridListItemIconsWrapper,
+              {marginBottom: item.teemu || timepoint.onGoing || timepoint.startsSoon ? 5 : 0}
+            ]}>
+              {!pastEvent && timepoint.onGoing && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Ongoing!</Text>}
+              {!pastEvent && timepoint.startsSoon && <Text style={[styles.gridListItemIcon, styles.gridListItemIcon__alert]}>Starts soon!</Text>}
+              {item.teemu && <Text style={styles.gridListItemIcon}>
+              <Icon name='school' style={{color:theme.secondary}} size={13} /> Emäteemu!</Text>}
+            </View>
+          }
 
           <View style={styles.gridListItemImgWrap}>
             <Image
-              source={{ uri: coverImage }}
+              source={coverImage ? { uri: coverImage } : placholderImage}
               style={styles.gridListItemImg} />
 
           </View>
@@ -163,20 +169,17 @@ export default React.createClass({
 
         </View>
 
-        <View style={styles.timeline} />
-        <View style={styles.timelineCircle}>
+        {!item.lastOfDay && <View style={styles.timeline} />}
+        <View style={[styles.timelineCircle, pastEvent ? styles.pastCircle : {}]}>
           <View style={styles.timelineCircleInner} />
         </View>
 
         <View style={styles.gridListItemMeta}>
-            {false && Platform.OS === 'android' &&
-            <Text style={[styles.gridListItemTime, styles.gridListItemDay]}>{startDay}</Text>
-            }
-            <Text style={styles.gridListItemTime}>{timepoint.time}</Text>
+            <Text style={[styles.gridListItemTime, pastEvent ? styles.pastTime : {}]}>{timepoint.time}</Text>
             <Text style={[styles.gridListItemTime, styles.gridListItemTimeEnd]}>{timepoint.endTime}</Text>
         </View>
 
       </View>
     </TouchableNativeFeedback>;
   }
-});
+}

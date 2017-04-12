@@ -2,17 +2,17 @@
 // https://www.google.com/design/spec/components/bottom-navigation.html
 'use strict';
 
-var React = require('react-native');
-var {
+import React, { PropTypes, Component } from 'react';
+import {
   StyleSheet,
   Text,
   TouchableNativeFeedback,
   View,
   Animated
-} = React;
+} from 'react-native';
 
 import _ from 'lodash';
-const Icon = require('react-native-vector-icons/MaterialIcons');
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 var styles = StyleSheet.create({
   tab: {
@@ -39,15 +39,15 @@ var styles = StyleSheet.create({
   }
 });
 
-var AndroidTabBar = React.createClass({
+class AndroidTabBar extends Component {
   propTypes: {
-    goToPage: React.PropTypes.func,
-    activeTab: React.PropTypes.number,
-    tabs: React.PropTypes.array,
-    backgroundColor : React.PropTypes.string,
-    activeTextColor : React.PropTypes.string,
-    inactiveTextColor : React.PropTypes.string,
-  },
+    goToPage: PropTypes.func,
+    activeTab: PropTypes.number,
+    tabs: PropTypes.array,
+    backgroundColor : PropTypes.string,
+    activeTextColor : PropTypes.string,
+    inactiveTextColor : PropTypes.string,
+  }
 
   renderTabOption(name, page) {
     const isTabActive = this.props.activeTab === page;
@@ -96,12 +96,13 @@ var AndroidTabBar = React.createClass({
       </View>
     </TouchableNativeFeedback>
     );
-  },
+  }
 
   render() {
 
-    var containerWidth = this.props.containerWidth;
-    var numberOfTabs = this.props.tabs.length;
+    const { tabs, containerWidth } = this.props;
+    const numberOfTabs = tabs.length;
+
     var tabUnderlineStyle = {
       position: 'absolute',
       width: containerWidth / numberOfTabs,
@@ -134,7 +135,7 @@ var AndroidTabBar = React.createClass({
         </View>
       </View>
       );
-  },
-});
+  }
+}
 
 module.exports = AndroidTabBar;

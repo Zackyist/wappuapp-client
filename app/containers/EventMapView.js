@@ -1,20 +1,21 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   Navigator,
   StyleSheet,
-  BackAndroid,
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 import EventMap from '../components/map/EventMap';
 import sceneConfig from '../utils/sceneConfig';
-import NavRouteMapper from '../components/common/navbarRouteMapper';
 import theme from '../style/theme';
 
 const styles = StyleSheet.create({
   navigator: {
-    paddingTop: Platform.OS === 'ios' ? 62 : 0
+    paddingTop: Platform.OS === 'ios' ? 20 : 0
   },
   navbar: {
     backgroundColor: theme.secondary,
@@ -26,22 +27,16 @@ const styles = StyleSheet.create({
 });
 
 var _navigator;
-BackAndroid.addEventListener('hardwareBackPress', () => {
-  if (_navigator && _navigator.getCurrentRoutes().length > 1) {
-    _navigator.pop();
-    return true;
-  }
-  return false;
-});
 
-var EventMapView = React.createClass({
+class EventMapView extends Component {
+  @autobind
   renderScene(route, navigator) {
     _navigator = navigator;
     if (route.component) {
       const RouteComponent = route.component;
-      return <RouteComponent navigator={navigator} route={route} {...this.props} />
+      return <RouteComponent route={route} {...this.props} />
     }
-  },
+  }
 
   render() {
     return (
@@ -51,18 +46,13 @@ var EventMapView = React.createClass({
           component: EventMap,
           name: 'Map'
         }}
-        navigationBar={
-          (Platform.OS === 'ios') ? <Navigator.NavigationBar
-            style={styles.navbar}
-            routeMapper={NavRouteMapper} /> : null
-        }
 
         renderScene={this.renderScene}
         configureScene={() => sceneConfig}
       />
     );
   }
-});
+}
 
 const select = store => {
   return {};

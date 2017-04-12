@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   TouchableOpacity,
   Text,
@@ -8,28 +9,29 @@ import React, {
   PropTypes
 } from 'react-native';
 
-var Button = React.createClass({
-  propTypes: Object.assign({},
-    {
-      textStyle: Text.propTypes.style,
-      disabledStyle: Text.propTypes.style,
-      children: PropTypes.string.isRequired,
-      isDisabled: PropTypes.bool,
-      onPress: PropTypes.func,
-      onPressIn: PropTypes.func,
-      onPressOut: PropTypes.func
-    },
-  ),
 
-  _renderInnerText: function() {
+class Button extends Component {
+  // propTypes: Object.assign({},
+  //   {
+  //     textStyle: Text.propTypes.style,
+  //     disabledStyle: Text.propTypes.style,
+  //     children: PropTypes.string.isRequired,
+  //     isDisabled: PropTypes.bool,
+  //     onPress: PropTypes.func,
+  //     onPressIn: PropTypes.func,
+  //     onPressOut: PropTypes.func
+  //   },
+  // ),
+
+  _renderInnerText() {
     return (
       <Text style={[styles.textButton, this.props.textStyle]}>
         {this.props.children}
       </Text>
     );
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.props.isDisabled === true) {
       return (
         <View style={[styles.button, this.props.style,
@@ -51,7 +53,7 @@ var Button = React.createClass({
       );
     }
   }
-});
+}
 
 const styles = StyleSheet.create({
   button: {

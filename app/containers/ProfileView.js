@@ -1,18 +1,21 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   Navigator,
   StyleSheet,
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 import Profile from '../components/profile/Profile';
-import NavRouteMapper from '../components/common/navbarRouteMapper';
+
 const theme = require('../style/theme');
 
 const styles = StyleSheet.create({
   navigator: {
-    paddingTop: Platform.OS === 'ios' ? 42 : 0
+    paddingTop: Platform.OS === 'ios' ? 20 : 0
   },
   navbar: {
     backgroundColor: theme.secondary,
@@ -23,23 +26,20 @@ const styles = StyleSheet.create({
   }
 });
 
-var ProfileView = React.createClass({
+
+class ProfileView extends Component {
+  @autobind
   renderScene(route, navigator) {
     if (route.component) {
       const RouteComponent = route.component;
-      return <RouteComponent navigator={navigator} route={route} {...this.props} />
+      return <RouteComponent route={route} {...this.props} />
     }
-  },
+  }
 
   render() {
     return (
       <Navigator
         style={styles.navigator}
-        navigationBar={
-          Platform.OS === 'ios' ? <Navigator.NavigationBar
-            style={styles.navbar}
-            routeMapper={NavRouteMapper} /> : null
-        }
         initialRoute={{
           component: Profile,
           name: 'Settings'
@@ -51,7 +51,7 @@ var ProfileView = React.createClass({
       />
     );
   }
-});
+}
 
 const select = store => {
   return {};

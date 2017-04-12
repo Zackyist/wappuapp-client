@@ -1,8 +1,7 @@
 'use strict';
 
-import React from 'react-native';
-var {
-  ScrollView,
+import React, { Component } from 'react';
+import {
   StyleSheet,
   Text,
   Dimensions,
@@ -11,7 +10,7 @@ var {
   PropTypes,
   Platform,
   Linking
-} = React;
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ParallaxView from 'react-native-parallax-view';
@@ -22,8 +21,6 @@ import analytics from '../../services/analytics';
 import time from '../../utils/time';
 import locationService from '../../services/location';
 import Button from '../common/Button';
-import EventListItem from './EventListItem';
-import EventDetailHero from './EventDetailHero';
 
 const VIEW_NAME = 'EventDetail';
 
@@ -185,21 +182,21 @@ const styles = StyleSheet.create({
   }
 });
 
-const EventDetail = React.createClass({
+class EventDetail extends Component {
   propTypes: {
     navigator: PropTypes.object.isRequired,
     route: PropTypes.object.isRequired
-  },
+  }
 
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
-  },
+  }
 
   onPressBack() {
     this.props.navigator.pop();
-  },
+  }
 
-  render: function() {
+  render() {
     // TODO: stylize the "meta-elements"
 
     const model = this.props.route.model;
@@ -284,11 +281,11 @@ const EventDetail = React.createClass({
             </View>
             }
 
-            { model.facebookId &&
+            { model.fbEventId &&
                 <TouchableHighlight
                 underlayColor={'#eee'}
                 onPress={() =>
-                  Linking.openURL(`https://www.facebook.com/events/${ model.facebookId }`)}
+                  Linking.openURL(`https://www.facebook.com/events/${ model.fbEventId }`)}
                 >
                   <View style={styles.detailEventInfoContainer}>
                     <View style={styles.detailEventInfoWrapper}>
@@ -306,14 +303,11 @@ const EventDetail = React.createClass({
                 <Text style={styles.detailEventDescription}>{model.description}</Text>
               </View>
 
-              <View style={styles.navigationButtonWrapper}>
-                <Button style={{borderRadius:0}} onPress={() => Linking.openURL(locationService.getGeoUrl(model))}>Get me there!</Button>
-              </View>
           </View>
       </ParallaxView>
     </View>
   }
 
-});
+}
 
 export default EventDetail;

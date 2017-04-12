@@ -9,7 +9,10 @@ import {
   GET_FEED_FAILURE,
   REFRESH_FEED_REQUEST,
   REFRESH_FEED_SUCCESS,
-  DELETE_FEED_ITEM
+  DELETE_FEED_ITEM,
+  OPEN_LIGHTBOX,
+  VOTE_FEED_ITEM,
+  CLOSE_LIGHTBOX
 } from '../actions/feed';
 import LoadingStates from '../constants/LoadingStates';
 
@@ -17,6 +20,8 @@ const initialState = Immutable.fromJS({
   list: [],
   listState: LoadingStates.NONE,
   isRefreshing: false,
+  lightBoxItem: {},
+  isLightBoxOpen: false
 });
 
 export default function feed(state = initialState, action) {
@@ -48,6 +53,29 @@ export default function feed(state = initialState, action) {
       } else {
         return state.set('list', originalList.delete(itemIndex));
       }
+
+    case VOTE_FEED_ITEM:
+      const list = state.get('list');
+      const itemIndex_ = list.findIndex((item) => item.get('id') === action.feedItemId);
+      if (itemIndex < 0) {
+        console.log('Tried to vote item, but it was not found from state:', itemIndex);
+        return state;
+      } else {
+        return state.updateIn(['list', itemIndex_, 'difference'], value => action.difference);
+      }
+
+
+    case OPEN_LIGHTBOX:
+      return state.merge({
+        isLightBoxOpen: true,
+        lightBoxItem: Immutable.fromJS(action.payload.item)
+      });
+
+    case CLOSE_LIGHTBOX:
+      return state.merge({
+        isLightBoxOpen: false,
+        lightBoxItem: Immutable.fromJS({}),
+      })
 
     default:
       return state;

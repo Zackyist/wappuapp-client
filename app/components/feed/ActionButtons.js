@@ -1,14 +1,20 @@
 'use strict';
 
-import React, { Animated, Easing, Platform, StyleSheet, Text, View, BackAndroid } from 'react-native';
+import React, { Component } from 'react';
+import { Animated, Easing, Platform, StyleSheet, Text, View, BackAndroid } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionButton from './ActionButton';
 import ActionButtonLabel from './ActionButtonLabel';
-import * as RegistrationActions from '../../actions/registration';
+import { openRegistrationView } from '../../actions/registration';
 import theme from '../../style/theme';
+import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
-import * as CompetitionActions from '../../actions/competition';
+import { updateCooldowns } from '../../actions/competition';
+
+const IOS = Platform.OS === 'ios';
 
 // in a happy world all this would be calculated on the fly but no
 const BUTTON_COUNT = 6;
@@ -39,13 +45,27 @@ const styles = StyleSheet.create({
       width: 0
     },
   },
+  scrollTopButton: {
+    elevation: 2,
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+    backgroundColor: '#FFF'
+  },
+  scrollTopButtonContent: {
+    color: theme.secondaryLight
+  },
   buttonEnclosure: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 37 : 20,
+    bottom: IOS ? 37 : 20,
     right: 20,
     overflow:'visible',
     width: 200,
@@ -63,7 +83,7 @@ const styles = StyleSheet.create({
   },
   overlay:{
     right:43,
-    bottom:Platform.OS === 'ios' ? 60 : 43,
+    bottom:IOS ? 60 : 43,
     position:'absolute',
     backgroundColor:theme.light,
     opacity:0.9,
@@ -83,17 +103,20 @@ const getBoundAction = (type, fn) => {
   return actions[type];
 };
 
-const ActionButtons = React.createClass({
-    mixins: [TimerMixin],
-  getInitialState() {
-    return {
+class ActionButtons extends Component {
+  // mixins: [TimerMixin]
+  constructor(props) {
+    super(props);
+
+    this.state = {
       buttons: BUTTON_POS.map(() => new Animated.ValueXY()),
       plusButton: new Animated.Value(0),
       labels: BUTTON_POS.map(() => new Animated.Value(0)),
       actionButtonsOpen: false,
+      actionButtonsWidth: new Animated.Value(56),
       overlayOpacity: new Animated.Value(0)
     };
-  },
+  }
 
   animateButtonsToState(nextState) {
 
@@ -104,7 +127,7 @@ const ActionButtons = React.createClass({
     BUTTON_POS.forEach((pos, i) => {
 
       // Animate action buttons, iOS handles delay better
-      if (Platform.OS === 'ios') {
+      if (IOS) {
         Animated.parallel([
           Animated.delay(nextState === OPEN ?
             BUTTON_POS.length * BUTTON_DELAY - (i * BUTTON_DELAY) :
@@ -131,35 +154,45 @@ const ActionButtons = React.createClass({
       ]).start();
     });
     Animated.spring(this.state.plusButton, { toValue: nextState === OPEN ? 1 : 0 }).start();
-  },
 
+    // buttonset width
+    Animated.timing(
+      this.state.actionButtonsWidth,
+      { duration:0, toValue: nextState === OPEN ? 220 : 56 }
+    ).start();
+
+
+  }
+
+  @autobind
   onToggleActionButtons() {
-      this.props.dispatch(CompetitionActions.updateCooldowns());
+      this.props.updateCooldowns();
 
       if (this.state.actionButtonsOpen === false) {
           this.updateCooldownInterval = this.setInterval(() => {
-              this.props.dispatch(CompetitionActions.updateCooldowns());
+              this.props.updateCooldowns();
           }, 1000);
       } else {
           this.clearInterval(this.updateCooldownInterval);
       }
     if (this.props.isRegistrationInfoValid === false) {
-      this.props.dispatch(RegistrationActions.openRegistrationView());
+      this.props.openRegistrationView();
     } else {
 
       Animated.timing(this.state.overlayOpacity,
         {duration:300, easing:Easing.ease, toValue: this.state.actionButtonsOpen ? 0 : 1}).start();
       this.animateButtonsToState(this.state.actionButtonsOpen ? CLOSED : OPEN);
     }
-  },
+  }
 
+  @autobind
   onPressActionButtons(type, fn) {
     // Start the action
     getBoundAction(type, fn)();
 
     // Close Action buttons
     this.onToggleActionButtons();
-  },
+  }
 
   componentDidMount(){
     // Close Action buttons on back press
@@ -170,31 +203,29 @@ const ActionButtons = React.createClass({
       }
       return false;
     })
-  },
+  }
 
   getIconForAction(type) {
     const mapping = {
       TEXT: 'textsms',
       IMAGE: 'photo-camera',
       SIMA: 'local-bar',
-      LECTURE: 'school',
-      BUTTON_PUSH: 'touch-app',
+      CHECK_IN_EVENT: 'location-on',
       default: 'image'
     };
     return mapping[type] || mapping['default'];
-  },
+  }
 
   getLabelForAction(type) {
     const mapping = {
       TEXT: 'Write a message',
       IMAGE: 'Take a photo',
       SIMA: 'Have a sima',
-      LECTURE: 'At a lecture',
-      BUTTON_PUSH: 'Push the button',
+      CHECK_IN_EVENT: 'Check into event',
       default: 'image'
     };
     return mapping[type] || mapping['default'];
-  },
+  }
 
   getCooldownTime(actionType) {
     const now = new Date().getTime();
@@ -203,7 +234,7 @@ const ActionButtons = React.createClass({
     const seconds = Math.floor(diffInSecs % 60);
 
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-  },
+  }
 
   renderActionButtons() {
     return this.props.actionTypes.map((actionType, i) => {
@@ -219,7 +250,10 @@ const ActionButtons = React.createClass({
 
       const actionButtonStyles = [
         styles.buttonEnclosure,
-        { transform: this.state.buttons[i].getTranslateTransform() }
+        {
+          transform: this.state.buttons[i].getTranslateTransform(),
+          width: this.state.actionButtonsWidth
+        }
       ];
 
       return (
@@ -236,16 +270,17 @@ const ActionButtons = React.createClass({
         </Animated.View>
       );
     });
-  },
+  }
 
   renderMenuButton() {
     // Show scroll top button instead of add button when scrolled down
     if (this.props.showScrollTopButton) {
       return (
       <ActionButton onPress={this.props.onScrollTop}
-        extraStyle={styles.mainButton}>
+        underLayColor={theme.lightgrey}
+        extraStyle={styles.scrollTopButton}>
         <View >
-          <Icon name={'keyboard-arrow-up'} size={26} style={styles.actionButtonContent}></Icon>
+          <Icon name={'keyboard-arrow-up'} size={26} style={[styles.actionButtonContent, styles.scrollTopButtonContent]}></Icon>
         </View>
       </ActionButton>
       );
@@ -262,19 +297,21 @@ const ActionButtons = React.createClass({
         </Animated.View>
       </ActionButton>
     );
-  },
+  }
 
   render() {
-    const { isLoading, actionTypes, style } = this.props;
+    const { isLoading, actionTypes, style, visibilityAnimation } = this.props;
 
     if (isLoading || !actionTypes || actionTypes.size === 0) {
       return null;
     }
 
+    const actionButtonsTranslate = visibilityAnimation.interpolate({ inputRange: [0, 1], outputRange: [-100, (IOS ? 30 : 0)] });
+
     return (
-      <View style={style}>
+      <Animated.View style={[style, { bottom: actionButtonsTranslate }]}>
         <Animated.View style={[styles.overlay, {
-          transform:[{scale:this.state.overlayOpacity.interpolate({
+          transform:[{scale: this.state.overlayOpacity.interpolate({
             inputRange: [0, 1],
             outputRange: [1,200]
           })}]
@@ -282,10 +319,12 @@ const ActionButtons = React.createClass({
         {this.renderActionButtons()}
         {this.renderMenuButton()}
 
-      </View>
+      </Animated.View>
     );
   }
-});
+}
+
+const mapDispatchToProps = { updateCooldowns, openRegistrationView };
 
 const select = store => {
   return {
@@ -295,4 +334,5 @@ const select = store => {
   };
 };
 
-export default connect(select)(ActionButtons);
+reactMixin(ActionButtons.prototype, TimerMixin);
+export default connect(select, mapDispatchToProps)(ActionButtons);

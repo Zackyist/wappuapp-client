@@ -1,8 +1,8 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-var React = require('react-native');
-var {
+import React, { Component } from 'react';
+import {
   Image,
   PropTypes,
   StyleSheet,
@@ -10,16 +10,16 @@ var {
   Text,
   TouchableHighlight,
   View
-} = React;
+} from 'react-native';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
   gridListItem: {
     width: Dimensions.get('window').width,
-    flex: 1,
+    flexGrow: 1,
     height: 200
   },
 
@@ -33,15 +33,15 @@ const styles = StyleSheet.create({
     height: 200
   },
   gridListItemImgColorLayer: {
-    // backgroundColor is set programmatically on render() based on rowId
-    opacity: 0.75,
+    backgroundColor: '#444',
+    opacity: 0.6,
     position: 'absolute',
     left: 0, top: 0, bottom: 0, right: 0
   },
 
   gridListItemContent: {
     elevation: 2,
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 20
   },
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
 
   gridListItemMeta: {
-    flex:1
+    flexGrow:1
   },
   gridListItemPlace: {
     fontSize: 15,
@@ -88,51 +88,54 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+const placholderImage = require('../../../assets/frontpage_header-bg.jpg');
+
+export default class EventListItem extends Component {
   propTypes: {
     item: PropTypes.object.isRequired,
     handlePress: PropTypes.func.isRequired,
     rowId: PropTypes.number
-  },
+  }
 
   render() {
-    const item = this.props.item;
+    const { item, hideStatus, pastEvent } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
-    const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
+    const { coverImage } = item;
+    // const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
 
-    return <TouchableHighlight onPress={this.props.handlePress} underlayColor={'transparent'}>
+    return (
+      <TouchableHighlight onPress={this.props.handlePress} underlayColor={'transparent'}>
       <View style={styles.gridListItem}>
         <View style={styles.gridListItemImgWrap}>
           <Image
-            source={{ uri: coverImage }}
+            source={coverImage ? { uri: coverImage } : placholderImage}
             style={styles.gridListItemImg} />
-          <View style={[
-            styles.gridListItemImgColorLayer,
-            { backgroundColor: this.props.rowId && this.props.rowId % 2 === 0 ?
-              '#444' : '#444' }
-          ]} />
+          <View style={styles.gridListItemImgColorLayer} />
         </View>
 
         <View style={styles.gridListItemContent}>
           <Text style={styles.gridListItemTitle}>{item.name}</Text>
           <View style={styles.gridListItemMeta}>
-            <Text style={styles.gridListItemTime}>{timepoint.time} - {timepoint.endTime}</Text>
+            <Text style={styles.gridListItemTime}>{pastEvent && `${timepoint.date} `}{timepoint.time} - {timepoint.endTime}</Text>
             <Text style={styles.gridListItemPlace}>{item.locationName}</Text>
 
           </View>
 
-          {this.props.currentDistance !== null && <View style={styles.gridListItemIconsWrapper__left}>
-            <Text style={styles.gridListItemDistance}>{this.props.currentDistance}</Text>
-          </View>}
+          {this.props.currentDistance !== null &&
+            <View style={styles.gridListItemIconsWrapper__left}>
+              <Text style={styles.gridListItemDistance}>{this.props.currentDistance}</Text>
+            </View>
+          }
 
+          {!hideStatus &&
           <View style={styles.gridListItemIconsWrapper}>
             {item.teemu && <Text style={styles.gridListItemIcon}>
-              <Icon name='university' size={15} /> Emäteemu!</Text>}
-            {timepoint.onGoing && <Text style={styles.gridListItemIcon}>Käynnissä ny!</Text>}
-            {timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Alkaa kohta!</Text>}
-          </View>
+              <Icon name='school' size={15} /> Emäteemu!</Text>}
+            {!pastEvent && timepoint.onGoing && <Text style={styles.gridListItemIcon}>Ongoing!</Text>}
+            {!pastEvent && timepoint.startsSoon && <Text style={styles.gridListItemIcon}>Starts soon!</Text>}
+          </View>}
         </View>
       </View>
-    </TouchableHighlight>;
+    </TouchableHighlight>);
   }
-});
+}

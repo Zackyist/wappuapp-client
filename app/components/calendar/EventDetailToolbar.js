@@ -1,15 +1,12 @@
 'use strict';
 
-import React from 'react-native';
-var {
-  ToolbarAndroid,
-  StyleSheet,
-  PropTypes
-} = React;
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { Component, PropTypes } from 'react';
+import { ToolbarAndroid, StyleSheet } from 'react-native';
+import autobind from 'autobind-decorator';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 
-// TODO re-enable
 // const toolbarActions = [
 //   {title: 'Share', id:'share'}
 // ];
@@ -26,34 +23,37 @@ const styles = StyleSheet.create({
   }
 });
 
-var EventDetailToolbar = React.createClass({
+class EventDetailToolbar extends Component {
   propTypes: {
     title: PropTypes.string.isRequired,
     navigator: PropTypes.object.isRequired
-  },
+  }
 
-  _goBack() {
+  @autobind
+  goBack() {
     this.props.navigator.pop();
-  },
+  }
 
-  _onActionSelected: function(position) {
+  onActionSelected(position) {
     //TODO switch toolbarActions[position]
-  },
+  }
 
   render() {
+    const { backgroundColor } = this.props;
+
     return (
       <Icon.ToolbarAndroid
-      //actions={toolbarActions} TODO - SHARE
-      //onActionSelected={this._onActionSelected}
-      onIconClicked={this._goBack}
-      navIconName={'android-arrow-back'}
+      // actions={toolbarActions} TODO: SHARE
+      // onActionSelected={this._onActionSelected}
+      onIconClicked={this.goBack}
+      navIconName={'arrow-back'}
       titleColor={theme.light}
       iconColor={theme.light}
-      style={styles.toolbar}
+      style={[styles.toolbar, backgroundColor ? { backgroundColor } : {} ]}
       title={this.props.title}
       />
     );
   }
-});
+}
 
 module.exports = EventDetailToolbar;

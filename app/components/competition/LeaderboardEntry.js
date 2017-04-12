@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   Text,
   Image,
@@ -10,19 +11,56 @@ import React, {
   StyleSheet,
   LayoutAnimation
 } from 'react-native';
-import Immutable from 'immutable';
+import autobind from 'autobind-decorator';
+
 import theme from '../../style/theme';
 
+import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 
-const LeaderboardEntry = React.createClass({
-  mixins: [TimerMixin],
+const IOS = Platform.OS === 'ios';
+const { width } = Dimensions.get('window');
+
+class LeaderboardEntry extends Component {
+  // mixins: [TimerMixin],
   propTypes: {
-    team: PropTypes.instanceOf(Immutable.Map).isRequired,
+    // team: PropTypes.instanceOf(Immutable.Map).isRequired,
     topscore: PropTypes.number.isRequired,
     position: PropTypes.number.isRequired,
     logo: PropTypes.string.isRequired
-  },
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { width: 5, animatedFirstTime: false };
+  }
+
+  componentWillMount() {
+    LayoutAnimation.spring();
+  }
+
+  componentDidMount() {
+
+    this.setTimeout(() => {
+      LayoutAnimation.spring();
+
+      const barWidth = this.getBarWidth();
+      this.setState({ width: barWidth, animatedFirstTime: true });
+    }, 1000);
+  }
+
+  @autobind
+  getBarWidth() {
+    // Increase min width if the team has some points, so that if winner has
+    // e.g. 40000, the team with 30 points does not have too short bar
+    const minWidth = this.props.team.get('score') > 10 ? 46 : 6;
+
+    const percentageToTopscore = (this.props.team.get('score') / this.props.topscore) || 0;
+    const barWrapWidth = Dimensions.get('window').width - 110; // 110 other content width
+    let barWidth = barWrapWidth * percentageToTopscore;
+    return Math.max(barWidth, minWidth); // minWidth for teams with low points);
+  }
+
   getOrderSuffix(order) {
     const lastNum = order > 20 ? order % 10 : order;
     switch (lastNum) {
@@ -35,40 +73,20 @@ const LeaderboardEntry = React.createClass({
       default:
         return 'th';
     }
-  },
-  componentWillMount() {
-    LayoutAnimation.spring();
-  },
-  getInitialState() {
-    return {
-      width: 25
-    }
-  },
-  componentDidMount() {
-    // Increase min width if the team has some points, so that if winner has
-    // e.g. 40000, the team with 30 points does not have too short bar
-    const minWidth = this.props.team.get('score') > 10 ? 46 : 26;
-
-    this.setTimeout(() => {
-      LayoutAnimation.spring();
-      const percentageToTopscore = (this.props.team.get('score') / this.props.topscore) || 0;
-      const barWrapWidth = Dimensions.get('window').width - 110; // 110 other content width
-      let barWidth = barWrapWidth * percentageToTopscore;
-      barWidth = Math.max(barWidth, minWidth); // minWidth for teams with low points
-      this.setState({ width: barWidth });
-    }, 1000);
-  },
+  }
 
   render() {
 
     const orderSuffix = this.getOrderSuffix(this.props.position);
+    const { animatedFirstTime } = this.state;
+    const barWidth = animatedFirstTime ? this.getBarWidth() : this.state.width;
 
     return (
       <View style={styles.entry}>
 
         <View style={styles.entryLogo}>
           <Image
-          source={{ uri: this.props.logo }}
+          source={this.props.logo === null ? null : { uri: this.props.logo }}
           style={styles.entryLogoImg} />
         </View>
 
@@ -90,12 +108,13 @@ const LeaderboardEntry = React.createClass({
 
             <View style={[
               styles.bar,
-              {width: this.state.width }
+              {width: barWidth }
               ]} />
-
+            {/*
             <Text style={[styles.entryTitleScore, styles.entryTitleScoreOver]}>
-            {this.props.team.get('score')}
+            this.props.team.get('score')
             </Text>
+            */}
 
           </View>
         </View>
@@ -103,12 +122,12 @@ const LeaderboardEntry = React.createClass({
       </View>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   entry: {
-    paddingTop:Platform.OS === 'ios' ? 30 : 32,
-    paddingBottom:Platform.OS === 'ios' ? 30 : 32,
+    paddingTop: IOS ? 30 : 32,
+    paddingBottom: IOS ? 30 : 32,
     backgroundColor:'#FFF',
     flexDirection:'row',
     alignItems:'center'
@@ -155,6 +174,7 @@ const styles = StyleSheet.create({
   entryTitleName:{
     fontSize:18,
     fontWeight:'normal',
+    maxWidth: width - 110 - 40, // img - position
   },
   entryTitleScore:{
     backgroundColor:'transparent',
@@ -165,27 +185,27 @@ const styles = StyleSheet.create({
   entryTitleScoreOver:{
     position:'absolute',
     left:6,
-    top:Platform.OS === 'ios' ? 7 : 3,
+    top: IOS ? 7 : 3,
     fontSize:14,
     fontWeight:'bold',
     color:'#fff',
     textShadowColor:'#873a6d',
-    textShadowOffset: {width: 0, height: 1},
+    textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 1
   },
   barWrap:{
     backgroundColor:'transparent',
-    marginTop:3,
+    marginTop:6,
     marginBottom:5,
     overflow:'hidden',
-    height:Platform.OS === 'ios' ? 30 : 26,
+    height:IOS ? 10 : 12,
     flex:1,
   },
   bar:{
-    height:Platform.OS === 'ios' ? 30 : 26,
+    height:IOS ? 10 : 12,
     backgroundColor:theme.secondary,
     position:'absolute',
-    borderRadius:3,
+    borderRadius: 3,
     left:0,
     top:0,
     bottom:0,
@@ -193,4 +213,5 @@ const styles = StyleSheet.create({
   }
 });
 
+reactMixin(LeaderboardEntry.prototype, TimerMixin);
 export default LeaderboardEntry;

@@ -1,9 +1,12 @@
 'use strict';
 
+import { isNil } from 'lodash';
 import api from '../services/api';
 import ActionTypes from '../constants/ActionTypes';
 import * as NotificationMessages from '../utils/notificationMessage';
 import { refreshFeed } from './feed';
+import { sortFeedChronological } from '../concepts/sortType';
+import { getCityId } from '../concepts/city';
 import {createRequestActionTypes} from '.';
 
 const {
@@ -19,6 +22,8 @@ const {
 
 const OPEN_TEXTACTION_VIEW = 'OPEN_TEXTACTION_VIEW';
 const CLOSE_TEXTACTION_VIEW = 'CLOSE_TEXTACTION_VIEW';
+const OPEN_CHECKIN_VIEW = 'OPEN_CHECKIN_VIEW';
+const CLOSE_CHECKIN_VIEW = 'CLOSE_CHECKIN_VIEW';
 const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 const HIDE_NOTIFICATION = 'HIDE_NOTIFICATION';
 const UPDATE_COOLDOWNS = 'UPDATE_COOLDOWNS';
@@ -31,16 +36,35 @@ const closeTextActionView = () => {
   return { type: CLOSE_TEXTACTION_VIEW };
 };
 
-const _postAction = (payload) => {
-  return (dispatch, getStore) => {
-     dispatch({ type: POST_ACTION_REQUEST });
+const openCheckInView = () => {
+  return { type : OPEN_CHECKIN_VIEW };
+};
 
-    return api.postAction(payload, getStore().location.get('currentLocation'))
+const closeCheckInView = () => {
+  return { type: CLOSE_CHECKIN_VIEW };
+};
+
+const _postAction = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({ type: POST_ACTION_REQUEST });
+
+    const state = getState();
+    const cityId = getCityId(state);
+    const queryParams = !isNil(cityId) ? { cityId } : {};
+
+    return api.postAction(payload, state.location.get('currentLocation'), queryParams)
       .then(response => {
          setTimeout(() => {
-             dispatch(refreshFeed());
-        dispatch({ type: POST_ACTION_SUCCESS, payload: { type: payload.type } });
-        dispatch({ type: SHOW_NOTIFICATION, payload: NotificationMessages.getMessage(payload) });
+
+            // Set feed sort to 'new' if posted image or text, otherwise just refresh
+            if ([ActionTypes.TEXT, ActionTypes.IMAGE].indexOf(payload.type) >= 0) {
+              dispatch(sortFeedChronological())
+            } else {
+              dispatch(refreshFeed());
+            }
+
+            dispatch({ type: POST_ACTION_SUCCESS, payload: { type: payload.type } });
+            dispatch({ type: SHOW_NOTIFICATION, payload: NotificationMessages.getMessage(payload) });
 
          }, 1000);
 
@@ -55,6 +79,11 @@ const _postAction = (payload) => {
           dispatch({
             type: SHOW_NOTIFICATION,
             payload: NotificationMessages.getRateLimitMessage(payload)
+          });
+        } else if (e.response.status === 403) {
+          dispatch({
+            type: SHOW_NOTIFICATION,
+            payload: NotificationMessages.getInvalidEventMessage(payload)
           });
         } else {
           dispatch({
@@ -84,12 +113,20 @@ const postText = text => {
   });
 };
 
-const postImage = image => {
-  return _postAction({
+const postImage = (image, imageText, imageTextPosition) => {
+  const postObject = Object.assign({
     type: ActionTypes.IMAGE,
-    imageData: image
-  });
+    imageData: image,
+  }, !!imageText ? { imageText, imageTextPosition } : {});
+  return _postAction(postObject);
 };
+
+const checkIn = eventId => {
+  return _postAction({
+    type: ActionTypes.CHECK_IN_EVENT,
+    eventId: eventId
+  });
+}
 
 const fetchActionTypes = () => {
   return dispatch => {
@@ -112,6 +149,8 @@ export {
   GET_ACTION_TYPES_SUCCESS,
   GET_ACTION_TYPES_FAILURE,
   OPEN_TEXTACTION_VIEW,
+  OPEN_CHECKIN_VIEW,
+  CLOSE_CHECKIN_VIEW,
   CLOSE_TEXTACTION_VIEW,
   SHOW_NOTIFICATION,
   HIDE_NOTIFICATION,
@@ -119,6 +158,9 @@ export {
   postAction,
   postText,
   postImage,
+  openCheckInView,
+  checkIn,
+  closeCheckInView,
   openTextActionView,
   closeTextActionView,
   fetchActionTypes,

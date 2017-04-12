@@ -1,6 +1,7 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   View,
   TouchableHighlight,
   Platform,
@@ -30,14 +31,15 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+
+class Fab extends Component {
   propTypes: {
     styles: View.propTypes.style,
     onPress: PropTypes.func,
     onPressIn: PropTypes.func,
     onPressOut: PropTypes.func,
     underlayColor: PropTypes.string
-  },
+  }
 
   render() {
     const touchableProps = this.props.disabled ? {} : {
@@ -61,4 +63,7 @@ export default React.createClass({
       </TouchableHighlight>
     );
   }
-});
+}
+
+export default Fab;
+

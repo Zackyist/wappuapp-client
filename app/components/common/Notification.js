@@ -1,6 +1,5 @@
-import React, {
-  Component,
-  PropTypes,
+import React, { Component, PropTypes } from 'react';
+import {
   Text,
   Easing,
   Animated,
@@ -9,14 +8,15 @@ import React, {
   StyleSheet
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 
-const Screen = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: -100,
-    width: Screen.width,
+    width: width,
     left: 0,
     right: 0,
     backgroundColor: theme.primary,
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 18
+    paddingBottom: 18,
   },
   message: {
     color: '#fff',
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: 'rgba(0,0,0,0)',
-    width: Screen.width,
+    width: width,
     height: 400
   }
 });
@@ -68,8 +68,9 @@ class Notification extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+
     if (nextProps.visible && !this.props.visible) {
-      this.fadeIn();
+      this.fadeIn(nextProps.topOffset);
     } else {
       if (!nextProps.visible && this.props.visible) {
         this.fadeOut();
@@ -86,11 +87,11 @@ class Notification extends Component {
     return false;
   }
 
-  fadeIn() {
+  fadeIn(topOffset = 0) {
     Animated.timing(this.state.translate, {
       duration: 300,
       easing: Easing.ease,
-      toValue: { x: 0, y: 0 }
+      toValue: { x: 0, y: topOffset }
     }).start();
   }
 
@@ -116,6 +117,7 @@ class Notification extends Component {
     const message = this.props.children;
     const animatedViewStyles = [
       styles.container,
+      { /* backgroundColor: this.props.success ? theme.green : theme.red */},
       { top: this.state.height === 0 ? -100 : 0 },
       { transform: this.state.translate.getTranslateTransform() }
     ];
@@ -125,6 +127,8 @@ class Notification extends Component {
         <Animated.View
           onLayout={this.getViewSize.bind(this)}
           style={animatedViewStyles}>
+          {this.props.success &&
+            <Icon name="done" style={{fontSize:20, color:theme.white, position:'absolute', left: 15, top: 17 }} />}
           <Text style={styles.message}>{message}</Text>
         </Animated.View>
       </View>

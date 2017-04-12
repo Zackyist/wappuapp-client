@@ -1,144 +1,271 @@
 'use strict';
 
-import React, {
+import React, { Component, PropTypes } from 'react';
+import {
   View,
   Text,
+  Image,
   TextInput,
   StyleSheet,
   Dimensions,
   Platform,
-  PropTypes,
   TouchableOpacity,
   ScrollView,
-  BackAndroid
+  BackAndroid,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
-import Immutable from 'immutable';
+import autobind from 'autobind-decorator';
+import AppIntro from 'react-native-app-intro';
+
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
+import InstructionView from './InstructionView';
+import SkipView from './SkipView';
 import IntroView from './IntroView';
-import Modal from 'react-native-modalbox';
+// import Modal from 'react-native-modalbox';
 import Team from './Team';
 import Toolbar from './RegistrationToolbar';
-import * as RegistrationActions from '../../actions/registration';
-import * as TeamActions from '../../actions/team';
+import {
+  putUser,
+  updateName,
+  selectTeam,
+  reset,
+  generateName,
+  dismissIntroduction,
+  openRegistrationView,
+  closeRegistrationView
+} from '../../actions/registration';
+import { setCity, getCityIdByTeam, getCityId } from '../../concepts/city';
+import { setDefaultRadioByCity } from '../../concepts/radio';
+import { showChooseTeam } from '../../actions/team';
 import * as keyboard from '../../utils/keyboard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const IOS = Platform.OS === 'ios';
-const {height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const RegistrationView = React.createClass({
+class RegistrationView extends Component {
   propTypes: {
     name: PropTypes.string.isRequired,
-    teams: PropTypes.instanceOf(Immutable.List).isRequired,
+    //teams: PropTypes.instanceOf(Immutable.List).isRequired,
+    teams: PropTypes.any,
     selectedTeam: PropTypes.number.isRequired,
     isRegistrationViewOpen: PropTypes.bool.isRequired,
     isRegistrationInfoValid: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
-  },
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      showSkipButton: false,
+      selectedCity: props.selectedCityId || 2,
+      index: 0
+    };
+  }
+
   componentDidMount() {
     BackAndroid.addEventListener('hardwareBackPress', () => {
-      if (this.props.isRegistrationViewOpen) {
-        this.onClose()
+      if (this.props.isRegistrationViewOpen && this.props.isRegistrationInfoValid) {
+        this.onCloseProfileEditor()
         return true;
       }
       return false;
     })
-  },
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.isRegistrationViewOpen && nextProps.isRegistrationViewOpen) {
+
+      const startingSelectedCity = nextProps.isRegistrationInfoValid
+        ? nextProps.selectedCityId
+        : nextProps.viewCityId;
+
+      this.setState({ selectedCity: startingSelectedCity || 2 });
+    }
+  }
+
+  @autobind
   onRegister() {
-    this.props.dispatch(RegistrationActions.putUser());
-  },
+    this.props.putUser();
+  }
+
+  @autobind
   onChangeName(name) {
-    this.props.dispatch(RegistrationActions.updateName(name));
-  },
+    this.props.updateName(name);
+  }
+
+  @autobind
   onSelectTeam(id) {
-    this.props.dispatch(RegistrationActions.selectTeam(id));
-  },
+    this.props.selectTeam(id);
+    this.scrollToNameSelection();
+  }
+
+  @autobind
+  onSelectCity(id) {
+    this.setState({
+      selectedCity: id
+    });
+  }
+
+  @autobind
   onGenerateName() {
-    this.props.dispatch(RegistrationActions.generateName());
-  },
+    this.props.generateName();
+  }
+
+  @autobind
   onShowChooseTeam() {
-    this.props.dispatch(TeamActions.showChooseTeam());
-  },
+    this.props.showChooseTeam();
+  }
+
+  @autobind
   onDismissIntroduction() {
     if (this.props.isRegistrationInfoValid) {
       this.onRegister();
     }
-    this.props.dispatch(RegistrationActions.dismissIntroduction());
-  },
+    this.props.dismissIntroduction();
+  }
+
+  @autobind
   onClose() {
+    this.props.reset();
+    this.props.setCity(this.state.selectedCity);
+    this.props.setDefaultRadioByCity(this.state.selectedCity);
+    this.props.dismissIntroduction();
+    this.props.closeRegistrationView();
+  }
+
+  @autobind
+  onCloseProfileEditor() {
     if (this.props.isRegistrationInfoValid) {
       this.onRegister();
     }
-    this.props.dispatch(RegistrationActions.closeRegistrationView());
-  },
-  render() {
-    return (
-      <Modal
-        isOpen={this.props.isRegistrationViewOpen}
-        swipeToClose={false}
-        backdropPressToClose={false}>
-        {
-          this.props.selectedTeam || this.props.isIntroductionDismissed
-            ? this._renderNameSelectContainer()
-            : <IntroView onDismiss={this.onDismissIntroduction} />
-        }
-      </Modal>
-    );
-  },
+    this.props.closeRegistrationView();
+  }
+
+  teamIsValid() {
+    const { selectedTeam, teams } = this.props
+    const { selectedCity } = this.state;
+    const team = teams.find(team => team.get('id') === selectedTeam);
+
+    if (team) {
+      return team.get('city') === selectedCity;
+    }
+    return false;
+  }
+
+  changeSlide(index) {
+    this.setState({
+      showSkipButton: index > 0,
+      index
+    });
+  }
+
+
+  @autobind
+  scrollToNameSelection() {
+    const regScroll = this.containerScrollViewRef;
+    if (regScroll && !IOS) {
+      setTimeout(() => {
+        regScroll.scrollTo({x: 0, y: 2000, animated: true});
+      }, 750);
+    }
+  }
 
   _renderNameSelectContainer() {
+    const simplified = this.props.isIntroductionDismissed;
+    const containerStyles = [styles.container, styles.modalBackgroundStyle, simplified && styles.simplified]
+
     return (
-      <View style={[styles.container, styles.modalBackgroundStyle]}>
+      <View style={containerStyles}>
 
-        <Toolbar icon={this.props.isRegistrationInfoValid ? 'android-done' : 'android-close'}
-          iconClick={this.onClose}
+        {!simplified ? <Toolbar icon={'done'}
+          iconClick={this.onCloseProfileEditor}
           title='Fill your profile' />
+        : <Text style={styles.header}>Create
+            <Image style={styles.logo}  source={require('../../../assets/whappu-text.png')}/>
+            user</Text>}
 
-        <ScrollView ref={view => this.containerScrollViewRef = view} style={{flex:1}}>
+        <ScrollView
+          ref={view => this.containerScrollViewRef = view}
+          showsVerticalScrollIndicator={true}
+          style={{flex:1}}>
           <View style={[styles.innerContainer]}>
+            {!simplified && this._renderCitySelect()}
             <View style={styles.inputGroup}>
-              <View style={styles.inputLabel}>
-                <Text style={styles.inputLabelText}>Choose your Guild</Text>
+              <View style={[styles.inputLabel, {backgroundColor: !simplified ? theme.white : '#eee'}]}>
+                <Text style={styles.inputLabelText}>Choose your Team</Text>
               </View>
 
-              <View style={[styles.inputFieldWrap, {paddingTop:0,paddingBottom:0}]}>
-                <ScrollView style={{flex:1, height: (IOS || height > 605) ? 210 : null}}>
-                  {this.props.teams.map((team,i) =>
-                    <Team
-                      key={team.get('id')}
-                      name={team.get('name')}
-                      teamid={team.get('id')}
-                      logo={team.get('imagePath')}
-                      selected={this.props.selectedTeam}
-                      onPress={this.onSelectTeam.bind(this, team.get('id'))} />
+              <View style={[styles.inputFieldWrap, { paddingBottom: 0 }]}>
+                <ScrollView style={{flex:1, height: IOS ? 210 : null}}>
+                  {this.props.teams.map(team => {
+                    if (team.get('city') === this.state.selectedCity) {
+                      return <Team
+                        key={team.get('id')}
+                        name={team.get('name')}
+                        teamid={team.get('id')}
+                        logo={team.get('imagePath')}
+                        selected={this.props.selectedTeam}
+                        onPress={this.onSelectTeam.bind(this, team.get('id'))}/>;
+                    }}
                   )}
                 </ScrollView>
               </View>
             </View>
-
             {this._renderNameSelect()}
           </View>
         </ScrollView>
 
-        <View style={styles.bottomButtons}>
+        {!simplified && <View style={styles.bottomButtons}>
           <Button
             onPress={this.onRegister}
             style={styles.modalButton}
-            isDisabled={!this.props.isRegistrationInfoValid}>
+            isDisabled={!this.props.isRegistrationInfoValid || !this.teamIsValid()}>
             Save
           </Button>
+        </View>}
+      </View>
+    );
+  }
+
+  @autobind
+  _renderCitySelect() {
+    const { selectedCity } = this.state;
+    return (
+      <View style={styles.inputGroup}>
+        <View style={styles.inputLabel}>
+          <Text style={styles.inputLabelText}>{`Choose your City`}</Text>
+        </View>
+        <View style={{flexDirection: 'row', padding: 10, paddingTop: 5 }}>
+          {this.props.cities.map((city, i) => {
+            const isCitySelected = selectedCity === city.get('id');
+            return (
+              <View key={i} style={styles.item}>
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: isCitySelected ? theme.secondary : theme.white}]}
+                  onPress={() => this.onSelectCity(city.get('id'))}>
+                  <Text style={[styles.text, {color: isCitySelected ? 'white' : theme.midgrey }]}>
+                    {city.get('name')}
+                  </Text>
+                </TouchableOpacity>
+              </View>);
+            }
+
+          )}
         </View>
       </View>
     );
-  },
+  }
 
   _renderNameSelect() {
+    const simplified = this.props.initialSetup;
+
     return (
       <View style={[styles.inputGroup, {marginBottom:4}]}>
         <View style={styles.inputLabel}>
-          <Text style={styles.inputLabelText}>{`Hi there! What's your wappu name?`}</Text>
+          <Text style={styles.inputLabelText}>{`Hi there! What's your Whappu name?`}</Text>
         </View>
         <View style={styles.inputFieldWrap}>
           <TextInput
@@ -170,17 +297,108 @@ const RegistrationView = React.createClass({
       </View>
     );
   }
-});
+
+  _renderIntroForCitySelection() {
+
+    return (
+      <Modal
+        visible={this.props.isRegistrationViewOpen}
+        animationType={'fade'}
+        onRequestClose={() => console.log('AppIntro cannot be closed by back button!')}
+      >
+        <AppIntro
+          skipBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18 }}>SKIP</Text>}
+          doneBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18, lineHeight: IOS ? 22 : 32 }}>SKIP</Text>}
+          onSkipBtnClick={this.onClose}
+          onDoneBtnClick={this.onClose}
+          showSkipButton={false}
+          showDoneButton={this.state.index !== 3 || (this.props.isRegistrationInfoValid && this.teamIsValid())}
+          onSlideChange={(index) => this.changeSlide(index)}
+          defaultIndex={this.state.index}
+          leftTextColor={theme.white}
+          rightTextColor={theme.white}
+          activeDotColor={theme.white}
+          nextBtnLabel={<Icon name="chevron-right" style={{ lineHeight: IOS ? 40 : 40 }} size={32} />}
+          style={{backgroundColor: theme.secondary }}
+          dotColor={'rgba(255, 255, 255, .3)'}>
+          <IntroView style={styles.slide} selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
+          <View style={[styles.slide, styles.slideIntro]} >
+            <View style={styles.topArea} level={10} >
+              <View style={styles.iconWrap}>
+                <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
+                <Icon style={styles.icon} name={'face'} />
+                <Icon style={styles.subIcon} name={'chat-bubble-outline'} />
+                <Icon style={[styles.subIcon, { top: IOS ? -20 : 0, left: IOS ? 65 : 70, fontSize: IOS ? 50 : 35 }]} name={'event'} />
+                <Icon style={[styles.subIcon, { top: 20, left: IOS ? -15 : 0, fontSize: 50 }]} name={'photo-camera'} />
+              </View>
+            </View>
+            <View level={-10} >
+              <InstructionView simplified={true} closeRegistrationView={this.onClose} />
+            </View>
+          </View>
+          <View style={[styles.slide, styles.slideIntro]} >
+            <View style={styles.topArea} level={10} >
+              <View style={styles.iconWrap}>
+                <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
+                <Icon style={styles.icon} name={'people-outline'} />
+                <Icon style={[styles.subIcon, { left: 115, top: IOS ? -15 : 0, }]} name={'wb-sunny'} />
+              </View>
+            </View>
+            <View level={-10} >
+              <SkipView onPressProfileLink={() => {
+                this.onClose();
+                setTimeout(() => {
+                  this.props.openRegistrationView();
+                }, 750);
+              }}
+              />
+            </View>
+          </View>
+          {/*
+          <View style={[styles.slide, { backgroundColor: '#fff' }]}>
+            {this._renderNameSelectContainer()}
+          </View>
+          */}
+        </AppIntro>
+      </Modal>
+    );
+  }
+
+  render() {
+    const { initialSetup } = this.props;
+    return (
+      initialSetup ?
+        this._renderIntroForCitySelection()
+        :
+        <Modal
+          visible={this.props.isRegistrationViewOpen}
+          animationType={'slide'}
+          onRequestClose={this.onCloseProfileEditor}
+        >
+          {this._renderNameSelectContainer()}
+        </Modal>
+    );
+  }
+
+}
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom:50
+    paddingBottom:50,
+  },
+  simplified: {
+    paddingBottom: 80,
+    alignSelf: 'stretch',
+    backgroundColor: theme.secondary
   },
   innerContainer: {
     flex:1,
-    paddingTop:IOS ? 15 : 10,
+    paddingTop:15,
+    paddingBottom: 50,
+    margin: 0,
+    borderRadius: 5
   },
   bottomButtons:{
     flex:1,
@@ -205,28 +423,41 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee'
   },
   inputGroup:{
-    padding:0,
-    backgroundColor:'#FFF',
-    margin:10,
-    marginTop:0,
-    borderRadius:2,
+    padding: 0,
+    backgroundColor:theme.light,
+    marginHorizontal:15,
+    marginBottom:15,
     elevation:1,
     flex:1,
+    borderRadius:5,
+    overflow:'hidden'
+  },
+  item: {
+    flex: 1
+  },
+  button: {
+    height: 35,
+    borderRadius: 2,
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   inputLabel:{
-    padding:15,
-    paddingTop:13,
-    paddingBottom:13,
-    borderBottomWidth:1,
-    borderColor:'#ddd',
+    padding: 15,
+    paddingTop: 13,
+    paddingBottom: 10,
+    borderBottomWidth: 0,
+    borderColor: '#ddd'
   },
   inputLabelText:{
-    fontSize:14,
-    color:theme.primary,
+    fontSize:16,
+    color:theme.secondary,
     fontWeight:'bold',
     textAlign: IOS ? 'center' : 'left',
   },
   inputFieldWrap:{
+    paddingTop: 5,
     padding:15,
   },
   inputField: {
@@ -261,30 +492,129 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   header: {
+    textAlign:'center',
+    color: theme.white,
+    marginTop: 15,
+    // marginLeft: IOS ? 25 : 15,
+    fontSize: 28
+  },
+  logo: {
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    height: 110,
+    width: 110
+  },
+  slide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    backgroundColor: theme.secondary,
+    padding: 0,
+  },
+  text: {
+    color: '#000',
     fontSize: 20,
-    marginBottom: 10
+    fontWeight: 'bold',
   },
-  introductionContainer: {
-    margin: 10,
-    marginTop: 20
+  // Slide top
+
+  slideIntro: {
+    backgroundColor: theme.secondary,
+    paddingTop: height / 2.4,
   },
-  introductionSecondaryText: {
-    marginTop: 10,
-    color: '#555'
-  }
+  topArea: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    flex: 1,
+    flexGrow: 1,
+    backgroundColor: theme.secondary,
+    minHeight: height / 2.5,
+    // alignItems: 'center',
+    // justifyContent: 'flex-start',
+  },
+  iconWrap: {
+    // overflow: 'hidden',
+    position: 'absolute',
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    backgroundColor: 'rgba(255,255,255,.1)',
+    left: width / 2 - 95,
+    top: width / 8,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  icon: {
+    // width: 200,
+    // left: width / 2 - 100,
+    // top: 50,
+    // position: 'absolute',
+    textAlign: 'center',
+    opacity: 1,
+    backgroundColor: theme.transparent,
+    fontSize: 150,
+    width: 150,
+    height: 150,
+    // tintColor: theme.white,
+    color: theme.white,
+  },
+  subIcon: {
+    backgroundColor: theme.transparent,
+    color: theme.accentLight,
+    fontSize: IOS ? 90 : 60,
+    left: IOS ? 140 : 135,
+    top: IOS ? -5 : 10,
+    position: 'absolute'
+  },
+  bgImage: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    overflow: 'hidden',
+    bottom: 0,
+    opacity: 0.3
+  },
 });
 
+const mapDispatchToProps = {
+  putUser,
+  updateName,
+  reset,
+  setCity,
+  setDefaultRadioByCity,
+  selectTeam,
+  generateName,
+  dismissIntroduction,
+  openRegistrationView,
+  closeRegistrationView,
+  showChooseTeam
+};
+
 const select = store => {
+
+  const initialSetup = store.city.get('id') === 1 || !store.city.get('id');
   return {
     isIntroductionDismissed: store.registration.get('isIntroductionDismissed'),
     isRegistrationViewOpen: store.registration.get('isRegistrationViewOpen'),
     name: store.registration.get('name'),
     selectedTeam: store.registration.get('selectedTeam'),
+    selectedCityId: getCityIdByTeam(store),
+    viewCityId: getCityId(store),
     teams: store.team.get('teams'),
+    cities: store.city.get('list'),
     isChooseTeamViewOpen: store.team.get('isChooseTeamViewOpen'),
     isRegistrationInfoValid: !!store.registration.get('name') &&
-      !!store.registration.get('selectedTeam')
+      !!store.registration.get('selectedTeam'),
+    initialSetup
   };
 };
 
-export default connect(select)(RegistrationView);
+export default connect(select, mapDispatchToProps)(RegistrationView);

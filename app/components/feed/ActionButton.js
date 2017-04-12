@@ -1,6 +1,7 @@
 'use strict';
 
-import React, { StyleSheet, Platform } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Platform } from 'react-native';
 import Fab from '../common/Fab';
 import theme from '../../style/theme';
 
@@ -28,10 +29,10 @@ const styles = StyleSheet.create({
   }
 });
 
-const ActionButton = React.createClass({
+class ActionButton extends Component {
   render() {
     const combinedStyle = [styles.button];
-    const { extraStyle, onPress, disabled, children } = this.props;
+    const { extraStyle, onPress, disabled, children, underLayColor } = this.props;
 
     if (extraStyle) {
       combinedStyle.push(extraStyle);
@@ -39,11 +40,11 @@ const ActionButton = React.createClass({
 
     return (
       <Fab onPress={onPress} styles={combinedStyle}
-        disabled={disabled} underlayColor={theme.secondaryLight}>
+        disabled={disabled} underlayColor={underLayColor || theme.secondaryLight}>
         {children}
       </Fab>
     );
   }
-});
+}
 
 export default ActionButton;

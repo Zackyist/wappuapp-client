@@ -1,40 +1,35 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   Navigator,
-  BackAndroid,
   PropTypes
 } from 'react-native';
-import { connect } from 'react-redux';
-import TimelineList from '../components/calendar/TimelineList';
+import autobind from 'autobind-decorator';
+import EventsView from './EventsView';
 
 var _navigator;
-BackAndroid.addEventListener('hardwareBackPress', () => {
-  if (_navigator && _navigator.getCurrentRoutes().length > 1) {
-    _navigator.pop();
-    return true;
-  }
-  return false;
-});
 
-var TimelineListWrapper = React.createClass({
+class TimelineListWrapper extends Component {
   propTypes: {
     navigator: PropTypes.object.isRequired
-  },
+  }
+
+  @autobind
   renderScene(route, navigator) {
     _navigator = navigator;
     if (route.component) {
       const RouteComponent = route.component;
       return <RouteComponent navigator={this.props.navigator} route={route} {...this.props} />
     }
-  },
+  }
 
   render() {
     return (
       <Navigator
         initialRoute={{
-          component: TimelineList,
-          name: 'Tapahtumat'
+          component: EventsView,
+          name: 'Events'
         }}
         renderScene={this.renderScene}
         configureScene={() => ({
@@ -43,10 +38,6 @@ var TimelineListWrapper = React.createClass({
       />
     );
   }
-});
+}
 
-const select = store => {
-  return {};
-};
-
-export default connect(select)(TimelineListWrapper);
+export default TimelineListWrapper;

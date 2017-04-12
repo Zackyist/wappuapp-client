@@ -1,18 +1,33 @@
-[![Build Status](https://travis-ci.com/futurice/wappuapp-client.svg?token=4Z4JTnNSis9VpuFymYo8&branch=master)](https://travis-ci.com/futurice/wappuapp-client)
-
 * Backend repository here: https://github.com/futurice/wappuapp-backend
 
 # Whappu app
 
 ![](docs/logo.png)
 
-> An event app similar to a festival app, which helps students of TTY(Tampere University of Technology) to find events and celebrate between 19th April - 1st May.
+> An event app similar to a festival app, which helps students of TTY(Tampere University of Technology) and Otaniemi to find events and celebrate between 19th April - 1st May.
 
-Short facts:
+### Download the App
+* [App Store](https://itunes.apple.com/fi/app/whappu/id1096655903?mt=8)
+* [Play Store](https://play.google.com/store/apps/details?id=com.wappuapp)
 
+### Features:
+* Low-effort user registration
+* Feed with images and text
+* Radio streaming
+* Event Calendar
+* Event Map
+* Vibe Meter and Charts
+* Scoreboard
+* Event links
+
+### Short facts:
 * React Native + Redux
 * iOS and Android
-* Developed in very short time(=expect some code quality issues)
+
+- Whappu 2017 architectural updates
+  - Selectors with [reselect](https://github.com/reactjs/reselect/) to access store
+  - Redux architecture using [ducks](https://github.com/erikras/ducks-modular-redux). See `/app/concepts`
+  - Data processing in concepts and minimize logic in views
 
 ## Release
 
@@ -32,56 +47,6 @@ Short facts:
 * Bump `versionCode` and `versionName` in `android/app/build.gradle`
 * `cd android && ./gradlew assembleRelease --no-daemon`
 * Built .apk is saved to `android/app/build/outputs/apk`
-
-### Incremental updates with Code Push
-
-We support pushing live updates to the app through [Code Push](https://microsoft.github.io/code-push/). **Only iOS for now, Android coming soon.**
-
-Only JavaScript files and image assets can be updated through Code Push. If the update involves
-any native code changes, it must be submitted through Play Store/App Store.
-
-Install Code Push CLI:
-```
-npm i -g code-push-cli
-```
-
-Log into code push (credentials in Futurice password safe):
-```
-code-push login
-```
-
-Release an update:
-```
-code-push release-react Whappu ios \
-  --deploymentName Production \
-  --description "\n\nIn this version:\n * Such updates\n * Much wow\n * Very update"
-```
-
-(Check `code-push release-react` for interesting options such as `--mandatory` or staged `--rollout`)
-
-#### Testing Code Push updates before production release
-
-Code Push comes with a Staging environment. The deployment key that indicates which environment to use is configured in the `Info.plist` key `CodePushDeploymentKey`.
-
-You can get the staging deployment key by executing:
-```
-code-push deployment ls -k Whappu
-```
-
-#### Testing Code Push updates on a local device
-
-Code Push is only used in Release configuration builds. To launch an app from XCode to device and test updates, change the `Run` mode build configuration to `Release`.
-
-#### Testing Code Push updates on a simulator
-
-After the step above, in order to run a release build on a simulator you need to comment out the following lines in `node_modules/react-native/packager/react-native-xcode.sh`:
-
-```
-if [[ "$PLATFORM_NAME" = "iphonesimulator" ]]; then
-  echo "Skipping bundling for Simulator platform"
-  exit 0;
-fi
-```
 
 ## Local development
 
@@ -104,12 +69,11 @@ The xcode-project is expecting that you have nvm installed. It can be reconfigur
 
   **Note:** Use the .xworkspace instead of .xcodeproj!
 
-- Cmd + R
-
 ### Android
 
-Running Android? Call [Pasi](http://futurice.com/people/pasi-lampinen)
-
+- Android Emulator suggestion: install and start [Genymotion](https://www.genymotion.com)
+- Or connect your Android device with usb cable
+- `react-native run-android`
 
 ### Common problems
 
@@ -119,6 +83,10 @@ Try these:
 useful resources to fix problems
 * Search [react-native issues](https://github.com/facebook/react-native)
 * Search from the react native component's issues
+
+- `error: /Users/user/code/wappuapp/wappuapp-client/node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf: No such file or directory`
+  - Download the from [here](https://github.com/oblador/react-native-vector-icons/raw/master/Fonts/MaterialCommunityIcons.ttf) and move it to `/node_modules/react-native-vector-icons/Fonts`
+- Cmd + R
 
 #### Could not connect to development server
 

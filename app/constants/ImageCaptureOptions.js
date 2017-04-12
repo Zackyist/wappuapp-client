@@ -1,9 +1,9 @@
 export default {
-  title: null,
+  title: 'Post Image',
   cancelButtonTitle: 'Cancel',
-  takePhotoButtonTitle: 'Take a photo...',
-  chooseFromLibraryButtonTitle: 'Choose from library...',
-  customButtons: {},
+  takePhotoButtonTitle: 'Take a photo',
+  chooseFromLibraryButtonTitle: 'Choose from library',
+  customButtons: [],
   cameraType: 'back',
   mediaType: 'photo',
   videoQuality: 'high',

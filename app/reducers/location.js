@@ -9,7 +9,7 @@ const initialState = Immutable.fromJS({
   currentLocation: null
 });
 
-export default function competition(state = initialState, action) {
+export default function location(state = initialState, action) {
   switch (action.type) {
     case UPDATE_LOCATION:
       return state.set('currentLocation', action.payload);

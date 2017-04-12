@@ -1,11 +1,10 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component, PropTypes } from 'react';
+import {
   StyleSheet,
   View,
   Platform,
-  PropTypes,
   Linking,
   Text,
   TouchableHighlight,
@@ -13,25 +12,32 @@ import React, {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import _ from 'lodash';
-const Icon = require('react-native-vector-icons/Ionicons');
-const MDIcon = require('react-native-vector-icons/MaterialIcons');
+import Icon from 'react-native-vector-icons/Ionicons';
+import MDIcon from 'react-native-vector-icons/MaterialIcons';
 import analytics from '../../services/analytics';
 import * as MarkerActions from '../../actions/marker';
 import * as EventActions from '../../actions/event';
-import EventDetail from '../calendar/EventDetail';
+import EventDetail from '../calendar/EventDetailView';
 import Loader from '../common/Loader';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 import LoadingStates from '../../constants/LoadingStates';
+import { getCurrentCityName } from '../../concepts/city';
 
-// Disable map on some devices
-const DeviceInfo = require('react-native-device-info');
-const Manufacturer = DeviceInfo.getManufacturer();
-const OSVersion = DeviceInfo.getSystemVersion();
-const disableMap = Platform.OS === 'android' && parseInt(OSVersion) >= 6 &&
-  (Manufacturer.indexOf('Sony') >= 0 || Manufacturer === 'OnePlus');
+const disableMap = false;
+const CITY_COORDS = {
+  tampere: {
+    latitude: 61.4931758,
+    longitude: 23.7602363,
+  },
+  otaniemi: {
+    latitude: 60.1841396,
+    longitude: 24.827895
+  }
+};
 
 const MARKER_IMAGES = {
   EVENT: require('../../../assets/marker.png'),
@@ -46,16 +52,20 @@ const VIEW_NAME = 'EventMap';
 
 class EventMap extends Component {
 
-  constructor() {
-    super();
-  }
-
   componentDidMount() {
-    this.props.dispatch(EventActions.fetchEvents());
     this.props.dispatch(MarkerActions.fetchMarkers());
     analytics.viewOpened(VIEW_NAME);
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { currentCity } = this.props;
+    if (currentCity && currentCity !== nextProps.currentCity) {
+      const cityCoords = this.getCityCoords(nextProps.currentCity);
+      this.map.animateToCoordinate(cityCoords, 1);
+    }
+  }
+
+  @autobind
   onEventMarkerPress(event) {
     this.props.navigator.push({
       component: EventDetail,
@@ -63,6 +73,22 @@ class EventMap extends Component {
       model: event,
       disableTopPadding: true
     });
+  }
+
+  getCityRegion(city) {
+    const deltaSettings = {
+     latitudeDelta: 0.2,
+     longitudeDelta: 0.2
+   };
+   const cityCoords = this.getCityCoords(city);
+   return Object.assign(deltaSettings, cityCoords);
+  }
+
+  @autobind
+  getCityCoords(city) {
+   const cityName = city || this.props.currentCity;
+   const isTampere = (cityName || '').toLowerCase() === 'tampere';
+   return isTampere ? CITY_COORDS.tampere : CITY_COORDS.otaniemi;
   }
 
   render() {
@@ -91,8 +117,8 @@ class EventMap extends Component {
     });
     const markers = locations.map((location, i) => {
       return <MapView.Marker
-        centerOffset={{x: 0, y: location.type === 'EVENT' ? -20 : 0}}
-        anchor={{x: 0.5, y: location.type === 'EVENT' ? 0.9 : 0.5}}
+        centerOffset={{x: 0, y: location.type === 'EVENT' ? 0 : 0}}
+        anchor={{x: 0.5, y: location.type === 'EVENT' ? 0.5 : 0.5}}
         image={MARKER_IMAGES[location.type]}
         key={i} coordinate={location.location}
       >
@@ -108,20 +134,18 @@ class EventMap extends Component {
       return ( this._renderDisabledMapAnnouncement(firstFutureEvent) );
     }
 
+    const initialRegion = this.getCityRegion();
+
     return (
       <View style={{flex:1}}>
         <MapView style={styles.map}
-          initialRegion={{
-            latitude: 61.4931758,
-            longitude: 23.7602363,
-            latitudeDelta: 0.2,
-            longitudeDelta: 0.2,
-          }}
+          initialRegion={initialRegion}
           showsUserLocation={Platform.OS === 'android' || this.props.locateMe}
           showsPointsOfInterest={false}
           showsBuildings={false}
           showsIndoors={false}
           rotateEnabled={false}
+          ref={(map) => { this.map = map; }}
         >
           {markers}
         </MapView>
@@ -150,7 +174,7 @@ class EventMap extends Component {
   }
 
   _renderEventMarker(event) {
-    return <MapView.Callout onPress={this.onEventMarkerPress.bind(this, event)}>
+    return <MapView.Callout onPress={() => this.onEventMarkerPress(event)} style={{ flex: 1, position: 'relative' }}>
       <TouchableHighlight
         underlayColor='transparent'
         style={styles.calloutTouchable}
@@ -179,7 +203,7 @@ class EventMap extends Component {
       }
     }
 
-    return <MapView.Callout {...calloutProps}>
+    return <MapView.Callout {...calloutProps} style={{ flex: 1, position: 'relative' }}>
       <TouchableHighlight
         underlayColor='transparent'
         style={styles.calloutTouchable}
@@ -225,11 +249,7 @@ class EventMap extends Component {
   // Enables swiping between tabs
   // 20px of right part of map can not be used to navigate map
   _renderSwipeHelperOverlay() {
-    if (Platform.OS === 'ios') {
-      return;
-    }
-
-    return <View style={styles.androidSwipeHelper}></View>;
+    return <View style={styles.swipeHelperArea}></View>;
   }
 
   _renderFilterSelection() {
@@ -265,7 +285,7 @@ class EventMap extends Component {
     return Platform.OS === 'ios' ? <View style={styles.locateButton}>
           <TouchableOpacity onPress={this._toggleLocateMe.bind(this,null)}
             style={styles.locateButtonText} >
-            <Icon size={20} style={{ color:this.props.locateMe ? '#1D7BF7' : '#888' }} name='navigate' />
+            <MDIcon size={20} style={{ color:this.props.locateMe ? '#1D7BF7' : '#888' }} name='navigation' />
           </TouchableOpacity>
         </View> :
         false;
@@ -331,13 +351,16 @@ const styles = StyleSheet.create({
   },
   callout: {
     padding: 0,
-    flex:1,
+    flex: 1,
+    flexGrow: 1,
     justifyContent:'space-between',
     alignItems:'flex-start',
     flexDirection:'row'
   },
   calloutTouchable: {
-    padding: 6
+    padding: 6,
+    flex: 1,
+    flexGrow: 1,
   },
   calloutTitleWrap:{
     flex:1,
@@ -412,9 +435,9 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     paddingTop:5
   },
-  androidSwipeHelper: {
+  swipeHelperArea: {
     position: 'absolute',
-    right: 0,
+    left: 0,
     width: 20,
     top: 0,
     bottom: 0,
@@ -456,6 +479,7 @@ const styles = StyleSheet.create({
 const select = store => {
 
   return {
+    currentCity: getCurrentCityName(store),
     locateMe: store.event.get('locateMe'),
     showFilter: store.event.get('showFilter'),
     events: store.event.get('list'),

@@ -44,7 +44,8 @@ function eventIsOnGoing(startTime, endTime) {
 }
 
 function eventStartsSoon(startTime) {
-  return moment(startTime).diff(moment(), 'minutes') <= TRESHOLD_FOR_STARTS_SOON;
+  const eventIsUpcoming = moment(startTime).isAfter(moment());
+  return eventIsUpcoming && moment(startTime).diff(moment(), 'minutes') <= TRESHOLD_FOR_STARTS_SOON;
 }
 
 function getEventDay(startTime) {

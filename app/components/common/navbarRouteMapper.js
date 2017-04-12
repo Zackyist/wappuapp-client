@@ -9,17 +9,25 @@
 
 'use strict';
 
-import React, {
+import React from 'react';
+import {
   StyleSheet,
   View,
   Text,
   ActionSheetIOS,
   Platform,
   Image,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from 'react-native';
 
-const Icon = require('react-native-vector-icons/Ionicons');
+
+import theme from '../../style/theme';
+import CityToggle from '../header/CityToggle';
+import SortSelector from '../header/SortSelector';
+import MoodInfo from '../mood/MoodInfo';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Tabs from '../../constants/Tabs';
 
 let showShareActionSheet = function(url) {
   if (Platform.OS === 'ios') {
@@ -33,24 +41,42 @@ let showShareActionSheet = function(url) {
   }
 }
 
-let NavigationBarRouteMapper = {
+let NavigationBarRouteMapper = props => ({
   LeftButton: function(route, navigator, index, navState) {
-    return (<TouchableHighlight
-      underlayColor={'transparent'}
-      onPress={() => {
-        if (index > 0) {
-          navigator.pop();
-        }
-      }}>
-      { index > 0 ?
-        <Icon name='ios-arrow-back' style={styles.navBarIcon} /> :
-        <View/>
-      }
-      </TouchableHighlight>
+    if (index > 0) {
+      return (
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          onPress={() => { navigator.pop() }}>
+          <Icon name='ios-arrow-back' style={styles.navBarIcon} />
+        </TouchableHighlight>
       )
+    }
+
+    return <CityToggle />
   },
 
   RightButton: function(route, navigator, index, navState) {
+
+    if (props.currentTab === Tabs.FEED) {
+      return (<SortSelector />);
+    }
+
+    if (props.currentTab === Tabs.FEELING && !route.hideNavButton) {
+      return (<TouchableOpacity
+        onPress={() => {
+          navigator.push({
+            component: MoodInfo,
+            name: 'Whappu Vibe',
+            showName: true,
+            hideNavButton: true
+          });
+        }}
+        >
+          <Icon name='ios-information-circle-outline' style={[styles.navBarIcon, { paddingRight: 12, paddingTop: 8}]} />
+        </TouchableOpacity>);
+    }
+
     if (route.actions) {
       return (
         <TouchableHighlight
@@ -58,7 +84,7 @@ let NavigationBarRouteMapper = {
           showShareActionSheet(route.post.link)
         }}
         >
-        <Icon name='ios-upload-outline' style={styles.navBarIcon} />
+          <Icon name='ios-upload-outline' style={styles.navBarIcon} />
         </TouchableHighlight>
         );
     }
@@ -77,27 +103,27 @@ let NavigationBarRouteMapper = {
     return (
       <View style={styles.navBarLogoWrap}>
         <Image
-          source={require('../../../assets/headericon.png')}
+          resizeMode={'contain'}
+          source={require('../../../assets/whappu-logo-2017.png')}
           style={styles.navBarLogo} />
       </View>
     );
   }
-};
+});
 
 var styles = StyleSheet.create({
-
   navBarLogoWrap:{
     flex:1,
     alignItems:'center'
   },
   navBarButton:{
-    color:'#FFFFFF',
+    color: theme.white,
     padding:10,
     fontSize:16,
     textAlign:'center',
   },
   navBarIcon:{
-    color:'#FFFFFF',
+    color: theme.white,
     padding:6,
     paddingLeft:10,
     paddingRight:10,
@@ -105,17 +131,17 @@ var styles = StyleSheet.create({
     textAlign:'center',
   },
   navBarLogo:{
-    top:-5,
-    width:64,
-    height:64,
+    top: 3,
+    width:60,
+    height:35,
   },
   navBarTitle:{
     padding:10,
     fontSize:16,
-    color:'#FFFFFF',
+    color: theme.white,
     textAlign:'center',
     fontWeight:'bold',
   }
 });
 
-module.exports = NavigationBarRouteMapper;
+export default NavigationBarRouteMapper

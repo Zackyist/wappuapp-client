@@ -1,37 +1,38 @@
 'use strict';
 
 // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-import React, {
+import React, { Component } from 'react';
+import {
   StyleSheet,
   View,
   Platform,
-  ScrollView,
-  PropTypes,
   Text,
+  ScrollView,
   RefreshControl
 } from 'react-native';
-import Immutable from 'immutable';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+
 
 import theme from '../style/theme';
-import * as TeamActions from '../actions/team';
+import { fetchTeams } from '../actions/team';
+import { getCityTeams } from '../reducers/team';
 import analytics from '../services/analytics';
 import LeaderboardEntry from '../components/competition/LeaderboardEntry';
-const Icon = require('react-native-vector-icons/Ionicons');
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const VIEW_NAME = 'CompetitionView';
 
-const CompetitionView = React.createClass({
-  propTypes: {
-    teams: PropTypes.instanceOf(Immutable.List).isRequired
-  },
+class CompetitionView extends Component {
 
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
-  },
+  }
+
+  @autobind
   onRefreshFeed(){
-    this.props.dispatch(TeamActions.fetchTeams());
-  },
+    this.props.fetchTeams();
+  }
 
   render() {
     let topscore = 0;
@@ -49,32 +50,30 @@ const CompetitionView = React.createClass({
 
     return (
       <View style={styles.container}>
-          <View style={styles.leaderboardIntro}>
-            <View style={styles.leaderboardIconWrap}>
-              <Icon name='trophy' style={styles.leaderboardIcon} />
-            </View>
-            <View style={styles.leaderboardIntroTextWrap}>
-              <Text style={styles.leaderboardIntroText}>
-                Current Whappu points for each guild.
-                Be active in the Buzz and lead your guild to the victory!
-              </Text>
-              <Text style={[styles.leaderboardIntroText, styles.leaderboardIntroText__grey]}>
-                The competition ends at 12:00AM on 1st of May.
-              </Text>
-            </View>
+        <View style={styles.leaderboardIntro}>
+          <View style={styles.leaderboardIconWrap}>
+            <Icon name='ios-trophy' style={styles.leaderboardIcon} />
           </View>
-        <ScrollView style={styles.leaderboard}
-          refreshControl={refreshControl}
-        >
+          <View style={styles.leaderboardIntroTextWrap}>
+            <Text style={styles.leaderboardIntroText}>
+            Current Whappu points for each team.
+            Be active in the Buzz and lead your team to the victory!
+            </Text>
+            <Text style={[styles.leaderboardIntroText, styles.leaderboardIntroText__grey]}>
+            The competition ends at 12:00PM on 30th of April.
+            </Text>
+          </View>
+        </View>
+        <ScrollView style={styles.leaderboard} refreshControl={refreshControl} >
           {this.props.teams.map((team, index) =>
-            <LeaderboardEntry key={team.get('id')} topscore={+topscore}
-              team={team} position={index + 1} logo={team.get('imagePath')} />
+          <LeaderboardEntry key={team.get('id')} topscore={+topscore}
+            team={team} position={index + 1} logo={team.get('imagePath')} />
           )}
         </ScrollView>
       </View>
     );
   }
-});
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -99,9 +98,9 @@ const styles = StyleSheet.create({
     paddingRight:10,
   },
   leaderboardIcon: {
-    color:'#FFCC03',
-    fontSize:44,
-    top:4
+    color: '#FFCC03',
+    fontSize:52,
+    top: 0,
   },
   leaderboardIntroTextWrap:{
     flex:1,
@@ -120,12 +119,14 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapDispatchToProps = { fetchTeams };
+
 const select = store => {
   return {
     isRefreshing: store.team.get('isRefreshing'),
-    teams: store.team.get('teams'),
+    teams: getCityTeams(store),
     actionTypes: store.competition.get('actionTypes')
   };
 };
 
-export default connect(select)(CompetitionView);
+export default connect(select, mapDispatchToProps)(CompetitionView);

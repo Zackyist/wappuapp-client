@@ -1,6 +1,7 @@
 'use strict';
 
-import React, { Platform, StatusBarIOS, AppStateIOS } from 'react-native';
+import React, { Component } from 'react';
+import { Platform, StatusBar, AppState } from 'react-native';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -12,9 +13,15 @@ import * as CompetitionActions from '../actions/competition';
 import * as LocationActions from '../actions/location';
 import * as TeamActions from '../actions/team';
 import * as RegistrationActions from '../actions/registration';
+import { initializeUsersCity, fetchCities } from '../concepts/city';
+import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
 import * as ENV from '../../env';
 import { checkForUpdates } from '../utils/updater';
-var HockeyApp = require('react-native-hockeyapp');
+import permissions from '../services/android-permissions';
+
+const IOS = Platform.OS === 'ios';
+// var HockeyApp = require('react-native-hockeyapp');
+
 
 const middlewares = [thunk];
 if (__DEV__) {
@@ -29,21 +36,70 @@ const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducer);
 
 // Use different HockeyApp ID for both platforms.
-const HOCKEYAPP_ID = Platform.OS === 'ios' ? ENV.HOCKEYAPP_ID : ENV.HOCKEYAPP_ID_ANDROID;
+const HOCKEYAPP_ID = IOS ? ENV.HOCKEYAPP_ID : ENV.HOCKEYAPP_ID_ANDROID;
 
-// Fetch teams & actions, check user existance
+// Fetch actions, check user existance
 store.dispatch(CompetitionActions.fetchActionTypes());
-store.dispatch(TeamActions.fetchTeams());
 store.dispatch(RegistrationActions.getUser());
 
-const RootView = React.createClass({
+// Fetch all cities
+store.dispatch(fetchCities())
+// load selectd city from local storage
+.then(() => store.dispatch(initializeUsersCity()))
+
+// load radio settings from local storage
+store.dispatch(initializeUsersRadio())
+// fetch radio stations
+.then(() => store.dispatch(fetchRadioStations()))
+
+
+class RootView extends Component {
+  constructor(props) {
+    super(props);
+
+    this.startLocationWatcher = this.startLocationWatcher.bind(this);
+  }
   componentWillMount() {
-    HockeyApp.configure(HOCKEYAPP_ID, true);
-  },
+    if (IOS) {
+      // HockeyApp.configure(HOCKEYAPP_ID, true);
+    }
+  }
 
   componentDidMount() {
-    HockeyApp.start();
+    if (IOS) {
+      // HockeyApp.start();
+    }
 
+    // Location watcher
+    if (IOS) {
+      this.startLocationWatcher();
+    } else {
+      permissions.requestLocationPermission(this.startLocationWatcher);
+    }
+
+    // Statusbar style
+    if (IOS) {
+
+      StatusBar.setHidden(false)
+      StatusBar.setBarStyle('light-content')
+
+      // check for updates when app is resumed
+      // AppState.addEventListener('change', state => {
+      //   if (state === 'active') {
+      //     checkForUpdates();
+      //   }
+      // });
+
+      // // and check once on startup
+      // checkForUpdates();
+    }
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  startLocationWatcher() {
     const locationOpts = {
       enableHighAccuracy: false,
       timeout: 20000,
@@ -60,35 +116,14 @@ const RootView = React.createClass({
       error => console.log(error.message),
       locationOpts
     );
-
-    // Statusbar style
-    if (Platform.OS === 'ios') {
-
-      StatusBarIOS.setHidden(false)
-      StatusBarIOS.setStyle('light-content')
-
-      // check for updates when app is resumed
-      AppStateIOS.addEventListener('change', state => {
-        if (state === 'active') {
-          checkForUpdates();
-        }
-      });
-
-      // and check once on startup
-      checkForUpdates();
-    }
-  },
-
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.watchID);
-  },
+  }
 
   updateLocation(position) {
     store.dispatch(LocationActions.updateLocation({
       latitude: position.coords.latitude,
       longitude: position.coords.longitude
     }));
-  },
+  }
 
   render() {
     return (
@@ -97,6 +132,6 @@ const RootView = React.createClass({
       </Provider>
     );
   }
-});
+}
 
 export default RootView;

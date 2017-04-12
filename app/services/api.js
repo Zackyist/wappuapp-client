@@ -1,5 +1,6 @@
 import DeviceInfo from 'react-native-device-info';
 import { AsyncStorage } from 'react-native';
+import { isEmpty, isObject } from 'lodash';
 
 import Endpoints from '../constants/Endpoints';
 import { version as VERSION_NUMBER } from '../../package.json';
@@ -8,22 +9,30 @@ import * as ENV from '../../env';
 const USER_UUID = DeviceInfo.getUniqueID();
 const API_TOKEN = ENV.API_TOKEN;
 
-const fetchModels = modelType => {
-  const url = Endpoints.urls[modelType];
+const fetchModels = (modelType, params) => {
+  let url = Endpoints.urls[modelType];
+
+  if (!isEmpty(params) && isObject(params)) {
+    url += '?' + Object.keys(params).map(k => {
+      return params[k] ? (encodeURIComponent(k) + '=' + encodeURIComponent(params[k])) : ''
+    }).join('&');
+  }
+
   return cachedFetch(url);
 };
 
-const fetchMoreFeed = lastID => {
-  const params = { beforeId: lastID, limit: 20 };
+const fetchMoreFeed = (beforeId, params) => {
+  const extendedParams = Object.assign({ beforeId, limit: 20 }, params);
+
   let url = Endpoints.urls.feed;
-  url += '?' + Object.keys(params).map(k => {
-    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  url += '?' + Object.keys(extendedParams).map(k => {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(extendedParams[k]);
   }).join('&');
 
   return cachedFetch(url);
 };
 
-const postAction = (params, location) => {
+const postAction = (params, location, queryParams) => {
   let payload = Object.assign({}, params, { user: DeviceInfo.getUniqueID() });
 
   // Add location to payload, if it exists
@@ -31,8 +40,20 @@ const postAction = (params, location) => {
     payload.location = location;
   }
 
-  return _post(Endpoints.urls.action, payload);
+  return _post(Endpoints.urls.action, payload, queryParams);
 };
+
+const putMood = (params) => {
+  let payload = Object.assign({}, params, { user: DeviceInfo.getUniqueID() });
+
+  return _put(Endpoints.urls.mood, payload);
+};
+
+const getImages = eventId => {
+  return wapuFetch(Endpoints.urls.event(eventId))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+}
 
 const putUser = payload => {
   return _put(Endpoints.urls.user(payload.uuid), payload);
@@ -46,6 +67,10 @@ const getUser = uuid => {
 
 const deleteFeedItem = item => {
   return _delete(Endpoints.urls.feedItem(item.id));
+};
+
+const voteFeedItem = payload => {
+  return _put(Endpoints.urls.vote, payload)
 };
 
 const cachedFetch = (url, opts) => {
@@ -116,8 +141,8 @@ function isErrorResponse(status) {
   return status && status >= 400;
 }
 
-const _post = (url, body) => {
-  return wapuFetch(url, {
+const _post = (url, body, query) => {
+  return wapuFetch(queryParametrize(url, query), {
     method: 'post',
     headers: {
       Accept: 'application/json',
@@ -149,11 +174,26 @@ const _delete = (url, body) => {
   }).then(checkResponseStatus);
 };
 
+const queryParametrize = (url, query) => {
+  let queryParametrizedUrl = url;
+
+  if (isObject(query) && !isEmpty(query)) {
+    queryParametrizedUrl += '?' + Object.keys(query).map(k => {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
+    }).join('&');
+  }
+
+  return queryParametrizedUrl;
+}
+
 export default {
   deleteFeedItem,
+  voteFeedItem,
   fetchModels,
   fetchMoreFeed,
   postAction,
   putUser,
-  getUser
+  putMood,
+  getUser,
+  getImages
 };

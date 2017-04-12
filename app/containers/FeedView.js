@@ -1,22 +1,21 @@
 'use strict';
 
-import React, {
-  Navigator,
-  StyleSheet,
-  Platform
-} from 'react-native';
+import React, { Component } from 'react';
+import { Navigator, View, StyleSheet, Platform } from 'react-native';
+import autobind from 'autobind-decorator';
 
 import analytics from '../services/analytics';
 import FeedList from '../components/feed/FeedList';
-import NavRouteMapper from '../components/common/navbarRouteMapper';
+import RadioPlayer from '../containers/RadioPlayer'
 import theme from '../style/theme';
+
 
 const VIEW_NAME = 'FeedView';
 
 const styles = StyleSheet.create({
   navigator: {
-    paddingTop: Platform.OS === 'ios' ? 62 : 0,
-    paddingBottom:Platform.OS === 'ios' ? 30 : 0,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom:Platform.OS === 'ios' ? 0 : 0,
   },
   navbar: {
     backgroundColor: theme.secondary,
@@ -27,47 +26,37 @@ const styles = StyleSheet.create({
   }
 });
 
-export default React.createClass({
+
+class FeedView extends Component {
   componentDidMount() {
     analytics.viewOpened(VIEW_NAME);
-  },
+  }
 
+  @autobind
   renderScene(route, navigator) {
     if (route.component) {
       const RouteComponent = route.component;
-      return <RouteComponent navigator={navigator} route={route} {...this.props} />
-    }
-  },
-
-  render() {
-    if (Platform.OS === 'ios') {
-      return <Navigator
-        style={styles.navigator}
-        initialRoute={{
-          component: FeedList,
-          name: 'Feed'
-        }}
-        navigationBar={
-          <Navigator.NavigationBar
-            style={styles.navbar}
-            routeMapper={NavRouteMapper} />
-        }
-        renderScene={this.renderScene}
-        configureScene={() => ({
-          ...Navigator.SceneConfigs.FloatFromRight
-        })} />;
-    }
-    else {
-      return <Navigator
-        style={styles.navigator}
-        initialRoute={{
-          component: FeedList,
-          name: 'Feed'
-        }}
-        renderScene={this.renderScene}
-        configureScene={() => ({
-          ...Navigator.SceneConfigs.FloatFromRight
-        })} />;
+      return <RouteComponent route={route} {...this.props} />
     }
   }
-});
+
+  render() {
+    return (
+      <View style={{ flex: 1, backgroundColor: theme.lightgrey }}>
+        <Navigator
+        style={styles.navigator}
+        initialRoute={{
+          component: FeedList,
+          name: 'Feed'
+        }}
+        renderScene={this.renderScene}
+        configureScene={() => ({
+          ...Navigator.SceneConfigs.FloatFromRight
+        })} />
+        <RadioPlayer />
+      </View>
+    );
+  }
+}
+
+export default FeedView;

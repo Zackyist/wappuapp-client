@@ -1,68 +1,101 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   StyleSheet,
   ListView,
+  Animated,
+  Easing,
   Text,
   RefreshControl,
   View,
-  ScrollView
+  ScrollView,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { ImagePickerManager } from 'NativeModules';
+import autobind from 'autobind-decorator';
 
 import theme from '../../style/theme';
-import * as FeedActions from '../../actions/feed';
+import { fetchFeed,
+  refreshFeed,
+  loadMoreItems,
+  removeFeedItem,
+  voteFeedItem,
+  openLightBox
+} from '../../actions/feed';
+
+import { getUserTeam } from '../../reducers/registration';
+import permissions from '../../services/android-permissions';
+
+import ImageEditor from './ImageEditor';
 import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
 import Loading from './Loading';
 import ActionButtons from './ActionButtons';
-import TextActionView from '../../components/actions/TextActionView';
 import LoadingStates from '../../constants/LoadingStates';
 
 import ImageCaptureOptions from '../../constants/ImageCaptureOptions';
-import * as CompetitionActions from '../../actions/competition';
+import {
+  updateCooldowns,
+  postImage,
+  postAction,
+  openTextActionView,
+  openCheckInView
+} from '../../actions/competition';
+import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
+
+const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    backgroundColor: theme.lightgrey
+  },
+  feedContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.light
+    flexGrow: 1,
   },
   listView: {
     flex: 1
   },
   actionButtons: {
     position: 'absolute',
-    bottom: 0,
+    bottom: IOS ? 30 : 0,
     right: 0
   },
 
 });
 
-const FeedList = React.createClass({
-  mixins: [TimerMixin],
-  getInitialState() {
-    return {
+class FeedList extends Component {
+  // mixins: [TimerMixin]
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      actionButtonsAnimation: new Animated.Value(1),
       showScrollTopButton: false,
-      dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
+      listAnimation: new Animated.Value(0),
+      dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
+      editableImage: null
     };
-  },
+  }
 
   componentDidMount() {
-    this.props.dispatch(FeedActions.fetchFeed());
+    this.props.fetchFeed();
 
-    this.props.dispatch(CompetitionActions.updateCooldowns());
-  },
+    this.props.updateCooldowns();
+  }
 
-  componentWillUnmount() {
-    //this.clearInterval(this.updateCooldownInterval);
-  },
+  // componentWillUnmount() {
+  //   //this.clearInterval(this.updateCooldownInterval);
+  // }
 
-  componentWillReceiveProps({ feed }) {
+  componentWillReceiveProps({ feed, feedListState }) {
     if (feed !== this.props.feed) {
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(feed.toJS())
@@ -72,62 +105,145 @@ const FeedList = React.createClass({
     if (this.props.isSending){
       this.scrollTop();
     }
-  },
+
+    if (this.props.feedListState !== LoadingStates.READY && feedListState === LoadingStates.READY) {
+      this.animateList();
+    }
+
+  }
+
+  animateList() {
+    Animated.timing(this.state.listAnimation, {
+      toValue: 1,
+      duration: IOS ? 250 : 600,
+      easing: Easing.ease
+    }).start();
+  }
+
+  @autobind
   scrollTop() {
     if (this.refs._scrollView){
      this.refs._scrollView.scrollTo({x: 0, y: 0, animated: true});
     }
-  },
+  }
 
-  _onScroll(event){
+  scrollPos: 0
+  showActionButtons: true
+
+  @autobind
+  _onScroll(event) {
+    const { showScrollTopButton } = this.state;
     const SHOW_SCROLLTOP_LIMIT = 600;
+    const HIDE_BUTTON_LIMIT = 590;
     const scrollTop = event.nativeEvent.contentOffset.y;
 
-    const showScrollTopButton = scrollTop > SHOW_SCROLLTOP_LIMIT;
+    const isOverLimit = scrollTop > SHOW_SCROLLTOP_LIMIT;
+    const isOverHideLimit = scrollTop > HIDE_BUTTON_LIMIT;
 
-    if (this.state.showScrollTopButton !== showScrollTopButton) {
-      this.setState({
-        showScrollTopButton: showScrollTopButton
-      })
+    if (showScrollTopButton !== isOverLimit) {
+      this.setState({ showScrollTopButton: isOverLimit });
     }
-  },
 
+    const SENSITIVITY = 25;
+    if (this.showActionButtons && isOverHideLimit && scrollTop - this.scrollPos > SENSITIVITY) {
+      this.showActionButtons = false;
+      Animated.spring(this.state.actionButtonsAnimation, { toValue: 0, duration: 300 }).start();
+    } else if (
+      !this.showActionButtons &&
+      ((isOverHideLimit && this.scrollPos - scrollTop > SENSITIVITY) || !isOverHideLimit)
+    ) {
+      this.showActionButtons = true;
+      Animated.spring(this.state.actionButtonsAnimation, { toValue: 1, duration: 300 }).start();
+    }
+
+    this.scrollPos = scrollTop;
+
+  }
+
+  @autobind
   onRefreshFeed() {
-    this.props.dispatch(FeedActions.refreshFeed());
-  },
+    this.props.refreshFeed();
+  }
 
+  @autobind
   onLoadMoreItems() {
-    if (this.props.isRefreshing || !this.props.feed.size || this.props.feed.size < 10) {
+    const { isRefreshing, feed } = this.props;
+    if (isRefreshing || !feed.size || feed.size < 10) {
       return;
     }
 
-    const lastItemID = this.props.feed.get(this.props.feed.size - 1).get('id') || '';
-    if (lastItemID) {
-      this.props.dispatch(FeedActions.loadMoreItems(lastItemID));
-    }
-  },
+    const oldestItem = feed
+      // admin items are not calclulated
+      .filter(item => item.getIn(['author','type']) !== 'SYSTEM')
+      // get oldest by createdAt
+      .minBy(item => item.get('createdAt'));
 
+    const oldestItemID = oldestItem.get('id', '');
+
+    if (oldestItemID) {
+      this.props.loadMoreItems(oldestItemID);
+    }
+  }
+
+  @autobind
   chooseImage() {
+    if (IOS) {
+      this.openImagePicker();
+    } else {
+      permissions.requestCameraPermission(() => {
+        setTimeout(() => {
+          this.openImagePicker();
+        });
+      });
+    }
+  }
+
+  @autobind
+  openImagePicker() {
     ImagePickerManager.showImagePicker(ImageCaptureOptions, (response) => {
       if (!response.didCancel && !response.error) {
-        const image = 'data:image/jpeg;base64,' + response.data;
-        this.props.dispatch(CompetitionActions.postImage(image));
+        const data = 'data:image/jpeg;base64,' + response.data;
+        const editableImage = {
+          data,
+          width: response.width,
+          height: response.height,
+          vertical: response.isVertical
+        };
+
+        this.setState({ editableImage });
+        // this.props.postImage(image);
       }
     });
-  },
+  }
 
+  @autobind
+  onImagePost(image, text, textPosition) {
+    this.props.postImage(image, text, textPosition);
+    this.resetPostImage();
+  }
+
+  @autobind
+  resetPostImage() {
+    this.setState({ editableImage: null });
+  }
+
+  @autobind
   onPressAction(type) {
 
     switch (type) {
       case 'IMAGE':
         return this.chooseImage();
       case 'TEXT':
-        return this.props.dispatch(CompetitionActions.openTextActionView());
+        return this.props.openTextActionView();
+      case 'CHECK_IN_EVENT': {
+        return this.props.openCheckInView();
+      }
       default:
-        return this.props.dispatch(CompetitionActions.postAction(type));
+        return this.props.postAction(type);
     }
-  },
+  }
 
+  @autobind
   renderFeed(feedListState, isLoadingActionTypes, isLoadingUserData) {
     const refreshControl = <RefreshControl
       refreshing={this.props.isRefreshing || this.props.isSending}
@@ -149,18 +265,31 @@ const FeedList = React.createClass({
         );
       default:
         return (
-          <View style={styles.container}>
+          <View style={styles.feedContainer}>
 
+            <Animated.View style={{ opacity: this.state.listAnimation, transform: [
+              { translateY: this.state.listAnimation.interpolate({ inputRange: [0, 1], outputRange: [50, 0] })}
+            ]}}>
             <ListView
               ref='_scrollView'
               dataSource={this.state.dataSource}
-              renderRow={item => <FeedListItem item={item} />}
+              renderRow={item => <FeedListItem
+                item={item}
+                key={item.id}
+                userTeam={this.props.userTeam}
+                removeFeedItem={this.props.removeFeedItem}
+                voteFeedItem={this.props.voteFeedItem}
+                isRegistrationInfoValid={this.props.isRegistrationInfoValid}
+                openLightBox={this.props.openLightBox} />
+              }
               style={[styles.listView]}
               onScroll={this._onScroll}
               onEndReached={this.onLoadMoreItems}
               refreshControl={refreshControl} />
+            </Animated.View>
 
             <ActionButtons
+              visibilityAnimation={this.state.actionButtonsAnimation}
               isRegistrationInfoValid={this.props.isRegistrationInfoValid}
               style={styles.actionButtons}
               isLoading={isLoading}
@@ -171,7 +300,7 @@ const FeedList = React.createClass({
           </View>
         );
     }
-  },
+  }
 
   render() {
 
@@ -185,11 +314,30 @@ const FeedList = React.createClass({
         <Notification visible={this.props.isNotificationVisible}>
           {this.props.notificationText}
         </Notification>
-        <TextActionView />
+        <ImageEditor
+          onCancel={this.resetPostImage}
+          onImagePost={this.onImagePost}
+          animationType={'fade'}
+          image={this.state.editableImage}
+        />
       </View>
     );
-  },
-});
+  }
+}
+
+const mapDispatchToProps = {
+  fetchFeed,
+  refreshFeed,
+  loadMoreItems,
+  updateCooldowns,
+  postImage,
+  postAction,
+  openTextActionView,
+  removeFeedItem,
+  voteFeedItem,
+  openCheckInView,
+  openLightBox
+};
 
 const select = store => {
   const isRegistrationInfoValid = store.registration.get('name') !== '' &&
@@ -204,10 +352,12 @@ const select = store => {
     isNotificationVisible: store.competition.get('isNotificationVisible'),
     notificationText: store.competition.get('notificationText'),
     isSending: store.competition.get('isSending'),
+    userTeam: getUserTeam(store),
 
     isRegistrationInfoValid,
     isLoadingUserData: store.registration.get('isLoading'),
   };
 };
 
-export default connect(select)(FeedList);
+reactMixin(FeedList.prototype, TimerMixin);
+export default connect(select, mapDispatchToProps)(FeedList);

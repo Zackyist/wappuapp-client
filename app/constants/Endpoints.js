@@ -5,6 +5,7 @@ const ROOT_URL = ENV.API_URL;
 const EndpointUrls = {
   markers: `${ROOT_URL}/markers`,
   events: `${ROOT_URL}/events`,
+  event: (eventId) => `${ROOT_URL}/events/${eventId}`, 
   feed: `${ROOT_URL}/feed`,
   feedItem: (itemId) => `${ROOT_URL}/feed/${itemId}`,
   leaderboard: `${ROOT_URL}/leaderboard`,
@@ -13,7 +14,11 @@ const EndpointUrls = {
   user: (uuid) => `${ROOT_URL}/users/${uuid}`,
   teams: `${ROOT_URL}/teams`,
   actionTypes: `${ROOT_URL}/action_types`,
-  announcements: `${ROOT_URL}/announcements`
+  announcements: `${ROOT_URL}/announcements`,
+  vote: `${ROOT_URL}/vote`,
+  cities: `${ROOT_URL}/cities`,
+  radio: `${ROOT_URL}/radio`,
+  mood: `${ROOT_URL}/mood`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);
