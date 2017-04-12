@@ -14,6 +14,8 @@ import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
 import { updateCooldowns } from '../../actions/competition';
 
+const IOS = Platform.OS === 'ios';
+
 // in a happy world all this would be calculated on the fly but no
 const BUTTON_COUNT = 6;
 const DISTANCE = 60;
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 37 : 20,
+    bottom: IOS ? 37 : 20,
     right: 20,
     overflow:'visible',
     width: 200,
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
   },
   overlay:{
     right:43,
-    bottom:Platform.OS === 'ios' ? 60 : 43,
+    bottom:IOS ? 60 : 43,
     position:'absolute',
     backgroundColor:theme.light,
     opacity:0.9,
@@ -125,7 +127,7 @@ class ActionButtons extends Component {
     BUTTON_POS.forEach((pos, i) => {
 
       // Animate action buttons, iOS handles delay better
-      if (Platform.OS === 'ios') {
+      if (IOS) {
         Animated.parallel([
           Animated.delay(nextState === OPEN ?
             BUTTON_POS.length * BUTTON_DELAY - (i * BUTTON_DELAY) :
@@ -298,16 +300,18 @@ class ActionButtons extends Component {
   }
 
   render() {
-    const { isLoading, actionTypes, style } = this.props;
+    const { isLoading, actionTypes, style, visibilityAnimation } = this.props;
 
     if (isLoading || !actionTypes || actionTypes.size === 0) {
       return null;
     }
 
+    const actionButtonsTranslate = visibilityAnimation.interpolate({ inputRange: [0, 1], outputRange: [-100, (IOS ? 30 : 0)] });
+
     return (
-      <View style={style}>
+      <Animated.View style={[style, { bottom: actionButtonsTranslate }]}>
         <Animated.View style={[styles.overlay, {
-          transform:[{scale:this.state.overlayOpacity.interpolate({
+          transform:[{scale: this.state.overlayOpacity.interpolate({
             inputRange: [0, 1],
             outputRange: [1,200]
           })}]
@@ -315,7 +319,7 @@ class ActionButtons extends Component {
         {this.renderActionButtons()}
         {this.renderMenuButton()}
 
-      </View>
+      </Animated.View>
     );
   }
 }

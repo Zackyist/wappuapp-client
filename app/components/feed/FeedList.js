@@ -77,9 +77,10 @@ class FeedList extends Component {
     super(props);
 
     this.state = {
+      actionButtonsAnimation: new Animated.Value(1),
       showScrollTopButton: false,
       listAnimation: new Animated.Value(0),
-      dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
+      dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
       editableImage: null
     };
   }
@@ -126,18 +127,37 @@ class FeedList extends Component {
     }
   }
 
+  scrollPos: 0
+  showActionButtons: true
+
   @autobind
   _onScroll(event) {
+    const { showScrollTopButton } = this.state;
     const SHOW_SCROLLTOP_LIMIT = 600;
+    const HIDE_BUTTON_LIMIT = 590;
     const scrollTop = event.nativeEvent.contentOffset.y;
 
-    const showScrollTopButton = scrollTop > SHOW_SCROLLTOP_LIMIT;
+    const isOverLimit = scrollTop > SHOW_SCROLLTOP_LIMIT;
+    const isOverHideLimit = scrollTop > HIDE_BUTTON_LIMIT;
 
-    if (this.state.showScrollTopButton !== showScrollTopButton) {
-      this.setState({
-        showScrollTopButton: showScrollTopButton
-      })
+    if (showScrollTopButton !== isOverLimit) {
+      this.setState({ showScrollTopButton: isOverLimit });
     }
+
+    const SENSITIVITY = 25;
+    if (this.showActionButtons && isOverHideLimit && scrollTop - this.scrollPos > SENSITIVITY) {
+      this.showActionButtons = false;
+      Animated.spring(this.state.actionButtonsAnimation, { toValue: 0, duration: 300 }).start();
+    } else if (
+      !this.showActionButtons &&
+      ((isOverHideLimit && this.scrollPos - scrollTop > SENSITIVITY) || !isOverHideLimit)
+    ) {
+      this.showActionButtons = true;
+      Animated.spring(this.state.actionButtonsAnimation, { toValue: 1, duration: 300 }).start();
+    }
+
+    this.scrollPos = scrollTop;
+
   }
 
   @autobind
@@ -255,6 +275,7 @@ class FeedList extends Component {
               dataSource={this.state.dataSource}
               renderRow={item => <FeedListItem
                 item={item}
+                key={item.id}
                 userTeam={this.props.userTeam}
                 removeFeedItem={this.props.removeFeedItem}
                 voteFeedItem={this.props.voteFeedItem}
@@ -268,6 +289,7 @@ class FeedList extends Component {
             </Animated.View>
 
             <ActionButtons
+              visibilityAnimation={this.state.actionButtonsAnimation}
               isRegistrationInfoValid={this.props.isRegistrationInfoValid}
               style={styles.actionButtons}
               isLoading={isLoading}
