@@ -10,7 +10,6 @@ import { Modal,
   Dimensions,
   TouchableOpacity,
   TouchableHighlight,
-  TouchableWithoutFeedback,
   TextInput,
   BackAndroid,
   KeyboardAvoidingView,
@@ -169,15 +168,12 @@ class ImageEditor extends Component {
   @autobind
   renderTextInput(imgHeight) {
     const { editing, textPosition } = this.state;
-    const visibleHeight = Math.min(imgHeight, height - 100);
     return (
 
       <View
         {...this._panResponder.panHandlers}
         style={{
-          // top: editing ? visibleHeight / 2 - inputHeight / 2 : textPosition,
           top: editing ? 0 : textPosition,
-          // bottom: editing ? 100 : null,
           position: 'absolute',
           left: 0,
           right: 0,
@@ -351,7 +347,6 @@ const styles = StyleSheet.create({
     width,
   },
   image: {
-    // flexGrow: 1,
     backgroundColor: theme.stable,
     width,
   },
@@ -385,7 +380,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.transparent,
   },
   inputFieldText: {
-    // flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.transparent,
@@ -393,22 +387,18 @@ const styles = StyleSheet.create({
     color: theme.accentLight,
     textAlign: 'center',
     lineHeight: IOS ? inputHeight - 2 : null,
-    // height: inputHeight,
-    // width,
   },
   inputField: {
     position: 'absolute',
     top: IOS ? 0 : 1.5,
     left: 0,
     fontSize: 17,
-    // backgroundColor: theme.secondaryLayer,
     color: theme.accentLight,
     textAlign: 'center',
     height: inputHeight,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // lineHeight: IOS ? inputHeight - 2 : inputHeight - 10,
     width,
     zIndex: 9,
   },
