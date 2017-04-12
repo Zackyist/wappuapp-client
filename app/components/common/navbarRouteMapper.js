@@ -58,7 +58,7 @@ let NavigationBarRouteMapper = props => ({
 
   RightButton: function(route, navigator, index, navState) {
 
-    if (props.currentTab === Tabs.FEED) {
+    if (props.currentTab === Tabs.FEED && index === 0) {
       return (<SortSelector />);
     }
 
