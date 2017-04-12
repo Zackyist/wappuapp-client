@@ -23,7 +23,7 @@ import Button from '../../components/common/Button';
 import InstructionView from './InstructionView';
 import SkipView from './SkipView';
 import IntroView from './IntroView';
-// import Modal from 'react-native-modalbox';
+import ModalBox from 'react-native-modalbox';
 import Team from './Team';
 import Toolbar from './RegistrationToolbar';
 import {
@@ -301,10 +301,13 @@ class RegistrationView extends Component {
   _renderIntroForCitySelection() {
 
     return (
-      <Modal
-        visible={this.props.isRegistrationViewOpen}
-        animationType={'fade'}
-        onRequestClose={() => console.log('AppIntro cannot be closed by back button!')}
+      <ModalBox
+        isOpen={this.props.isRegistrationViewOpen}
+        swipeToClose={false}
+        backdropPressToClose={false}
+        // visible={this.props.isRegistrationViewOpen}
+        // animationType={'none'}
+        // onRequestClose={() => console.log('AppIntro cannot be closed by back button!')}
       >
         <AppIntro
           skipBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18 }}>SKIP</Text>}
@@ -360,7 +363,7 @@ class RegistrationView extends Component {
           </View>
           */}
         </AppIntro>
-      </Modal>
+      </ModalBox>
     );
   }
 
