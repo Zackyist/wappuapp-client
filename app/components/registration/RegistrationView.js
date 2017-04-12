@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   ScrollView,
   BackAndroid,
+  Modal
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
@@ -22,7 +23,7 @@ import Button from '../../components/common/Button';
 import InstructionView from './InstructionView';
 import SkipView from './SkipView';
 import IntroView from './IntroView';
-import Modal from 'react-native-modalbox';
+// import Modal from 'react-native-modalbox';
 import Team from './Team';
 import Toolbar from './RegistrationToolbar';
 import {
@@ -301,9 +302,10 @@ class RegistrationView extends Component {
 
     return (
       <Modal
-        isOpen={this.props.isRegistrationViewOpen}
-        swipeToClose={false}
-        backdropPressToClose={false}>
+        visible={this.props.isRegistrationViewOpen}
+        animationType={'fade'}
+        onRequestClose={() => console.log('AppIntro cannot be closed by back button!')}
+      >
         <AppIntro
           skipBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18 }}>SKIP</Text>}
           doneBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18, lineHeight: IOS ? 22 : 32 }}>SKIP</Text>}
@@ -369,17 +371,11 @@ class RegistrationView extends Component {
         this._renderIntroForCitySelection()
         :
         <Modal
-          isOpen={this.props.isRegistrationViewOpen}
-          swipeToClose={false}
-          backdropPressToClose={false}>
-          {
-            this._renderNameSelectContainer()
-            /*
-            this.props.selectedTeam || this.props.isIntroductionDismissed
-              ? this._renderNameSelectContainer()
-              : <InstructionView simplified={false} onDismiss={this.onDismissIntroduction} closeRegistrationView={this.onClose} />
-            */
-          }
+          visible={this.props.isRegistrationViewOpen}
+          animationType={'slide'}
+          onRequestClose={this.onCloseProfileEditor}
+        >
+          {this._renderNameSelectContainer()}
         </Modal>
     );
   }
