@@ -100,6 +100,8 @@ const styles = StyleSheet.create({
     height: 28,
     top: 2,
     borderRadius: 14,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -108,6 +110,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -359,9 +362,11 @@ class FeedListItem extends Component {
         style={styles.itemVoteButton}
         underlayColor={theme.stable}
         onPress={() => this.voteThisItem(value)}>
-          <Text style={{color: disabled ? theme.secondary : theme.grey}}>
-            <Icon name={iconName} size={25}/>
-          </Text>
+          <View style={styles.itemVoteButton}>
+            <Text style={{color: disabled ? theme.secondary : theme.grey}}>
+              <Icon name={iconName} size={25}/>
+            </Text>
+          </View>
       </TouchableHighlight>
       </View>
     );
