@@ -351,7 +351,7 @@ const EventDetail = React.createClass({
 
 
   getText(status) {
-    switch(status) {
+    switch (status) {
       case AVAILABLE:
         return <Text style={styles.buttonText}>CHECK IN</Text>;
       case INACTIVE:

@@ -8,8 +8,6 @@ import autobind from 'autobind-decorator';
 
 import { changeTab } from '../actions/navigation';
 import {
-  openCitySelection,
-  getCityId,
   getCurrentCityName,
   toggleCityPanel,
   getCityPanelShowState,
@@ -52,13 +50,9 @@ class AndroidTabNavigation extends Component {
     const {
       navigator,
       currentTab,
-      currentCity,
       currentCityName,
-      openCitySelection,
       showCitySelection,
-      toggleCityPanel,
       selectedSortType,
-      setFeedSortType
     } = this.props;
 
     return (
@@ -68,10 +62,9 @@ class AndroidTabNavigation extends Component {
           backgroundColor={theme.secondary}
           currentTab={currentTab}
           currentCityName={currentCityName}
-          openCitySelection={openCitySelection}
-          toggleCityPanel={toggleCityPanel}
+          toggleCityPanel={this.props.toggleCityPanel}
           selectedSortType={selectedSortType}
-          setFeedSortType={setFeedSortType}
+          setFeedSortType={this.props.setFeedSortType}
           navigator={navigator}
         />
         <AndroidTabs
@@ -101,7 +94,6 @@ class AndroidTabNavigation extends Component {
 
 const mapDispatchToProps = {
   changeTab,
-  openCitySelection,
   toggleCityPanel,
   setFeedSortType,
 };
@@ -109,7 +101,6 @@ const mapDispatchToProps = {
 const select = state => {
   return {
     showCitySelection: getCityPanelShowState(state),
-    currentCity: getCityId(state),
     currentCityName: getCurrentCityName(state),
     selectedSortType: getFeedSortType(state),
     currentTab: state.navigation.get('currentTab')

@@ -1,4 +1,3 @@
-import { createSelector } from 'reselect';
 import { fromJS } from 'immutable';
 import SortTypes from '../constants/SortTypes';
 import { fetchFeed } from '../actions/feed';

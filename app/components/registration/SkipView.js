@@ -4,9 +4,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
-  TouchableWithoutFeedback,
   Platform,
   ScrollView,
   Dimensions

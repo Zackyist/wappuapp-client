@@ -12,10 +12,7 @@ import {
   PAUSED,
   STOPPED,
   ERROR,
-  METADATA_UPDATED,
   BUFFERING,
-  START_PREPARING,
-  BUFFERING_START,
 } from '../constants/RadioStates';
 
 
@@ -66,15 +63,6 @@ const play = () => (dispatch, getState) => {
     stop();
   }
 }
-
-const resume = () => (dispatch, getState) => {
-  const state = getState();
-  const url = getActiveStation(state).get('stream');
-  if (url) {
-    ReactNativeAudioStreaming.resume();
-  }
-}
-
 
 export const onRadioPress = () => (dispatch, getState) => {
   const state = getState();

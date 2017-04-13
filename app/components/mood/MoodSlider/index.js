@@ -200,7 +200,7 @@ class MoodSlider extends Component {
   render() {
 
     const { mood, bubblePosition, showConfirm, buttonScale, confirmScale, vibeDescription } = this.state;
-    const { isMoodSending } = this.props;
+    const { moodSending } = this.props;
 
     const bubbleVerticalPositions = [
       bubblePosition.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [100, 50, 20, -20, -40] }),
@@ -245,7 +245,7 @@ class MoodSlider extends Component {
             onChangeText={this.onChangeText}
             submit={this.submit}
             description={this.state.description}
-            isMoodSending={isMoodSending}
+            isMoodSending={moodSending}
           />
         }
         <View style={styles.main} {...this._panResponder.panHandlers}>
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     backgroundColor: 'transparent',
     fontSize: 15,
-    top: 0, // height / 2 - headerHeight,
+    top: 0,
     textAlign: 'center',
     fontWeight: 'bold',
     color: theme.secondaryLight
@@ -475,9 +475,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 5,
     alignItems: 'center',
-    // borderTopWidth: 1,
-    // opacity: 1,
-    // borderStyle: 'solid'
   },
   axisLabelText: {
     backgroundColor: 'transparent',
@@ -534,7 +531,6 @@ const styles = StyleSheet.create({
   confirmFormWrap: {
     backgroundColor: theme.white,
     position: 'absolute',
-    // width: 60,
     height: 100,
     bottom: 0,
     left: 0,
@@ -544,13 +540,6 @@ const styles = StyleSheet.create({
   },
   confirmForm: {
     backgroundColor: theme.white,
-    // position: 'absolute',
-    // height: 100,
-    // bottom: 0,
-    // left: 0,
-    // right: 0,
-    // zIndex: 8,
-    // elevation: 2,
     justifyContent: 'center'
   },
   confirmFormBg: {
@@ -572,7 +561,7 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = { submitMood };
 const mapStateToProps = state => ({
-  isMoodSending: isMoodSending(state)
+  moodSending: isMoodSending(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoodSlider);

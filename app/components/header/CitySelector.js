@@ -22,7 +22,6 @@ import {
 } from '../../concepts/city';
 
 import theme from '../../style/theme';
-import MdIcon from 'react-native-vector-icons/MaterialIcons';
 
 const cityIcons = {
   'helsinki': require('../../../assets/cities/icon-ota-amfi-accent.png'),

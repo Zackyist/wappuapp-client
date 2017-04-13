@@ -3,7 +3,6 @@ import api from '../services/api';
 import namegen from '../services/namegen';
 import _ from 'lodash';
 import {createRequestActionTypes} from '.';
-import {setCity} from '../concepts/city';
 
 const {
   CREATE_USER_REQUEST,

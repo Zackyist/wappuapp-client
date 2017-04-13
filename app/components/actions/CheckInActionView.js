@@ -1,13 +1,12 @@
 'use strict';
 
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 
 import {
   View,
   Text,
   ListView,
   Image,
-  Platform,
   Dimensions,
   StyleSheet,
   TouchableWithoutFeedback,
@@ -25,9 +24,7 @@ import { getCurrentCityName } from '../../concepts/city';
 import CheckInButton from './CheckInButton';
 import theme from '../../style/theme';
 
-const IOS = Platform.OS === 'ios';
-
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 class CheckInActionView extends Component {
 
@@ -154,7 +151,7 @@ class CheckInActionView extends Component {
 
   render() {
 
-    const { isCheckInViewOpen, events } = this.props;
+    const { isCheckInViewOpen } = this.props;
 
     if (!isCheckInViewOpen) {
       return false;
@@ -167,10 +164,10 @@ class CheckInActionView extends Component {
         animationType={'slide'}
       >
         <View style={[styles.container, styles.modalBackgroundStyle]}>
-          {this.state.activeContentWasFound ?
-            this.renderEventList()
-            :
-            this.noActiveEventsView()}
+          {this.state.activeContentWasFound
+            ? this.renderEventList()
+            : this.noActiveEventsView()
+          }
         </View>
       </Modal>
     );

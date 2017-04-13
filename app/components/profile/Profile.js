@@ -8,11 +8,9 @@ import {
   View,
   ListView,
   ScrollView,
-  TouchableHighlight,
   TouchableOpacity,
   Linking,
   Image,
-  Dimensions,
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -21,7 +19,6 @@ import _ from 'lodash';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import WebViewer from '../webview/WebViewer';
-import Header from '../common/Header';
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
 import { fetchLinks } from '../../actions/profile';
@@ -29,8 +26,6 @@ import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
 import feedback from '../../services/feedback';
 
-
-const {width} = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({

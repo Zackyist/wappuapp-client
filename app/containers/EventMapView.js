@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   }
 });
 
-var _navigator;
+var _navigator; // eslint-disable-line
 
 class EventMapView extends Component {
   @autobind

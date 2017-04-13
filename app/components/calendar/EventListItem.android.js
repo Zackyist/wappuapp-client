@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import {
   Image,
   PropTypes,
-  Platform,
   StyleSheet,
   Dimensions,
   Text,
@@ -138,7 +137,6 @@ export default class EventListItem extends Component {
   render() {
     const { item, hideStatus, pastEvent } = this.props;
     const timepoint = time.formatEventTime(item.startTime, item.endTime);
-    const startDay = time.getEventDay(item.startTime);
     const coverImage = item.coverImage ? item.coverImage.replace('https://', 'http://') : '';
 
     return <TouchableNativeFeedback onPress={this.props.handlePress}  delayPressIn={100} background={TouchableNativeFeedback.SelectableBackground()}>

@@ -48,7 +48,6 @@ const { width, height } = Dimensions.get('window');
 class RegistrationView extends Component {
   propTypes: {
     name: PropTypes.string.isRequired,
-    //teams: PropTypes.instanceOf(Immutable.List).isRequired,
     teams: PropTypes.any,
     selectedTeam: PropTypes.number.isRequired,
     isRegistrationViewOpen: PropTypes.bool.isRequired,
@@ -147,7 +146,7 @@ class RegistrationView extends Component {
   teamIsValid() {
     const { selectedTeam, teams } = this.props
     const { selectedCity } = this.state;
-    const team = teams.find(team => team.get('id') === selectedTeam);
+    const team = teams.find(t => t.get('id') === selectedTeam);
 
     if (team) {
       return team.get('city') === selectedCity;
@@ -260,8 +259,6 @@ class RegistrationView extends Component {
   }
 
   _renderNameSelect() {
-    const simplified = this.props.initialSetup;
-
     return (
       <View style={[styles.inputGroup, {marginBottom:4}]}>
         <View style={styles.inputLabel}>

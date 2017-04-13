@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 
 import {
   View,
@@ -9,8 +9,7 @@ import {
   Platform,
   Easing,
   TouchableWithoutFeedback,
-  StyleSheet,
-  Modal
+  StyleSheet
 } from 'react-native';
 
 import {
@@ -19,12 +18,8 @@ import {
   CHECKED
 } from '../../constants/CheckInStates';
 
-import location from '../../services/location';
-import autobind from 'autobind-decorator';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 import theme from '../../style/theme';
-import * as CompetitionActions from '../../actions/competition';
 const IOS = Platform.OS === 'ios';
 
 class CheckInButton extends Component {
@@ -52,7 +47,7 @@ class CheckInButton extends Component {
   }
 
   renderText(status) {
-    switch(status) {
+    switch (status) {
       case AVAILABLE:
         return <Text style={styles.text}>CHECK IN </Text>;
       case CHECKED:

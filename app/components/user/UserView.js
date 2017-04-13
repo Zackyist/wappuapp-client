@@ -22,7 +22,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
-import autobind from 'autobind-decorator';
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 

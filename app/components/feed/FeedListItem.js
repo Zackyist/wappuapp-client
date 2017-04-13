@@ -23,7 +23,7 @@ import time from '../../utils/time';
 import theme from '../../style/theme';
 import { openRegistrationView } from '../../actions/registration';
 
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const FEED_ITEM_MARGIN_DISTANCE = 0;
 const FEED_ITEM_MARGIN_DEFAULT = 0;
 const FEED_ADMIN_ITEM_MARGIN_DEFAULT = 15;
@@ -442,7 +442,7 @@ class FeedListItem extends Component {
           selected ? styles.itemContent_selected : {}
         ]}>
 
-          <TouchableOpacity style={styles.feedItemListItemInfo} onPress={() => openUserPhotos(item.author)}>
+          <TouchableOpacity activeOpacity={0.7} style={styles.feedItemListItemInfo} onPress={() => openUserPhotos(item.author)}>
             <View style={styles.feedItemListItemAuthor}>
               <Text style={styles.itemAuthorName}>{item.author.name}</Text>
               <Text style={[styles.itemAuthorTeam, itemByMyTeam ? styles.itemAuthorTeam__my : {}]}>{item.author.team}</Text>

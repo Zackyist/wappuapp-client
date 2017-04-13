@@ -1,4 +1,4 @@
-import { Alert, Platform, AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { createSelector } from 'reselect';
 import { fromJS, List } from 'immutable';
 import { isNil, parseInt } from 'lodash';
@@ -14,7 +14,6 @@ import { getUserTeamId } from '../reducers/registration';
 
 import { APP_STORAGE_KEY } from '../../env';
 const cityKey = `${APP_STORAGE_KEY}:city`;
-const IOS = Platform.OS === 'ios';
 
 
 // # Selectors
@@ -97,36 +96,13 @@ export const fetchCities = () => dispatch => {
 };
 
 
-const getCitySelectionText = (city, cityId, activeCityId) =>
-  cityId === activeCityId ? `✓ ${city}` : city;
-
-
-export const openCitySelection = () => (dispatch, getState) => {
-  const state = getState();
-  const activeCityId = getCityId(state);
-  const cityList = getCityList(state);
-
-  const alertOptions = cityList.toJS().map(city => ({
-    text: getCitySelectionText(city.name, city.id, activeCityId),
-    onPress: () => dispatch(setCity(city.id))
-  }))
-
-  return Alert.alert(
-    'Choose city',
-    IOS ? 'See Whappu action in' : '',
-    alertOptions,
-    { cancellable: true }
-  );
-}
-
 export const NO_SELECTED_CITY_FOUND = 'city/NO_SELECTED_CITY_FOUND';
 export const initializeUsersCity = () => (dispatch, getState) => {
-  const cityList = getCityList(getState());
   const defaultCityId = '1';
 
   return AsyncStorage.getItem(cityKey)
-    .then(city => {
-      const activeCity = city ? JSON.parse(city) : defaultCityId;
+    .then(c => {
+      const activeCity = c ? JSON.parse(c) : defaultCityId;
       const isDefault = parseInt(activeCity, 10) === 1;
       dispatch({ type: NO_SELECTED_CITY_FOUND, payload: isDefault});
       return dispatch(setCity(activeCity));

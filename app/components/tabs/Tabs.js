@@ -50,7 +50,7 @@ const DefaultTabBar = React.createClass({
     >
       <View style={[styles.tab, this.props.tabStyle, ]}>
         <Text style={[{color: textColor, }, textStyle ]}>
-          {IOS ? name : (name||'').toUpperCase()}
+          {IOS ? name : (name || '').toUpperCase()}
         </Text>
       </View>
     </Button>;
