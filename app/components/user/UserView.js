@@ -82,15 +82,15 @@ class UserView extends Component {
             <View style={styles.headerKpis}>
               <View style={styles.headerKpi}>
                 <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>Photos</Text>
+                <Text style={styles.headerKpiTitle}>photos</Text>
               </View>
               <View style={styles.headerKpi}>
                 <Text style={styles.headerKpiValue}>{!isLoading ? totalVotes : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>Vote Score</Text>
+                <Text style={styles.headerKpiTitle}>vote score</Text>
               </View>
               <View style={styles.headerKpi}>
                 <Text style={styles.headerKpiValue}>{!isLoading ? (totalSimas || '-') : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>Simas</Text>
+                <Text style={styles.headerKpiTitle}>simas</Text>
               </View>
             </View>
           </View>
@@ -109,7 +109,7 @@ class UserView extends Component {
                 >
                   <Image
                     key={image.get('id')}
-                    style={{height: width / 3 - 8, width: width / 3 - 8, margin: 3}}
+                    style={{height: width / 3 - 5, width: width / 3 - 5, margin: 2, backgroundColor: theme.stable}}
                     source={{uri: image.get('url')}}/>
                 </TouchableOpacity>
               </View>
@@ -118,7 +118,7 @@ class UserView extends Component {
         }
         {!isLoading && !images.size &&
           <View style={styles.imageTitleWrap}>
-            <Text style={styles.imageTitle}>No images for user</Text>
+            <Text style={styles.imageTitle}>No photos</Text>
           </View>
         }
       </View>
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   headerKpiTitle: {
-    color: theme.accent,
+    color: theme.accentLight,
     fontWeight: '600',
     fontSize: 12,
   },
@@ -214,8 +214,8 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   imageContainer:{
-    margin: 2,
-    marginTop: 3,
+    margin: 1,
+    marginTop: 2,
     marginBottom: 30,
     flex: 1,
     flexDirection: 'row',
