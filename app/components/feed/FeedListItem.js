@@ -442,7 +442,7 @@ class FeedListItem extends Component {
           selected ? styles.itemContent_selected : {}
         ]}>
 
-          <TouchableOpacity activeOpacity={0.7} style={styles.feedItemListItemInfo} onPress={() => openUserPhotos(item.author)}>
+          <TouchableOpacity activeOpacity={IOS ? 0.7 : 1} style={styles.feedItemListItemInfo} onPress={() => openUserPhotos(item.author)}>
             <View style={styles.feedItemListItemAuthor}>
               <Text style={styles.itemAuthorName}>{item.author.name}</Text>
               <Text style={[styles.itemAuthorTeam, itemByMyTeam ? styles.itemAuthorTeam__my : {}]}>{item.author.team}</Text>
