@@ -47,7 +47,7 @@ class MainView extends Component {
 
     return (
       <View style={{ flex:1 }}>
-        <StatusBar backgroundColor={theme.secondaryLight} />
+        <StatusBar backgroundColor={theme.secondaryDark} />
 
         <Navigator
           initialRoute={{
