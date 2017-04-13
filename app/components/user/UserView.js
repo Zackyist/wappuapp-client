@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   backLinkText: {
-    color: theme.white,
     justifyContent: 'center',
     alignItems: 'center',
     width: 40,

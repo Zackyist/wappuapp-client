@@ -77,10 +77,6 @@ class LightBox extends Component {
 
     Share.open(shareOptions);
   }
-  onReport() {
-    console.log('test');
-  }
-
 
   itemIsCreatedByMe(item) {
     return item.getIn(['author','type'],'') === 'ME';

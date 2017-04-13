@@ -33,10 +33,10 @@ class ImageEditor extends Component {
     this.state = {
       showTextInput: false,
       textInputValue: '',
-      imagePos: 0
+      imagePos: 0,
+      editing: false,
     };
   }
-
 
   _panResponder = {};
 
@@ -73,7 +73,7 @@ class ImageEditor extends Component {
     if (image && !this.props.image) {
       // new image arrived
       this.centerImageText({image});
-      this.setState({ showTextInput: false })
+      this.setState({ showTextInput: false });
     } else if (!image && this.props.image) {
       // image removed and editorview hidden
     }
