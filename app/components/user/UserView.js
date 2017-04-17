@@ -85,7 +85,7 @@ class UserView extends Component {
               </View>
               <View style={styles.headerKpi}>
                 <Text style={styles.headerKpiValue}>{!isLoading ? totalVotes : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>vote score</Text>
+                <Text style={styles.headerKpiTitle}>votes for photos</Text>
               </View>
               <View style={styles.headerKpi}>
                 <Text style={styles.headerKpiValue}>{!isLoading ? (totalSimas || '-') : '-'}</Text>
@@ -104,7 +104,7 @@ class UserView extends Component {
               <View key={image.get('id')}>
                 <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => this.props.openLightBox(image)}
+                onPress={() => this.props.openLightBox(image.get('id'))}
                 >
                   <Image
                     key={image.get('id')}
@@ -200,13 +200,13 @@ const styles = StyleSheet.create({
   },
   headerKpiTitle: {
     color: theme.accentLight,
-    fontWeight: '600',
-    fontSize: 12,
+    fontWeight: '500',
+    fontSize: 11,
   },
   headerKpiValue: {
     fontSize: 26,
     color: theme.accentLight,
-    fontWeight: '400',
+    fontWeight: '400'
   },
   loader: {
     marginTop: 50

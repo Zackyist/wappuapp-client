@@ -306,7 +306,10 @@ class ActionButtons extends Component {
       return null;
     }
 
-    const actionButtonsTranslate = visibilityAnimation.interpolate({ inputRange: [0, 1], outputRange: [-100, (IOS ? 30 : 0)] });
+    const actionButtonsTranslate = visibilityAnimation.interpolate({
+      inputRange: [0, 1],
+      outputRange: [-100, (IOS ? 30 : 0)]
+    });
 
     return (
       <Animated.View style={[style, { bottom: actionButtonsTranslate }]}>

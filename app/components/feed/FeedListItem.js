@@ -299,7 +299,7 @@ class FeedListItem extends Component {
             <View style={styles.itemImageWrapper}>
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => this.props.openLightBox(item)}
+                onPress={() => this.props.openLightBox(item.id)}
               >
                 <Image
                   source={{ uri: item.url }}
@@ -355,7 +355,7 @@ class FeedListItem extends Component {
             <View style={styles.itemImageWrapper}>
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => this.props.openLightBox(item)}
+                onPress={() => this.props.openLightBox(item.id)}
               >
                 <Image
                   source={{ uri: item.url }}

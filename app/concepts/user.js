@@ -4,7 +4,7 @@ import { parseInt } from 'lodash';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
-
+import { VOTE_FEED_ITEM_REQUEST } from '../actions/feed';
 
 // # Selectors
 export const getUserImages = state => state.user.getIn(['profile', 'images'], List()) || List();
@@ -73,6 +73,18 @@ export default function city(state = initialState, action) {
       return state.set('isLoading', false);
     }
 
+    case VOTE_FEED_ITEM_REQUEST: {
+      const list = state.getIn(['profile', 'images']);
+      const voteItemIndex = list.findIndex((item) => item.get('id') === action.feedItemId);
+      if (voteItemIndex < 0) {
+        return state;
+      } else {
+        return state.mergeIn(['profile', 'images', voteItemIndex], {
+          'userVote': action.value,
+          'votes': action.votes
+        });
+      }
+    }
 
 
     default: {

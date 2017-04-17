@@ -2,6 +2,7 @@ import api from '../services/api';
 import {createRequestActionTypes} from '.';
 import { getCityId } from '../concepts/city';
 import { getFeedSortType } from '../concepts/sortType';
+import { getAllPostsInStore } from '../reducers/feed';
 
 const SET_FEED = 'SET_FEED';
 const APPEND_FEED = 'APPEND_FEED';
@@ -18,7 +19,12 @@ const {
   // REFRESH_FEED_FAILURE
 } = createRequestActionTypes('REFRESH_FEED');
 const DELETE_FEED_ITEM = 'DELETE_FEED_ITEM';
-const VOTE_FEED_ITEM = 'VOTE_FEED_ITEM';
+
+const {
+  VOTE_FEED_ITEM_REQUEST,
+  VOTE_FEED_ITEM_SUCCESS,
+} = createRequestActionTypes('VOTE_FEED_ITEM');
+
 
 const fetchFeed = () => (dispatch, getState) => {
   const cityId = getCityId(getState());
@@ -86,26 +92,54 @@ const removeFeedItem = (item) => {
   };
 };
 
-const voteFeedItem = (feedItemId, value, difference) => {
-  const vote = { value, feedItemId};
+const voteFeedItem = (feedItemId, value, difference) => (dispatch, getState) => {
+  const state = getState();
+  const list = getAllPostsInStore(state);
+  const voteItem = list.find((item) => item.get('id') === feedItemId);
 
-  return (dispatch) => {
-    api.voteFeedItem(vote)
-      .then(() => dispatch({
-        type: VOTE_FEED_ITEM,
-        difference,
-        feedItemId
-      }))
-      .catch(error => console.log('Error when trying to vote feed item', error));
-  };
+  if (!voteItem) {
+    return;
+  }
+
+
+  //  userVote needs to be updated
+  //  votevalue for item need to be calculated
+  //    * if user had no previous vote, just sum given vote to vote values
+  //    * if user had voted before, vote changes total value by +/-2
+  const votes = voteItem.get('votes');
+  const userVote = voteItem.get('userVote');
+
+  const wasAlreadyVotedByMe = userVote !== 0;
+  const voteWasChanged = userVote !== value;
+  const multiplier = wasAlreadyVotedByMe ? 2 : 1;
+  const difference = voteWasChanged ? (value * multiplier) : 0;
+
+  const newVotes = parseInt(votes) + difference; // TODO REDUCER FOR THIS
+
+  // Naive update before request starts
+  dispatch({
+    type: VOTE_FEED_ITEM_REQUEST,
+    value,
+    feedItemId,
+    votes: newVotes
+  });
+
+
+  // Do actual API call for vote
+  const vote = { value, feedItemId };
+  api.voteFeedItem(vote)
+  .then(() => dispatch({
+    type: VOTE_FEED_ITEM_SUCCESS,
+    difference,
+    feedItemId
+  }))
+  .catch(error => console.log('Error when trying to vote feed item', error));
 }
 
 // Open image in Lightbox
 const OPEN_LIGHTBOX = 'OPEN_LIGHTBOX';
 const CLOSE_LIGHTBOX = 'CLOSE_LIGHTBOX';
-const openLightBox = (item) => {
-  return { type: OPEN_LIGHTBOX, payload: { item } };
-};
+const openLightBox = (itemId) => ({ type: OPEN_LIGHTBOX, payload: itemId })
 
 const closeLightBox = () => {
   return { type: CLOSE_LIGHTBOX };
@@ -116,7 +150,8 @@ export {
   APPEND_FEED,
   GET_FEED_REQUEST,
   GET_FEED_SUCCESS,
-  VOTE_FEED_ITEM,
+  VOTE_FEED_ITEM_REQUEST,
+  VOTE_FEED_ITEM_SUCCESS,
   GET_FEED_FAILURE,
   REFRESH_FEED_REQUEST,
   REFRESH_FEED_SUCCESS,

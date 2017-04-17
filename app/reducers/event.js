@@ -12,6 +12,12 @@ import {
   GET_EVENT_IMAGES_REQUEST
 } from '../actions/event';
 
+import { VOTE_FEED_ITEM_REQUEST } from '../actions/feed';
+
+// # Selector
+export const getEventImages = state => state.event.get('images') || Immutable.List([]);
+
+// # Reducer
 const initialState = Immutable.fromJS({
   list: [],
   listState: 'none',
@@ -38,6 +44,18 @@ export default function event(state = initialState, action) {
       return state.set('images', Immutable.List());
     case SET_EVENT_IMAGES:
       return state.set('images', Immutable.fromJS(action.payload));
+    case VOTE_FEED_ITEM_REQUEST: {
+      const list = state.get('images');
+      const voteItemIndex = list.findIndex((item) => item.get('id') === action.feedItemId);
+      if (voteItemIndex < 0) {
+        return state;
+      } else {
+        return state.mergeIn(['images', voteItemIndex], {
+          'userVote': action.value,
+          'votes': action.votes
+        });
+      }
+    }
     default:
       return state;
   }
