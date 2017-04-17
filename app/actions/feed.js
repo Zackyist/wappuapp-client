@@ -92,7 +92,7 @@ const removeFeedItem = (item) => {
   };
 };
 
-const voteFeedItem = (feedItemId, value, difference) => (dispatch, getState) => {
+const voteFeedItem = (feedItemId, value) => (dispatch, getState) => {
   const state = getState();
   const list = getAllPostsInStore(state);
   const voteItem = list.find((item) => item.get('id') === feedItemId);
@@ -114,7 +114,7 @@ const voteFeedItem = (feedItemId, value, difference) => (dispatch, getState) => 
   const multiplier = wasAlreadyVotedByMe ? 2 : 1;
   const difference = voteWasChanged ? (value * multiplier) : 0;
 
-  const newVotes = parseInt(votes) + difference; // TODO REDUCER FOR THIS
+  const newVotes = parseInt(votes) + difference;
 
   // Naive update before request starts
   dispatch({

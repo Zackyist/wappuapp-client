@@ -26,7 +26,7 @@ export const getLightBoxItemId = state => state.feed.get('lightBoxItemId', null)
 
 export const getAllPostsInStore = createSelector(
   getFeed, getUserImages, getEventImages,
-  (feed, userImages, eventImages) => feed.concat(userImages, eventImages)
+  (feedList, userImages, eventImages) => feedList.concat(userImages, eventImages)
 );
 
 export const getLightboxItem = createSelector(

@@ -11,7 +11,6 @@ import {
   Platform,
   PropTypes,
   TouchableOpacity,
-  TouchableHighlight,
   View
 } from 'react-native';
 
