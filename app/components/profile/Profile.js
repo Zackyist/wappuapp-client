@@ -80,6 +80,8 @@ const styles = StyleSheet.create({
   },
   listItemSubtitle: {
     color: theme.subtlegrey,
+    top: 1,
+    fontSize: 13,
   },
   avatarColumn: {
     width: 50,
@@ -118,7 +120,8 @@ const styles = StyleSheet.create({
     color:'#aaa'
   },
   listItemText__small: {
-    fontSize:12,
+    fontSize:13,
+    paddingTop: 1,
   },
   listItemTitles: {
     alignItems: 'flex-start',

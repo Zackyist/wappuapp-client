@@ -4,7 +4,7 @@ import TermsView from '../components/terms/Terms';
 const ROOT_URL = 'https://wappu.futurice.com';
 
 const links = [
-  {title: 'My Whappu Log', icon:'face', component: UserView, subtitle: 'Photos and Simas', separatorAfter: true },
+  {title: 'My Whappu Log', icon:'person-outline', component: UserView, subtitle: 'Photos and Simas', separatorAfter: true },
   {title: 'Fuksi Survival Kit', showCity: 'tampere', link: `https://ttyy.fi/me-ollaan-teekkareita/teekkarikulttuuri/wappu/fuksi-survival-kit/`, icon: 'local-hospital', showInWebview: true},
   {title: 'Feedback', mailto: 'wappu@futurice.com', icon: 'send'},
   {title: 'Source Code', link: `https://github.com/futurice/wappuapp-client`, icon: 'code', showInWebview: false},
