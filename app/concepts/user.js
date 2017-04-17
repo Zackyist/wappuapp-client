@@ -74,7 +74,7 @@ export default function city(state = initialState, action) {
     }
 
     case VOTE_FEED_ITEM_REQUEST: {
-      const list = state.getIn(['profile', 'images']);
+      const list = state.getIn(['profile', 'images'], List());
       const voteItemIndex = list.findIndex((item) => item.get('id') === action.feedItemId);
       if (voteItemIndex < 0) {
         return state;

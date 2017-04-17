@@ -89,7 +89,6 @@ export default function feed(state = initialState, action) {
         console.log('Tried to vote item, but it was not found from state:', voteItemIndex);
         return state;
       } else {
-
         return state.mergeIn(['list', voteItemIndex], {
           'userVote': action.value,
           'votes': action.votes

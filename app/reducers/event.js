@@ -45,7 +45,7 @@ export default function event(state = initialState, action) {
     case SET_EVENT_IMAGES:
       return state.set('images', Immutable.fromJS(action.payload));
     case VOTE_FEED_ITEM_REQUEST: {
-      const list = state.get('images');
+      const list = state.get('images', Immutable.List());
       const voteItemIndex = list.findIndex((item) => item.get('id') === action.feedItemId);
       if (voteItemIndex < 0) {
         return state;
