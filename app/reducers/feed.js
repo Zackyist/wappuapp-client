@@ -1,5 +1,7 @@
 'use strict';
 import Immutable from 'immutable';
+import { createSelector } from 'reselect';
+import { isNil } from 'lodash';
 
 import {
   SET_FEED,
@@ -11,16 +13,42 @@ import {
   REFRESH_FEED_SUCCESS,
   DELETE_FEED_ITEM,
   OPEN_LIGHTBOX,
-  VOTE_FEED_ITEM,
+  VOTE_FEED_ITEM_REQUEST,
   CLOSE_LIGHTBOX
 } from '../actions/feed';
+import { getUserImages } from '../concepts/user';
+import { getEventImages } from './event';
 import LoadingStates from '../constants/LoadingStates';
 
+// # Selectors
+export const getFeed = state => state.feed.get('list') || Immutable.List([]);
+export const getLightBoxItemId = state => state.feed.get('lightBoxItemId', null);
+
+export const getAllPostsInStore = createSelector(
+  getFeed, getUserImages, getEventImages,
+  (feed, userImages, eventImages) => feed.concat(userImages, eventImages)
+);
+
+export const getLightboxItem = createSelector(
+  getLightBoxItemId, getAllPostsInStore,
+  (id, posts) => {
+
+    if (isNil(id)) {
+      return Immutable.Map();
+    }
+
+    return posts.find((item) => item.get('id') === id);
+  }
+);
+
+
+// # Reducer
 const initialState = Immutable.fromJS({
   list: [],
   listState: LoadingStates.NONE,
   isRefreshing: false,
   lightBoxItem: {},
+  lightBoxItemId: {},
   isLightBoxOpen: false
 });
 
@@ -54,27 +82,31 @@ export default function feed(state = initialState, action) {
         return state.set('list', originalList.delete(itemIndex));
       }
 
-    case VOTE_FEED_ITEM:
+    case VOTE_FEED_ITEM_REQUEST: {
       const list = state.get('list');
-      const itemIndex_ = list.findIndex((item) => item.get('id') === action.feedItemId);
-      if (itemIndex < 0) {
-        console.log('Tried to vote item, but it was not found from state:', itemIndex);
+      const voteItemIndex = list.findIndex((item) => item.get('id') === action.feedItemId);
+      if (voteItemIndex < 0) {
+        console.log('Tried to vote item, but it was not found from state:', voteItemIndex);
         return state;
       } else {
-        return state.updateIn(['list', itemIndex_, 'difference'], value => action.difference);
-      }
 
+        return state.mergeIn(['list', voteItemIndex], {
+          'userVote': action.value,
+          'votes': action.votes
+        });
+      }
+    }
 
     case OPEN_LIGHTBOX:
       return state.merge({
         isLightBoxOpen: true,
-        lightBoxItem: Immutable.fromJS(action.payload.item)
+        lightBoxItemId: action.payload
       });
 
     case CLOSE_LIGHTBOX:
       return state.merge({
         isLightBoxOpen: false,
-        lightBoxItem: Immutable.fromJS({}),
+        lightBoxItemId: null,
       })
 
     default:
