@@ -55,6 +55,12 @@ const getImages = eventId => {
     .then(response => response.json());
 }
 
+const getUserProfile = userId => {
+  return wapuFetch(Endpoints.urls.userProfile(userId))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+}
+
 const putUser = payload => {
   return _put(Endpoints.urls.user(payload.uuid), payload);
 };
@@ -195,5 +201,6 @@ export default {
   putUser,
   putMood,
   getUser,
-  getImages
+  getImages,
+  getUserProfile
 };

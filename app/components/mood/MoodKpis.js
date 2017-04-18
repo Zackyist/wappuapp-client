@@ -37,11 +37,13 @@ class MoodKpis extends Component {
               ]}
               style={{
                 data: {
-                fill: (d) =>
-                  d.label === '-'
-                  ? '#eee'
-                  : (d.y > 50 ? theme.primary : theme.secondary)
-                },
+                fill: (d) => {
+                  const isBackground = d.label === '-';
+                  if (isBackground) {
+                    return '#eee';
+                  }
+                  return d.y > 50 ? theme.primary : theme.secondary
+                }},
                 labels: { fontSize: 0, opacity: 0 }
               }}
               innerRadius={39}

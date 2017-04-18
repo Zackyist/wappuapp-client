@@ -351,7 +351,7 @@ const EventDetail = React.createClass({
 
 
   getText(status) {
-    switch(status) {
+    switch (status) {
       case AVAILABLE:
         return <Text style={styles.buttonText}>CHECK IN</Text>;
       case INACTIVE:
@@ -503,7 +503,7 @@ const EventDetail = React.createClass({
                   return <View key={image.get('id')}>
                     <TouchableOpacity
                       activeOpacity={1}
-                      onPress={() => this.props.openLightBox(image)}
+                      onPress={() => this.props.openLightBox(image.get('id'))}
                     >
                     <Image
                       key={image.get('id')}

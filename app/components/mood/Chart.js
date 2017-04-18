@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import {
   View,
-  Text,
   Dimensions,
   StyleSheet
 } from 'react-native';
@@ -10,11 +9,8 @@ import {
 import theme from '../../style/theme';
 import {
   VictoryChart,
-  VictoryGroup,
   VictoryAxis,
-  VictoryLine,
-  VictoryBar,
-  VictoryArea
+  VictoryLine
 } from 'victory-native';
 const { width } = Dimensions.get('window');
 
@@ -28,14 +24,13 @@ class Chart extends Component {
 
   render() {
 
-    const { cityData, ownData, teamData, limitLineData, height, front } = this.props;
+    const { cityData, ownData, teamData, limitLineData, height } = this.props;
 
     const cityDataJS = cityData && cityData.toJS ? cityData.toJS() : null;
     const ownDataJS = ownData && ownData.toJS ? ownData.toJS() : null;
     const teamDataJS = teamData && teamData.toJS ? teamData.toJS() : null;
     const limitLineDataJS = limitLineData ? limitLineData.toJS() : null;
 
-    // const opacity = front ? 0.1 : 1;
     const xAxisLabels = limitLineDataJS.map(datum => datum.date);
 
     return (

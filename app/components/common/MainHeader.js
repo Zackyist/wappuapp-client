@@ -1,10 +1,7 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
-import {
-  ToolbarAndroid,
-  StyleSheet,
-} from 'react-native';
+import { ToolbarAndroid, StyleSheet } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import theme from '../../style/theme';
@@ -113,7 +110,6 @@ var EventDetailToolbar = React.createClass({
 
     const {
       backgroundColor,
-      title,
       titleColor,
       currentTab,
       currentCityName,

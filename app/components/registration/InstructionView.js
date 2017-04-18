@@ -4,16 +4,12 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   Platform,
   ScrollView,
   Dimensions
 } from 'react-native';
 import theme from '../../style/theme';
-import Button from '../../components/common/Button';
-import Row from '../../components/common/Row';
-
 
 const { width, height } = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
@@ -34,34 +30,8 @@ class InstructionView extends Component {
                   <Text style={styles.text}>Team with the best Whappu-buzz wins a juicy prize!</Text>
                   <Text style={styles.subTitle}>Enjoy sima</Text>
                   <Text style={styles.text}>Otherwise you might get thirsty!</Text>
-                {/*
-                  <Text style={styles.subTitle}>Winner takes it all</Text>
-                  <Text style={styles.text}>Competition ends at 12:00PM on 30th of April. Winner will be announced later on the day!</Text>
-                */}
                 </View>
               </View>
-
-            {/*
-              <Row
-                style={{paddingTop: 20}}
-                icon={'md-star'}
-                number={1}
-                title={'Whappu hard & Share it'}
-                text={'Team with the best Whappu-buzz wins a juicy prize!'}/>
-
-              <Row
-                icon={'md-wine'}
-                number={2}
-                title={'Enjoy sima'}
-                text={'Because otherwise you might get thirsty.'}/>
-
-              <Row
-                icon={'md-trophy'}
-                number={3}
-                title={'Winner takes it all'}
-                text={'Competition ends at 12:00PM on 30th of April.'}
-                secondaryText={'Winner will be announced later on the day.'}/>
-              */}
             </View>
         </ScrollView>
       </View>

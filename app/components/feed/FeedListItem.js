@@ -11,7 +11,6 @@ import {
   Platform,
   PropTypes,
   TouchableOpacity,
-  TouchableHighlight,
   View
 } from 'react-native';
 
@@ -22,8 +21,9 @@ import abuse from '../../services/abuse';
 import time from '../../utils/time';
 import theme from '../../style/theme';
 import { openRegistrationView } from '../../actions/registration';
+import VotePanel from './VotePanel';
 
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const FEED_ITEM_MARGIN_DISTANCE = 0;
 const FEED_ITEM_MARGIN_DEFAULT = 0;
 const FEED_ADMIN_ITEM_MARGIN_DEFAULT = 15;
@@ -87,39 +87,6 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 12,
     top: -10,
-  },
-  itemVoteWrapper: {
-    flexDirection: 'row',
-    paddingVertical: 5,
-    width: 100,
-  },
-
-  itemVoteButtonWrap: {
-    flex: 1,
-    width: 28,
-    height: 28,
-    top: 2,
-    borderRadius: 14,
-    overflow: 'hidden',
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  itemVoteButton: {
-    flex: 1,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  itemVoteValue: {
-    minWidth: 15,
-    textAlign: 'center',
-    fontSize: 15,
-    paddingVertical: 5,
-    color: theme.grey
   },
   feedItemListText: {
     textAlign: 'center',
@@ -236,11 +203,7 @@ class FeedListItem extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      myVote: 0,
-      selected: false
-    };
+    this.state = { selected: false };
   }
 
   itemIsCreatedByMe(item) {
@@ -295,32 +258,6 @@ class FeedListItem extends Component {
     this.props.removeFeedItem(this.props.item);
   }
 
-  voteThisItem(vote) {
-
-    const { userVote, id } = this.props.item;
-
-    if (this.props.isRegistrationInfoValid === false) {
-      this.props.openRegistrationView();
-    } else {
-      const wasAlreadyVotedByMe = userVote !== 0;
-      const voteWasChanged = userVote !== vote;
-      const multiplier = wasAlreadyVotedByMe ? 2 : 1;
-      const difference = voteWasChanged ? vote * multiplier : 0;
-
-      this.props.voteFeedItem(id, vote, difference);
-      this.setState({
-        myVote: vote
-      })
-    }
-  }
-
-  getVotes() {
-    // If the user has just given a vote, it is added to the total amount to votes displayed on the screen.
-    const { difference, votes } = this.props.item;
-    const newVote = difference ? difference : 0;
-    return parseInt(votes) + newVote;
-  }
-
   // Render "remove" button, which is remove OR flag button,
   // depending is the user the creator of this feed item or not
   renderRemoveButton(item) {
@@ -344,43 +281,6 @@ class FeedListItem extends Component {
     );
   }
 
-  renderVoteButton(positive) {
-    const { myVote } = this.state;
-    const { userVote } = this.props.item;
-
-    const value = positive ? 1 : -1;
-    const iconName = positive ? 'keyboard-arrow-up' : 'keyboard-arrow-down';
-
-    const voteWasChanged = myVote !== 0;
-    const disabled = voteWasChanged ? myVote === value : userVote === value;
-
-    return (
-      <View style={styles.itemVoteButtonWrap}>
-      <TouchableHighlight
-        disabled={disabled}
-        activeOpacity={1}
-        style={styles.itemVoteButton}
-        underlayColor={theme.stable}
-        onPress={() => this.voteThisItem(value)}>
-          <View style={styles.itemVoteButton}>
-            <Text style={{color: disabled ? theme.secondary : theme.grey}}>
-              <Icon name={iconName} size={25}/>
-            </Text>
-          </View>
-      </TouchableHighlight>
-      </View>
-    );
-  }
-
-  renderVotingPanel() {
-    return (
-      <View style={styles.itemVoteWrapper}>
-        {this.renderVoteButton(true)}
-        <Text style={styles.itemVoteValue}>{this.getVotes()}</Text>
-        {this.renderVoteButton()}
-      </View>);
-  }
-
   renderAdminItem(item, ago) {
 
     return (
@@ -398,7 +298,7 @@ class FeedListItem extends Component {
             <View style={styles.itemImageWrapper}>
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => this.props.openLightBox(item)}
+                onPress={() => this.props.openLightBox(item.id)}
               >
                 <Image
                   source={{ uri: item.url }}
@@ -418,7 +318,7 @@ class FeedListItem extends Component {
   }
 
   render() {
-    const { item } = this.props;
+    const { item, openUserPhotos } = this.props;
     const { selected } = this.state;
     const ago = time.getTimeAgo(item.createdAt);
 
@@ -442,20 +342,19 @@ class FeedListItem extends Component {
           selected ? styles.itemContent_selected : {}
         ]}>
 
-          <View style={styles.feedItemListItemInfo}>
-            {/*<Icon name='face' style={styles.feedItemListItemAuthorIcon} />*/}
+          <TouchableOpacity activeOpacity={IOS ? 0.7 : 1} style={styles.feedItemListItemInfo} onPress={() => openUserPhotos(item.author)}>
             <View style={styles.feedItemListItemAuthor}>
               <Text style={styles.itemAuthorName}>{item.author.name}</Text>
               <Text style={[styles.itemAuthorTeam, itemByMyTeam ? styles.itemAuthorTeam__my : {}]}>{item.author.team}</Text>
             </View>
             <Text style={styles.itemTimestamp}>{ago}</Text>
-          </View>
+          </TouchableOpacity>
 
           {isItemImage ?
             <View style={styles.itemImageWrapper}>
               <TouchableOpacity
                 activeOpacity={1}
-                onPress={() => this.props.openLightBox(item)}
+                onPress={() => this.props.openLightBox(item.id)}
               >
                 <Image
                   source={{ uri: item.url }}
@@ -467,7 +366,12 @@ class FeedListItem extends Component {
               <Text style={styles.feedItemListText}>{item.text}</Text>
             </View>
           }
-          {this.renderVotingPanel()}
+
+          <VotePanel
+            item={item}
+            voteFeedItem={this.props.voteFeedItem}
+            openRegistrationView={this.props.openRegistrationView}
+          />
 
           {/* this.renderRemoveButton(item) */}
 

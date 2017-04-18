@@ -9,7 +9,6 @@ import {
   StyleSheet,
   Easing,
   TouchableOpacity,
-  Platform,
   ScrollView,
   Dimensions
 } from 'react-native';
@@ -24,8 +23,6 @@ const cityIcons = {
   'helsinki': require('../../../assets/cities/icon-ota-amfi-accent.png'),
   'tampere': require('../../../assets/cities/icon-tampere-accent.png')
 };
-
-const IOS = Platform.OS === 'ios';
 
 class InstructionView extends Component {
   constructor(props) {

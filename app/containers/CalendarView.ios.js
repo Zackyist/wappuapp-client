@@ -5,9 +5,7 @@ import { Navigator, StyleSheet } from 'react-native';
 import autobind from 'autobind-decorator';
 
 import sceneConfig from '../utils/sceneConfig';
-import NavRouteMapper from '../components/common/navbarRouteMapper';
 
-//import TimelineList from '../components/calendar/TimelineList';
 import EventsView from './EventsView';
 const theme = require('../style/theme');
 

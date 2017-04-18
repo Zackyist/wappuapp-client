@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  Text,
   Image,
   View,
   TouchableHighlight
@@ -9,7 +8,7 @@ import {
 
 import { connect } from 'react-redux';
 
-import { openCitySelection, toggleCityPanel, getCityId, getCurrentCityName } from '../../concepts/city';
+import { toggleCityPanel, getCityId, getCurrentCityName } from '../../concepts/city';
 
 import theme from '../../style/theme';
 // import MdIcon from 'react-native-vector-icons/MaterialIcons';
@@ -21,12 +20,12 @@ const cityIcons = {
 
 const CitySelector = ({
   currentCity,
-  toggleCityPanel,
+  toggleCityPanel: onCityIconClicked,
   currentCityName
 }) => (
   <TouchableHighlight
     underlayColor={'transparent'}
-    onPress={() => toggleCityPanel() }>
+    onPress={() => onCityIconClicked() }>
     <View>
       <Image
         source={(currentCityName || '').toLowerCase() === 'tampere'
@@ -64,7 +63,7 @@ var styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openCitySelection, toggleCityPanel };
+const mapDispatchToProps = { toggleCityPanel };
 
 const select = state => {
   return {

@@ -13,7 +13,7 @@ class MoodInfo extends Component {
 
     return (
       <View style={styles.container}>
-        {!isIOS && <Header backgroundColor={theme.secondary} title="Add Wappu Vibe" navigator={this.props.navigator} />}
+        {!isIOS && <Header backgroundColor={theme.secondary} title="Whappu Vibe" navigator={this.props.navigator} />}
         <ScrollView style={styles.scroll}>
           <View style={styles.iconWrap}>
             <View style={styles.iconCircle}>

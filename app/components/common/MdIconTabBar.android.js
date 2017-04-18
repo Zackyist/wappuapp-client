@@ -12,7 +12,6 @@ import {
   Easing
 } from 'react-native';
 
-import { times, range } from 'lodash';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({

@@ -4,8 +4,6 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
-  Platform,
-  Dimensions,
   TextInput,
   Animated,
   Text,
@@ -16,9 +14,6 @@ import {
 import MdIcon from 'react-native-vector-icons/MaterialIcons';
 
 import theme from '../../../style/theme';
-
-const { height } = Dimensions.get('window');
-
 class MoodSubmit extends Component {
   render() {
 

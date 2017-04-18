@@ -5,9 +5,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
-  TouchableOpacity,
-  TouchableWithoutFeedback
+  Image
 } from 'react-native';
 import PlatformTouchable from '../common/PlatformTouchable';
 

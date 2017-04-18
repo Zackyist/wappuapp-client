@@ -8,11 +8,9 @@ import {
   View,
   ListView,
   ScrollView,
-  TouchableHighlight,
   TouchableOpacity,
   Linking,
   Image,
-  Dimensions,
   Platform
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -21,7 +19,6 @@ import _ from 'lodash';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import WebViewer from '../webview/WebViewer';
-import Header from '../common/Header';
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
 import { fetchLinks } from '../../actions/profile';
@@ -29,8 +26,6 @@ import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
 import feedback from '../../services/feedback';
 
-
-const {width} = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
@@ -44,7 +39,8 @@ const styles = StyleSheet.create({
   listItem: {
     flex:1,
     padding: 20,
-    flexDirection:'row',
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: IOS ? theme.white : theme.transparent,
   },
   listItem__hero:{
@@ -80,7 +76,12 @@ const styles = StyleSheet.create({
     top: 0,
     left: 9,
     alignSelf: 'stretch',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+  },
+  listItemSubtitle: {
+    color: theme.subtlegrey,
+    top: 1,
+    fontSize: 13,
   },
   avatarColumn: {
     width: 50,
@@ -109,8 +110,8 @@ const styles = StyleSheet.create({
     top: 45,
   },
   listItemText:{
-    color:'#000',
-    fontSize:16,
+    color: '#000',
+    fontSize: 16,
   },
   listItemText__highlight: {
     color:theme.primary
@@ -119,7 +120,12 @@ const styles = StyleSheet.create({
     color:'#aaa'
   },
   listItemText__small: {
-    fontSize:12,
+    fontSize:13,
+    paddingTop: 1,
+  },
+  listItemTitles: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   listItemBottomLine:{
     position:'absolute',
@@ -239,7 +245,10 @@ class Profile extends Component {
         <View style={linkItemStyles}>
           <View style={styles.listItem}>
             <Icon style={styles.listItemIcon} name={item.icon} />
-            <Text style={styles.listItemText}>{item.title}</Text>
+            <View style={styles.listItemTitles}>
+              <Text style={styles.listItemText}>{item.title}</Text>
+              {item.subtitle && <Text style={styles.listItemSubtitle}>{item.subtitle}</Text>}
+            </View>
             {!item.separatorAfter && !item.last && <View style={styles.listItemBottomLine} />}
           </View>
         </View>

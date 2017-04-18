@@ -1,5 +1,5 @@
 import React from 'react';
-import { toArray, findIndex } from 'lodash';
+import { toArray } from 'lodash';
 import {
   StyleSheet,
   Text,
@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import { getFeedSortType, setFeedSortType } from '../../concepts/sortType';
 
 import theme from '../../style/theme';
-import MdIcon from 'react-native-vector-icons/MaterialIcons';
 import SortTypes from '../../constants/SortTypes';
 
 const sortTypeTitles = {
@@ -22,7 +21,7 @@ const sortTypeTitles = {
 
 const SortSelector = ({
   selectedSortType,
-  setFeedSortType
+  setFeedSortType: onSortButtonClicked
 }) => {
 
   const sortTypeOptions = toArray(SortTypes);
@@ -34,7 +33,7 @@ const SortSelector = ({
   return (
   <TouchableHighlight
     underlayColor={'transparent'}
-    onPress={() => setFeedSortType(nextSortTypeItem) }>
+    onPress={() => onSortButtonClicked(nextSortTypeItem) }>
     <View style={styles.sortSelector}>
       <Text style={styles.filterText}>
         {sortTypeTitles[selectedSortType]}

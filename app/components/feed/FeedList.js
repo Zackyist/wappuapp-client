@@ -31,6 +31,7 @@ import permissions from '../../services/android-permissions';
 import ImageEditor from './ImageEditor';
 import FeedListItem from './FeedListItem';
 import Notification from '../common/Notification';
+import UserView from '../user/UserView';
 import Loading from './Loading';
 import ActionButtons from './ActionButtons';
 import LoadingStates from '../../constants/LoadingStates';
@@ -134,7 +135,7 @@ class FeedList extends Component {
   _onScroll(event) {
     const { showScrollTopButton } = this.state;
     const SHOW_SCROLLTOP_LIMIT = 600;
-    const HIDE_BUTTON_LIMIT = 590;
+    const HIDE_BUTTON_LIMIT = 570;
     const scrollTop = event.nativeEvent.contentOffset.y;
 
     const isOverLimit = scrollTop > SHOW_SCROLLTOP_LIMIT;
@@ -147,13 +148,13 @@ class FeedList extends Component {
     const SENSITIVITY = 25;
     if (this.showActionButtons && isOverHideLimit && scrollTop - this.scrollPos > SENSITIVITY) {
       this.showActionButtons = false;
-      Animated.spring(this.state.actionButtonsAnimation, { toValue: 0, duration: 300 }).start();
+      Animated.timing(this.state.actionButtonsAnimation, { toValue: 0, duration: 300 }).start();
     } else if (
       !this.showActionButtons &&
       ((isOverHideLimit && this.scrollPos - scrollTop > SENSITIVITY) || !isOverHideLimit)
     ) {
       this.showActionButtons = true;
-      Animated.spring(this.state.actionButtonsAnimation, { toValue: 1, duration: 300 }).start();
+      Animated.timing(this.state.actionButtonsAnimation, { toValue: 1, duration: 300 }).start();
     }
 
     this.scrollPos = scrollTop;
@@ -194,6 +195,17 @@ class FeedList extends Component {
         setTimeout(() => {
           this.openImagePicker();
         });
+      });
+    }
+  }
+
+  @autobind
+  openUserPhotos(user) {
+    if (user.id) {
+      this.props.navigator.push({
+        component: UserView,
+        name: `${user.name}`,
+        user
       });
     }
   }
@@ -280,6 +292,7 @@ class FeedList extends Component {
                 removeFeedItem={this.props.removeFeedItem}
                 voteFeedItem={this.props.voteFeedItem}
                 isRegistrationInfoValid={this.props.isRegistrationInfoValid}
+                openUserPhotos={this.openUserPhotos}
                 openLightBox={this.props.openLightBox} />
               }
               style={[styles.listView]}

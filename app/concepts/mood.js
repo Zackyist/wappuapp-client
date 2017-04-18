@@ -91,7 +91,7 @@ export const getCurrentTeamName = createSelector(
 export const TOGGLE_MOOD_SLIDER = 'mood/TOGGLE_MOOD_SLIDER';
 export const SET_MOOD_DATA = 'mood/SET_MOOD_DATA';
 
-export const setMoodData = (mood) => ({ type: SET_MOOD_DATA, payload: mood });
+export const setMoodData = (moodData) => ({ type: SET_MOOD_DATA, payload: moodData });
 
 const {
   GET_MOOD_DATA_REQUEST,
@@ -105,7 +105,11 @@ export const fetchMoodData = () => (dispatch, getState) => {
   const teamId = getUserTeamId(state);
   const userId = getUserId(state);
 
-  const moodParams = cityId && teamId && userId ? { cityId, teamId, userId } : {}
+
+  const moodParams = Object.assign(
+    cityId ? { cityId } : {},
+    teamId ? { teamId } : {},
+    userId ? { userId } : {});
 
 
   dispatch({ type: GET_MOOD_DATA_REQUEST });

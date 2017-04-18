@@ -13,14 +13,19 @@ import {
 import { connect } from 'react-redux';
 import theme from '../../style/theme';
 // import ModalBox from 'react-native-modalbox';
-import { removeFeedItem, closeLightBox } from '../../actions/feed';
+
+import { openRegistrationView } from '../../actions/registration';
+import { voteFeedItem, removeFeedItem, closeLightBox } from '../../actions/feed';
+import { getLightboxItem } from '../../reducers/feed';
 import abuse from '../../services/abuse';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PlatformTouchable from '../common/PlatformTouchable';
 import ModalBackgroundView from '../common/ModalBackgroundView';
+import VotePanel from '../feed/VotePanel';
 import Loader from '../common/Loader';
-import Share from 'react-native-share';
 import moment from 'moment';
+import Share from 'react-native-share';
 import PhotoView from 'react-native-photo-view';
 import ImageZoom from 'react-native-image-zoom';
 
@@ -77,10 +82,6 @@ class LightBox extends Component {
 
     Share.open(shareOptions);
   }
-  onReport() {
-    console.log('test');
-  }
-
 
   itemIsCreatedByMe(item) {
     return item.getIn(['author','type'],'') === 'ME';
@@ -124,7 +125,7 @@ class LightBox extends Component {
       lightBoxItem
     } = this.props;
 
-    if (!isLightBoxOpen) {
+    if (!isLightBoxOpen || !lightBoxItem) {
       return null
     }
 
@@ -136,9 +137,7 @@ class LightBox extends Component {
     return (
       <Modal
         onRequestClose={this.onClose}
-
         visible={isLightBoxOpen}
-
         backButtonClose={true}
         style={styles.modal}
         transparent={true}
@@ -173,22 +172,33 @@ class LightBox extends Component {
           </View>
           }
           <View style={styles.header}>
-                <View style={styles.header__icon}>
-                <PlatformTouchable delayPressIn={0} onPress={this.onClose}>
-                  <View><Icon style={{ color: theme.white, fontSize: 26 }} name="close" /></View>
-                </PlatformTouchable>
-                {itemAuthor && !isSystemUser &&
-                  <Text style={styles.header__title}>{itemAuthor}</Text>}
+            <View style={styles.header__icon}>
+              <PlatformTouchable delayPressIn={0} onPress={this.onClose}>
+                <View><Icon style={{ color: theme.white, fontSize: 26 }} name="close" /></View>
+              </PlatformTouchable>
+
+              <View style={styles.headerTitle}>
+              {itemAuthor &&
+                <Text style={styles.headerTitleText}>{!isSystemUser ? itemAuthor : 'Whappu'}</Text>
+              }
+                <View style={styles.date}>
+                  <Text style={styles.dateText}>
+                    {created.format('ddd DD.MM.YYYY')} at {created.format('HH:mm')}
+                  </Text>
+                </View>
               </View>
+            </View>
           </View>
 
           <View style={styles.toolbar}>
-            <View style={styles.date}>
-              <Text style={{color: theme.stable, fontSize: 12}}>
-                {created.format('ddd DD.MM.YYYY')} at {created.format('HH:mm')}
-              </Text>
+            <View>
+              <VotePanel
+                item={lightBoxItem.toJS()}
+                voteFeedItem={this.props.voteFeedItem}
+                openRegistrationView={this.props.openRegistrationView}
+              />
             </View>
-            <View style={{ justifyContent:'flex-end', flexDirection: 'row' }}>
+            <View style={styles.toolbar__buttons}>
               {!isSystemUser &&
               <PlatformTouchable onPress={() => this.showRemoveDialog(lightBoxItem)}>
                 <View style={styles.toolbar__button}>
@@ -225,7 +235,7 @@ const styles = StyleSheet.create({
   header: {
     height: 56,
     marginTop: IOS ? 8 : 0,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     position: 'absolute',
     left: 0,
     top:0,
@@ -235,26 +245,36 @@ const styles = StyleSheet.create({
   },
   header__icon: {
     position: 'absolute',
-    top: IOS ? 25 : 15,
+    top: IOS ? 25 : 10,
     left: 15,
     right: 15,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center'
   },
-  header__title: {
-    color: theme.white,
+  headerTitle: {
     marginLeft: 15,
+  },
+  headerTitleText: {
+    color: theme.white,
+    fontWeight: 'bold',
     fontSize: 14
+  },
+  date: {
+    paddingTop: IOS ? 2 : 0
+  },
+  dateText: {
+    color: theme.stable,
+    opacity: 0.9,
+    fontSize: 12
   },
   toolbar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 0,
-    paddingRight: IOS ? 10 : 10,
-    paddingLeft: IOS ? 20 : 15,
-    paddingBottom: IOS ? 35 : 0,
+    paddingRight: 10,
+    paddingLeft: 5,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -263,11 +283,16 @@ const styles = StyleSheet.create({
     zIndex: 3,
     backgroundColor: IOS ? 'transparent' : 'rgba(0,0,0,.3)',
   },
+  toolbar__buttons: {
+    justifyContent:'flex-end',
+    flexDirection: 'row',
+    paddingTop: 0,
+  },
   toolbar__button: {
     borderRadius: 25,
     width: 50,
     height: 50,
-    marginTop: 5,
+    marginTop: IOS ? 5 : 1,
     marginLeft: 15,
     alignItems: 'center',
     justifyContent: 'center',
@@ -284,19 +309,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginTop: 2,
     color: theme.stable
-  },
-  date: {
-    top: IOS ? 20 : 0
   }
 });
 
 const select = store => {
   return {
-    lightBoxItem: store.feed.get('lightBoxItem'),
+    // lightBoxItem: store.feed.get('lightBoxItem'),
+    lightBoxItem: getLightboxItem(store),
     isLightBoxOpen: store.feed.get('isLightBoxOpen')
   };
 };
 
-const mapDispatch = { removeFeedItem, closeLightBox };
+const mapDispatch = { removeFeedItem, closeLightBox, voteFeedItem, openRegistrationView };
 
 export default connect(select, mapDispatch)(LightBox);

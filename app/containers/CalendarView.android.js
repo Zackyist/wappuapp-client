@@ -8,8 +8,7 @@ import {
 import autobind from 'autobind-decorator';
 import EventsView from './EventsView';
 
-var _navigator;
-
+let _navigator; // eslint-disable-line
 class TimelineListWrapper extends Component {
   propTypes: {
     navigator: PropTypes.object.isRequired

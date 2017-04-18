@@ -1,12 +1,10 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Dimensions, Linking, TouchableNativeFeedback } from 'react-native';
+import { View, StyleSheet, Text, Linking, TouchableNativeFeedback } from 'react-native';
 
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
-
-const { width } = Dimensions.get('window');
 
 class RadioWebsiteLink extends Component {
   render() {

@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Platform, StatusBar, AppState } from 'react-native';
+import { Platform, StatusBar } from 'react-native';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -11,12 +11,9 @@ import * as reducers from '../reducers';
 import MainView from './MainView';
 import * as CompetitionActions from '../actions/competition';
 import * as LocationActions from '../actions/location';
-import * as TeamActions from '../actions/team';
 import * as RegistrationActions from '../actions/registration';
 import { initializeUsersCity, fetchCities } from '../concepts/city';
 import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
-import * as ENV from '../../env';
-import { checkForUpdates } from '../utils/updater';
 import permissions from '../services/android-permissions';
 
 const IOS = Platform.OS === 'ios';
@@ -34,9 +31,6 @@ if (__DEV__) {
 const createStoreWithMiddleware = applyMiddleware.apply(this, middlewares)(createStore);
 const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducer);
-
-// Use different HockeyApp ID for both platforms.
-const HOCKEYAPP_ID = IOS ? ENV.HOCKEYAPP_ID : ENV.HOCKEYAPP_ID_ANDROID;
 
 // Fetch actions, check user existance
 store.dispatch(CompetitionActions.fetchActionTypes());
@@ -59,16 +53,8 @@ class RootView extends Component {
 
     this.startLocationWatcher = this.startLocationWatcher.bind(this);
   }
-  componentWillMount() {
-    if (IOS) {
-      // HockeyApp.configure(HOCKEYAPP_ID, true);
-    }
-  }
 
   componentDidMount() {
-    if (IOS) {
-      // HockeyApp.start();
-    }
 
     // Location watcher
     if (IOS) {
@@ -79,19 +65,8 @@ class RootView extends Component {
 
     // Statusbar style
     if (IOS) {
-
       StatusBar.setHidden(false)
       StatusBar.setBarStyle('light-content')
-
-      // check for updates when app is resumed
-      // AppState.addEventListener('change', state => {
-      //   if (state === 'active') {
-      //     checkForUpdates();
-      //   }
-      // });
-
-      // // and check once on startup
-      // checkForUpdates();
     }
   }
 

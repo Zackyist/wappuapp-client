@@ -1,10 +1,6 @@
 
 import React from 'react';
-import {
-  ActivityIndicator,
-  Platform,
-  StyleSheet
-} from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import theme from '../../style/theme';
 
 const styles = StyleSheet.create({
