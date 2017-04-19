@@ -27,6 +27,8 @@ const CLOSE_CHECKIN_VIEW = 'CLOSE_CHECKIN_VIEW';
 const SHOW_NOTIFICATION = 'SHOW_NOTIFICATION';
 const HIDE_NOTIFICATION = 'HIDE_NOTIFICATION';
 const UPDATE_COOLDOWNS = 'UPDATE_COOLDOWNS';
+const SET_EDITABLE_IMAGE = 'SET_EDITABLE_IMAGE';
+const CLEAR_EDITABLE_IMAGE = 'CLEAR_EDITABLE_IMAGE';
 
 const openTextActionView = () => {
   return { type: OPEN_TEXTACTION_VIEW };
@@ -141,6 +143,9 @@ const updateCooldowns = () => {
   return { type: UPDATE_COOLDOWNS };
 };
 
+const setEditableImage = (editableImage) => ({ type: SET_EDITABLE_IMAGE, payload: editableImage });
+const clearEditableImage = () => ({ type: CLEAR_EDITABLE_IMAGE });
+
 export {
   POST_ACTION_REQUEST,
   POST_ACTION_SUCCESS,
@@ -155,6 +160,8 @@ export {
   SHOW_NOTIFICATION,
   HIDE_NOTIFICATION,
   UPDATE_COOLDOWNS,
+  SET_EDITABLE_IMAGE,
+  CLEAR_EDITABLE_IMAGE,
   postAction,
   postText,
   postImage,
@@ -164,5 +171,7 @@ export {
   openTextActionView,
   closeTextActionView,
   fetchActionTypes,
-  updateCooldowns
+  updateCooldowns,
+  setEditableImage,
+  clearEditableImage
 };

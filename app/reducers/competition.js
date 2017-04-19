@@ -14,7 +14,9 @@ import {
   CLOSE_CHECKIN_VIEW,
   SHOW_NOTIFICATION,
   HIDE_NOTIFICATION,
-  UPDATE_COOLDOWNS
+  UPDATE_COOLDOWNS,
+  SET_EDITABLE_IMAGE,
+  CLEAR_EDITABLE_IMAGE
 } from '../actions/competition';
 
 const initialState = Immutable.fromJS({
@@ -28,7 +30,8 @@ const initialState = Immutable.fromJS({
   isTextActionViewOpen: false,
   isCheckInViewOpen: false,
   isNotificationVisible: false,
-  notificationText: ''
+  notificationText: '',
+  editableImage: null,
 });
 
 const getDisabledActions = (state) => {
@@ -109,6 +112,10 @@ export default function competition(state = initialState, action) {
       });
     case UPDATE_COOLDOWNS:
       return state.set('disabledActionTypes', getDisabledActions(state));
+    case SET_EDITABLE_IMAGE:
+      return state.set('editableImage', action.payload);
+    case CLEAR_EDITABLE_IMAGE:
+      return state.set('editableImage', null);
     default:
       return state;
   }

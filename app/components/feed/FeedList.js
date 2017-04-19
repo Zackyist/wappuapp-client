@@ -42,7 +42,9 @@ import {
   postImage,
   postAction,
   openTextActionView,
-  openCheckInView
+  openCheckInView,
+  setEditableImage,
+  clearEditableImage,
 } from '../../actions/competition';
 import reactMixin from 'react-mixin';
 import TimerMixin from 'react-timer-mixin';
@@ -72,8 +74,6 @@ const styles = StyleSheet.create({
 });
 
 class FeedList extends Component {
-  // mixins: [TimerMixin]
-
   constructor(props) {
     super(props);
 
@@ -81,8 +81,7 @@ class FeedList extends Component {
       actionButtonsAnimation: new Animated.Value(1),
       showScrollTopButton: false,
       listAnimation: new Animated.Value(0),
-      dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 }),
-      editableImage: null
+      dataSource: new ListView.DataSource({ rowHasChanged: (row1, row2) => row1 !== row2 })
     };
   }
 
@@ -91,10 +90,6 @@ class FeedList extends Component {
 
     this.props.updateCooldowns();
   }
-
-  // componentWillUnmount() {
-  //   //this.clearInterval(this.updateCooldownInterval);
-  // }
 
   componentWillReceiveProps({ feed, feedListState }) {
     if (feed !== this.props.feed) {
@@ -222,10 +217,15 @@ class FeedList extends Component {
           vertical: response.isVertical
         };
 
-        this.setState({ editableImage });
+        this.openImageEditor(editableImage);
         // this.props.postImage(image);
       }
     });
+  }
+
+  @autobind
+  openImageEditor(editableImage) {
+    this.props.setEditableImage(editableImage);
   }
 
   @autobind
@@ -236,7 +236,7 @@ class FeedList extends Component {
 
   @autobind
   resetPostImage() {
-    this.setState({ editableImage: null });
+    this.props.clearEditableImage();
   }
 
   @autobind
@@ -331,7 +331,7 @@ class FeedList extends Component {
           onCancel={this.resetPostImage}
           onImagePost={this.onImagePost}
           animationType={'fade'}
-          image={this.state.editableImage}
+          image={this.props.editableImage}
         />
       </View>
     );
@@ -349,7 +349,9 @@ const mapDispatchToProps = {
   removeFeedItem,
   voteFeedItem,
   openCheckInView,
-  openLightBox
+  openLightBox,
+  setEditableImage,
+  clearEditableImage
 };
 
 const select = store => {
@@ -366,6 +368,7 @@ const select = store => {
     notificationText: store.competition.get('notificationText'),
     isSending: store.competition.get('isSending'),
     userTeam: getUserTeam(store),
+    editableImage: store.competition.get('editableImage'),
 
     isRegistrationInfoValid,
     isLoadingUserData: store.registration.get('isLoading'),
