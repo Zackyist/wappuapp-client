@@ -17,7 +17,6 @@ import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
 import permissions from '../services/android-permissions';
 
 const IOS = Platform.OS === 'ios';
-// var HockeyApp = require('react-native-hockeyapp');
 
 
 const middlewares = [thunk];

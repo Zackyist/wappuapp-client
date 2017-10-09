@@ -4,7 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
-import com.microsoft.codepush.react.CodePush;
+import com.cmcewen.blurview.BlurViewPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.audioStreaming.ReactNativeAudioStreamingPackage;
 import com.facebook.react.ReactInstanceManager;
@@ -19,7 +19,6 @@ import cl.json.RNSharePackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
-// import com.cmcewen.blurview.BlurViewPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.horcrux.svg.RNSvgPackage;
@@ -30,13 +29,6 @@ import java.util.List;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-
-    // @Override
-    // protected String getJSBundleFile() {
-    //   return CodePush.getJSBundleFile();
-    // }
-
-
     @Override
     protected boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -50,16 +42,13 @@ public class MainApplication extends Application implements ReactApplication {
           new RNDeviceInfo(),
           new VectorIconsPackage(),
           new LinearGradientPackage(),
-          //new BlurViewPackage(),
           new ImagePickerPackage(),
           new ReactImageZoom(),
           new RNSharePackage(),
-          new MapsPackage(),
           new RNSvgPackage(),
-          // new RNHockeyAppPackage(MainApplication.this),
-          // new CodePush("deployment-key-here", MainApplication.this, BuildConfig.DEBUG),
           new MainReactPackage(),
-            new CodePush(null, getApplicationContext(), BuildConfig.DEBUG)
+            new BlurViewPackage(),
+            new MapsPackage()
       );
     }
   };
