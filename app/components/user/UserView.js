@@ -18,6 +18,8 @@ import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import UserAvatar from 'react-native-user-avatar';
+
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -69,8 +71,9 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
-            <View style={styles.avatar}>
-              <Icon style={styles.avatarText} name="person-outline" />
+            <View>
+            <UserAvatar name={user.name} src={"https://lh3.googleusercontent.com/4JGWAqyqhShTQchlxay87l0LthCxun6HeqEGaA9QoVquX3-laQXP3rDZjEzOMbUpuXyojIs=s102"}
+            size={100} />
             </View>
             <Text style={styles.headerTitle}>
               {user.name}
@@ -126,8 +129,6 @@ class UserView extends Component {
     );
   }
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
