@@ -11,13 +11,15 @@ import {
   getTotalSimas,
   getTotalVotesForUser,
   fetchUserImages,
-  isLoadingUserImages,
+  isLoadingUserImages
 } from '../../concepts/user';
-import { getUserName, getUserId } from '../../reducers/registration';
+import { getUserName, getUserId, getUserImageUrl } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import UserAvatar from 'react-native-user-avatar';
+
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -43,12 +45,12 @@ class UserView extends Component {
   render() {
 
     const { images, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator } = this.props;
+      userTeam, userName, navigator, userImageUrl } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName }
+      user = { name: userName, image_url: userImageUrl}
     }
 
     const imagesCount = images.size;
@@ -69,8 +71,9 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
-            <View style={styles.avatar}>
-              <Icon style={styles.avatarText} name="person-outline" />
+            <View>
+            <UserAvatar name={user.name} src={userImageUrl}
+            size={100} />
             </View>
             <Text style={styles.headerTitle}>
               {user.name}
@@ -126,8 +129,6 @@ class UserView extends Component {
     );
   }
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -246,7 +247,8 @@ const mapStateToProps = state => ({
   totalVotes: getTotalVotesForUser(state),
   userId: getUserId(state),
   userName: getUserName(state),
-  userTeam: getUserTeam(state)
+  userTeam: getUserTeam(state),
+  userImageUrl: getUserImageUrl(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);

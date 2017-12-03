@@ -85,6 +85,7 @@ export default function registration(state = initialState, action) {
         'name': action.payload.name,
         'selectedTeam': action.payload.team,
         'uuid': action.payload.uuid,
+        'image_url' : action.payload.image_url,
         'isLoading': false
       });
     default:
@@ -95,6 +96,7 @@ export default function registration(state = initialState, action) {
 // # Selectors
 export const getUserId = state => state.registration.get('userId');
 export const getUserName = state => state.registration.get('name');
+export const getUserImageUrl = state => state.registration.get('image_url');
 export const getUserTeamId = state => state.registration.get('selectedTeam', 0);
 export const getUserTeam = createSelector(getUserTeamId, getTeams,
   (teamId, teams) => teams.find(item => item.get('id') === teamId))
