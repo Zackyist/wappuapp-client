@@ -81,6 +81,7 @@ export default function registration(state = initialState, action) {
     case GET_USER_SUCCESS:
       return state.merge({
         'userId': action.payload.id,
+        'profilePic': action.payload.profilePic,
         'name': action.payload.name,
         'selectedTeam': action.payload.team,
         'uuid': action.payload.uuid,

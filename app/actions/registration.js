@@ -42,7 +42,8 @@ const putUser = () => {
     const uuid = DeviceInfo.getUniqueID();
     const name = getStore().registration.get('name');
     const team = getStore().registration.get('selectedTeam');
-    return api.putUser({ uuid, name, team })
+    const imageData = getStore().registration.get('profilePic');
+    return api.putUser({ uuid, name, team, imageData })
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_REGISTRATION_VIEW });

@@ -119,7 +119,7 @@ class RegistrationView extends Component {
         };
 
         this.setState({uri: response.uri});
-        // this.props.updateProfilePic(data);
+        this.props.updateProfilePic(data);
 
       }
     });
