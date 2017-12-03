@@ -9,6 +9,7 @@ import {
   OPEN_REGISTRATION_VIEW,
   CLOSE_REGISTRATION_VIEW,
   UPDATE_NAME,
+  UPDATE_PROFILE_PIC,
   DISMISS_INTRODUCTION,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
@@ -26,6 +27,7 @@ import { getTeams } from './team';
 const initialState = fromJS({
   isRegistrationViewOpen: false,
   name: '',
+  profilePic: null,
   selectedTeam: 0,
   isLoading: false,
   isError: false,
@@ -45,6 +47,8 @@ export default function registration(state = initialState, action) {
       return state.set('isIntroductionDismissed', true);
     case UPDATE_NAME:
       return state.set('name', action.payload);
+    case UPDATE_PROFILE_PIC:
+      return state.set('profilePic', action.payload);
     case SELECT_TEAM:
       return state.set('selectedTeam', action.payload);
     case RESET:

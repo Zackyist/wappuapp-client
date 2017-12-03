@@ -65,6 +65,10 @@ const putUser = payload => {
   return _put(Endpoints.urls.user(payload.uuid), payload);
 };
 
+const putUserPicture = payload => {
+  return _put(Endpoints.urls.userPicture(payload.uuid), payload);
+}
+
 const getUser = uuid => {
   return wapuFetch(Endpoints.urls.user(uuid))
     .then(checkResponseStatus)

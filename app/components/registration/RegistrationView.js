@@ -18,6 +18,10 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import AppIntro from 'react-native-app-intro';
 
+import { ImagePickerManager } from 'NativeModules';
+import permissions from '../../services/android-permissions';
+import ImageCaptureOptions from '../../constants/ImageCaptureOptions';
+
 import theme from '../../style/theme';
 import Button from '../../components/common/Button';
 import InstructionView from './InstructionView';
@@ -27,6 +31,8 @@ import ModalBox from 'react-native-modalbox';
 import Team from './Team';
 import Toolbar from './RegistrationToolbar';
 import {
+  updateProfilePic,
+  putUserImage,
   putUser,
   updateName,
   selectTeam,
@@ -60,7 +66,9 @@ class RegistrationView extends Component {
     this.state = {
       showSkipButton: false,
       selectedCity: props.selectedCityId || 2,
-      index: 0
+      index: 0,
+      profileImage: null,
+      uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'
     };
   }
 
@@ -83,6 +91,43 @@ class RegistrationView extends Component {
 
       this.setState({ selectedCity: startingSelectedCity || 2 });
     }
+  }
+
+  @autobind
+  chooseImage() {
+    if (IOS) {
+      this.openImagePicker();
+    } else {
+      permissions.requestCameraPermission(() => {
+        setTimeout(() => {
+          this.openImagePicker();
+        });
+      });
+    }
+  }
+
+  @autobind
+  openImagePicker() {
+    ImagePickerManager.showImagePicker(ImageCaptureOptions, (response) => {
+      if (!response.didCancel && !response.error) {
+        const data = 'data:image/jpeg;base64,' + response.data;
+        const profileImage = {
+          data,
+          width: response.width,
+          height: response.height,
+          vertical: response.isVertical
+        };
+
+        this.setState({uri: response.uri});
+        // this.props.updateProfilePic(data);
+
+      }
+    });
+  }
+
+  @autobind
+  onUpdateProfilePic() {
+    this.chooseImage();
   }
 
   @autobind
@@ -214,6 +259,7 @@ class RegistrationView extends Component {
               </View>
             </View>
             {this._renderNameSelect()}
+            {this._renderProfilePicSelect()}
           </View>
         </ScrollView>
 
@@ -364,6 +410,36 @@ class RegistrationView extends Component {
     );
   }
 
+  _renderProfilePicSelect() {
+    return(
+      <View style={[styles.inputGroup,{marginTop:10}]}>
+        <View style={styles.inputLabel}>
+          <Text style={styles.inputLabelText}>Set your profile picture</Text>
+        </View>
+
+        <View style={styles.inputFieldWrap}>
+
+        <View style={{flexDirection: 'row'}}>
+          <View style={styles.avatar}>
+            <Image
+              style={{width: 90, height: 90}}
+              source={{uri: this.state.uri}}
+            />
+          </View>
+          <Button
+            style={[styles.modalButton, {top:20, marginRight:10, left:10}]}
+            onPress={this.onUpdateProfilePic}>
+            Choose picture </Button>
+        </View>
+
+
+
+        </View>
+      </View>
+    );
+
+  }
+
   render() {
     const { initialSetup } = this.props;
     return (
@@ -376,6 +452,7 @@ class RegistrationView extends Component {
           onRequestClose={this.onCloseProfileEditor}
         >
           {this._renderNameSelectContainer()}
+
         </Modal>
     );
   }
@@ -399,6 +476,20 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     margin: 0,
     borderRadius: 5
+  },
+  avatar: {
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 90,
+    height: 90,
+    backgroundColor: theme.stable,
+    borderRadius: 45,
+  },
+  avatarText: {
+    backgroundColor: theme.transparent,
+    color: theme.secondary,
+    fontSize: 60,
   },
   bottomButtons:{
     flex:1,
@@ -586,6 +677,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = {
   putUser,
+  putUserImage,
+  updateProfilePic,
   updateName,
   reset,
   setCity,

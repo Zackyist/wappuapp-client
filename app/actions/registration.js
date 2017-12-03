@@ -22,6 +22,7 @@ const RESET = 'RESET';
 const SELECT_TEAM = 'SELECT_TEAM';
 const CLOSE_TEAM_SELECTOR = 'CLOSE_TEAM_SELECTOR';
 const DISMISS_INTRODUCTION = 'DISMISS_INTRODUCTION';
+const UPDATE_PROFILE_PIC = 'UPDATE_PROFILE_PIC';
 
 const openRegistrationView = () => {
   return { type: OPEN_REGISTRATION_VIEW };
@@ -99,6 +100,10 @@ const getUser = () => {
   };
 };
 
+const updateProfilePic = (profilePic) => {
+  return {type: UPDATE_PROFILE_PIC, payload: profilePic} ;
+}
+
 export {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
@@ -106,6 +111,7 @@ export {
   OPEN_REGISTRATION_VIEW,
   CLOSE_REGISTRATION_VIEW,
   UPDATE_NAME,
+  UPDATE_PROFILE_PIC,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
@@ -113,6 +119,7 @@ export {
   RESET,
   DISMISS_INTRODUCTION,
   putUser,
+  updateProfilePic,
   openRegistrationView,
   closeRegistrationView,
   updateName,
