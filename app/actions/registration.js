@@ -102,7 +102,7 @@ const getUser = () => {
 };
 
 const updateProfilePic = (profilePic) => {
-  return {type: UPDATE_PROFILE_PIC, payload: profilePic} ;
+  return {type: UPDATE_PROFILE_PIC, payload: profilePic};
 }
 
 export {
