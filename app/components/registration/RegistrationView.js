@@ -676,7 +676,6 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = {
   putUser,
-  putUserImage,
   updateProfilePic,
   updateName,
   reset,
