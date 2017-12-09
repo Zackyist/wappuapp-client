@@ -65,10 +65,17 @@ class UserView extends Component {
             {!isIOS &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
-                <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
+                <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />
               </TouchableHighlight>
             </View>
             }
+            
+            <View style={styles.menu}>
+              <TouchableHighlight style={styles.backLinkText}>
+                <Icon name="more-vert" size={28} style={styles.backLinkIcon} />
+              </TouchableHighlight>
+            </View>
+
             <View style={styles.avatar}>
               <Icon style={styles.avatarText} name="person-outline" />
             </View>
@@ -147,6 +154,11 @@ const styles = StyleSheet.create({
     left: 7,
     top: 7,
     zIndex: 2,
+  },
+  menu: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
   },
   backLinkText: {
     justifyContent: 'center',
