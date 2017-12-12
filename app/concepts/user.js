@@ -52,18 +52,7 @@ export const fetchUserImages = (userId) => (dispatch) => {
     })
     .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
 }
-// export const fetchUserAvatarUrl = () => (dispatch) => {
-//   dispatch({ type: GET_USER_REQUEST });
-//   return api.getUser(userId)
-//     .then(image_url => {
-//       dispatch({
-//         type: SET_USER,
-//         payload: image_url
-//       });
-//       dispatch({ type: GET_USER_SUCCESS });
-//     })
-//     .catch(error => dispatch({ type: GET_USER_FAILURE, error: true, payload: error }));
-// }
+
 export const fetchUserAvatarUrl  = () => {
   return dispatch => {
     dispatch({ type: GET_USER_REQUEST });
