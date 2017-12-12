@@ -11,9 +11,11 @@ import {
   getTotalSimas,
   getTotalVotesForUser,
   fetchUserImages,
-  isLoadingUserImages
+  fetchUserAvatarUrl,
+  isLoadingUserImages,
+  getUserImageUrl
 } from '../../concepts/user';
-import { getUserName, getUserId, getUserImageUrl } from '../../reducers/registration';
+import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
@@ -37,20 +39,22 @@ class UserView extends Component {
 
     if (user && user.id) {
       this.props.fetchUserImages(user.id);
+      this.props.fetchUserAvatarUrl(user.id);
     } else {
       this.props.fetchUserImages(userId);
+      this.props.fetchUserAvatarUrl(userId);
     }
   }
 
   render() {
 
-    const { images, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator, userImageUrl } = this.props;
+    const { images, image_url, isLoading, totalVotes, totalSimas,
+      userTeam, userName, navigator} = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName, image_url: userImageUrl}
+      user = { name: userName, image_url: image_url}
     }
 
     const imagesCount = images.size;
@@ -72,7 +76,7 @@ class UserView extends Component {
             </View>
             }
             <View>
-            <UserAvatar name={user.name} src={userImageUrl}
+            <UserAvatar name={user.name || userName } src={image_url || user.image_url}
             size={100} />
             </View>
             <Text style={styles.headerTitle}>
@@ -238,7 +242,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages };
+const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserAvatarUrl };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -248,7 +252,7 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  userImageUrl: getUserImageUrl(state)
+  image_url: getUserImageUrl(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);
