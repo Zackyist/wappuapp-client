@@ -7,7 +7,7 @@ import autobind from 'autobind-decorator';
 import analytics from '../services/analytics';
 import theme from '../style/theme';
 
-//import Chat<dsfasfdsadf> from '../components/chat/Chat';
+import Chat from '../components/chat/Chat';
 
 const VIEW_NAME = 'ChatView';
 
@@ -51,14 +51,16 @@ class ChatView extends Component {
 
   render() {
     return (
-      <View style={styles.header}>
-        <Text> Tämä on chatti header </Text>
-      </View>
-      <View style={styles.chatContainer}>
-        <Text> viesti </Text>
-      </View>
-      <View style={styles.chatfield}>
-        <Text> chattikenttä </Text>
+      <View>
+        <View style={styles.header}>
+          <Text> Tämä on chatti header </Text>
+        </View>
+        <View style={styles.chatContainer}>
+          <Text> viesti </Text>
+        </View>
+        <View style={styles.chatfield}>
+          <Text> chattikenttä </Text>
+        </View>
       </View>
     );
   }
