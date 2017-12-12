@@ -65,6 +65,10 @@ const putUser = payload => {
   return _put(Endpoints.urls.user(payload.uuid), payload);
 };
 
+const putProfilePic = payload => {
+  return _put(Endpoints.urls.profilePic(payload.uuid), payload);
+};
+
 const getUser = uuid => {
   return wapuFetch(Endpoints.urls.user(uuid))
     .then(checkResponseStatus)
@@ -199,6 +203,7 @@ export default {
   fetchMoreFeed,
   postAction,
   putUser,
+  putProfilePic,
   putMood,
   getUser,
   getImages,

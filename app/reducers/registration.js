@@ -6,6 +6,9 @@ import {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
   CREATE_USER_FAILURE,
+  UPDATE_PROFILE_PIC_REQUEST,
+  UPDATE_PROFILE_PIC_SUCCESS,
+  UPDATE_PROFILE_PIC_FAILURE,
   OPEN_REGISTRATION_VIEW,
   CLOSE_REGISTRATION_VIEW,
   UPDATE_NAME,
@@ -55,6 +58,21 @@ export default function registration(state = initialState, action) {
       return state.merge({
         'name': '',
         'selectedTeam': 0
+      });
+    case UPDATE_PROFILE_PIC_REQUEST:
+      return state.merge({
+        'isLoading': true,
+        'isError': false
+      });
+    case UPDATE_PROFILE_PIC_SUCCESS:
+      return state.merge({
+        'isLoading': false,
+        'isError': false
+      });
+    case UPDATE_PROFILE_PIC_FAILURE:
+      return state.merge({
+        'isLoading': false,
+        'isError': true
       });
     case CREATE_USER_REQUEST:
       return state.merge({

@@ -32,6 +32,7 @@ import Team from './Team';
 import Toolbar from './RegistrationToolbar';
 import {
   updateProfilePic,
+  putProfilePic,
   putUser,
   updateName,
   selectTeam,
@@ -119,6 +120,7 @@ class RegistrationView extends Component {
 
         this.setState({uri: response.uri}); 
         this.props.updateProfilePic(data);
+        this.props.putProfilePic();
 
       }
     });
@@ -677,6 +679,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   putUser,
   updateProfilePic,
+  putProfilePic,
   updateName,
   reset,
   setCity,
