@@ -12,6 +12,7 @@ export const getUserTeam = state => state.user.getIn(['profile', 'team'], List()
 export const getTotalSimas = state => state.user.getIn(['profile', 'numSimas'], '') || '';
 export const getSelectedUser = state => state.user.get('selectedUser', Map()) || Map();
 export const isLoadingUserImages = state => state.user.get('isLoading', false) || false;
+export const getUserImageUrl = state => state.user.getIn(['profile', 'image_url'], '') || '';
 
 export const getTotalVotesForUser = createSelector(
   getUserImages, (posts) => {
@@ -23,8 +24,6 @@ export const getTotalVotesForUser = createSelector(
   }
 )
 
-
-
 // # Action creators
 const {
   GET_USER_PROFILE_REQUEST,
@@ -32,6 +31,12 @@ const {
   GET_USER_PROFILE_FAILURE
 } = createRequestActionTypes('GET_USER_PROFILE');
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
+
+const {
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE
+} = createRequestActionTypes('GET_USER');
 
 export const fetchUserImages = (userId) => (dispatch) => {
   dispatch({ type: GET_USER_PROFILE_REQUEST });
@@ -45,6 +50,20 @@ export const fetchUserImages = (userId) => (dispatch) => {
     })
     .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
 }
+
+export const fetchUserAvatarUrl = (userId) => (dispatch) => {
+  dispatch({ type: GET_USER_REQUEST });
+  return api.getUser(userId)
+    .then(image_url => {
+      dispatch({
+        type: GET_USER_REQUEST,
+        payload: image_url
+      });
+      dispatch({ type: GET_USER_SUCCESS });
+    })
+    .catch(error => dispatch({ type: GET_USER_FAILURE, error: true, payload: error }));
+}
+
 
 
 

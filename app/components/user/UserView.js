@@ -11,9 +11,10 @@ import {
   getTotalSimas,
   getTotalVotesForUser,
   fetchUserImages,
-  isLoadingUserImages
+  isLoadingUserImages,
+  getUserImageUrl
 } from '../../concepts/user';
-import { getUserName, getUserId, getUserImageUrl } from '../../reducers/registration';
+import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
@@ -37,8 +38,10 @@ class UserView extends Component {
 
     if (user && user.id) {
       this.props.fetchUserImages(user.id);
+      this.props.fetchUserAvatarUrl(user.id);
     } else {
       this.props.fetchUserImages(userId);
+      this.props.fetchUserAvatarUrl(user.id);
     }
   }
 
@@ -72,7 +75,7 @@ class UserView extends Component {
             </View>
             }
             <View>
-            <UserAvatar name={user.name} src={userImageUrl}
+            <UserAvatar name={user.name || userName } src={userImageUrl}
             size={100} />
             </View>
             <Text style={styles.headerTitle}>
