@@ -7,6 +7,7 @@ import autobind from 'autobind-decorator';
 import analytics from '../services/analytics';
 import theme from '../style/theme';
 
+//import Chat<dsfasfdsadf> from '../components/chat/Chat';
 
 const VIEW_NAME = 'ChatView';
 
@@ -21,7 +22,17 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     flexDirection: 'row',
     alignItems: 'center'
-  }
+  },
+  chatfield: {
+    height: 7
+  },
+  header: {
+    flex: 1,
+    backgroundColor: theme.lightgrey
+  },
+  chatContainer: {
+    height: 30
+  },
 });
 
 
@@ -40,8 +51,14 @@ class ChatView extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: theme.lightgrey }}>
-        <Text>Tämä on chatti</Text>
+      <View style={styles.header}>
+        <Text> Tämä on chatti header </Text>
+      </View>
+      <View style={styles.chatContainer}>
+        <Text> viesti </Text>
+      </View>
+      <View style={styles.chatfield}>
+        <Text> chattikenttä </Text>
       </View>
     );
   }
