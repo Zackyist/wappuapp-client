@@ -7,7 +7,10 @@ import {createRequestActionTypes} from '.';
 const {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
-  CREATE_USER_FAILURE
+  CREATE_USER_FAILURE,
+  UPDATE_PROFILE_PIC_REQUEST,
+  UPDATE_PROFILE_PIC_FAILURE,
+  UPDATE_PROFILE_PIC_SUCCESS
 } = createRequestActionTypes('CREATE_USER');
 const {
   GET_USER_REQUEST,
@@ -42,8 +45,7 @@ const putUser = () => {
     const uuid = DeviceInfo.getUniqueID();
     const name = getStore().registration.get('name');
     const team = getStore().registration.get('selectedTeam');
-    const imageData = getStore().registration.get('profilePic');
-    return api.putUser({ uuid, name, team, imageData })
+    return api.putUser({ uuid, name, team })
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_REGISTRATION_VIEW });
@@ -51,6 +53,24 @@ const putUser = () => {
       .catch(error => dispatch({ type: CREATE_USER_FAILURE, error: error }));
   };
 };
+
+const putProfilePic = () => { //ugliest stuff ever. need to fix it ASAP
+  return(dispatch, getStore) => {
+    dispatch({ type: CREATE_USER_REQUEST });
+    const uuid = DeviceInfo.getUniqueID();
+    const imageData = getStore().registration.get('profilePic');
+    const name = getStore().registration.get('name');
+    const team = getStore().registration.get('selectedTeam');
+    //return api.putUser({ uuid, name, team })
+    return api.putProfilePic({ uuid, imageData })
+      .then(response => {
+        dispatch({type: CREATE_USER_SUCCESS})
+      })
+      .catch(error => dispatch({type: CREATE_USER_FAILURE, error: error}));
+
+  };
+};
+
 const selectTeam = team => {
   return (dispatch, getStore) => {
     const teams = getStore().team.get('teams').toJS();
@@ -135,6 +155,7 @@ export {
   DISMISS_INTRODUCTION,
   putUser,
   updateProfilePic,
+  putProfilePic,
   openRegistrationView,
   closeRegistrationView,
   updateName,
