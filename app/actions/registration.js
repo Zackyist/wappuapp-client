@@ -7,10 +7,7 @@ import {createRequestActionTypes} from '.';
 const {
   CREATE_USER_REQUEST,
   CREATE_USER_SUCCESS,
-  CREATE_USER_FAILURE,
-  UPDATE_PROFILE_PIC_REQUEST,
-  UPDATE_PROFILE_PIC_FAILURE,
-  UPDATE_PROFILE_PIC_SUCCESS
+  CREATE_USER_FAILURE
 } = createRequestActionTypes('CREATE_USER');
 const {
   GET_USER_REQUEST,
@@ -54,14 +51,11 @@ const putUser = () => {
   };
 };
 
-const putProfilePic = () => { //ugliest stuff ever. need to fix it ASAP
+const putProfilePic = () => {
   return(dispatch, getStore) => {
     dispatch({ type: CREATE_USER_REQUEST });
     const uuid = DeviceInfo.getUniqueID();
     const imageData = getStore().registration.get('profilePic');
-    const name = getStore().registration.get('name');
-    const team = getStore().registration.get('selectedTeam');
-    //return api.putUser({ uuid, name, team })
     return api.putProfilePic({ uuid, imageData })
       .then(response => {
         dispatch({type: CREATE_USER_SUCCESS})
