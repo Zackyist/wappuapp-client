@@ -68,7 +68,7 @@ class RegistrationView extends Component {
       selectedCity: props.selectedCityId || 2,
       index: 0,
       profileImage: null, //TODO: fetch image via API
-      uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png' 
+      uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'
     };
   }
 
@@ -118,7 +118,7 @@ class RegistrationView extends Component {
           vertical: response.isVertical
         };
 
-        this.setState({uri: response.uri}); 
+        this.setState({uri: response.uri});
         this.props.updateProfilePic(data);
         this.props.putProfilePic();
 

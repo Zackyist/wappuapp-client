@@ -13,7 +13,7 @@ export const getUserTeam = state => state.user.getIn(['profile', 'team'], List()
 export const getTotalSimas = state => state.user.getIn(['profile', 'numSimas'], '') || '';
 export const getSelectedUser = state => state.user.get('selectedUser', Map()) || Map();
 export const isLoadingUserImages = state => state.user.get('isLoading', false) || false;
-export const getUserImageUrl = state => state.user.getIn(['user', 'image_url'], '') || '';
+export const getUserImageUrl = state => state.user.getIn(['profile', 'image_url'], '') || '';
 
 export const getTotalVotesForUser = createSelector(
   getUserImages, (posts) => {
@@ -40,13 +40,13 @@ const {
 } = createRequestActionTypes('GET_USER');
 const SET_USER = 'SET_USER';
 
-export const fetchUserImages = (userId) => (dispatch) => {
+export const fetchUserProfile = (userId) => (dispatch) => {
   dispatch({ type: GET_USER_PROFILE_REQUEST });
   return api.getUserProfile(userId)
-    .then( image_url => {
+    .then( userProfile => {
       dispatch({
         type: SET_USER_PROFILE,
-        payload: image_url
+        payload: userProfile
       });
       dispatch({ type: GET_USER_PROFILE_SUCCESS });
     })
@@ -55,17 +55,17 @@ export const fetchUserImages = (userId) => (dispatch) => {
 
 export const fetchUserAvatarUrl  = () => {
   return dispatch => {
-    dispatch({ type: GET_USER_REQUEST });
+    dispatch({ type: GET_USER_PROFILE_REQUEST });
     const uuid = DeviceInfo.getUniqueID();
   return api.getUser(uuid)
     .then(user=> {
       dispatch({
-        type: SET_USER,
+        type: SET_USER_PROFILE,
         payload: user
       });
-      dispatch({ type: GET_USER_SUCCESS });
+      dispatch({ type: GET_USER_PROFILE_SUCCESS });
     })
-    .catch(error => dispatch({ type: GET_USER_FAILURE, error: error }));
+    .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: error }));
   }
 }
 
@@ -88,7 +88,7 @@ export default function city(state = initialState, action) {
         profile: Map(),
         isLoading: true
       });
-    }
+     }
     case SET_USER: {
       return state.set('user', fromJS(action.payload));
     }

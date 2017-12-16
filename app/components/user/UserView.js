@@ -10,10 +10,9 @@ import {
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
-  fetchUserImages,
-  fetchUserAvatarUrl,
-  isLoadingUserImages,
-  getUserImageUrl
+  getUserImageUrl,
+  fetchUserProfile,
+  isLoadingUserImages
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
@@ -21,7 +20,6 @@ import { openLightBox } from '../../actions/feed';
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserAvatar from 'react-native-user-avatar';
-
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -38,11 +36,9 @@ class UserView extends Component {
     const { userId } = this.props;
 
     if (user && user.id) {
-      this.props.fetchUserImages(user.id);
-      this.props.fetchUserAvatarUrl(user.id);
+      this.props.fetchUserProfile(user.id);
     } else {
-      this.props.fetchUserImages(userId);
-      this.props.fetchUserAvatarUrl(userId);
+      this.props.fetchUserProfile(userId);
     }
   }
 
@@ -54,7 +50,7 @@ class UserView extends Component {
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName, image_url: image_url}
+      user = { name: userName, imageUrl: image_url}
     }
 
     const imagesCount = images.size;
@@ -76,7 +72,7 @@ class UserView extends Component {
             </View>
             }
             <View>
-            <UserAvatar name={user.name || userName } src={image_url || user.image_url}
+            <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
             size={100} />
             </View>
             <Text style={styles.headerTitle}>
@@ -101,7 +97,7 @@ class UserView extends Component {
             </View>
           </View>
         )}
-      >
+        >
 
       <View style={styles.container}>
         {isLoading && <View style={styles.loader}><Loader size="large" /></View>}
@@ -241,8 +237,7 @@ const styles = StyleSheet.create({
   },
 });
 
-
-const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserAvatarUrl };
+const mapDispatchToProps = { openLightBox, fetchUserProfile };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
