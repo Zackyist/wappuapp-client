@@ -97,7 +97,7 @@ class UserView extends Component {
       console.log('own profile');
     }
   }
-  
+
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
@@ -307,6 +307,18 @@ class UserView extends Component {
             <Text style={styles.imageTitle}>No photos</Text>
           </View>
         }
+        <View style={styles.thumbs}>
+        {!user.id &&
+          <View style={{flex: 1, flexDirection: 'row'}}>
+          <TouchableHighlight onPress={this.onLikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.onDislikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+          </TouchableHighlight>
+          </View>
+        }
+        </View>
       </View>
       </ParallaxView>
       </View>
@@ -407,6 +419,15 @@ const styles = StyleSheet.create({
   },
   containerAvatar: {
     alignItems: 'center'
+  },
+  thumbs: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    backgroundColor: theme.transparent,
+    color: theme.secondary,
+    fontSize: 60,
   },
   headerKpis: {
     alignItems: 'center',
