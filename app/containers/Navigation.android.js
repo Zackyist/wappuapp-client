@@ -18,7 +18,6 @@ import CalendarView from './CalendarView';
 import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import HeilaView from './HeilaView';
-import ChatView from './ChatView';
 import FeedView from './FeedView';
 import ProfileView from './ProfileView';
 import AndroidTabs  from 'react-native-scrollable-tab-view';
@@ -33,7 +32,6 @@ const ANDROID_TAB_ORDER = [
   Tabs.CALENDAR,
   Tabs.FEELING,
   Tabs.HEILA,
-  Tabs.CHAT,
   Tabs.ACTION,
   Tabs.SETTINGS
 ];
@@ -87,7 +85,6 @@ class AndroidTabNavigation extends Component {
           <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
           <MoodView navigator={navigator} tabLabel={{title:'Vibes', icon:'trending-up', iconSize: 26}} />
           <HeilaView navigator={navigator} tabLabel={{title:'Heila', icon:'favorite-border'}} />
-          <ChatView navigator={navigator} tabLabel={{title:'Chat', icon:'chat'}} />
           <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
           <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
         </AndroidTabs>
