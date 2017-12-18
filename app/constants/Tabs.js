@@ -6,6 +6,5 @@ export default {
   ACTION: 'ACTION',
   FEED: 'FEED',
   HEILA: 'HEILA',
-  CHAT: 'CHAT',
   SETTINGS: 'SETTINGS'
 };
