@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text } from 'react-native';
+  TouchableHighlight, Image, Platform, Text, Navigator } from 'react-native';
 import { connect } from 'react-redux';
 
 import {
@@ -25,6 +25,8 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
+import PopupMenu from './PopupMenu';
+
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const { height, width } = Dimensions.get('window');
@@ -42,6 +44,17 @@ class UserView extends Component {
     }
   }
 
+  onPopupEvent = (eventName, index) => {
+    if (eventName !== 'itemSelected') return
+      this.props.navigator.pop()
+    /*
+    if (index === 0) this.onLawStuff()
+    else if (index === 1) this.onTermsStuff()
+    else if (index === 2) this.onSurvivalStuff()
+    else if (index === 3) this.onChangeProfileStuff()
+    */
+  } 
+
   render() {
 
     const { images, image_url, isLoading, totalVotes, totalSimas,
@@ -58,73 +71,82 @@ class UserView extends Component {
     return (
       <View style={{ flex: 1 }}>
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
-      <ParallaxView
-        backgroundSource={headerImage}
-        windowHeight={270}
-        style={{ backgroundColor:theme.white }}
-        header={(
-          <View style={styles.header}>
-            {!isIOS &&
-            <View style={styles.backLink}>
-              <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
-                <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
-              </TouchableHighlight>
-            </View>
-            }
-            <View>
-            <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
-            size={100} />
-            </View>
-            <Text style={styles.headerTitle}>
-              {user.name}
-            </Text>
-            <Text style={styles.headerSubTitle}>
-              {userTeam || user.team}
-            </Text>
-            <View style={styles.headerKpis}>
-              <View style={styles.headerKpi}>
-                <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>photos</Text>
-              </View>
-              <View style={styles.headerKpi}>
-                <Text style={styles.headerKpiValue}>{!isLoading ? totalVotes : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>votes for photos</Text>
-              </View>
-              <View style={styles.headerKpi}>
-                <Text style={styles.headerKpiValue}>{!isLoading ? (totalSimas || '-') : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>simas</Text>
-              </View>
-            </View>
-          </View>
-        )}
-        >
+        <ParallaxView
+          backgroundSource={headerImage}
+          windowHeight={270}
+          style={{ backgroundColor:theme.white }}
+          header={(
+            <View style={styles.header}>
+              {!isIOS &&
 
-      <View style={styles.container}>
-        {isLoading && <View style={styles.loader}><Loader size="large" /></View>}
-        {images.size > 0 &&
-          <View style={styles.imageContainer}>
-            {images.map(image =>
-              <View key={image.get('id')}>
-                <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => this.props.openLightBox(image.get('id'))}
-                >
-                  <Image
-                    key={image.get('id')}
-                    style={{height: width / 3 - 5, width: width / 3 - 5, margin: 2, backgroundColor: theme.stable}}
-                    source={{uri: image.get('url')}}/>
-                </TouchableOpacity>
+              <View style={styles.backLink}>
+                <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
+                  <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />
+                </TouchableHighlight>
               </View>
-            )}
-          </View>
-        }
-        {!isLoading && !images.size &&
-          <View style={styles.imageTitleWrap}>
-            <Text style={styles.imageTitle}>No photos</Text>
-          </View>
-        }
-      </View>
-      </ParallaxView>
+              }
+
+              <View>
+                <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
+                size={100} />
+              </View>
+
+                <View style={styles.menu}>
+                  <PopupMenu actions={['Law & Order', 'Terms & Piracy', 'Fuksi Survival Kit', 'Change My profile']} onPress={this.onPopupEvent} />
+                </View>
+
+                <Text style={styles.headerTitle}>
+                  {user.name}
+                </Text>
+
+                <Text style={styles.headerSubTitle}>
+                  {userTeam || user.team}
+                </Text>
+
+                <View style={styles.headerKpis}>
+                  <View style={styles.headerKpi}>
+                    <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
+                    <Text style={styles.headerKpiTitle}>photos</Text>
+                  </View>
+                  <View style={styles.headerKpi}>
+                    <Text style={styles.headerKpiValue}>{!isLoading ? totalVotes : '-'}</Text>
+                    <Text style={styles.headerKpiTitle}>votes for photos</Text>
+                  </View>
+                  <View style={styles.headerKpi}>
+                    <Text style={styles.headerKpiValue}>{!isLoading ? (totalSimas || '-') : '-'}</Text>
+                    <Text style={styles.headerKpiTitle}>simas</Text>
+                  </View>
+                </View>
+            </View>
+          )}
+          >
+
+                <View style={styles.container}>
+                  {isLoading && <View style={styles.loader}><Loader size="large" /></View>}
+                  {images.size > 0 &&
+                    <View style={styles.imageContainer}>
+                      {images.map(image =>
+                        <View key={image.get('id')}>
+                          <TouchableOpacity
+                          activeOpacity={1}
+                          onPress={() => this.props.openLightBox(image.get('id'))}
+                          >
+                            <Image
+                              key={image.get('id')}
+                              style={{height: width / 3 - 5, width: width / 3 - 5, margin: 2, backgroundColor: theme.stable}}
+                              source={{uri: image.get('url')}}/>
+                          </TouchableOpacity>
+                        </View>
+                      )}
+                    </View>
+                  }
+                  {!isLoading && !images.size &&
+                    <View style={styles.imageTitleWrap}>
+                      <Text style={styles.imageTitle}>No photos</Text>
+                    </View>
+                  }
+                </View>
+        </ParallaxView>
       </View>
     );
   }
@@ -148,6 +170,11 @@ const styles = StyleSheet.create({
     left: 7,
     top: 7,
     zIndex: 2,
+  },
+  menu: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
   },
   backLinkText: {
     justifyContent: 'center',
