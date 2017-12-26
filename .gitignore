@@ -45,3 +45,4 @@ buck-out/
 android/app/libs
 *.keystore
 yarn.lock
+android/app/google-services.json
