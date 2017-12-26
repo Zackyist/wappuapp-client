@@ -45,3 +45,4 @@ buck-out/
 android/app/libs
 *.keystore
 *.log
+android/app/google-services.json
