@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text } from 'react-native';
+  TouchableHighlight, Image, Platform, Text, Navigator } from 'react-native';
 import { connect } from 'react-redux';
 
 import {
@@ -23,6 +23,8 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
+import PopupMenu from './PopupMenu';
+
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const { height, width } = Dimensions.get('window');
@@ -38,6 +40,12 @@ class UserView extends Component {
     } else {
       this.props.fetchUserImages(userId);
     }
+  }
+
+  onPopupEvent = (eventName, index) => {
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onEdit()
+    else this.onRemove()
   }
 
   render() {
@@ -69,11 +77,9 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
-            
+
             <View style={styles.menu}>
-              <TouchableHighlight style={styles.backLinkText}>
-                <Icon name="more-vert" size={28} style={styles.backLinkIcon} />
-              </TouchableHighlight>
+              <PopupMenu actions={['Edit', 'Remove']} onPress={this.onPopupEvent} />
             </View>
 
             <View style={styles.avatar}>
@@ -134,6 +140,19 @@ class UserView extends Component {
   }
 };
 
+/*
+  navigator: {
+    paddingTop: 42,
+    paddingBottom:0,
+  },
+  navbar: {
+    backgroundColor: theme.secondary,
+    height: 62,
+    paddingBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+*/
 
 
 const styles = StyleSheet.create({
