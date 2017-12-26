@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: "com.google.gms.google-services"
 
 import com.android.build.OutputFile
 
@@ -177,3 +176,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 //   exclude 'META-INF/LICENSE'
 //   exclude 'META-INF/NOTICE'
 // }
+
+apply plugin: "com.google.gms.google-services"
+
