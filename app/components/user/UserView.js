@@ -23,6 +23,7 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
+import MoodInfo from './AppInfo';
 import PopupMenu from './PopupMenu';
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
@@ -42,9 +43,31 @@ class UserView extends Component {
     }
   }
 
-  onPopupEvent = (eventName, index) => {
+  onTOS = () => {
+    let navigator = this.props.navigator
+    navigator.push({component: MoodInfo});
+  }
+
+  onChangeMyProfile = () => {
+    let navigator = this.props.navigator
+    navigator.push({component: MoodInfo});
+  }
+
+  onAppInfo = () => {
+    let navigator = this.props.navigator
+    navigator.push({component: MoodInfo});
+  }
+
+  onFuksiSurvivalKit = () => {
+    let navigator = this.props.navigator
+    navigator.push({component: MoodInfo});
+  }
+
+  onPopupEvent = (navigator = thiseventName, index) => {
+    let .props.navigator
+
     if (eventName !== 'itemSelected') return
-    if (index === 0) this.onEdit()
+    if (index === 0) this.onTOS()
     else this.onRemove()
   }
 
@@ -79,7 +102,7 @@ class UserView extends Component {
             }
 
             <View style={styles.menu}>
-              <PopupMenu actions={['Edit', 'Remove']} onPress={this.onPopupEvent} />
+              <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
             </View>
 
             <View style={styles.avatar}>
