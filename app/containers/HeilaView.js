@@ -28,6 +28,16 @@ const styles = StyleSheet.create({
 
 
 
+// SUPER IMPORTANT:
+// react-native-fcm version 5 is used because of RN version
+// --------------->
+// this is the correct documentation: 
+// https://github.com/evollu/react-native-fcm/tree/v5.0.0
+
+
+
+
+
 // when you call this function, it initializes a global FCM listener
 // this means that this function *HAS TO BE CALLED* exactly once after
 // the application has started. for simplicity it is now called in the
