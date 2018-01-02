@@ -127,6 +127,8 @@ class HeilaView extends Component {
       // fcm token may not be available on first load, catch it here
     });
 
+    pushNotificationListener();
+
   }
 
   @autobind
