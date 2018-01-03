@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
-import Profile from '../components/profile/Profile';
+import UserView from '../components/user/UserView';
 
 const theme = require('../style/theme');
 
@@ -41,7 +41,7 @@ class ProfileView extends Component {
       <Navigator
         style={styles.navigator}
         initialRoute={{
-          component: Profile,
+          component: UserView,
           name: 'Settings'
         }}
         renderScene={this.renderScene}

@@ -173,7 +173,7 @@ class Profile extends Component {
 
 
   componentDidMount() {
-    this.props.fetchLinks();
+    //this.props.fetchLinks();
   }
 
   @autobind

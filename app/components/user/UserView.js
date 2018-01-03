@@ -23,13 +23,16 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
-import MoodInfo from './AppInfo';
+import AppInfo from './AppInfo';
 import PopupMenu from './PopupMenu';
+import Profile from '../profile/Profile';
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
+
+
 
 class UserView extends Component {
   componentDidMount() {
@@ -45,29 +48,29 @@ class UserView extends Component {
 
   onTOS = () => {
     let navigator = this.props.navigator
-    navigator.push({component: MoodInfo});
+    navigator.push({component: AppInfo});
   }
 
   onChangeMyProfile = () => {
     let navigator = this.props.navigator
-    navigator.push({component: MoodInfo});
+    navigator.push({component: Profile});
   }
 
   onAppInfo = () => {
     let navigator = this.props.navigator
-    navigator.push({component: MoodInfo});
+    navigator.push({component: AppInfo});
   }
 
   onFuksiSurvivalKit = () => {
     let navigator = this.props.navigator
-    navigator.push({component: MoodInfo});
+    navigator.push({component: AppInfo});
   }
 
-  onPopupEvent = (navigator = thiseventName, index) => {
-    let .props.navigator
+  onPopupEvent = (eventName, index) => {
 
     if (eventName !== 'itemSelected') return
     if (index === 0) this.onTOS()
+    else if (index ===1) this.onChangeMyProfile()
     else this.onRemove()
   }
 
@@ -93,7 +96,7 @@ class UserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {!isIOS &&
+            {!isIOS && user.name !== userName &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
                 <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />
@@ -101,9 +104,11 @@ class UserView extends Component {
             </View>
             }
 
+            {user.name === userName &&
             <View style={styles.menu}>
               <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
             </View>
+            }
 
             <View style={styles.avatar}>
               <Icon style={styles.avatarText} name="person-outline" />
