@@ -25,6 +25,7 @@ import { fetchLinks } from '../../actions/profile';
 import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
 import feedback from '../../services/feedback';
+import UserAvatar from 'react-native-user-avatar';
 
 const IOS = Platform.OS === 'ios';
 
@@ -85,6 +86,7 @@ const styles = StyleSheet.create({
   },
   avatarColumn: {
     width: 50,
+    right: 10,
   },
   avatar: {
     justifyContent: 'center',
@@ -261,7 +263,7 @@ class Profile extends Component {
   renderModalItem(item, index) {
     const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
     const hasName = !!item.title;
-    const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
+    //const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
 
     return (
       <View key={index} style={{flex:1}}>
@@ -269,12 +271,8 @@ class Profile extends Component {
             <View style={[styles.listItemButton, styles.listItemSeparator]}>
             <View style={[styles.listItem, styles.listItem__hero]}>
               <View style={styles.avatarColumn}>
-                <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
-                  {hasName
-                    ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
-                    : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
-                  }
-                </View>
+              <UserAvatar name={hasName ? item.title : ''}
+                src={this.props.image_url} size={50} />
               </View>
               <View style={{flexDirection:'column',flex:1}}>
                 {
@@ -376,6 +374,7 @@ const select = store => {
       name: store.registration.get('name'),
       links: store.profile.get('links'),
       terms: store.profile.get('terms'),
+      image_url: store.registration.get('image_url'),
       cityName: getCurrentCityName(store)
     }
 };
