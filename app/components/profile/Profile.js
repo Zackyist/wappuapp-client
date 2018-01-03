@@ -271,7 +271,7 @@ class Profile extends Component {
             <View style={[styles.listItemButton, styles.listItemSeparator]}>
             <View style={[styles.listItem, styles.listItem__hero]}>
               <View style={styles.avatarColumn}>
-              <UserAvatar name={hasName ? item.title : ''}
+              <UserAvatar name={hasName ? item.title : 'W A'}
                 src={this.props.image_url} size={50} />
               </View>
               <View style={{flexDirection:'column',flex:1}}>

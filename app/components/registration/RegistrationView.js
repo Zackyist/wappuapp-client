@@ -426,7 +426,7 @@ class RegistrationView extends Component {
 
         <View style={{flexDirection: 'row'}}>
           <View style={styles.avatar}>
-            <UserAvatar name={this.props.name || ''}
+            <UserAvatar name={this.props.name || 'W H'}
               style={{width: 90, height: 90}}
               src={this.state.uri}
               size={100}
