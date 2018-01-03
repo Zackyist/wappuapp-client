@@ -115,20 +115,6 @@ const getUser = () => {
   };
 };
 
-const getUserImageUrl = () => {
-  return dispatch => {
-    dispatch({ type: GET_USER_REQUEST });
-    const uuid = DeviceInfo.getUniqueID();
-    return api.getUser(uuid)
-      .then(image_url => {
-        dispatch({ type: GET_USER_SUCCESS, payload: image_url });
-      })
-      .catch(error => {
-        dispatch({ type: GET_USER_FAILURE, error: error });
-      });
-  };
-};
-
 const updateProfilePic = (profilePic) => {
   return {type: UPDATE_PROFILE_PIC, payload: profilePic};
 }
@@ -155,7 +141,6 @@ export {
   updateName,
   generateName,
   getUser,
-  getUserImageUrl,
   selectTeam,
   reset,
   dismissIntroduction

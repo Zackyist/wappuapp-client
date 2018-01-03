@@ -33,6 +33,7 @@ import Toolbar from './RegistrationToolbar';
 import {
   updateProfilePic,
   putProfilePic,
+  getUser,
   putUser,
   updateName,
   selectTeam,
@@ -47,6 +48,7 @@ import { setDefaultRadioByCity } from '../../concepts/radio';
 import { showChooseTeam } from '../../actions/team';
 import * as keyboard from '../../utils/keyboard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import UserAvatar from 'react-native-user-avatar';
 
 const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
@@ -90,6 +92,8 @@ class RegistrationView extends Component {
         : nextProps.viewCityId;
 
       this.setState({ selectedCity: startingSelectedCity || 2 });
+      // TODO Proper placeholderimage
+      this.setState({uri: this.props.image_url} || 'https://facebook.github.io/react-native/docs/assets/favicon.png');
     }
   }
 
@@ -422,9 +426,10 @@ class RegistrationView extends Component {
 
         <View style={{flexDirection: 'row'}}>
           <View style={styles.avatar}>
-            <Image
+            <UserAvatar name={this.props.name || ''}
               style={{width: 90, height: 90}}
-              source={{uri: this.state.uri}}
+              src={this.state.uri}
+              size={100}
             />
           </View>
           <Button
@@ -677,6 +682,7 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = {
+  getUser,
   putUser,
   updateProfilePic,
   putProfilePic,
@@ -699,6 +705,7 @@ const select = store => {
     isIntroductionDismissed: store.registration.get('isIntroductionDismissed'),
     isRegistrationViewOpen: store.registration.get('isRegistrationViewOpen'),
     name: store.registration.get('name'),
+    image_url: store.registration.get('image_url'),
     selectedTeam: store.registration.get('selectedTeam'),
     selectedCityId: getCityIdByTeam(store),
     viewCityId: getCityId(store),

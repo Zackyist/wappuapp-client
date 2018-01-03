@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import { parseInt } from 'lodash';
-import DeviceInfo from 'react-native-device-info';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
@@ -51,22 +50,6 @@ export const fetchUserProfile = (userId) => (dispatch) => {
       dispatch({ type: GET_USER_PROFILE_SUCCESS });
     })
     .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
-}
-
-export const fetchUserAvatarUrl  = () => {
-  return dispatch => {
-    dispatch({ type: GET_USER_PROFILE_REQUEST });
-    const uuid = DeviceInfo.getUniqueID();
-  return api.getUser(uuid)
-    .then(user=> {
-      dispatch({
-        type: SET_USER_PROFILE,
-        payload: user
-      });
-      dispatch({ type: GET_USER_PROFILE_SUCCESS });
-    })
-    .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: error }));
-  }
 }
 
 // # Reducer
