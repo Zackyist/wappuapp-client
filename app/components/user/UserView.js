@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import {
   getUserImages,
@@ -16,8 +17,13 @@ import {
   getTotalVotesForUser,
   fetchUserImages,
   fetchUserProfile,
+<<<<<<< HEAD
   getUserImageUrl,
   isLoadingUserImages,
+=======
+  isLoadingUserImages,
+  setLike
+>>>>>>> started with the handling of like/dislike. Just a mock using the user view instead of heila view
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
@@ -98,6 +104,7 @@ class UserView extends Component {
     }
   }
 
+<<<<<<< HEAD
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
@@ -131,6 +138,14 @@ class UserView extends Component {
   closeModal() {
     this.setState({modalVisible: false})
 }
+=======
+  @autobind
+  //TODO move this to heilaView and get userId
+  onLikePress(){
+    const {user} = this.props.route;
+    this.setLike(user);
+  }
+>>>>>>> started with the handling of like/dislike. Just a mock using the user view instead of heila view
 
   render() {
 
@@ -491,7 +506,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView, fetchUserProfile };
+const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView, fetchUserProfile, setLike };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),

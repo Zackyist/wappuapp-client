@@ -24,6 +24,18 @@ export const getTotalVotesForUser = createSelector(
   }
 )
 
+export const setLike = (userId, like) => {
+  return (dispatch, getStore) => {
+    dispatch({type: SET_LIKE_REQUEST});
+    return api.setLike({userId, like})
+    .then(response => {
+      dispatch({type: SET_LIKE_SUCCESS});
+      dispatch({type: CLOSE_MATCH_VIEW});
+    })
+    .catch(error => dispatch({type: SET_LIKE_FAILURE, error: error}))
+  }
+}
+
 // # Action creators
 const {
   GET_USER_PROFILE_REQUEST,

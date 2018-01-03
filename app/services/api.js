@@ -75,6 +75,10 @@ const putProfilePic = payload => {
   return _put(Endpoints.urls.profilePic(payload.uuid), payload);
 };
 
+const setLike = payload => {
+  return _post(Endpoints.urls.user(payload.userId, payload.like), payload);
+};
+
 const getUser = uuid => {
   return wapuFetch(Endpoints.urls.user(uuid))
     .then(checkResponseStatus)
@@ -221,5 +225,6 @@ export default {
   getUser,
   getImages,
   getUserProfile,
-  postFeedback
+  postFeedback,
+  setLike
 };
