@@ -28,7 +28,8 @@ class Navigation extends Component {
   render() {
     const { navigator, currentTab } = this.props;
     return (
-      <TabBarIOS tintColor={theme.secondary} translucent={true}>
+      <TabBarIOS tintColor={theme.secondary} translucent={true}
+      itemPositioning={'center'}>
         <MDIcon.TabBarItemIOS
           iconName={'whatshot'}
           title=''
@@ -58,13 +59,6 @@ class Navigation extends Component {
           <HeilaView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
 
-        <MDIcon.TabBarItemIOS
-          iconName='equalizer'
-          title=''
-          selected={currentTab === Tabs.ACTION}
-          onPress={() => { this.onChangeTab(Tabs.ACTION); }}>
-          <CompetitionView navigator={navigator} />
-        </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
           iconName='account-circle'
           title=''

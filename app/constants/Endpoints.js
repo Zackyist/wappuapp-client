@@ -24,6 +24,7 @@ const EndpointUrls = {
   profilePic: (uuid) => `${ROOT_URL}/users/${uuid}/image`,
   buddyList: (uuid) => `${ROOT_URL}/heila/${uuid}`,
   setLike: (userId) => '${ROOT_URL}/users/${userId}/like',
+  putOpinion: (uuid) => `${ROOT_URL}/heila/${uuid}`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);

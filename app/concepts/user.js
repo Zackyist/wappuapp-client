@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import { parseInt } from 'lodash';
+import DeviceInfo from 'react-native-device-info';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
@@ -24,15 +25,16 @@ export const getTotalVotesForUser = createSelector(
   }
 )
 
-export const setLike = (userId, like) => {
-  return (dispatch, getStore) => {
-    dispatch({type: SET_LIKE_REQUEST});
-    return api.setLike({userId, like})
+export const submitOpinion = (userId, opinion) => {
+  return (dispatch) => {
+    dispatch({type: PUT_OPINION_REQUEST});
+    const uuid = DeviceInfo.getUniqueID();
+    return api.putOpinion({uuid, userId, opinion})
     .then(response => {
-      dispatch({type: SET_LIKE_SUCCESS});
-      dispatch({type: CLOSE_MATCH_VIEW});
+      dispatch({type: PUT_OPINION_SUCCESS});
+      //dispatch({type: CLOSE_MATCH_VIEW});
     })
-    .catch(error => dispatch({type: SET_LIKE_FAILURE, error: error}))
+    .catch(error => dispatch({type: PUT_OPINION_FAILURE, error: error}))
   }
 }
 
@@ -43,6 +45,12 @@ const {
   GET_USER_PROFILE_FAILURE
 } = createRequestActionTypes('GET_USER_PROFILE');
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
+
+const {
+  PUT_OPINION_REQUEST,
+  PUT_OPINION_SUCCESS,
+  PUT_OPINION_FAILURE
+} = createRequestActionTypes('PUT_OPINION');
 
 const {
   GET_USER_REQUEST,

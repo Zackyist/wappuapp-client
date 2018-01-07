@@ -75,8 +75,9 @@ const putProfilePic = payload => {
   return _put(Endpoints.urls.profilePic(payload.uuid), payload);
 };
 
-const setLike = payload => {
-  return _post(Endpoints.urls.user(payload.userId, payload.like), payload);
+const putOpinion = (params)  => {
+  let payload = Object.assign({}, params, { user: DeviceInfo.getUniqueID() });
+  return _post(Endpoints.urls.user(payload.uuid), payload);
 };
 
 const getUser = uuid => {
@@ -225,6 +226,7 @@ export default {
   getUser,
   getImages,
   getUserProfile,
+  putOpinion,
   postFeedback,
   setLike
 };

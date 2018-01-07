@@ -15,15 +15,24 @@ import {
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
+<<<<<<< HEAD
   fetchUserImages,
+=======
+
+  getUserImageUrl,
+>>>>>>> refactored names and routes to correspond the ones in the back end and request
   fetchUserProfile,
 <<<<<<< HEAD
   getUserImageUrl,
   isLoadingUserImages,
 =======
   isLoadingUserImages,
+<<<<<<< HEAD
   setLike
 >>>>>>> started with the handling of like/dislike. Just a mock using the user view instead of heila view
+=======
+  submitOpinion
+>>>>>>> refactored names and routes to correspond the ones in the back end and request
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
@@ -105,6 +114,7 @@ class UserView extends Component {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
@@ -140,10 +150,33 @@ class UserView extends Component {
 }
 =======
   @autobind
+=======
+>>>>>>> refactored names and routes to correspond the ones in the back end and request
   //TODO move this to heilaView and get userId
+  @autobind
   onLikePress(){
     const {user} = this.props.route;
-    this.setLike(user);
+
+    const Subpackage  = {
+      userId: 2,
+      opinion: 'UP'
+    };
+       const OpinionSubmitPackage = Object.assign({}, Subpackage );
+
+
+    this.props.submitOpinion(OpinionSubmitPackage);
+  }
+  @autobind
+  onDislikePress(){
+    const {user} = this.props.route;
+
+
+    // const OpinionSubmitPackage = Object.assign(
+    //   {user},
+    //   'DOWN'
+    // );
+
+    this.props.submitOpinion(user, 'DOWN');
   }
 >>>>>>> started with the handling of like/dislike. Just a mock using the user view instead of heila view
 
@@ -203,6 +236,7 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
+<<<<<<< HEAD
 
 
             {user.name === userName && !isIOS &&
@@ -213,6 +247,22 @@ class UserView extends Component {
                 {cityName !== 'Tampere' &&
                     <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information']} onPress={this.onPopupEvent} />
                 }
+=======
+            <View>
+            <UserAvatar name={user.name || userName } src={this.props.image_url || user.imageUrl}
+            size={100} />
+            </View>
+            <Text style={styles.headerTitle}>
+              {user.name}
+            </Text>
+            <Text style={styles.headerSubTitle}>
+              {userTeam || user.team}
+            </Text>
+            <View style={styles.headerKpis}>
+              <View style={styles.headerKpi}>
+                <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
+                <Text style={styles.headerKpiTitle}>photos</Text>
+>>>>>>> refactored names and routes to correspond the ones in the back end and request
               </View>
             }
             {/* Load user's profile picture or avatar with initials */}
