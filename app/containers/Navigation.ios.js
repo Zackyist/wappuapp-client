@@ -10,6 +10,8 @@ import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import SettingsView from './ProfileView';
+import HeilaView from './HeilaView';
+
 import Tabs from '../constants/Tabs';
 import { changeTab } from '../actions/navigation';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
@@ -48,6 +50,14 @@ class Navigation extends Component {
           onPress={() => { this.onChangeTab(Tabs.FEELING); }}>
           <MoodView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
+        <MDIcon.TabBarItemIOS
+          iconName='favorite-border'
+          title=''
+          selected={currentTab === Tabs.HEILA}
+          onPress={() => { this.onChangeTab(Tabs.HEILA); }}>
+          <HeilaView navigator={navigator} />
+        </MDIcon.TabBarItemIOS>
+
         <MDIcon.TabBarItemIOS
           iconName='equalizer'
           title=''
