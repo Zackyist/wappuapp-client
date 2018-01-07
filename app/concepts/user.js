@@ -12,6 +12,7 @@ export const getUserTeam = state => state.user.getIn(['profile', 'team'], List()
 export const getTotalSimas = state => state.user.getIn(['profile', 'numSimas'], '') || '';
 export const getSelectedUser = state => state.user.get('selectedUser', Map()) || Map();
 export const isLoadingUserImages = state => state.user.get('isLoading', false) || false;
+export const getUserImageUrl = state => state.user.getIn(['profile', 'image_url'], '') || '';
 
 export const getTotalVotesForUser = createSelector(
   getUserImages, (posts) => {
@@ -23,8 +24,6 @@ export const getTotalVotesForUser = createSelector(
   }
 )
 
-
-
 // # Action creators
 const {
   GET_USER_PROFILE_REQUEST,
@@ -33,26 +32,32 @@ const {
 } = createRequestActionTypes('GET_USER_PROFILE');
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
 
-export const fetchUserImages = (userId) => (dispatch) => {
+const {
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE,
+} = createRequestActionTypes('GET_USER');
+const SET_USER = 'SET_USER';
+
+export const fetchUserProfile = (userId) => (dispatch) => {
   dispatch({ type: GET_USER_PROFILE_REQUEST });
   return api.getUserProfile(userId)
-    .then(images => {
+    .then( userProfile => {
       dispatch({
         type: SET_USER_PROFILE,
-        payload: images
+        payload: userProfile
       });
       dispatch({ type: GET_USER_PROFILE_SUCCESS });
     })
     .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
 }
 
-
-
 // # Reducer
 const initialState = fromJS({
   profile: {},
   isLoading: false,
   selectedUser: null,
+  user: {}
 });
 
 export default function city(state = initialState, action) {
@@ -66,6 +71,22 @@ export default function city(state = initialState, action) {
         profile: Map(),
         isLoading: true
       });
+     }
+    case SET_USER: {
+      return state.set('user', fromJS(action.payload));
+    }
+
+  case GET_USER_SUCCESS:
+
+  case GET_USER_REQUEST: {
+    return state.merge({
+      user: Map(),
+      isLoading: true
+    });
+  }
+
+    case GET_USER_FAILURE: {
+      return state.set('isLoading', false)
     }
 
     case GET_USER_PROFILE_SUCCESS:

@@ -10,14 +10,16 @@ import {
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
-  fetchUserImages,
-  isLoadingUserImages,
+  getUserImageUrl,
+  fetchUserProfile,
+  isLoadingUserImages
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import UserAvatar from 'react-native-user-avatar';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -34,21 +36,21 @@ class UserView extends Component {
     const { userId } = this.props;
 
     if (user && user.id) {
-      this.props.fetchUserImages(user.id);
+      this.props.fetchUserProfile(user.id);
     } else {
-      this.props.fetchUserImages(userId);
+      this.props.fetchUserProfile(userId);
     }
   }
 
   render() {
 
-    const { images, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator } = this.props;
+    const { images, image_url, isLoading, totalVotes, totalSimas,
+      userTeam, userName, navigator} = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName }
+      user = { name: userName, imageUrl: image_url}
     }
 
     const imagesCount = images.size;
@@ -69,8 +71,9 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
-            <View style={styles.avatar}>
-              <Icon style={styles.avatarText} name="person-outline" />
+            <View>
+            <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
+            size={100} />
             </View>
             <Text style={styles.headerTitle}>
               {user.name}
@@ -94,7 +97,7 @@ class UserView extends Component {
             </View>
           </View>
         )}
-      >
+        >
 
       <View style={styles.container}>
         {isLoading && <View style={styles.loader}><Loader size="large" /></View>}
@@ -126,8 +129,6 @@ class UserView extends Component {
     );
   }
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -236,8 +237,7 @@ const styles = StyleSheet.create({
   },
 });
 
-
-const mapDispatchToProps = { openLightBox, fetchUserImages };
+const mapDispatchToProps = { openLightBox, fetchUserProfile };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -246,7 +246,8 @@ const mapStateToProps = state => ({
   totalVotes: getTotalVotesForUser(state),
   userId: getUserId(state),
   userName: getUserName(state),
-  userTeam: getUserTeam(state)
+  userTeam: getUserTeam(state),
+  image_url: getUserImageUrl(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);

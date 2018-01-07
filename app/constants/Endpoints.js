@@ -20,6 +20,7 @@ const EndpointUrls = {
   radio: `${ROOT_URL}/radio`,
   mood: `${ROOT_URL}/mood`,
   userProfile: (userId) => `${ROOT_URL}/users?userId=${userId}`,
+  profilePic: (uuid) => `${ROOT_URL}/users/${uuid}/image`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);
