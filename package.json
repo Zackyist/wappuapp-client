@@ -37,6 +37,7 @@
     "react-native-google-analytics": "^1.0.1",
     "react-native-image-picker": "^0.22.6",
     "react-native-image-zoom": "^0.31.0",
+    "react-native-lightbox": "^0.7.0",
     "react-native-linear-gradient": "^1.5.12",
     "react-native-location": "^0.14.3",
     "react-native-maps": "0.12.4",
