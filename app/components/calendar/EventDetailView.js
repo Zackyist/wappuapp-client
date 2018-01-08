@@ -492,6 +492,10 @@ const EventDetail = React.createClass({
           </View>
           }
 
+          <View style={styles.navigationButtonWrapper}>
+            <Button onPress={() => Linking.openURL(eventGeoUrl)}>Give feedback</Button>
+          </View>
+
           {this.props.images.size > 0 &&
             <View>
               <View style={styles.imageTitleWrap}>
