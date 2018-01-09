@@ -1,6 +1,9 @@
 'use strict';
 
+// TODO: Remove Button from imports when no longer used
+// TODO: Replace the WhappuBuddy Button with a WB logo Image
 // TODO: Get the bioText from the back-end
+// TODO: Get class year from back-end
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
@@ -25,12 +28,34 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
-const headerImage = require('../../../assets/frontpage_header-bg.jpg');
+import UserView from '../user/UserView';
+import Button from '../../components/common/Button';
+
+const headerImage = require('../../../assets/buddy-test.jpg');
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
-class UserView extends Component {
+class BuddyUserView extends Component {
+  // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
+  showWhappuLog = () => {
+    let { user } = this.props.route;
+    const { userName } = this.props;
+
+    // Show Current user if not user selected
+    if (!user) {
+      user = { name: userName };
+    }
+
+    return () => {
+      this.props.navigator.push({
+        component: UserView,
+        name: `${user.name}`,
+        user
+      });
+    };
+  }
+  
   componentDidMount() {
     const { user } = this.props.route;
     const { userId } = this.props;
@@ -60,7 +85,7 @@ class UserView extends Component {
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
       <ParallaxView
         backgroundSource={headerImage}
-        windowHeight={230}
+        windowHeight={430}
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
@@ -71,24 +96,39 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
-            <View style={styles.avatar}>
-              <Icon style={styles.avatarText} name="person-outline" />
+
+            <View style={styles.headerInfo}>
+              <Text style={styles.headerTitle}>
+                {user.name}
+              </Text>
+              <Text style={styles.headerSubTitle}>
+                {userTeam || user.team}, 3. year
+              </Text>
             </View>
-            <Text style={styles.headerTitle}>
-              {user.name}
-            </Text>
-            <Text style={styles.headerSubTitle}>
-              {userTeam || user.team}
-            </Text>
           </View>
         )}
       >
+
         <View style={styles.bioView}>
           <Text style={styles.bioTitle}>About Me</Text>
           <Text style={styles.bioText}>
-          Liirumlaarum olot sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.
+            Liirumlaarum olot sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.
+          </Text>
+          <Text style={styles.lookingForTitle}>Looking For</Text>
+          <Text style={styles.lookingForText}>
+            Hauskaa wappuseuraa!
           </Text>
         </View>
+        <View style={styles.logButtonView}>
+          <Button
+            onPress={this.showWhappuLog()}
+            style={styles.logButton}
+            isDisabled={false}
+          >
+            Check out my Whappu Log
+          </Button>     
+        </View>
+
       </ParallaxView>
       </View>
     );
@@ -108,7 +148,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingTop: 30,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'flex-end'
   },
   backLink: {
     position: 'absolute',
@@ -125,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.transparent
   },
   backLinkIcon: {
-    color: theme.white
+    color: theme.secondary
   },
   bioText: {
     fontSize: 14,
@@ -136,6 +176,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginLeft: 10,
     marginRight: 10,
+    marginBottom: 10,
   },
   bioTitle: {
     fontSize: 24,
@@ -152,18 +193,57 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 0
   },
+  logButton: {
+    flex: 1,
+  },
+  logButtonView: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: width,
+    flexDirection: 'row',
+  },
+  lookingForText: {
+    fontSize: 14,
+    fontWeight: 'normal',
+    textAlign: 'justify',
+    color: 'rgba(0,0,0,.6)',
+    opacity: 0.9,
+    marginTop: 5,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  lookingForTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    color: theme.secondary,
+    opacity: 1,
+    marginBottom: 2,
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  headerInfo:{
+    backgroundColor: theme.secondary,
+    opacity: 0.90,
+    width: width,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
   headerTitle:{
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     color: theme.light,
     marginBottom: 3,
   },
   headerSubTitle: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: 'rgba(0,0,0,.6)',
+    color: 'rgba(0,0,0,0.6)',
     opacity: 0.9,
   },
   avatar: {
@@ -242,4 +322,4 @@ const mapStateToProps = state => ({
   userTeam: getUserTeam(state)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserView);
+export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);

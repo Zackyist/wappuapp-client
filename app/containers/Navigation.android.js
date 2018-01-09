@@ -19,6 +19,7 @@ import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import ProfileView from './ProfileView';
+import BuddyView from './BuddyView';
 import AndroidTabs  from 'react-native-scrollable-tab-view';
 import Header from '../components/common/MainHeader';
 import CitySelector from '../components/header/CitySelector';
@@ -30,6 +31,7 @@ const ANDROID_TAB_ORDER = [
   Tabs.FEED,
   Tabs.CALENDAR,
   Tabs.FEELING,
+  Tabs.BUDDY,
   Tabs.ACTION,
   Tabs.SETTINGS
 ];
@@ -82,6 +84,7 @@ class AndroidTabNavigation extends Component {
           <FeedView navigator={navigator} tabLabel={{title:'Buzz', icon:'whatshot'}} />
           <CalendarView navigator={navigator} tabLabel={{title:'Events', icon:'event'}} />
           <MoodView navigator={navigator} tabLabel={{title:'Vibes', icon:'trending-up', iconSize: 26}} />
+          <BuddyView navigator={navigator} tabLabel={{title:'WhappuBuddy', icon:'favorite-border'}} />
           <CompetitionView tabLabel={{title:'Ranking', icon:'equalizer'}} />
           <ProfileView navigator={navigator} tabLabel={{title:'Profile', icon:'account-circle'}} />
         </AndroidTabs>

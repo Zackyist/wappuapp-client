@@ -5,5 +5,6 @@ export default {
   FEELING: 'FEELING',
   ACTION: 'ACTION',
   FEED: 'FEED',
-  SETTINGS: 'SETTINGS'
+  SETTINGS: 'SETTINGS',
+  BUDDY: 'BUDDY'
 };
