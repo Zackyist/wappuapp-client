@@ -10,6 +10,8 @@ import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
 import UserView from '../components/user/UserView';
+import CurrentUserView from '../components/user/CurrentUserView';
+import Profile from '../components/profile/Profile';
 
 const theme = require('../style/theme');
 

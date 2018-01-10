@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text, Navigator } from 'react-native';
+  TouchableHighlight, Image, Platform, Text } from 'react-native';
 import { connect } from 'react-redux';
 
 import {
@@ -24,8 +24,13 @@ import Header from '../common/Header';
 import Loader from '../common/Loader';
 
 import AppInfo from './AppInfo';
+import LegalStuff from './LegalStuff';
 import PopupMenu from './PopupMenu';
-import Profile from '../profile/Profile';
+
+//import RegistrationView from '../registration/RegistrationView';
+import { openRegistrationView } from '../../actions/registration';
+import { getCurrentCityName } from '../../concepts/city';
+import WebViewer from '../webview/WebViewer';
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
@@ -39,50 +44,59 @@ class UserView extends Component {
     const { user } = this.props.route;
     const { userId } = this.props;
 
+    console.log(user)
+
     if (user && user.id) {
+      console.log('toistenkuvat');
       this.props.fetchUserImages(user.id);
     } else {
+      console.log('eifiree');
       this.props.fetchUserImages(userId);
     }
   }
 
+
   onTOS = () => {
-    let navigator = this.props.navigator
-    navigator.push({component: AppInfo});
+    this.props.navigator.push({component: LegalStuff});
   }
 
   onChangeMyProfile = () => {
-    let navigator = this.props.navigator
-    navigator.push({component: Profile});
+    this.props.openRegistrationView();
   }
 
   onAppInfo = () => {
-    let navigator = this.props.navigator
-    navigator.push({component: AppInfo});
+    this.props.navigator.push({component: AppInfo});
   }
 
   onFuksiSurvivalKit = () => {
-    let navigator = this.props.navigator
-    navigator.push({component: AppInfo});
+    this.props.navigator.push({
+      component: WebViewer,
+      showName: true,
+      name: 'Fuksi Survival Kit',
+      url: 'https://ttyy.fi/me-ollaan-teekkareita/teekkarikulttuuri/wappu/fuksi-survival-kit/'
+    });
   }
 
   onPopupEvent = (eventName, index) => {
 
     if (eventName !== 'itemSelected') return
     if (index === 0) this.onTOS()
-    else if (index ===1) this.onChangeMyProfile()
-    else this.onRemove()
+    else if (index === 1) this.onChangeMyProfile()
+    else if (index === 2) this.onAppInfo()
+    else this.onFuksiSurvivalKit()
   }
 
   render() {
 
     const { images, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator } = this.props;
+      userTeam, userName, navigator, cityName } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName }
+      user = { name: userName,
+             };
+      console.log(this.props);
     }
 
     const imagesCount = images.size;
@@ -105,9 +119,14 @@ class UserView extends Component {
             }
 
             {user.name === userName &&
-            <View style={styles.menu}>
-              <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
-            </View>
+              <View style={styles.menu}>
+                {cityName === 'Tampere' &&
+                    <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
+                }
+                {cityName !== 'Tampere' &&
+                    <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information']} onPress={this.onPopupEvent} />
+                }
+              </View>
             }
 
             <View style={styles.avatar}>
@@ -168,19 +187,6 @@ class UserView extends Component {
   }
 };
 
-/*
-  navigator: {
-    paddingTop: 42,
-    paddingBottom:0,
-  },
-  navbar: {
-    backgroundColor: theme.secondary,
-    height: 62,
-    paddingBottom: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-*/
 
 
 const styles = StyleSheet.create({
@@ -296,7 +302,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages };
+const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -305,7 +311,8 @@ const mapStateToProps = state => ({
   totalVotes: getTotalVotesForUser(state),
   userId: getUserId(state),
   userName: getUserName(state),
-  userTeam: getUserTeam(state)
+  userTeam: getUserTeam(state),
+  cityName: getCurrentCityName(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);

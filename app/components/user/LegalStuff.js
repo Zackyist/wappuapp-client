@@ -21,10 +21,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import WebViewer from '../webview/WebViewer';
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
-import { fetchLinks } from '../../actions/profile';
-import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
 import feedback from '../../services/feedback';
+import Header from '../common/Header';
+
+import TermsView from '../terms/Terms';
 
 const IOS = Platform.OS === 'ios';
 
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   }
 });
 
-class Profile extends Component {
+class AppInfo extends Component {
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
@@ -173,7 +174,8 @@ class Profile extends Component {
 
 
   componentDidMount() {
-    this.props.fetchLinks();
+    //console.log(this.props);
+    //this.props.fetchLinks();
   }
 
   @autobind
@@ -335,49 +337,39 @@ class Profile extends Component {
     return this.renderModalItem(item, key);
   }
 
+
+
   render() {
-    const { name, links, terms, cityName } = this.props;
 
-    const linksForCity = links.toJS().map(link => {
-      const showCity = link.showCity;
-      if (showCity && (cityName || '').toLowerCase() !== showCity) {
-        link.hidden = true;
-      }
-      return link;
-    });
+    let ROOT_URL = 'https://wappu.futurice.com';
 
-    const userItem = { title: name, icon: 'person-outline', rightIcon: 'create', id: 'user-edit'};
-    const listData = [userItem].concat(linksForCity, [{ type: 'IMAGES', id: 'madeby' }], terms.toJS());
+    
+    let terms = [
+      {title: 'Terms of Service', link: `${ROOT_URL}/terms`, icon: 'info-outline', component: TermsView, showInWebview: false},
+      {title: 'Privacy', link: `${ROOT_URL}/privacy`, icon: 'lock-outline', showInWebview: false},
+    ];
 
+
+   const listData = terms
     return (
       <View style={styles.container}>
+      {!IOS && <Header backgroundColor={theme.secondary} title="Legal Stuff" navigator={this.props.navigator} />}
         <ScrollView style={styles.scrollView}>
           {listData.map(this.renderItem)}
         </ScrollView>
-
-      {/*
-      <ListView style={[styles.scrollView]}
-          dataSource={this.state.dataSource.cloneWithRows(listData)}
-          renderRow={this.renderItem}
-        />
-      */}
       </View>
       );
 
   }
 }
 
-const mapDispatchToProps = { fetchLinks, openRegistrationView };
+const mapDispatchToProps = { openRegistrationView };
 
 const select = store => {
   return {
       selectedTeam: store.registration.get('selectedTeam'),
       teams: store.team.get('teams'),
-      name: store.registration.get('name'),
-      links: store.profile.get('links'),
-      terms: store.profile.get('terms'),
-      cityName: getCurrentCityName(store)
     }
 };
 
-export default connect(select, mapDispatchToProps)(Profile);
+export default connect(select, mapDispatchToProps)(AppInfo);

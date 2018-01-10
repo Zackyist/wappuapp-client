@@ -1,101 +1,391 @@
 'use strict';
 
-import React, { Component } from 'react';
-import { View, StyleSheet, Platform, Image, ScrollView, Text } from 'react-native';
+// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+import React, { Component, PropTypes } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ListView,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+  Image,
+  Platform
+} from 'react-native';
+import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
+import _ from 'lodash';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import WebViewer from '../webview/WebViewer';
+import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
-import MDIcon from 'react-native-vector-icons/MaterialIcons';
+import { getCurrentCityName } from '../../concepts/city';
+import { openRegistrationView } from '../../actions/registration';
+import feedback from '../../services/feedback';
 import Header from '../common/Header';
 
-const isIOS = Platform.OS === 'ios';
-
-class MoodInfo extends Component {
-  render() {
-
-    return (
-      <View style={styles.container}>
-        {!isIOS && <Header backgroundColor={theme.secondary} title="Whappu Vibe" navigator={this.props.navigator} />}
-        <ScrollView style={styles.scroll}>
-          <View style={styles.iconWrap}>
-            <View style={styles.iconCircle}>
-              <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
-              <MDIcon name="trending-up" style={styles.icon} />
-            </View>
-          </View>
-
-          <View style={styles.content}>
-            <Text style={styles.paragraph}>In practice, subjective fuzzy Wappu means that Wappu is not either binary true or false but each individual has their own Wappu feeling between the closed interval of <Text style={styles.bold}>[0, 100]</Text>. For instance, Whappu vibe of <Text style={styles.bold}>0%</Text> means that one has no Wappu feeling at all, <Text style={styles.bold}>71%</Text> means that one has quite awesome Wappu feeling already and <Text style={styles.bold}>100%</Text> means that one is going full ahead!</Text>
-
-            <Text style={styles.paragraph}>The meaning of this Whappu vibe is to collect the feelings of Wappu-goers. Vibe data can be used to analyse the Wappu behaviour of different Wappu-subgroups. When collective Whappu Vibe crosses <Text style={styles.primary}>magical 50% line</Text>, one can say that it is <Text style={styles.bold}>Thermal Wappu</Text>.</Text>
-
-            <Text style={styles.paragraph}>You can add one vibe per day. You will get information of the progress Whappu Vibe of your own, your team, your city. Start by <Text style={styles.bold}>adding your first vibe!</Text></Text>
-          </View>
-        </ScrollView>
-      </View>
-    );
-  }
-};
-
-
+const IOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.secondary
+    backgroundColor: theme.stable
   },
-  scroll: {
-    padding: 25,
-    paddingTop: 10,
-    paddingBottom: 10,
-  },
-  content: {
+  scrollView:{
     flex: 1,
-    paddingBottom: 50
   },
-  paragraph: {
+  listItem: {
+    flex:1,
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: IOS ? theme.white : theme.transparent,
+  },
+  listItem__hero:{
+    paddingTop: 35,
+    paddingBottom: 35,
+  },
+  listItemSeparator: {
+    marginBottom: 15,
+    elevation: 1,
+    borderBottomWidth: 0,
+    backgroundColor: theme.white,
+    borderBottomColor: '#eee',
+    shadowColor: '#000000',
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 1,
+      width: 0
+    },
+  },
+  listItemButton:{
+    backgroundColor: IOS ? theme.transparent : theme.white,
+    flex: 1,
+    padding: 0,
+  },
+  listItemIcon: {
+    fontSize: 22,
+    color: theme.primary,
+    alignItems: 'center',
+    width: 50,
+  },
+  listItemIcon__hero: {
+    top: 0,
+    left: 9,
+    alignSelf: 'stretch',
+    backgroundColor: 'transparent',
+  },
+  listItemSubtitle: {
+    color: theme.subtlegrey,
+    top: 1,
     fontSize: 13,
-    lineHeight: 18,
-    marginBottom: 20,
-    color: theme.white
   },
-  bold: {
-    fontWeight: 'bold'
+  avatarColumn: {
+    width: 50,
   },
-  primary: {
-    fontWeight: 'bold',
-    color: theme.primaryLight
-  },
-  iconWrap: {
-    margin: 20,
-    marginBottom: 30,
-    alignItems: 'center',
+  avatar: {
     justifyContent: 'center',
-  },
-  iconCircle: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    backgroundColor: 'rgba(255,255,255,.1)',
     alignItems: 'center',
-    justifyContent: 'center',
+    left: -8,
+    top: -1,
+    width: 40,
+    height: 40,
+    backgroundColor: theme.stable,
+    borderRadius: 20,
   },
-  icon: {
+  avatarInitialLetter: {
+    backgroundColor: theme.primary
+  },
+  avatarText: {
     color: theme.accentLight,
-    fontSize: 120,
+    fontSize: 18,
+  },
+  listItemIconRight:{
+    position: 'absolute',
+    right: 0,
+    color: '#aaa',
+    top: 45,
+  },
+  listItemText:{
+    color: '#000',
+    fontSize: 16,
+  },
+  listItemText__highlight: {
+    color:theme.primary
+  },
+  listItemText__downgrade: {
+    color:'#aaa'
+  },
+  listItemText__small: {
+    fontSize:13,
+    paddingTop: 1,
+  },
+  listItemTitles: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  listItemBottomLine:{
+    position:'absolute',
+    right:0,
+    left:70,
+    bottom:0,
+    height:1,
+    backgroundColor:'#f4f4f4'
+  },
+  madeby: {
+    padding: 7,
+    backgroundColor: '#FFF',
+    paddingTop: 12,
+    paddingBottom: 17,
+    justifyContent: 'space-around',
+    flexDirection: 'row',
     alignItems: 'center'
   },
-  bgImage: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    overflow: 'hidden',
-    bottom: 0,
-    opacity: 0.3
+  madebyIcon: {
+    tintColor: theme.dark,
+    width: 100,
+    height: 20,
   },
+  madebyText: {
+    padding: 2,
+    color: theme.primary,
+    fontSize: 28,
+    fontWeight: '300'
+  }
 });
 
+class AppInfo extends Component {
+  propTypes: {
+    dispatch: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    links: PropTypes.object.isRequired
+  }
 
-export default MoodInfo;
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataSource: new ListView.DataSource({rowHasChanged: (row1, row2) => row1 !== row2})
+    };
+  }
+
+
+  componentDidMount() {
+    //console.log(this.props);
+    //this.props.fetchLinks();
+  }
+
+  @autobind
+  openRegistration() {
+    this.props.openRegistrationView();
+  }
+
+  @autobind
+  onLinkPress(url, text, openInWebview) {
+    if (!url) {
+      return;
+    }
+    if (!openInWebview) {
+      Linking.openURL(url)
+    } else {
+      this.props.navigator.push({
+        component: WebViewer,
+        showName: true,
+        name: text,
+        url: url
+      });
+
+    }
+  }
+
+  renderLinkItem(item, index) {
+    const linkItemStyles = [styles.listItemButton];
+
+    if (item.separatorAfter || item.last) {
+      linkItemStyles.push(styles.listItemSeparator)
+    }
+
+    return (
+      <PlatformTouchable
+        key={index}
+        underlayColor={'#eee'}
+        activeOpacity={0.6}
+        delayPressIn={0}
+        style={styles.listItemButton}
+        onPress={() => item.mailto ? feedback.sendEmail(item.mailto) : this.onLinkPress(item.link, item.title, item.showInWebview)}>
+        <View style={linkItemStyles}>
+          <View style={styles.listItem}>
+            <Icon style={styles.listItemIcon} name={item.icon} />
+            <Text style={styles.listItemText}>{item.title}</Text>
+            {!item.separatorAfter && !item.last && <View style={styles.listItemBottomLine} />}
+          </View>
+        </View>
+      </PlatformTouchable>
+    );
+  }
+
+  renderComponentItem(item, index) {
+    const linkItemStyles = [styles.listItemButton];
+    const { navigator } = this.props;
+    const { component, title } = item;
+
+    if (item.separatorAfter || item.last) {
+      linkItemStyles.push(styles.listItemSeparator)
+    }
+
+    return (
+      <PlatformTouchable
+        key={index}
+        underlayColor={'#eee'}
+        activeOpacity={0.6}
+        delayPressIn={0}
+        style={styles.listItemButton}
+        onPress={() => navigator.push({ name: title, component, showName: true })}>
+        <View style={linkItemStyles}>
+          <View style={styles.listItem}>
+            <Icon style={styles.listItemIcon} name={item.icon} />
+            <View style={styles.listItemTitles}>
+              <Text style={styles.listItemText}>{item.title}</Text>
+              {item.subtitle && <Text style={styles.listItemSubtitle}>{item.subtitle}</Text>}
+            </View>
+            {!item.separatorAfter && !item.last && <View style={styles.listItemBottomLine} />}
+          </View>
+        </View>
+      </PlatformTouchable>
+    );
+  }
+
+
+
+  renderModalItem(item, index) {
+    const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
+    const hasName = !!item.title;
+    const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
+
+    return (
+      <View key={index} style={{flex:1}}>
+        <PlatformTouchable delayPressIn={0} activeOpacity={0.8} onPress={this.openRegistration}>
+            <View style={[styles.listItemButton, styles.listItemSeparator]}>
+            <View style={[styles.listItem, styles.listItem__hero]}>
+              <View style={styles.avatarColumn}>
+                <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
+                  {hasName
+                    ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
+                    : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+                  }
+                </View>
+              </View>
+              <View style={{flexDirection:'column',flex:1}}>
+                {
+                  item.title ?
+                  <Text style={[styles.listItemText, styles.listItemText__highlight]}>
+                    {item.title}
+                  </Text> :
+                  <Text style={[styles.listItemText, styles.listItemText__downgrade]}>
+                    Unnamed Whappu user
+                  </Text>
+                }
+                <Text style={[styles.listItemText, styles.listItemText__small]}>
+                  {currentTeam.name}
+                </Text>
+              </View>
+              <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
+            </View>
+          </View>
+        </PlatformTouchable>
+      </View>
+    );
+  }
+
+  renderImageMadeByItem(index) {
+    return (
+      <View key={index}  style={[styles.listItemButton, styles.listItemSeparator, styles.madeby]}>
+        <View style={[styles.listItem, styles.madeby]}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://www.jayna.fi/')}>
+            <Image resizeMode="contain" style={[styles.madebyIcon, {width: 50, height: 50}]} source={require('../../../assets/madeby/jayna.png')} />
+          </TouchableOpacity>
+          <Text style={styles.madebyText}>×</Text>
+          <TouchableOpacity onPress={() => Linking.openURL('https://futurice.com/')}>
+            <Image resizeMode="contain" style={[styles.madebyIcon, {top: 1, width: 88, height: 45}]} source={require('../../../assets/madeby/futurice.png')} />
+          </TouchableOpacity>
+          <Text style={styles.madebyText}>×</Text>
+          <TouchableOpacity onPress={() => Linking.openURL('https://ttyy.fi/')}>
+            <Image resizeMode="contain" style={[styles.madebyIcon, {top: 2, width: 54, height: 54 }]} source={require('../../../assets/madeby/ttyy-plain.png')} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
+  @autobind
+  renderItem(item) {
+    if (item.hidden) {
+      return null;
+    }
+
+    const key = item.id || item.title;
+    if (item.component) {
+      return this.renderComponentItem(item, key);
+    } else if (item.link || item.mailto) {
+      return this.renderLinkItem(item, key);
+    } else if (item.type === 'IMAGES') {
+      return this.renderImageMadeByItem(key);
+    }
+    return this.renderModalItem(item, key);
+  }
+
+
+
+  render() {
+    const {cityName } = this.props;
+
+    let ROOT_URL = 'https://wappu.futurice.com';
+
+    let links = [
+      {title: 'Feedback', mailto: 'wappu@futurice.com', icon: 'send'},
+      {title: 'Source Code', link: `https://github.com/futurice/wappuapp-client`, icon: 'code', showInWebview: false},
+      {title: 'from Tammerforce', showCity: 'tampere', link: `https://tammerforce.com?utm_source=wappuapp&utm_medium=app&utm_campaign=wappu2017`, icon: 'favorite-border', showInWebview: false},
+      {title: 'Wanna work at Futurice?',
+        link: 'https://futurice.com/careers?utm_source=wappuapp&utm_medium=app&utm_campaign=wappu2017',
+        icon: 'star', separatorAfter: true}
+    ];
+    
+    let terms = [
+      {title: 'Licenses', link: `${ROOT_URL}/licenses`, icon: 'help-outline', showInWebview: false, last: true}
+    ];
+
+    const linksForCity = links.map(link => {
+      const showCity = link.showCity;
+      if (showCity && (cityName || '').toLowerCase() !== showCity) {
+        link.hidden = true;
+      }
+      return link;
+    });
+
+    const listData = linksForCity.concat([{ type: 'IMAGES', id: 'madeby' }]).concat(terms);
+
+    return (
+      <View style={styles.container}>
+      {!IOS && <Header backgroundColor={theme.secondary} title="App Info" navigator={this.props.navigator} />}
+        <ScrollView style={styles.scrollView}>
+          {listData.map(this.renderItem)}
+        </ScrollView>
+      </View>
+      );
+
+  }
+}
+
+const mapDispatchToProps = { openRegistrationView };
+
+const select = store => {
+  return {
+      selectedTeam: store.registration.get('selectedTeam'),
+      teams: store.team.get('teams'),
+      cityName: getCurrentCityName(store)
+    }
+};
+
+export default connect(select, mapDispatchToProps)(AppInfo);
