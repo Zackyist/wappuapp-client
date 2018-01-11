@@ -103,13 +103,22 @@ class UserView extends Component {
                     source={{ uri: image_url }}
                   />
                 </Lightbox>
+                <Text style={styles.headerTitle}>
+                  {user.name}
+                </Text>
               </View>
             ) : (
               <View style={{ alignItems: 'center' }}>
-                <UserAvatar name={user.name || userName } src={image_url || user.imageUrl} size={120} />
+                <UserAvatar name={user.name || userName } src={image_url || user.imageUrl} size={100} />
+                <Text style={styles.headerTitle}>
+                  {user.name}
+                </Text>
               </View>
             )}
 
+            {/* Do not remove duplicate user name text below!
+            Name won't show without it (Or the ones in inside the conditional above)!
+            Working on this, might be a styling issue. -Santtu */}
             <Text style={styles.headerTitle}>
               {user.name}
             </Text>
@@ -231,7 +240,7 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   avatar: {
-    marginBottom: 10,
+    marginBottom: 4,
     justifyContent: 'center',
     alignItems: 'center',
     width: 90,
@@ -253,7 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 25,
+    marginTop: 15,
   },
   headerKpiTitle: {
     color: theme.accentLight,
@@ -294,8 +303,8 @@ const styles = StyleSheet.create({
   userProfilePicture: {
     // alignItems: 'center',
     justifyContent: 'center',
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     borderRadius: 100
   }
 });
