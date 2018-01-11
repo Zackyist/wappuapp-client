@@ -1,9 +1,10 @@
-'use strict';
-
-// TODO: Remove Button from imports when no longer used
-// TODO: Replace the WhappuBuddy Button with a WB logo Image
 // TODO: Get the bioText from the back-end
-// TODO: Get class year from back-end
+// TODO: Get the lookingFor from the back-end
+// TODO: Get the class year from the back-end
+// TODO: Replace placeholder headerImage with a WhappuBuddy header image
+// TODO: BUG: Make sure that user data is loaded when entering from the navigation bar without going anywhere else first, currently not happening!
+
+'use strict';
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
@@ -15,6 +16,7 @@ import {
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
+  getUserImageUrl,
   fetchUserImages,
   isLoadingUserImages,
 } from '../../concepts/user';
@@ -23,6 +25,7 @@ import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import UserAvatar from 'react-native-user-avatar';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -30,8 +33,6 @@ import Loader from '../common/Loader';
 
 import UserView from '../user/UserView';
 import Button from '../../components/common/Button';
-
-const headerImage = require('../../../assets/buddy-test.jpg');
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
@@ -55,30 +56,24 @@ class BuddyUserView extends Component {
       });
     };
   }
-  
-  componentDidMount() {
-    const { user } = this.props.route;
-    const { userId } = this.props;
-
-    if (user && user.id) {
-      this.props.fetchUserImages(user.id);
-    } else {
-      this.props.fetchUserImages(userId);
-    }
-  }
 
   render() {
 
-    const { images, isLoading, totalVotes, totalSimas,
+    const { images, image_url, isLoading, totalVotes, totalSimas,
       userTeam, userName, navigator } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName }
+      user = { name: userName, imageUrl: image_url }
     }
 
-    const imagesCount = images.size;
+    let headerImage = require('../../../assets/frontpage_header-bg.jpg');
+
+    // Show the user's profile picture as the header image if it's set
+    if (image_url || user.imageUrl) {
+      headerImage = { uri: image_url };
+    }
 
     return (
       <View style={{ flex: 1 }}>
@@ -165,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.transparent
   },
   backLinkIcon: {
-    color: theme.secondary
+    color: theme.white
   },
   bioText: {
     fontSize: 14,
@@ -319,7 +314,8 @@ const mapStateToProps = state => ({
   totalVotes: getTotalVotesForUser(state),
   userId: getUserId(state),
   userName: getUserName(state),
-  userTeam: getUserTeam(state)
+  userTeam: getUserTeam(state),
+  image_url: getUserImageUrl(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);

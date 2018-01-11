@@ -1,7 +1,5 @@
 'use strict';
 
-// TODO: Remove Button import when no longer needed
-
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text } from 'react-native';
