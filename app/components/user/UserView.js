@@ -96,8 +96,8 @@ class UserView extends Component {
             }
 
             {image_url ? (
-              <View>
-                <Lightbox activeProps={{ borderRadius: 0, flex: 1, resizeMode: 'contain', height: undefined, width: undefined }} >
+              <View style={{ alignItems: 'center' }}>
+                <Lightbox underlayColor='transparent' activeProps={{ borderRadius: 0, flex: 1, resizeMode: 'contain', height: undefined, width: undefined }} >
                   <Image
                     style={styles.userProfilePicture}
                     source={{ uri: image_url }}
@@ -105,8 +105,8 @@ class UserView extends Component {
                 </Lightbox>
               </View>
             ) : (
-              <View>
-                <UserAvatar name={user.name || userName } src={image_url || user.imageUrl} size={100} />
+              <View style={{ alignItems: 'center' }}>
+                <UserAvatar name={user.name || userName } src={image_url || user.imageUrl} size={120} />
               </View>
             )}
 
