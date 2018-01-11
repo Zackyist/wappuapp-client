@@ -74,35 +74,51 @@ class UserView extends Component {
             }
 
             {image_url ? (
-              <View style={{ alignItems: 'center' }}>
-                <Lightbox underlayColor='transparent' activeProps={{ borderRadius: 0, flex: 1, resizeMode: 'contain', height: undefined, width: undefined }} >
-                  <Image
-                    style={styles.userProfilePicture}
-                    source={{ uri: image_url }}
-                  />
+              <View
+                style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} 
+              >
+                <Lightbox
+                  style={{ marginBottom: 10 }}
+                  underlayColor='transparent'
+                  activeProps={{ borderRadius: 0, flex: 1, resizeMode: 'contain', height: undefined, width: undefined }} >
+                    <Image
+                      style={styles.userProfilePicture}
+                      source={{ uri: image_url }}
+                    />
                 </Lightbox>
-                <Text style={styles.headerTitle}>
+                <Text style={styles.headerTitle} >
                   {user.name}
+                </Text>
+                <Text style={styles.headerSubTitle}>
+                  {userTeam || user.team}
                 </Text>
               </View>
             ) : (
-              <View style={{ alignItems: 'center' }}>
-                <UserAvatar name={user.name || userName } src={image_url || user.imageUrl} size={100} />
+              <View
+                style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <UserAvatar
+                  name={user.name || userName }
+                  src={image_url || user.imageUrl}
+                  size={100}
+                />
                 <Text style={styles.headerTitle}>
                   {user.name}
+                </Text>
+                <Text style={styles.headerSubTitle}>
+                  {userTeam || user.team}
                 </Text>
               </View>
             )}
 
-            {/* Do not remove duplicate user name text below!
-            Name won't show without it (Or the ones in inside the conditional above)!
-            Working on this, might be a styling issue. -Santtu */}
-            <Text style={styles.headerTitle}>
+            {/* TODO: Repair styling issue preventing the correct rendering of user.name under avatar / user image. -Santtu */}
+
+            {/* <Text style={styles.headerTitle}>
               {user.name}
             </Text>
             <Text style={styles.headerSubTitle}>
               {userTeam || user.team}
-            </Text>
+            </Text> */}
             <View style={styles.headerKpis}>
               <View style={styles.headerKpi}>
                 <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
@@ -197,11 +213,11 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   avatar: {
-    marginBottom: 4,
+    marginBottom: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 90,
-    height: 90,
+    width: 60,
+    height: 60,
     backgroundColor: theme.stable,
     borderRadius: 45,
   },
@@ -219,7 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 15,
+    marginTop: 20,
   },
   headerKpiTitle: {
     color: theme.accentLight,
@@ -258,8 +274,6 @@ const styles = StyleSheet.create({
     marginTop: 0
   },
   userProfilePicture: {
-    // alignItems: 'center',
-    justifyContent: 'center',
     width: 100,
     height: 100,
     borderRadius: 100
