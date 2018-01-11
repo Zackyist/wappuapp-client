@@ -20,6 +20,7 @@ import { openLightBox } from '../../actions/feed';
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserAvatar from 'react-native-user-avatar';
+import Lightbox from 'react-native-lightbox';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -71,10 +72,22 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
-            <View>
-            <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
-            size={100} />
-            </View>
+
+            {image_url ? (
+              <View>
+                <Lightbox activeProps={{ borderRadius: 0, flex: 1, resizeMode: 'contain', height: undefined, width: undefined }} >
+                  <Image
+                    style={styles.userProfilePicture}
+                    source={{ uri: image_url }}
+                  />
+                </Lightbox>
+              </View>
+            ) : (
+              <View>
+                <UserAvatar name={user.name || userName } src={image_url || user.imageUrl} size={100} />
+              </View>
+            )}
+
             <Text style={styles.headerTitle}>
               {user.name}
             </Text>
@@ -235,6 +248,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 0
   },
+  userProfilePicture: {
+    // alignItems: 'center',
+    justifyContent: 'center',
+    width: 120,
+    height: 120,
+    borderRadius: 100
+  }
 });
 
 const mapDispatchToProps = { openLightBox, fetchUserProfile };
