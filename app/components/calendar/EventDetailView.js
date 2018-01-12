@@ -14,6 +14,7 @@ import {
   Easing,
   TouchableHighlight,
   Image,
+  Navigator
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -31,6 +32,7 @@ import { checkIn } from '../../actions/competition';
 import time from '../../utils/time';
 import locationService from '../../services/location';
 import Button from '../common/Button';
+import EventFeedback from './EventFeedbackForm';
 
 import { openLightBox } from '../../actions/feed';
 import { openRegistrationView } from '../../actions/registration';
@@ -381,6 +383,15 @@ const EventDetail = React.createClass({
     );
   },
 
+  giveFeedback() {
+    return () => {
+      this.props.navigator.push({
+        component: EventFeedback,
+        name: 'Event Feedback'
+      });
+    };
+  },
+
   render: function() {
     const { model, currentDistance } = this.props.route;
     const timepoint = time.formatEventTime(model.startTime, model.endTime, { formatLong: true });
@@ -493,7 +504,7 @@ const EventDetail = React.createClass({
           }
 
           <View style={styles.navigationButtonWrapper}>
-            <Button onPress={() => Linking.openURL(eventGeoUrl)}>Give feedback</Button>
+            <Button onPress={() => this.giveFeedback.bind(this)}>Give feedback</Button>
           </View>
 
           {this.props.images.size > 0 &&
