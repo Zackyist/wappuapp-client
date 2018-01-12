@@ -25,18 +25,7 @@ export const getTotalVotesForUser = createSelector(
   }
 )
 
-export const submitOpinion = (userId, opinion) => {
-  return (dispatch) => {
-    dispatch({type: PUT_OPINION_REQUEST});
-    const uuid = DeviceInfo.getUniqueID();
-    return api.putOpinion({uuid, userId, opinion})
-    .then(response => {
-      dispatch({type: PUT_OPINION_SUCCESS});
-      //dispatch({type: CLOSE_MATCH_VIEW});
-    })
-    .catch(error => dispatch({type: PUT_OPINION_FAILURE, error: error}))
-  }
-}
+
 
 // # Action creators
 const {
@@ -92,6 +81,20 @@ const initialState = fromJS({
   selectedUser: null,
   user: {}
 });
+
+export const submitOpinion = (params) => {
+  return (dispatch) => {
+    console.log("DEBUG: " + params.userId + " " + params.opinion)
+    dispatch({type: PUT_OPINION_REQUEST});
+    console.log("DEBUG: user.js " + params.opinion);
+    return api.postOpinion(params)
+    .then(response => {
+      dispatch({type: PUT_OPINION_SUCCESS});
+      //dispatch({type: CLOSE_MATCH_VIEW});
+    })
+    .catch(error => dispatch({type: PUT_OPINION_FAILURE, error: error}))
+  }
+}
 
 export default function city(state = initialState, action) {
   switch (action.type) {

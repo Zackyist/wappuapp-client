@@ -8,8 +8,9 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text, Alert } from 'react-native'; 
+  TouchableHighlight, Image, Platform, Text, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import {
   getUserImages,
@@ -20,6 +21,7 @@ import {
   fetchUserImages,
   fetchUserProfile,
   isLoadingUserImages,
+  submitOpinion
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
@@ -89,7 +91,7 @@ class BuddyUserView extends Component {
   }
 
   onDeleteProfile = () => {
-    
+
   }
 
   onReportUser = () => {
@@ -104,6 +106,28 @@ class BuddyUserView extends Component {
           onPress: () => { abuse.reportUser(this.props.route.user) }, style: 'destructive' }
       ]
     );
+  }
+
+  @autobind
+  onLikePress(){
+    const {user} = this.props.route;
+
+    const Subpackage  = {
+      matchedUserId: user.id,
+      opinion: 'UP'
+    };
+    this.props.submitOpinion(Subpackage);
+  }
+  @autobind
+  onDislikePress(){
+    const {user} = this.props.route;
+
+    const Subpackage  = {
+      matchedUserId: user.id,
+      opinion: 'DOWN'
+    };
+    this.props.submitOpinion(Subpackage);
+
   }
 
   render() {
@@ -177,6 +201,18 @@ class BuddyUserView extends Component {
             Hauskaa wappuseuraa!
           </Text>
         </View>
+        <View style={styles.thumbs}>
+        {user.id &&
+          <View style={{flex: 1, flexDirection: 'row'}}>
+          <TouchableHighlight onPress={this.onLikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.onDislikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
+          </TouchableHighlight>
+          </View>
+        }
+        </View>
         <View style={styles.logButtonView}>
           <Button
             onPress={this.showWhappuLog()}
@@ -184,7 +220,7 @@ class BuddyUserView extends Component {
             isDisabled={false}
           >
             Check out my Whappu Log
-          </Button>     
+          </Button>
         </View>
 
       </ParallaxView>
@@ -347,6 +383,10 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: 50
   },
+  thumbs: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   imageContainer:{
     margin: 1,
     marginTop: 2,
@@ -373,7 +413,11 @@ const styles = StyleSheet.create({
 });
 
 
+<<<<<<< HEAD
 const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile };
+=======
+const mapDispatchToProps = { openLightBox, fetchUserImages, submitOpinion };
+>>>>>>> fixed endpoints and api
 
 const mapStateToProps = state => ({
   images: getUserImages(state),

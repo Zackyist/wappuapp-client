@@ -10,7 +10,7 @@ import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import SettingsView from './ProfileView';
-import HeilaView from './HeilaView';
+import BuddyView from './BuddyView'
 
 import Tabs from '../constants/Tabs';
 import { changeTab } from '../actions/navigation';
@@ -56,7 +56,7 @@ class Navigation extends Component {
           title=''
           selected={currentTab === Tabs.HEILA}
           onPress={() => { this.onChangeTab(Tabs.HEILA); }}>
-          <HeilaView navigator={navigator} />
+          <BuddyView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
 
         <MDIcon.TabBarItemIOS

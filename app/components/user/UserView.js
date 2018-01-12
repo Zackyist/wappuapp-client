@@ -115,6 +115,7 @@ class UserView extends Component {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
@@ -180,6 +181,8 @@ class UserView extends Component {
   }
 >>>>>>> started with the handling of like/dislike. Just a mock using the user view instead of heila view
 
+=======
+>>>>>>> fixed endpoints and api
   render() {
 
     const { images, isLoading, totalVotes, totalSimas,
@@ -236,7 +239,6 @@ class UserView extends Component {
               </TouchableHighlight>
             </View>
             }
-<<<<<<< HEAD
 
 
             {user.name === userName && !isIOS &&
@@ -247,23 +249,22 @@ class UserView extends Component {
                 {cityName !== 'Tampere' &&
                     <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information']} onPress={this.onPopupEvent} />
                 }
-=======
-            <View>
-            <UserAvatar name={user.name || userName } src={this.props.image_url || user.imageUrl}
-            size={100} />
-            </View>
-            <Text style={styles.headerTitle}>
-              {user.name}
-            </Text>
-            <Text style={styles.headerSubTitle}>
-              {userTeam || user.team}
-            </Text>
-            <View style={styles.headerKpis}>
-              <View style={styles.headerKpi}>
-                <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>photos</Text>
->>>>>>> refactored names and routes to correspond the ones in the back end and request
               </View>
+
+              <View>
+              <UserAvatar name={user.name || userName } src={this.props.image_url || user.imageUrl}
+              size={100} />
+              </View>
+              <Text style={styles.headerTitle}>
+                {user.name}
+              </Text>
+              <Text style={styles.headerSubTitle}>
+                {userTeam || user.team}
+              </Text>
+              <View style={styles.headerKpis}>
+                <View style={styles.headerKpi}>
+                  <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
+                  <Text style={styles.headerKpiTitle}>photos</Text>
             }
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
@@ -372,18 +373,7 @@ class UserView extends Component {
             <Text style={styles.imageTitle}>No photos</Text>
           </View>
         }
-        <View style={styles.thumbs}>
-        {!user.id &&
-          <View style={{flex: 1, flexDirection: 'row'}}>
-          <TouchableHighlight onPress={this.onLikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.onDislikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-          </TouchableHighlight>
-          </View>
-        }
-        </View>
+
       </View>
       </ParallaxView>
       </View>
