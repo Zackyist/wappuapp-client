@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import { Text, View, TextInput, StyleSheet } from 'react-native';
 import Star from 'react-native-stars';
 import Button from '../common/Button';
-import Toolbar from './EventDetailToolbar';
+import Toolbar from './EventFeedbackToolbar';
 import { connect } from 'react-redux';
 // import autobind from 'autobind-decorator';
 
@@ -39,8 +39,10 @@ class EventFeedback extends Component {
   render() {
     return (
       <View style={{ backgroundColor: theme.lightgrey }} >
-        <Toolbar style={styles.toolbarStyle} title={'Event Feedback'} navigator={this.props.navigator} />
-        <View style={ styles.containerStyle } >
+        <View style={ styles.toolbarContainerStyle }>
+          <Toolbar title={'Event Feedback'} navigator={this.props.navigator} />
+        </View>
+        <View style={ styles.starContainerStyle } >
           <Text style={ styles.textStyle } >
             Rate the event
           </Text>
@@ -80,6 +82,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 20
   },
+  starContainerStyle: {
+    backgroundColor: 'white',
+    borderRadius: 5,
+    margin: 16,
+    marginTop: 65,
+    justifyContent: 'center',
+    paddingBottom: 20
+  },
+  toolbarContainerStyle: {
+    marginBottom: 10  
+  },
   textStyle: {
     fontSize: 16,
     color: '#ec449c',
@@ -90,10 +103,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#E9E9E9',
     borderColor: '#C7C7C7',
     borderRadius: 2,
-  },
-  toolbarStyle: {
-    opacity: 1,
-    marginBottom: 16
   }
 });
 
