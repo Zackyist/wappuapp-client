@@ -13,8 +13,7 @@ import {
   Animated,
   Easing,
   TouchableHighlight,
-  Image,
-  Navigator
+  Image
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -504,7 +503,7 @@ const EventDetail = React.createClass({
           }
 
           <View style={styles.navigationButtonWrapper}>
-            <Button onPress={() => this.giveFeedback.bind(this)}>Give feedback</Button>
+            <Button onPress={this.giveFeedback()}>Give feedback</Button>
           </View>
 
           {this.props.images.size > 0 &&
