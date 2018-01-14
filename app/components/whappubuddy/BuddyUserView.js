@@ -30,12 +30,15 @@ import UserAvatar from 'react-native-user-avatar';
 import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
+import PopupMenu from '../user/PopupMenu';
 
 import UserView from '../user/UserView';
 import Button from '../../components/common/Button';
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
+
+
 
 class BuddyUserView extends Component {
   // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
@@ -55,6 +58,28 @@ class BuddyUserView extends Component {
         user
       });
     };
+  }
+
+  onPopupEvent = (eventName, index) => {
+
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onReportUser()
+  }
+
+
+
+  onMyPopupEvent = (eventName, index) => {
+
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onDeleteProfile()
+  }
+
+  onDeleteProfile = () => {
+    
+  }
+
+  onReportUser = () => {
+    
   }
 
   render() {
@@ -84,13 +109,27 @@ class BuddyUserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {!isIOS &&
+            {!isIOS && user.name !== userName &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
                 <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
               </TouchableHighlight>
             </View>
             }
+
+
+            {user.name === userName && !isIOS &&
+              <View style={styles.menu}>
+                <PopupMenu actions={['Delete my profile']} onPress={this.onMyPopupEvent} />
+              </View>
+            }
+
+            {user.name !== userName && !isIOS &&
+              <View style={styles.menu}>
+                <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
+              </View>
+            }
+
 
             <View style={styles.headerInfo}>
               <Text style={styles.headerTitle}>
@@ -150,6 +189,11 @@ const styles = StyleSheet.create({
     left: 7,
     top: 7,
     zIndex: 2,
+  },
+  menu: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
   },
   backLinkText: {
     justifyContent: 'center',

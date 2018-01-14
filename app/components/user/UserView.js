@@ -11,6 +11,8 @@ import {
   getTotalSimas,
   getTotalVotesForUser,
   fetchUserImages,
+  fetchUserProfile,
+  getUserImageUrl,
   isLoadingUserImages,
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
@@ -19,6 +21,7 @@ import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import UserAvatar from 'react-native-user-avatar';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -63,6 +66,7 @@ class UserView extends Component {
     const { user } = this.props.route;
 
     if (user && user.id) {
+      this.props.fetchUserProfile(user.id);
       this.props.fetchUserImages(user.id);
     }
   }
@@ -71,6 +75,7 @@ class UserView extends Component {
     // Fetch images on Settings tab
     if (tab !== this.props.tab && tab === 'SETTINGS') {
       this.props.fetchUserImages(userId);
+      this.props.fetchUserProfile(userId);
       console.log('own profile');
     }
   }
@@ -107,13 +112,14 @@ class UserView extends Component {
   render() {
 
     const { images, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator, cityName } = this.props;
+      userTeam, userName, navigator, cityName, image_url } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
       user = { name: userName,
-               team: userTeam };
+               team: userTeam,
+               imageUrl: image_url };
       console.log(userTeam);
     }
 
@@ -147,8 +153,9 @@ class UserView extends Component {
               </View>
             }
 
-            <View style={styles.avatar}>
-              <Icon style={styles.avatarText} name="person-outline" />
+            <View>
+            <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
+            size={100} />
             </View>
             <Text style={styles.headerTitle}>
               {user.name}
@@ -341,7 +348,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView };
+const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView, fetchUserProfile };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -352,7 +359,8 @@ const mapStateToProps = state => ({
   userName: getUserName(state),
   userTeam: getUserTeam(state),
   cityName: getCurrentCityName(state),
-  tab: getCurrentTab(state)
+  tab: getCurrentTab(state),
+  image_url: getUserImageUrl(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);
