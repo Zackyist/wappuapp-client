@@ -24,7 +24,6 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
-<<<<<<< HEAD
 import AppInfo from './AppInfo';
 import LegalStuff from './LegalStuff';
 import PopupMenu from './PopupMenu';
@@ -32,22 +31,15 @@ import PopupMenu from './PopupMenu';
 import { openRegistrationView } from '../../actions/registration';
 import { getCurrentCityName } from '../../concepts/city';
 import WebViewer from '../webview/WebViewer';
-=======
 import BuddyUserView from '../whappubuddy/BuddyUserView';
 import Button from '../../components/common/Button';
->>>>>>> origin/master
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
-
-
 class UserView extends Component {
-<<<<<<< HEAD
-
-=======
   // This method is used to navigate from the user's Whappu Log to their WhappuBuddy profile
   showBuddyProfile = () => {
     let { user } = this.props.route;
@@ -67,12 +59,8 @@ class UserView extends Component {
     };
   }
   
->>>>>>> origin/master
   componentDidMount() {
     const { user } = this.props.route;
-    const { userId } = this.props;
-
-    console.log(user)
 
     if (user && user.id) {
       this.props.fetchUserImages(user.id);
