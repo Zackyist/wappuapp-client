@@ -1,6 +1,7 @@
 'use strict';
 
 // TODO: Connect the bioSelectContainer to the back-end
+// TODO: Remove useless duplicate files from the folder and imports
 
 import React, { Component, PropTypes } from 'react';
 import {
@@ -47,7 +48,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
 
-class RegistrationView extends Component {
+class BuddyRegistrationView extends Component {
   propTypes: {
     name: PropTypes.string.isRequired,
     teams: PropTypes.any,
@@ -634,4 +635,4 @@ const select = store => {
   };
 };
 
-export default connect(select, mapDispatchToProps)(RegistrationView);
+export default connect(select, mapDispatchToProps)(BuddyRegistrationView);

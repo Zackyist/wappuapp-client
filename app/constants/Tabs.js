@@ -5,6 +5,6 @@ export default {
   FEELING: 'FEELING',
   ACTION: 'ACTION',
   FEED: 'FEED',
-  HEILA: 'HEILA',
+  BUDDY: 'BUDDY',
   SETTINGS: 'SETTINGS'
 };
