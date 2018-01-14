@@ -1,5 +1,9 @@
 'use strict';
 
+// TODO: Add modal styles to the style sheet
+// TODO: Fix the position problem with avatars with actual picture - After merge to avoid unnecessary work
+// TODO: Fix the disapearing user name under avatar with actual picture - After merge to avoid unnecessary work
+
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text } from 'react-native';
@@ -20,7 +24,9 @@ import { openLightBox } from '../../actions/feed';
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserAvatar from 'react-native-user-avatar';
-import Lightbox from 'react-native-lightbox';
+import Modal from 'react-native-modal';
+import PhotoView from 'react-native-photo-view';
+import Toolbar from './UserViewProfileToolbar';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -32,6 +38,17 @@ const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
 class UserView extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.closeModal = this.closeModal.bind(this)
+
+    this.state = {
+      modalVisible: false
+    };
+  }
+
   componentDidMount() {
     const { user } = this.props.route;
     const { userId } = this.props;
@@ -42,6 +59,11 @@ class UserView extends Component {
       this.props.fetchUserProfile(userId);
     }
   }
+
+  closeModal() {
+    console.log('Suljetaan modal!')
+    this.setState({modalVisible: false})
+}
 
   render() {
 
@@ -58,6 +80,30 @@ class UserView extends Component {
 
     return (
       <View style={{ flex: 1 }}>
+      
+      <View>
+        <Modal
+          isVisible={this.state.modalVisible}
+          backdropOpacity={1.0}
+          backdropColor={theme.black}
+          onBackButtonPress={() => this.setState({modalVisible: false})}
+          onBackdropPress={() => this.setState({modalVisible: false})}
+          style={{margin: 0}}
+        >
+          <View style={{width: width, flex: 1, margin: 0}}>
+              <Toolbar title={user.name} closeModal={this.closeModal} navigator={this.props.navigator} />
+          </View>
+          <View style={{ width: width, height: height}}>
+            <PhotoView
+              source={{uri: image_url}}
+              minimumZoomScale={1}
+              maximumZoomScale={4}
+              style={{flex: 1, width, height: width, justifyContent: 'center', alignItems: 'center'}}
+            />
+          </View>
+        </Modal>
+      </View>
+
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
       <ParallaxView
         backgroundSource={headerImage}
@@ -73,52 +119,28 @@ class UserView extends Component {
             </View>
             }
 
-            {image_url ? (
-              <View
-                style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} 
-              >
-                <Lightbox
-                  style={{ marginBottom: 10 }}
-                  underlayColor='transparent'
-                  activeProps={{ borderRadius: 0, flex: 1, resizeMode: 'contain', height: undefined, width: undefined }} >
-                    <Image
-                      style={styles.userProfilePicture}
-                      source={{ uri: image_url }}
-                    />
-                </Lightbox>
-                <Text style={styles.headerTitle} >
-                  {user.name}
-                </Text>
-                <Text style={styles.headerSubTitle}>
-                  {userTeam || user.team}
-                </Text>
-              </View>
-            ) : (
-              <View
-                style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-              >
+            { image_url ? (
+              <TouchableOpacity onPress={() => this.setState({modalVisible: true})} >
                 <UserAvatar
                   name={user.name || userName }
                   src={image_url || user.imageUrl}
                   size={100}
                 />
-                <Text style={styles.headerTitle}>
-                  {user.name}
-                </Text>
-                <Text style={styles.headerSubTitle}>
-                  {userTeam || user.team}
-                </Text>
-              </View>
+              </TouchableOpacity>
+            ) : (
+              <UserAvatar
+                name={user.name || userName }
+                src={image_url || user.imageUrl}
+                size={100}
+              />
             )}
 
-            {/* TODO: Repair styling issue preventing the correct rendering of user.name under avatar / user image. -Santtu */}
-
-            {/* <Text style={styles.headerTitle}>
+            <Text style={styles.headerTitle}>
               {user.name}
             </Text>
             <Text style={styles.headerSubTitle}>
               {userTeam || user.team}
-            </Text> */}
+            </Text>
             <View style={styles.headerKpis}>
               <View style={styles.headerKpi}>
                 <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
@@ -180,6 +202,23 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  modalHeader: {
+    height: 56,
+    justifyContent: 'center',
+    position: 'absolute',
+    left: 0,
+    top:0,
+    right: 0,
+    zIndex: 2,
+  },
+  modalHeaderIcon: {
+    position: 'absolute',
+    left: 15,
+    right: 15,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   backLink: {
     position: 'absolute',
