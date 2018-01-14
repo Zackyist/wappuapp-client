@@ -25,12 +25,34 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
+import BuddyUserView from '../whappubuddy/BuddyUserView';
+import Button from '../../components/common/Button';
+
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
 class UserView extends Component {
+  // This method is used to navigate from the user's Whappu Log to their WhappuBuddy profile
+  showBuddyProfile = () => {
+    let { user } = this.props.route;
+    const { userName } = this.props;
+
+    // Show Current user if not user selected
+    if (!user) {
+      user = { name: userName };
+    }
+
+    return () => {
+      this.props.navigator.push({
+        component: BuddyUserView,
+        name: `${user.name}`,
+        user
+      });
+    };
+  }
+  
   componentDidMount() {
     const { user } = this.props.route;
     const { userId } = this.props;
@@ -60,7 +82,7 @@ class UserView extends Component {
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
       <ParallaxView
         backgroundSource={headerImage}
-        windowHeight={270}
+        windowHeight={330}
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
@@ -94,6 +116,15 @@ class UserView extends Component {
                 <Text style={styles.headerKpiValue}>{!isLoading ? (totalSimas || '-') : '-'}</Text>
                 <Text style={styles.headerKpiTitle}>simas</Text>
               </View>
+            </View>
+            <View style={styles.buddyButtonView}>
+              <Button
+                onPress={this.showBuddyProfile()}
+                style={styles.buddyButton}
+                isDisabled={false}
+              >
+                Find me on WhappuBuddy
+              </Button>
             </View>
           </View>
         )}
@@ -159,6 +190,18 @@ const styles = StyleSheet.create({
   },
   backLinkIcon: {
     color: theme.white
+  },
+  buddyButton: {
+    flex: 1,
+    height: 35,
+  },
+  buddyButtonView: {
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: width - width/3,
+    height: 40,
+    flexDirection: 'row',
   },
   headerTitle:{
     fontSize: 16,
