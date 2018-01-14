@@ -7,7 +7,7 @@
 // TODO: Add event and userid to props
 
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet } from 'react-native';
+import { Text, View, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
 import Star from 'react-native-stars';
 import Button from '../common/Button';
 import Toolbar from './EventFeedbackToolbar';
@@ -16,13 +16,16 @@ import { connect } from 'react-redux';
 
 import theme from '../../style/theme';
 
+
+
 class EventFeedback extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
       stars: 0,
-      text: ''
+      text: '',
+      textHeight: 40
     };
   }
 
@@ -32,13 +35,33 @@ class EventFeedback extends Component {
     });
   }
 
-  placeholder() {
-    return;
+  updateSize(height) {
+    this.setState({
+      textHeight: height
+    });
+  }
+
+  submitFeedback() {
+    Alert.alert(
+      'Event feedback',
+      'Your feedback has been received! Thank you!',
+      [
+        {text: 'Return', onPress: () => this.props.navigator.pop()}
+      ],
+      { cancelable: false }
+    )
   }
 
   render() {
+
+    const { textHeight } = this.state
+
+    let newStyle = {
+      height: textHeight
+    }
+
     return (
-      <View style={{ backgroundColor: theme.lightgrey }} >
+      <ScrollView style={{ backgroundColor: theme.lightgrey }} >
         <View style={ styles.toolbarContainerStyle }>
           <Toolbar title={'Event Feedback'} navigator={this.props.navigator} />
         </View>
@@ -51,9 +74,9 @@ class EventFeedback extends Component {
             spacing={4}
             starSize={40}
             count={5}
-            fullStar={require('../../../assets/starFilled.png')}
-            emptyStar={require('../../../assets/starEmpty.png')}
-            halfStar={require('../../../assets/starHalf.png')}
+            fullStar={require('../../../assets/eventStarFilled.png')}
+            emptyStar={require('../../../assets/eventStarEmpty.png')}
+            halfStar={require('../../../assets/eventStarHalf.png')}
           />
         </View>
         <View style={ styles.containerStyle } >
@@ -61,15 +84,23 @@ class EventFeedback extends Component {
             Optional feedback
           </Text>
           <TextInput
+            style={newStyle}
+            placeholder='Your feedback here'
+            editable={true}
+            autoGrow={true}
             multiline={true}
-            numberOfLines={6}
-            onChangeText={(text) => this.setState({text})}
+            minHeight={5}
+            maxHeight={20}
+            maxLength={1000}
+            textBreakStrategy={'balanced'}
+            onChangeText={(text) => this.setState({text: text})}
+            onContentSizeChange={(e) => this.updateSize(e.nativeEvent.contentSize.textHeight)}
           />
         </View>
         <View style={styles.navigationButton}>
-            <Button onPress={() => this.placeholder()}>Send</Button>
+            <Button onPress={() => this.submitFeedback()}>Send</Button>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -80,23 +111,25 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 16,
     justifyContent: 'center',
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   starContainerStyle: {
     backgroundColor: 'white',
     borderRadius: 5,
-    margin: 16,
-    marginTop: 65,
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 61,
     justifyContent: 'center',
     paddingBottom: 20
   },
   toolbarContainerStyle: {
-    marginBottom: 10  
+    marginBottom: 10
   },
   textStyle: {
-    fontSize: 16,
+    fontSize: 17,
     color: '#ec449c',
-    margin: 10
+    margin: 10,
+    fontWeight: 'bold'
   },
   navigationButton: {
     height: 50,
