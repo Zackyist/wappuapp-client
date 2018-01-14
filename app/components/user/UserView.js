@@ -10,47 +10,96 @@ import {
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
-  getUserImageUrl,
-  fetchUserProfile,
-  isLoadingUserImages
+  fetchUserImages,
+  isLoadingUserImages,
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
+import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import UserAvatar from 'react-native-user-avatar';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
+
+import AppInfo from './AppInfo';
+import LegalStuff from './LegalStuff';
+import PopupMenu from './PopupMenu';
+
+import { openRegistrationView } from '../../actions/registration';
+import { getCurrentCityName } from '../../concepts/city';
+import WebViewer from '../webview/WebViewer';
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
+
+
 class UserView extends Component {
+
   componentDidMount() {
     const { user } = this.props.route;
     const { userId } = this.props;
 
+    console.log(user)
+
     if (user && user.id) {
-      this.props.fetchUserProfile(user.id);
-    } else {
-      this.props.fetchUserProfile(userId);
+      this.props.fetchUserImages(user.id);
     }
+  }
+
+  componentWillReceiveProps({ tab, userId }) {
+    // Fetch images on Settings tab
+    if (tab !== this.props.tab && tab === 'SETTINGS') {
+      this.props.fetchUserImages(userId);
+      console.log('own profile');
+    }
+  }
+  
+  onTOS = () => {
+    this.props.navigator.push({component: LegalStuff});
+  }
+  onChangeMyProfile() {
+    this.props.openRegistrationView();
+  }
+
+  onAppInfo = () => {
+    this.props.navigator.push({component: AppInfo});
+  }
+
+  onFuksiSurvivalKit = () => {
+    this.props.navigator.push({
+      component: WebViewer,
+      showName: true,
+      name: 'Fuksi Survival Kit',
+      url: 'https://ttyy.fi/me-ollaan-teekkareita/teekkarikulttuuri/wappu/fuksi-survival-kit/'
+    });
+  }
+
+  onPopupEvent = (eventName, index) => {
+
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onTOS()
+    else if (index === 1) this.onChangeMyProfile()
+    else if (index === 2) this.onAppInfo()
+    else this.onFuksiSurvivalKit()
   }
 
   render() {
 
-    const { images, image_url, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator} = this.props;
+    const { images, isLoading, totalVotes, totalSimas,
+      userTeam, userName, navigator, cityName } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName, imageUrl: image_url}
+      user = { name: userName,
+               team: userTeam };
+      console.log(userTeam);
     }
 
     const imagesCount = images.size;
@@ -64,22 +113,33 @@ class UserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {!isIOS &&
+            {!isIOS && user.name !== userName &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
-                <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
+                <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />
               </TouchableHighlight>
             </View>
             }
-            <View>
-            <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
-            size={100} />
+
+            {user.name === userName && !isIOS &&
+              <View style={styles.menu}>
+                {cityName === 'Tampere' &&
+                    <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
+                }
+                {cityName !== 'Tampere' &&
+                    <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information']} onPress={this.onPopupEvent} />
+                }
+              </View>
+            }
+
+            <View style={styles.avatar}>
+              <Icon style={styles.avatarText} name="person-outline" />
             </View>
             <Text style={styles.headerTitle}>
               {user.name}
             </Text>
             <Text style={styles.headerSubTitle}>
-              {userTeam || user.team}
+              {user.team}
             </Text>
             <View style={styles.headerKpis}>
               <View style={styles.headerKpi}>
@@ -97,7 +157,7 @@ class UserView extends Component {
             </View>
           </View>
         )}
-        >
+      >
 
       <View style={styles.container}>
         {isLoading && <View style={styles.loader}><Loader size="large" /></View>}
@@ -130,6 +190,8 @@ class UserView extends Component {
   }
 };
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -148,6 +210,11 @@ const styles = StyleSheet.create({
     left: 7,
     top: 7,
     zIndex: 2,
+  },
+  menu: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
   },
   backLinkText: {
     justifyContent: 'center',
@@ -237,7 +304,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapDispatchToProps = { openLightBox, fetchUserProfile };
+
+const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -247,7 +315,8 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  image_url: getUserImageUrl(state)
+  cityName: getCurrentCityName(state),
+  tab: getCurrentTab(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);

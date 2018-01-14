@@ -21,11 +21,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import WebViewer from '../webview/WebViewer';
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
-import { fetchLinks } from '../../actions/profile';
 import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
 import feedback from '../../services/feedback';
-import UserAvatar from 'react-native-user-avatar';
+import Header from '../common/Header';
 
 const IOS = Platform.OS === 'ios';
 
@@ -86,7 +85,6 @@ const styles = StyleSheet.create({
   },
   avatarColumn: {
     width: 50,
-    right: 10,
   },
   avatar: {
     justifyContent: 'center',
@@ -159,7 +157,7 @@ const styles = StyleSheet.create({
   }
 });
 
-class Profile extends Component {
+class AppInfo extends Component {
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
@@ -175,7 +173,8 @@ class Profile extends Component {
 
 
   componentDidMount() {
-    this.props.fetchLinks();
+    //console.log(this.props);
+    //this.props.fetchLinks();
   }
 
   @autobind
@@ -263,7 +262,7 @@ class Profile extends Component {
   renderModalItem(item, index) {
     const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
     const hasName = !!item.title;
-    //const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
+    const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
 
     return (
       <View key={index} style={{flex:1}}>
@@ -271,8 +270,12 @@ class Profile extends Component {
             <View style={[styles.listItemButton, styles.listItemSeparator]}>
             <View style={[styles.listItem, styles.listItem__hero]}>
               <View style={styles.avatarColumn}>
-              <UserAvatar name={hasName ? item.title : 'W A'}
-                src={this.props.image_url} size={50} />
+                <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
+                  {hasName
+                    ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
+                    : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+                  }
+                </View>
               </View>
               <View style={{flexDirection:'column',flex:1}}>
                 {
@@ -285,7 +288,7 @@ class Profile extends Component {
                   </Text>
                 }
                 <Text style={[styles.listItemText, styles.listItemText__small]}>
-                {currentTeam.name}
+                  {currentTeam.name}
                 </Text>
               </View>
               <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
@@ -333,10 +336,27 @@ class Profile extends Component {
     return this.renderModalItem(item, key);
   }
 
-  render() {
-    const { name, links, terms, cityName } = this.props;
 
-    const linksForCity = links.toJS().map(link => {
+
+  render() {
+    const {cityName } = this.props;
+
+    let ROOT_URL = 'https://wappu.futurice.com';
+
+    let links = [
+      {title: 'Feedback', mailto: 'wappu@futurice.com', icon: 'send'},
+      {title: 'Source Code', link: `https://github.com/futurice/wappuapp-client`, icon: 'code', showInWebview: false},
+      {title: 'from Tammerforce', showCity: 'tampere', link: `https://tammerforce.com?utm_source=wappuapp&utm_medium=app&utm_campaign=wappu2017`, icon: 'favorite-border', showInWebview: false},
+      {title: 'Wanna work at Futurice?',
+        link: 'https://futurice.com/careers?utm_source=wappuapp&utm_medium=app&utm_campaign=wappu2017',
+        icon: 'star', separatorAfter: true}
+    ];
+    
+    let terms = [
+      {title: 'Licenses', link: `${ROOT_URL}/licenses`, icon: 'help-outline', showInWebview: false, last: true}
+    ];
+
+    const linksForCity = links.map(link => {
       const showCity = link.showCity;
       if (showCity && (cityName || '').toLowerCase() !== showCity) {
         link.hidden = true;
@@ -344,39 +364,28 @@ class Profile extends Component {
       return link;
     });
 
-    const userItem = { title: name, icon: 'person-outline', rightIcon: 'create', id: 'user-edit'};
-    const listData = [userItem].concat(linksForCity, [{ type: 'IMAGES', id: 'madeby' }], terms.toJS());
+    const listData = linksForCity.concat([{ type: 'IMAGES', id: 'madeby' }]).concat(terms);
 
     return (
       <View style={styles.container}>
+      {!IOS && <Header backgroundColor={theme.secondary} title="App Info" navigator={this.props.navigator} />}
         <ScrollView style={styles.scrollView}>
           {listData.map(this.renderItem)}
         </ScrollView>
-
-      {/*
-      <ListView style={[styles.scrollView]}
-          dataSource={this.state.dataSource.cloneWithRows(listData)}
-          renderRow={this.renderItem}
-        />
-      */}
       </View>
       );
 
   }
 }
 
-const mapDispatchToProps = { fetchLinks, openRegistrationView };
+const mapDispatchToProps = { openRegistrationView };
 
 const select = store => {
   return {
       selectedTeam: store.registration.get('selectedTeam'),
       teams: store.team.get('teams'),
-      name: store.registration.get('name'),
-      links: store.profile.get('links'),
-      terms: store.profile.get('terms'),
-      image_url: store.registration.get('image_url'),
       cityName: getCurrentCityName(store)
     }
 };
 
-export default connect(select, mapDispatchToProps)(Profile);
+export default connect(select, mapDispatchToProps)(AppInfo);

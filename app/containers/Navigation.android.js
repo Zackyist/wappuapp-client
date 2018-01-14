@@ -20,6 +20,7 @@ import CompetitionView from './CompetitionNavigator';
 import HeilaView from './HeilaView';
 import FeedView from './FeedView';
 import ProfileView from './ProfileView';
+import UserView from '../components/user/UserView';
 import AndroidTabs  from 'react-native-scrollable-tab-view';
 import Header from '../components/common/MainHeader';
 import CitySelector from '../components/header/CitySelector';
