@@ -49,6 +49,12 @@ const putMood = (params) => {
   return _put(Endpoints.urls.mood, payload);
 };
 
+const getMatches = uuid => {
+  return wapuFetch(Endpoints.urls.matchesList(uuid))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+};
+
 const getImages = eventId => {
   return wapuFetch(Endpoints.urls.event(eventId))
     .then(checkResponseStatus)
