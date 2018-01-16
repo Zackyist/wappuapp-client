@@ -115,12 +115,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   textBoxStyle: {
-    textAlign: 'right',
+    textAlign: 'left', // muutettu "right" -> "left"
     marginRight: 25,
+    marginLeft: 25, // lisatty
     fontSize: 10,
     marginTop: 0,
     paddingTop: 0,
     paddingBottom: Platform.OS === 'ios' ? 200 : 0,
+    textAlignVertical: 'top' // Tarvitaan androidille
   },
   navigationButton: {
     height: 50,
