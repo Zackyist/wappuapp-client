@@ -6,7 +6,7 @@
 // TODO: Add event and userid to props
 
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, View, TextInput, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
 import Star from 'react-native-stars';
 import Button from '../common/Button';
 import Toolbar from './EventFeedbackToolbar';
@@ -46,7 +46,7 @@ class EventFeedback extends Component {
     return (
       <ScrollView style={{ backgroundColor: theme.lightgrey }} >
         <View style={ styles.toolbarContainerStyle }>
-          <Toolbar title={'Event Feedback'} navigator={this.props.navigator} />
+          <Toolbar style={styles.titleStyle} title={'Event Feedback'} navigator={this.props.navigator} />
         </View>
         <View style={ styles.starContainerStyle } >
           <Text style={ styles.textStyle } >
@@ -68,7 +68,7 @@ class EventFeedback extends Component {
           </Text>
           <View style={{ borderWidth: 1, borderColor: 'rgba(9, 234, 227, 0.4)', marginLeft: 15, marginRight: 15, borderRadius: 5 }} >
             <TextInput
-              style={{ flex: 1, marginLeft: 5, marginRight: 5, textAlignVertical: 'top', marginBottom: 0, paddingBottom: 0 }}
+              style={styles.textBoxStyle}
               placeholder='Your feedback here'
               editable={true}
               multiline={true}
@@ -113,6 +113,14 @@ const styles = StyleSheet.create({
     color: '#ec449c',
     margin: 10,
     fontWeight: 'bold'
+  },
+  textBoxStyle: {
+    textAlign: 'right',
+    marginRight: 25,
+    fontSize: 10,
+    marginTop: 0,
+    paddingTop: 0,
+    paddingBottom: Platform.OS === 'ios' ? 200 : 0,
   },
   navigationButton: {
     height: 50,
