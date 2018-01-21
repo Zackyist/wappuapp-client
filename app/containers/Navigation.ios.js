@@ -15,6 +15,7 @@ import BuddyView from './BuddyView'
 import Tabs from '../constants/Tabs';
 import { changeTab } from '../actions/navigation';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
+import BuddyView from './BuddyView';
 
 const theme = require('../style/theme');
 
@@ -54,8 +55,13 @@ class Navigation extends Component {
         <MDIcon.TabBarItemIOS
           iconName='favorite-border'
           title=''
+<<<<<<< HEAD
           selected={currentTab === Tabs.HEILA}
           onPress={() => { this.onChangeTab(Tabs.HEILA); }}>
+=======
+          selected={currentTab === Tabs.BUDDY}
+          onPress={() => { this.onChangeTab(Tabs.BUDDY); }}>
+>>>>>>> Adds navigation to buddyview
           <BuddyView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
 
