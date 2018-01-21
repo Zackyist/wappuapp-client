@@ -13,6 +13,7 @@ import SettingsView from './ProfileView';
 import Tabs from '../constants/Tabs';
 import { changeTab } from '../actions/navigation';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
+import BuddyView from './BuddyView';
 
 const theme = require('../style/theme');
 
@@ -49,11 +50,11 @@ class Navigation extends Component {
           <MoodView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
-          iconName='equalizer'
+          iconName='favorite-border'
           title=''
-          selected={currentTab === Tabs.ACTION}
-          onPress={() => { this.onChangeTab(Tabs.ACTION); }}>
-          <CompetitionView navigator={navigator} />
+          selected={currentTab === Tabs.BUDDY}
+          onPress={() => { this.onChangeTab(Tabs.BUDDY); }}>
+          <BuddyView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
           iconName='account-circle'
