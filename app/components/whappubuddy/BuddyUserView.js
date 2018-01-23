@@ -8,7 +8,7 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text } from 'react-native'; 
+  TouchableHighlight, Image, Platform, Text, Alert } from 'react-native'; 
 import { connect } from 'react-redux';
 
 import {
@@ -18,6 +18,7 @@ import {
   getTotalVotesForUser,
   getUserImageUrl,
   fetchUserImages,
+  fetchUserProfile,
   isLoadingUserImages,
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
@@ -26,11 +27,13 @@ import { openLightBox } from '../../actions/feed';
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserAvatar from 'react-native-user-avatar';
+import abuse from '../../services/abuse';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 import PopupMenu from '../user/PopupMenu';
+import { getCurrentTab } from '../../reducers/navigation';
 
 import UserView from '../user/UserView';
 import Button from '../../components/common/Button';
@@ -46,6 +49,8 @@ class BuddyUserView extends Component {
     let { user } = this.props.route;
     const { userName } = this.props;
 
+    //console.log(user.id);
+
     // Show Current user if not user selected
     if (!user) {
       user = { name: userName };
@@ -58,6 +63,15 @@ class BuddyUserView extends Component {
         user
       });
     };
+  }
+
+
+  componentWillReceiveProps({ tab, userId }) {
+    // Fetch images on Settings tab
+    if (tab !== this.props.tab && tab === 'BUDDY') {
+      this.props.fetchUserImages(userId);
+      this.props.fetchUserProfile(userId);
+    }
   }
 
   onPopupEvent = (eventName, index) => {
@@ -79,7 +93,17 @@ class BuddyUserView extends Component {
   }
 
   onReportUser = () => {
-    
+    Alert.alert(
+
+      'Flag Content',
+      'Do you want to report this user?',
+      [
+        { text: 'Cancel',
+          onPress: () => this.onDeleteProfile() , style: 'cancel' },
+        { text: 'Yes, report user',
+          onPress: () => { abuse.reportUser(this.props.route.user) }, style: 'destructive' }
+      ]
+    );
   }
 
   render() {
@@ -349,7 +373,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages };
+const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -359,7 +383,8 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  image_url: getUserImageUrl(state)
+  image_url: getUserImageUrl(state),
+  tab: getCurrentTab(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);
