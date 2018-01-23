@@ -75,6 +75,12 @@ const getUser = uuid => {
     .then(response => response.json());
 };
 
+const getBuddies = uuid => {
+  return wapuFetch(Endpoints.urls.buddyList(uuid))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+}
+
 const deleteFeedItem = item => {
   return _delete(Endpoints.urls.feedItem(item.id));
 };
@@ -203,6 +209,7 @@ export default {
   fetchMoreFeed,
   postAction,
   putUser,
+  getBuddies,
   putProfilePic,
   putMood,
   getUser,
