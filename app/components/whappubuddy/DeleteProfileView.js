@@ -7,122 +7,68 @@
 // TODO: Add event and userid to props
 
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet, ScrollView, Alert } from 'react-native';
-import Star from 'react-native-stars';
+import { Text, View, StyleSheet, ScrollView, ParallaxView, Platform, TouchableHighlight } from 'react-native';
 import Button from '../common/Button';
-import Toolbar from './EventFeedbackToolbar';
 import { connect } from 'react-redux';
+import Header from '../common/Header';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import theme from '../../style/theme';
 
+const isIOS = Platform.OS === 'ios';
+
+//let headerImage = require('../../../assets/frontpage_header-bg.jpg');
+
 class DeleteProfileView extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      stars: 0,
-      text: '',
-      textLength: 0
-    };
-  }
 
-  giveStarRating(rating) {
-    this.setState({
-      stars: rating
-    });
-  }
-
-  submitFeedback() {
-    Alert.alert(
-      'Thank you!',
-      'We have received your feedback!',
-      [
-        {text: 'Return', onPress: () => this.props.navigator.pop()}
-      ],
-      { cancelable: false }
-    )
-  }
 
   render() {
     return (
-      <ScrollView style={{ backgroundColor: theme.lightgrey }} >
-        <View style={ styles.toolbarContainerStyle }>
-          <Toolbar title={'Event Feedback'} navigator={this.props.navigator} />
-        </View>
-        <View style={ styles.starContainerStyle } >
-          <Text style={ styles.textStyle } >
-            Rate the event
-          </Text>
-          <Star
-            update={(val)=>{this.setState({stars: val})}}
-            spacing={4}
-            starSize={40}
-            count={5}
-            fullStar={require('../../../assets/eventStarFilled.png')}
-            emptyStar={require('../../../assets/eventStarEmpty.png')}
-            halfStar={require('../../../assets/eventStarHalf.png')}
-          />
-        </View>
-        <View style={ styles.containerStyle } >
-          <Text style={ styles.textStyle } >
-            Optional feedback
-          </Text>
-          <View style={{ borderWidth: 1, borderColor: 'rgba(9, 234, 227, 0.4)', marginLeft: 15, marginRight: 15, borderRadius: 5 }} >
-            <TextInput
-              style={{ flex: 1, marginLeft: 5, marginRight: 5, textAlignVertical: 'top', marginBottom: 0, paddingBottom: 0 }}
-              placeholder='Your feedback here'
-              editable={true}
-              multiline={true}
-              numberOfLines={10}
-              maxLength={1000}
-              textBreakStrategy={'balanced'}
-              onChangeText={(text) => this.setState({text: text})}
-            />
+          <View style={styles.mainView}>
+            <Text style={styles.redText}>Are you sure you want to delete your profile on WhappuBuddy?</Text>
+            <Text style={styles.grayText}>If you delete your profile, other users wont be able to discover you on
+              WhappuBuddy anymore.</Text>
+            <Text style={styles.grayText}>All of your previous matches and chats will also be removed and cannot be recovered.
+              You can, however, rejoin WhappuBuddy later on and start from blank slate.</Text>
+            <Text style={styles.boldText}>Please note that leaving WhappuBuddy does not remove your Whappu App profile!</Text>
+            <Button style={styles.deleteButton}>DELETE MY WHAPPUBUDDY PROFILE</Button>
           </View>
-          <Text style={{ textAlign: 'right', marginRight: 25, fontSize: 10, marginTop: 0, paddingTop: 0 }}>{this.state.text.length}/1000</Text>
-        </View>
-        <View style={styles.navigationButton}>
-            <Button onPress={() => this.submitFeedback()}>Send</Button>
-        </View>
-      </ScrollView>
+
+
     );
   }
 }
 
 const styles = StyleSheet.create({
-  containerStyle: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    margin: 16,
-    justifyContent: 'center',
-    paddingBottom: 20,
+  mainView: {
+    flex: 1,
+    marginTop: 40
   },
-  starContainerStyle: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    marginLeft: 15,
-    marginRight: 15,
-    marginTop: 61,
-    justifyContent: 'center',
-    paddingBottom: 20
+  redText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'red',
+    textAlign: 'center'
   },
-  toolbarContainerStyle: {
-    marginBottom: 10
+  grayText: {
+    color: 'gray',
+    fontSize: 20,
+    paddingTop: 20,
+    textAlign: 'center'
   },
-  textStyle: {
-    fontSize: 17,
-    color: '#ec449c',
-    margin: 10,
-    fontWeight: 'bold'
+  boldText: {
+    color: 'gray',
+    fontWeight: 'bold',
+    fontSize: 20,
+    paddingTop: 20,
+    textAlign: 'center'
   },
-  navigationButton: {
-    height: 50,
-    backgroundColor: '#E9E9E9',
-    borderColor: '#C7C7C7',
-    borderRadius: 5,
-    marginRight: 15,
-    marginLeft: 15
+  deleteButton: {
+
   }
+
+
 });
 
 const select = store => {
