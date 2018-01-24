@@ -40,6 +40,8 @@ import { openRegistrationView, acknowledgeDataUpdate } from '../../actions/regis
 import { getCurrentCityName } from '../../concepts/city';
 import WebViewer from '../webview/WebViewer';
 import BuddyUserView from '../whappubuddy/BuddyUserView';
+import DeleteProfileView from '../whappubuddy/DeleteProfileView';
+
 import Button from '../../components/common/Button';
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
@@ -61,7 +63,7 @@ class UserView extends Component {
 
   componentDidMount() {
     const { user } = this.props.route;
-
+    const { userId } = this.props;
     // Fetch images and data upon mounting if this is not the user's own profile
     if (user && user.id) {
       this.props.fetchUserProfile(user.id);
@@ -94,6 +96,24 @@ class UserView extends Component {
     return () => {
       this.props.navigator.push({
         component: BuddyUserView,
+        name: `${user.name}`,
+        user
+      });
+    };
+  }
+
+  deleteBuddyProfile = () => {
+    let { user } = this.props.route;
+    const { userName } = this.props;
+
+    // Show Current user if not user selected
+    if (!user) {
+      user = { name: userName };
+    }
+
+    return () => {
+      this.props.navigator.push({
+        component: DeleteProfileView,
         name: `${user.name}`,
         user
       });
@@ -201,7 +221,7 @@ class UserView extends Component {
                 }
               </View>
             }
-            
+
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
               <View>
@@ -312,6 +332,12 @@ class UserView extends Component {
           </View>
         }
 
+<<<<<<< HEAD
+=======
+        <Button style={{marginBottom:100}} onPress={this.deleteBuddyProfile()}>
+        Delete my profile
+        </Button>
+>>>>>>> Profile deletion view and mock button to navigate to it
       </View>
       </ParallaxView>
       </View>
