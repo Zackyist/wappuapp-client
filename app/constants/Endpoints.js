@@ -21,6 +21,9 @@ const EndpointUrls = {
   mood: `${ROOT_URL}/mood`,
   userProfile: (userId) => `${ROOT_URL}/users?userId=${userId}`,
   profilePic: (uuid) => `${ROOT_URL}/users/${uuid}/image`,
+  matchesList: (uuid) => `${ROOT_URL}/heila/matches/${uuid}`,
+  buddyProfile: (uuid) => `${ROOT_URL}/heila?userId=${uuid}`,
+  buddyInfo: (uuid) => `${ROOT_URL}/heila/${uuid}`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);

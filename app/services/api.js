@@ -49,6 +49,12 @@ const putMood = (params) => {
   return _put(Endpoints.urls.mood, payload);
 };
 
+const getBuddyProfile = userId => {
+  return wapuFetch(Endpoints.urls.buddyProfile(userId))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+}
+
 const getMatches = uuid => {
   return wapuFetch(Endpoints.urls.matchesList(uuid))
     .then(checkResponseStatus)
@@ -66,6 +72,10 @@ const getUserProfile = userId => {
     .then(checkResponseStatus)
     .then(response => response.json());
 }
+
+const putBuddyProfile = payload => {
+  return _put(Endpoints.urls.buddyInfo(payload.uuid), payload);
+};
 
 const putUser = payload => {
   return _put(Endpoints.urls.user(payload.uuid), payload);
@@ -208,10 +218,13 @@ export default {
   fetchModels,
   fetchMoreFeed,
   postAction,
+  putBuddyProfile,
   putUser,
   putProfilePic,
   putMood,
+  getBuddyProfile,
   getUser,
   getImages,
+  getMatches,
   getUserProfile
 };

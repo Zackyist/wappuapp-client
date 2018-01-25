@@ -2,6 +2,7 @@
 
 // TODO: Connect the bioSelectContainer to the back-end
 // TODO: Remove useless duplicate files from the folder and imports
+// TODO: Remove Team from imports if useless
 
 import React, { Component, PropTypes } from 'react';
 import {
@@ -30,14 +31,14 @@ import ModalBox from 'react-native-modalbox';
 import Team from './Team';
 import Toolbar from './RegistrationToolbar';
 import {
-  putUser,
+  putBuddyProfile,
   updateName,
   selectTeam,
   reset,
   generateName,
   dismissIntroduction,
-  openRegistrationView,
-  closeRegistrationView
+  openBuddyRegistrationView,
+  closeBuddyRegistrationView
 } from '../../actions/registration';
 import { setCity, getCityIdByTeam, getCityId } from '../../concepts/city';
 import { setDefaultRadioByCity } from '../../concepts/radio';
@@ -50,10 +51,12 @@ const { width, height } = Dimensions.get('window');
 
 class BuddyRegistrationView extends Component {
   propTypes: {
-    name: PropTypes.string.isRequired,
+    bio: PropTypes.string.isRequired,
+    lookingFor: PropTypes.string.isRequired,
+    pushToken: PropTypes.string.isRequired,
     teams: PropTypes.any,
     selectedTeam: PropTypes.number.isRequired,
-    isRegistrationViewOpen: PropTypes.bool.isRequired,
+    isBuddyRegistrationViewOpen: PropTypes.bool.isRequired,
     isRegistrationInfoValid: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired
   }
@@ -69,7 +72,7 @@ class BuddyRegistrationView extends Component {
 
   componentDidMount() {
     BackAndroid.addEventListener('hardwareBackPress', () => {
-      if (this.props.isRegistrationViewOpen && this.props.isRegistrationInfoValid) {
+      if (this.props.isBuddyRegistrationViewOpen && this.props.isRegistrationInfoValid) {
         this.onCloseProfileEditor()
         return true;
       }
@@ -78,7 +81,7 @@ class BuddyRegistrationView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.isRegistrationViewOpen && nextProps.isRegistrationViewOpen) {
+    if (!this.props.isBuddyRegistrationViewOpen && nextProps.isBuddyRegistrationViewOpen) {
 
       const startingSelectedCity = nextProps.isRegistrationInfoValid
         ? nextProps.selectedCityId
@@ -90,7 +93,7 @@ class BuddyRegistrationView extends Component {
 
   @autobind
   onRegister() {
-    this.props.putUser();
+    this.props.putBuddyProfile();
   }
 
   @autobind
@@ -135,7 +138,7 @@ class BuddyRegistrationView extends Component {
     this.props.setCity(this.state.selectedCity);
     this.props.setDefaultRadioByCity(this.state.selectedCity);
     this.props.dismissIntroduction();
-    this.props.closeRegistrationView();
+    this.props.closeBuddyRegistrationView();
   }
 
   @autobind
@@ -143,7 +146,7 @@ class BuddyRegistrationView extends Component {
     if (this.props.isRegistrationInfoValid) {
       this.onRegister();
     }
-    this.props.closeRegistrationView();
+    this.props.closeBuddyRegistrationView();
   }
 
   teamIsValid() {
@@ -281,10 +284,10 @@ class BuddyRegistrationView extends Component {
 
     return (
       <ModalBox
-        isOpen={this.props.isRegistrationViewOpen}
+        isOpen={this.props.isBuddyRegistrationViewOpen}
         swipeToClose={false}
         backdropPressToClose={false}
-        // visible={this.props.isRegistrationViewOpen}
+        // visible={this.props.isBuddyRegistrationViewOpen}
         // animationType={'none'}
         // onRequestClose={() => console.log('AppIntro cannot be closed by back button!')}
       >
@@ -315,7 +318,7 @@ class BuddyRegistrationView extends Component {
               </View>
             </View>
             <View level={-10} >
-              <InstructionView simplified={true} closeRegistrationView={this.onClose} />
+              <InstructionView simplified={true} closeBuddyRegistrationView={this.onClose} />
             </View>
           </View>
           <View style={[styles.slide, styles.slideIntro]} >
@@ -330,7 +333,7 @@ class BuddyRegistrationView extends Component {
               <SkipView onPressProfileLink={() => {
                 this.onClose();
                 setTimeout(() => {
-                  this.props.openRegistrationView();
+                  this.props.openBuddyRegistrationView();
                 }, 750);
               }}
               />
@@ -371,7 +374,7 @@ class BuddyRegistrationView extends Component {
             onBlur={() => {
               keyboard.onInputBlur(this.containerScrollViewRef)
             }}
-            value={this.props.name}
+            value={this.props.bio}
           />
         </View>
       </View>
@@ -385,7 +388,7 @@ class BuddyRegistrationView extends Component {
         this._renderIntroForCitySelection()
         :
         <Modal
-          visible={this.props.isRegistrationViewOpen}
+          visible={this.props.isBuddyRegistrationViewOpen}
           animationType={'slide'}
           onRequestClose={this.onCloseProfileEditor}
         >
@@ -603,7 +606,7 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = {
-  putUser,
+  putBuddyProfile,
   updateName,
   reset,
   setCity,
@@ -611,8 +614,8 @@ const mapDispatchToProps = {
   selectTeam,
   generateName,
   dismissIntroduction,
-  openRegistrationView,
-  closeRegistrationView,
+  openBuddyRegistrationView,
+  closeBuddyRegistrationView,
   showChooseTeam
 };
 
@@ -620,17 +623,19 @@ const select = store => {
 
   const initialSetup = store.city.get('id') === 1 || !store.city.get('id');
   return {
-    isIntroductionDismissed: store.registration.get('isIntroductionDismissed'),
-    isRegistrationViewOpen: store.registration.get('isRegistrationViewOpen'),
-    name: store.registration.get('name'),
+    isIntroductionDismissed: store.buddyRegistration.get('isIntroductionDismissed'),
+    isBuddyRegistrationViewOpen: store.buddyRegistration.get('isBuddyRegistrationViewOpen'),
+    bio: store.buddyRegistration.get('bio_text'),
+    lookingFor: store.buddyRegistration.get('bio_looking_for'),
+    pushToken: store.buddyRegistration.get('pushToken'),
     selectedTeam: store.registration.get('selectedTeam'),
     selectedCityId: getCityIdByTeam(store),
     viewCityId: getCityId(store),
     teams: store.team.get('teams'),
     cities: store.city.get('list'),
     isChooseTeamViewOpen: store.team.get('isChooseTeamViewOpen'),
-    isRegistrationInfoValid: !!store.registration.get('name') &&
-      !!store.registration.get('selectedTeam'),
+    isRegistrationInfoValid: !!store.buddyRegistration.get('bio_text') &&
+      !!store.buddyRegistration.get('bio_looking_for'),
     initialSetup
   };
 };
