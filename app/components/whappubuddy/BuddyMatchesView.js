@@ -5,6 +5,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { Component, PropTypes } from 'react';
 =======
 import React, { Component } from 'react';
@@ -12,6 +13,9 @@ import React, { Component } from 'react';
 =======
 import React, { Component, PropTypes } from 'react';
 >>>>>>> Added action creators and reducer for matches. Degugging continues.
+=======
+import React, { Component } from 'react';
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
 import {
   View,
   Text,
@@ -21,6 +25,7 @@ import {
   ActivityIndicatorIOS,
   Platform,
   TouchableOpacity,
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 } from 'react-native';
@@ -62,6 +67,17 @@ import {
   finishList
 } from '../../actions/matches';
 
+=======
+  Alert
+} from 'react-native';
+
+import _ from 'lodash';
+import api from '../../services/api';
+import DeviceInfo from 'react-native-device-info';
+import UserAvatar from 'react-native-user-avatar';
+
+import theme from '../../style/theme';
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
 
 const isIOS = Platform === 'ios';
 
@@ -70,6 +86,7 @@ class BuddyMatches extends Component {
   constructor(props) {
     super(props);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -141,6 +158,8 @@ class BuddyMatches extends Component {
       this.setDatasource(this.props.datasource);
     }
 =======
+=======
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
     this.state = {
       dataSource: [],
       matches: [],
@@ -212,6 +231,7 @@ class BuddyMatches extends Component {
           isLoading: false
         })
       })
+<<<<<<< HEAD
 >>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
   }
 =======
@@ -433,12 +453,41 @@ class BuddyMatches extends Component {
   }
 
   renderRow = (item) => {
+=======
+  }
+
+  componentDidMount() {
+
+    // Fetch current user's matches
+    this.getMatchData()
+  }
+
+  componentWillMount() {
+
+    var ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+
+    this.setState({
+      dataSource: ds.cloneWithRows([]),
+      matches: [],
+      isLoading: true
+    })
+  }
+
+  renderRow = (item) => {
+
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
     return (
       <TouchableOpacity onPress={this.openChat.bind(this, item)}>
         <View style={styles.containerStyle} >
           <UserAvatar
             name={item.buddyName}
+<<<<<<< HEAD
             src={item.buddyImg}
+=======
+            src={item.buddyImage}
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
             size={50}
           />
           <Text
@@ -460,6 +509,7 @@ class BuddyMatches extends Component {
     return (
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       <ScrollView style={styles.scrollStyle} >
 <<<<<<< HEAD
 =======
@@ -471,13 +521,19 @@ class BuddyMatches extends Component {
               <ActivityIndicator size='large' />
 <<<<<<< HEAD
 =======
+=======
+      <ScrollView style={styles.scrollStyle} >
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
         { this.state.isLoading ? (
           <View>
             {!isIOS ? (
               <ActivityIndicator />
+<<<<<<< HEAD
 >>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
 =======
 >>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
+=======
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
             ) : (
               <ActivityIndicatorIOS />
             )}
@@ -491,6 +547,7 @@ class BuddyMatches extends Component {
         />
         )}
       </ScrollView>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
       <View>
@@ -519,6 +576,8 @@ class BuddyMatches extends Component {
 >>>>>>> Added action creators and reducer for matches. Degugging continues.
 =======
 >>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
+=======
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
     );
   }
 }
@@ -543,6 +602,7 @@ const styles = {
     fontSize: 16,
     marginLeft: 10,
     fontWeight: 'bold'
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   },
@@ -580,10 +640,13 @@ const mapStateToProps = store => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyMatches);
 =======
+=======
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
   }
 }
 
 export default BuddyMatches;
+<<<<<<< HEAD
 >>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
 =======
   },
@@ -625,3 +688,5 @@ export default connect(mapStateToProps, { fetchMatches, fetchBuddyInfo })(BuddyM
 =======
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyMatches);
 >>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
+=======
+>>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
