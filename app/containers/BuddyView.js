@@ -4,12 +4,23 @@ import React, { Component } from 'react';
 import {
   Navigator,
   StyleSheet,
-  Platform
+  Platform,
+  View,
 } from 'react-native';
+
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
+import TabBarItems from '../components/tabs/Tabs';
 
-import BuddyUserView from '../components/whappubuddy/BuddyUserView';
+// import BuddyUserView from '../components/whappubuddy/BuddyUserView';
+import BuddyMatchesView from '../components/whappubuddy/BuddyMatchesView';
+import FindBuddyPlaceholder from '../components/whappubuddy/FindBuddyPlaceholder';
+import BuddyPlaceholder from '../components/whappubuddy/BuddyPlaceholder';
+
+const ScrollTabs = require('react-native-scrollable-tab-view');
+
+const IOS = Platform.OS === 'ios';
+// const VIEW_NAME = 'BuddyView';
 
 const theme = require('../style/theme');
 
@@ -37,8 +48,10 @@ class BuddyView extends Component {
   }
 
   render() {
+
     return (
-      <Navigator
+      <View style={{ flexGrow: 1 }}>
+      {/* <Navigator
         style={styles.navigator}
         initialRoute={{
           component: BuddyUserView,
@@ -49,6 +62,39 @@ class BuddyView extends Component {
           ...Navigator.SceneConfigs.FloatFromRight
         })}
       />
+    ); */}
+
+    {/* <View style={{ flex: 1 }}> */}
+      <ScrollTabs
+        contentProps={this.props.route}
+        initialPage={0}
+        tabBarActiveTextColor={theme.secondary}
+        tabBarUnderlineColor={theme.secondary}
+        tabBarBackgroundColor={theme.white}
+        tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
+        locked={IOS}
+        prerenderingSiblingsNumber={0}
+        renderTabBar={() => <TabBarItems />}
+      >
+        {/* Replace with buddyprofile and the buddyfinder */}
+        <BuddyPlaceholder
+          tabLabel='My profile'
+          navigator={this.props.navigator}
+          barColor={theme.accent}
+          ref='profile'
+        />
+        <FindBuddyPlaceholder
+            tabLabel="Find Matches"
+            navigator={this.props.navigator}
+            barColor={theme.accent}
+            ref="buddy" />
+        <BuddyMatchesView
+            tabLabel="My Matches"
+            navigator={this.props.navigator}
+            barColor={theme.accent}
+            ref="matches" />
+      </ScrollTabs>
+    </View>
     );
   }
 }
