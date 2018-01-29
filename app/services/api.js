@@ -75,6 +75,12 @@ const getUser = uuid => {
     .then(response => response.json());
 };
 
+const getMatches = uuid => {
+  return wapuFetch(Endpoints.urls.matches(uuid))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+};
+
 const deleteFeedItem = item => {
   return _delete(Endpoints.urls.feedItem(item.id));
 };
@@ -206,6 +212,7 @@ export default {
   putProfilePic,
   putMood,
   getUser,
+  getMatches,
   getImages,
   getUserProfile
 };
