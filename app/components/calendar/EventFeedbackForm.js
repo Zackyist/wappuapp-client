@@ -1,10 +1,5 @@
 'use strict';
 
-// TODO: Waiting for backend to send the feedback to
-// TODO: Fix colour sources to theme
-// TODO: Repair navigation
-// TODO: Add event and userid to props
-
 import React, { Component } from 'react';
 import { Text, View, TextInput, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
 import Star from 'react-native-stars';
@@ -12,7 +7,6 @@ import Button from '../common/Button';
 import Toolbar from './EventFeedbackToolbar';
 import api from '../../services/api';
 import DeviceInfo from 'react-native-device-info';
-
 
 import theme from '../../style/theme';
 
@@ -87,7 +81,7 @@ class EventFeedback extends Component {
           <Text style={ styles.textStyle } >
             Optional feedback
           </Text>
-          <View style={{ borderWidth: 1, borderColor: 'rgba(9, 234, 227, 0.4)', marginLeft: 15, marginRight: 15, borderRadius: 5 }} >
+          <View style={styles.textBoxContainerStyle} >
             <TextInput
               style={styles.textBoxStyle}
               placeholder='Your feedback here'
@@ -99,7 +93,7 @@ class EventFeedback extends Component {
               onChangeText={(text) => this.setState({text: text})}
             />
           </View>
-          <Text style={{ textAlign: 'right', marginRight: 25, fontSize: 10, marginTop: 0, paddingTop: 0 }}>{this.state.text.length}/1000</Text>
+          <Text style={styles.charCounterStyle}>{this.state.text.length}/1000</Text>
         </View>
         <View style={styles.navigationButton}>
             <Button onPress={() => this.submitFeedback()}>Send</Button>
@@ -137,13 +131,20 @@ const styles = StyleSheet.create({
   },
   textBoxStyle: {
     textAlign: 'left',
-    marginRight: 25,
-    marginLeft: 25,
-    fontSize: 10,
+    marginRight: 15,
+    marginLeft: 15,
+    fontSize: 16,
     marginTop: 0,
     paddingTop: 0,
     paddingBottom: Platform.OS === 'ios' ? 200 : 0,
     textAlignVertical: 'top'
+  },
+  textBoxContainerStyle: {
+    borderWidth: 1,
+    borderColor: 'rgba(9, 234, 227, 0.4)',
+    marginLeft: 15,
+    marginRight: 15,
+    borderRadius: 5
   },
   navigationButton: {
     height: 50,
@@ -152,6 +153,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 15,
     marginLeft: 15
+  },
+  charCounterStyle: {
+    textAlign: 'right',
+    marginRight: 25,
+    fontSize: 10,
+    marginTop: 0,
+    paddingTop: 0
   }
 });
 
