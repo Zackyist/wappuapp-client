@@ -12,6 +12,8 @@ import theme from '../style/theme';
 
 const VIEW_NAME = 'HeilaView';
 
+let theToken;
+
 const styles = StyleSheet.create({
   navigator: {
     paddingTop: Platform.OS === 'ios' ? 60 : 40,
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
 // SUPER IMPORTANT:
 // react-native-fcm version 5 is used because of RN version
 // --------------->
-// this is the correct documentation: 
+// this is the correct documentation:
 // https://github.com/evollu/react-native-fcm/tree/v5.0.0
 
 
@@ -122,11 +124,14 @@ class HeilaView extends Component {
     console.log('HeilaView :: MOUNTED');
     analytics.viewOpened(VIEW_NAME);
 
-    // FCM.requestPermissions(); // for iOS
-    // TODO: add iOS specific hanlding here
-
+    if (isIOS)
+    {
+     FCM.requestPermissions(); // for iOS
+     // TODO: add iOS specific hanlding here
+    }
     FCM.getFCMToken().then(token => {
       console.log('FCM.getFCMToken --> token ::: ')
+      theToken = token;
       console.log(token)
       // client should now send this token to the server
     });

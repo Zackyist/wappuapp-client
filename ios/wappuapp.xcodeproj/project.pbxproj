@@ -47,7 +47,14 @@
 		9852B1A07F5446BDBF846D00 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF2F00CFC415404092499F3C /* Ionicons.ttf */; };
 		9971C9AF90634396BB075E5E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 165BDE54EECE45D79FBB1857 /* libz.tbd */; };
 		B81BD5372CAC4AB8BAAA9C20 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A28899FA5E6044C39CBC9026 /* FontAwesome.ttf */; };
-		EC8913C6F6716FA81AF76B95 /* Pods_wappuapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE90D6B931DAD9DC2CAABC00 /* Pods_wappuapp.framework */; };
+		C1F921C6201FFB2600C0DC2A /* GoogleToolboxForMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C15F7FFE2014CA5400B1BD69 /* GoogleToolboxForMac.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C1F921C7201FFB2600C0DC2A /* GoogleToolboxForMac.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C15F7FFE2014CA5400B1BD69 /* GoogleToolboxForMac.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1FED316201FFD4200DBD541 /* Protobuf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C15F80022014CA5400B1BD69 /* Protobuf.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C1FED317201FFD4200DBD541 /* Protobuf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C15F80022014CA5400B1BD69 /* Protobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1FED370201FFF2200DBD541 /* nanopb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C15F80002014CA5400B1BD69 /* nanopb.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		C1FED371201FFF2200DBD541 /* nanopb.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C15F80002014CA5400B1BD69 /* nanopb.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C1FED3B12020041200DBD541 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C1FED38D2020041200DBD541 /* GoogleService-Info.plist */; };
+		EC8913C6F6716FA81AF76B95 /* Pods_wappuapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE90D6B931DAD9DC2CAABC00 /* Pods_wappuapp.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -324,7 +331,44 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RNFIRMessaging;
 		};
+		C1F921C8201FFB2600C0DC2A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 685E23F11E7A8D0C0041D7F0 /* Pods.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = C5B80060FE8C664DF08841000F41D515;
+			remoteInfo = GoogleToolboxForMac;
+		};
+		C1FED318201FFD4200DBD541 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 685E23F11E7A8D0C0041D7F0 /* Pods.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1EC6E320E59F90AE6AC3E5F7FDBCFB47;
+			remoteInfo = Protobuf;
+		};
+		C1FED372201FFF2200DBD541 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 685E23F11E7A8D0C0041D7F0 /* Pods.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E4DD95323C54A78F879DAB0F1508B8E7;
+			remoteInfo = nanopb;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C1F921CA201FFB2600C0DC2A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C1F921C7201FFB2600C0DC2A /* GoogleToolboxForMac.framework in Embed Frameworks */,
+				C1FED371201FFF2200DBD541 /* nanopb.framework in Embed Frameworks */,
+				C1FED317201FFD4200DBD541 /* Protobuf.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
@@ -373,6 +417,7 @@
 		A28899FA5E6044C39CBC9026 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		AE1647117D8F4EEB85ED8A1A /* RNShare.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
 		C15F80212014CA5D00B1BD69 /* wappuapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = wappuapp.entitlements; path = wappuapp/wappuapp.entitlements; sourceTree = "<group>"; };
+		C1FED38D2020041200DBD541 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CF2F00CFC415404092499F3C /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		DDDBFB9991CE4FEA8F861AFA /* RNLocation.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNLocation.xcodeproj; path = "../node_modules/react-native-location/RNLocation.xcodeproj"; sourceTree = "<group>"; };
 		DE90D6B931DAD9DC2CAABC00 /* Pods_wappuapp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_wappuapp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -402,11 +447,14 @@
 				68E370A11F8B64CF0060828A /* libReactNativeAudioStreaming.a in Frameworks */,
 				68E370A01F8B64B70060828A /* libRNLocation.a in Frameworks */,
 				68E3709F1F8B64B10060828A /* libRNVectorIcons.a in Frameworks */,
+				C1FED316201FFD4200DBD541 /* Protobuf.framework in Frameworks */,
 				68E3709E1F8B64AA0060828A /* libRNSVG.a in Frameworks */,
+				C1FED370201FFF2200DBD541 /* nanopb.framework in Frameworks */,
 				68E3709D1F8B649D0060828A /* libRNBlur.a in Frameworks */,
 				68D7F9311E44D1A100D2F14C /* libStreamingKit.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				C1F921C6201FFB2600C0DC2A /* GoogleToolboxForMac.framework in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
@@ -505,6 +553,7 @@
 		13B07FAE1A68108700A75B9A /* wappuapp */ = {
 			isa = PBXGroup;
 			children = (
+				C1FED38D2020041200DBD541 /* GoogleService-Info.plist */,
 				C15F80212014CA5D00B1BD69 /* wappuapp.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -563,11 +612,11 @@
 		685E23F21E7A8D0C0041D7F0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C15F7FFE2014CA5400B1BD69 /* libGoogleToolboxForMac.a */,
+				C15F7FFE2014CA5400B1BD69 /* GoogleToolboxForMac.framework */,
 				685E23FA1E7A8D0C0041D7F0 /* HockeySDKResources.bundle */,
-				C15F80002014CA5400B1BD69 /* libnanopb.a */,
-				685E23FC1E7A8D0C0041D7F0 /* libPods-wappuapp.a */,
-				C15F80022014CA5400B1BD69 /* libProtobuf.a */,
+				C15F80002014CA5400B1BD69 /* nanopb.framework */,
+				685E23FC1E7A8D0C0041D7F0 /* Pods_wappuapp.framework */,
+				C15F80022014CA5400B1BD69 /* Protobuf.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -802,10 +851,14 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				9A673C3C384FF0F7FE145CF2 /* [CP] Embed Pods Frameworks */,
 				B5E0D9D21460AD0F5D88E1C9 /* [CP] Copy Pods Resources */,
+				C1F921CA201FFB2600C0DC2A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C1F921C9201FFB2600C0DC2A /* PBXTargetDependency */,
+				C1FED319201FFD4200DBD541 /* PBXTargetDependency */,
+				C1FED373201FFF2200DBD541 /* PBXTargetDependency */,
 			);
 			name = wappuapp;
 			productName = "Hello World";
@@ -823,7 +876,7 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
-						DevelopmentTeam = WM3L2RVJ7C;
+						DevelopmentTeam = 94VB79YQ69;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -1098,10 +1151,10 @@
 			remoteRef = 685E23F91E7A8D0C0041D7F0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		685E23FC1E7A8D0C0041D7F0 /* libPods-wappuapp.a */ = {
+		685E23FC1E7A8D0C0041D7F0 /* Pods_wappuapp.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libPods-wappuapp.a";
+			fileType = wrapper.framework;
+			path = Pods_wappuapp.framework;
 			remoteRef = 685E23FB1E7A8D0C0041D7F0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1196,24 +1249,24 @@
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C15F7FFE2014CA5400B1BD69 /* libGoogleToolboxForMac.a */ = {
+		C15F7FFE2014CA5400B1BD69 /* GoogleToolboxForMac.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libGoogleToolboxForMac.a;
+			fileType = wrapper.framework;
+			path = GoogleToolboxForMac.framework;
 			remoteRef = C15F7FFD2014CA5400B1BD69 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C15F80002014CA5400B1BD69 /* libnanopb.a */ = {
+		C15F80002014CA5400B1BD69 /* nanopb.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libnanopb.a;
+			fileType = wrapper.framework;
+			path = nanopb.framework;
 			remoteRef = C15F7FFF2014CA5400B1BD69 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		C15F80022014CA5400B1BD69 /* libProtobuf.a */ = {
+		C15F80022014CA5400B1BD69 /* Protobuf.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libProtobuf.a;
+			fileType = wrapper.framework;
+			path = Protobuf.framework;
 			remoteRef = C15F80012014CA5400B1BD69 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1238,6 +1291,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1FED3B12020041200DBD541 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				49484242372A4B75B03ED8E2 /* Entypo.ttf in Resources */,
@@ -1317,7 +1371,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-wappuapp/Pods-wappuapp-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/HockeySDK/HockeySDKResources.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/HockeySDK/HockeySDKResources.bundle,
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -1356,6 +1410,21 @@
 			target = 13B07F861A680F5B00A75B9A /* wappuapp */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
+		C1F921C9201FFB2600C0DC2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = GoogleToolboxForMac;
+			targetProxy = C1F921C8201FFB2600C0DC2A /* PBXContainerItemProxy */;
+		};
+		C1FED319201FFD4200DBD541 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Protobuf;
+			targetProxy = C1FED318201FFD4200DBD541 /* PBXContainerItemProxy */;
+		};
+		C1FED373201FFF2200DBD541 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = nanopb;
+			targetProxy = C1FED372201FFF2200DBD541 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -1375,7 +1444,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = WM3L2RVJ7C;
+				DEVELOPMENT_TEAM = 94VB79YQ69;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1399,7 +1468,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = WM3L2RVJ7C;
+				DEVELOPMENT_TEAM = 94VB79YQ69;
 				INFOPLIST_FILE = wappuappTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1423,18 +1492,21 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 94VB79YQ69;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = wappuapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.wappuapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.futurice.Whappu;
 				PRODUCT_NAME = wappuapp;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1449,18 +1521,21 @@
 				CODE_SIGN_ENTITLEMENTS = wappuapp/wappuapp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 94VB79YQ69;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = wappuapp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.wappuapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.futurice.Whappu;
 				PRODUCT_NAME = wappuapp;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
