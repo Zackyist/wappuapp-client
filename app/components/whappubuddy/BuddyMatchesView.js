@@ -128,9 +128,29 @@ class BuddyMatches extends Component {
     );
   }
 
-  renderSeparator = (sectionID, rowID) => {
-    return <View key={`${sectionID}-${rowID}`} />
-  }
+  // renderRow = (item) => {
+
+  //   return (
+  //     <TouchableOpacity onPress={this.openChat.bind(this, item)}>
+  //       <View style={styles.containerStyle} >
+  //         <UserAvatar
+  //           name={item.buddyName}
+  //           src={item.buddyImage}
+  //           size={50}
+  //         />
+  //         <Text
+  //           style={styles.containerNameStyle}
+  //         >
+  //           {item.buddyName}
+  //         </Text>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // }
+
+  // renderSeparator = (sectionID, rowID) => {
+  //   return <View key={`${sectionID}-${rowID}`} />
+  // }
 
   render() {
 
