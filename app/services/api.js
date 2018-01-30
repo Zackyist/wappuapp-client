@@ -119,8 +119,9 @@ const deleteFeedItem = item => {
   return _delete(Endpoints.urls.feedItem(item.id));
 };
 
-const deleteBuddyProfile = uuid => {
-  return _delete(Endpoints.urls.heila);
+const deleteBuddyProfile = () => {
+  console.log('apissa');
+  return _delete(Endpoints.urls.heila(USER_UUID));
 };
 
 const voteFeedItem = payload => {
