@@ -12,9 +12,10 @@ import Button from '../common/Button';
 import { connect } from 'react-redux';
 import Header from '../common/Header';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import deleteBuddyProfile from '../../actions/whappuBuddy';
+import {deleteBuddyProfile} from '../../actions/whappuBuddy';
 
 import theme from '../../style/theme';
+
 
 const isIOS = Platform.OS === 'ios';
 
@@ -22,19 +23,20 @@ const isIOS = Platform.OS === 'ios';
 
 class DeleteProfileView extends Component {
 
-  onDelete() {
+  onDelete = () => {
       Alert.alert(
         'Are you sure you want to delete your profile?!',
         '',
         [
-          {text: 'Yes!', onPress: () => this.deleteProfile},
-          {text: 'No', onPress: () => this.props.navigator.pop()}
+          {text: 'Yes!', onPress: () => this.deleteProfile()},
+          {text: 'No'}
         ],
         { cancelable: false }
       )
     }
 
-    deleteProfile(){
+      deleteProfile(){
+      console.log('deleteeee');
 
       deleteBuddyProfile();
     }
@@ -49,7 +51,7 @@ class DeleteProfileView extends Component {
             <Text style={styles.grayText}>All of your previous matches and chats will also be removed and cannot be recovered.
               You can, however, rejoin WhappuBuddy later on and start from blank slate.</Text>
             <Text style={styles.boldText}>Please note that leaving WhappuBuddy does not remove your Whappu App profile!</Text>
-            <Button style={styles.deleteButton} onPress={this.deleteProfile}>DELETE MY WHAPPUBUDDY PROFILE</Button>
+            <Button style={styles.deleteButton} onPress={this.onDelete}>DELETE MY WHAPPUBUDDY PROFILE</Button>
           </View>
 
 

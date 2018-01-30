@@ -6,6 +6,7 @@ import DeviceInfo from 'react-native-device-info';
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
 import { VOTE_FEED_ITEM_REQUEST } from '../actions/feed';
+import {DELETE_BUDDY_PROFILE} from '../actions/whappuBuddy';
 
 // # Selectors
 export const getUserImages = state => state.user.getIn(['profile', 'images'], List()) || List();
@@ -161,6 +162,17 @@ export default function city(state = initialState, action) {
       isLoading: true
     });
   }
+
+  case DELETE_BUDDY_PROFILE:
+    const originalList = state.get('list');
+    const itemIndex = originalList.findIndex((item) => item.get('id') === action.item.id);
+
+    if (itemIndex < 0) {
+      console.log('Tried to delete item, but it was not found from state:', itemIndex);
+      return state;
+    } else {
+      return state.set('list', originalList.delete(itemIndex));
+    }
 
     case GET_USER_FAILURE: {
       return state.set('isLoading', false)
