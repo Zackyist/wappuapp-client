@@ -17,9 +17,11 @@ import {
   getTotalSimas,
   getTotalVotesForUser,
   getUserImageUrl,
+  getUserBuddies,
   fetchUserImages,
   fetchUserProfile,
   isLoadingUserImages,
+  fetchUserBuddies
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
@@ -71,6 +73,8 @@ class BuddyUserView extends Component {
     if (tab !== this.props.tab && tab === 'BUDDY') {
       this.props.fetchUserImages(userId);
       this.props.fetchUserProfile(userId);
+      this.props.fetchUserBuddies(userId);
+      console.log(this.props.buddies);
     }
   }
 
@@ -373,7 +377,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile };
+const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile, fetchUserBuddies };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -385,6 +389,7 @@ const mapStateToProps = state => ({
   userTeam: getUserTeam(state),
   image_url: getUserImageUrl(state),
   tab: getCurrentTab(state),
+  buddies: getUserBuddies(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);
