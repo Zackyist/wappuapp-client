@@ -71,6 +71,7 @@ class BuddyView extends Component {
   }
 
   render() {
+<<<<<<< HEAD
     
     // let routelist = this.props.navigator.getCurrentRoutes();
     // console.log('routelist containerista', routelist)
@@ -78,12 +79,22 @@ class BuddyView extends Component {
       <View style={{ flex: 1 }}>
         <ScrollTabs
           // contentProps={this.props.route}
+=======
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollTabs
+          contentProps={this.props.route}
+>>>>>>> Added action creators and reducer for matches. Degugging continues.
           initialPage={0}
           tabBarActiveTextColor={theme.secondary}
           tabBarUnderlineColor={theme.secondary}
           tabBarBackgroundColor={theme.white}
           tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
+<<<<<<< HEAD
           locked={true}
+=======
+          locked={IOS}
+>>>>>>> Added action creators and reducer for matches. Degugging continues.
           prerenderingSiblingsNumber={0}
           renderTabBar={() => <TabBarItems />}
         >
@@ -99,11 +110,14 @@ class BuddyView extends Component {
               navigator={this.props.navigator}
               barColor={theme.accent}
               ref="buddy" />
+<<<<<<< HEAD
            {/* <BuddyChatView
               tabLabel="Temp chat"
               navigator={this.props.navigator}
               barColor={theme.accent}
               ref="chat" /> */}
+=======
+>>>>>>> Added action creators and reducer for matches. Degugging continues.
           <BuddyMatchesView
               tabLabel="My Matches"
               navigator={this.props.navigator}
