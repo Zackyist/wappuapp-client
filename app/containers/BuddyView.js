@@ -47,60 +47,59 @@ class BuddyView extends Component {
     }
   }
 
+  componentWillMount() {
+    <Navigator
+      style={styles.navigator}
+      initialRoute={{
+        component: BuddyView, // BuddyUserView
+        name: 'WhappuBuddy'
+      }}
+      renderScene={this.renderScene}
+      configureScene={() => ({
+        ...Navigator.SceneConfigs.FloatFromRight
+      })}
+    />
+  }
+
   render() {
-
     return (
-      <View style={{ flexGrow: 1 }}>
-      {/* <Navigator
-        style={styles.navigator}
-        initialRoute={{
-          component: BuddyUserView,
-          name: 'WhappuBuddy'
-        }}
-        renderScene={this.renderScene}
-        configureScene={() => ({
-          ...Navigator.SceneConfigs.FloatFromRight
-        })}
-      />
-    ); */}
-
-    {/* <View style={{ flex: 1 }}> */}
-      <ScrollTabs
-        contentProps={this.props.route}
-        initialPage={0}
-        tabBarActiveTextColor={theme.secondary}
-        tabBarUnderlineColor={theme.secondary}
-        tabBarBackgroundColor={theme.white}
-        tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
-        locked={IOS}
-        prerenderingSiblingsNumber={0}
-        renderTabBar={() => <TabBarItems />}
-      >
-        {/* Replace with buddyprofile and the buddyfinder */}
-        <BuddyPlaceholder
-          tabLabel='My profile'
-          navigator={this.props.navigator}
-          barColor={theme.accent}
-          ref='profile'
-        />
-        <FindBuddyPlaceholder
-            tabLabel="Find Matches"
+      <View style={{ flex: 1 }}>
+        <ScrollTabs
+          contentProps={this.props.route}
+          initialPage={0}
+          tabBarActiveTextColor={theme.secondary}
+          tabBarUnderlineColor={theme.secondary}
+          tabBarBackgroundColor={theme.white}
+          tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
+          locked={IOS}
+          prerenderingSiblingsNumber={0}
+          renderTabBar={() => <TabBarItems />}
+        >
+          {/* Replace with buddyprofile and the buddyfinder */}
+          <BuddyPlaceholder
+            tabLabel='My profile'
             navigator={this.props.navigator}
             barColor={theme.accent}
-            ref="buddy" />
-        <BuddyMatchesView
-            tabLabel="My Matches"
-            navigator={this.props.navigator}
-            barColor={theme.accent}
-            ref="matches" />
-      </ScrollTabs>
-    </View>
+            ref='profile'
+          />
+          <FindBuddyPlaceholder
+              tabLabel="Find Matches"
+              navigator={this.props.navigator}
+              barColor={theme.accent}
+              ref="buddy" />
+          <BuddyMatchesView
+              tabLabel="My Matches"
+              navigator={this.props.navigator}
+              barColor={theme.accent}
+              ref="matches" />
+        </ScrollTabs>
+      </View>
     );
   }
 }
 
 const select = store => {
-  return {};
+  return {}
 };
 
 export default connect(select)(BuddyView);
