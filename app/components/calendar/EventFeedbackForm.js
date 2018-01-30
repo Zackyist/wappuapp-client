@@ -10,7 +10,9 @@ import { Text, View, TextInput, StyleSheet, ScrollView, Alert, Platform } from '
 import Star from 'react-native-stars';
 import Button from '../common/Button';
 import Toolbar from './EventFeedbackToolbar';
-import { connect } from 'react-redux';
+import api from '../../services/api';
+import DeviceInfo from 'react-native-device-info';
+
 
 import theme from '../../style/theme';
 
@@ -18,28 +20,47 @@ class EventFeedback extends Component {
 
   constructor(props) {
     super(props);
+
+    const { eventId } = this.props.route.passProps;
+
     this.state = {
-      stars: 0,
+      id: eventId,
+      grade: 0,
       text: '',
-      textLength: 0
+      textLength: 0,
+      uuid: DeviceInfo.getUniqueID()
     };
   }
 
-  giveStarRating(rating) {
-    this.setState({
-      stars: rating
-    });
-  }
-
   submitFeedback() {
-    Alert.alert(
-      'Thank you!',
-      'We have received your feedback!',
-      [
-        {text: 'Return', onPress: () => this.props.navigator.pop()}
-      ],
-      { cancelable: false }
-    )
+
+    const { id, text, grade, uuid } = this.state;
+
+    const feedback = {id, text, grade, uuid }
+
+    return api.postFeedback(feedback, id)
+      .then(response => {
+        if (response.status === 200) {
+          Alert.alert(
+            'Thank you!',
+            'We have received your feedback!',
+            [
+              {text: 'Return', onPress: () => this.props.navigator.pop()}
+            ],
+            { cancelable: false }
+          )
+        }
+      })
+      .catch(e => {
+        Alert.alert(
+          'Something went wrong...',
+          'Your feedback wasn\'t sent. Please try again in a moment.',
+          [
+            {text: 'Cancel', onPress: () => console.log('Event feedback canceled!')}
+          ],
+          { cancelable: false }
+        )
+      })
   }
 
   render() {
@@ -53,7 +74,7 @@ class EventFeedback extends Component {
             Rate the event
           </Text>
           <Star
-            update={(val)=>{this.setState({stars: val})}}
+            update={(val)=>{this.setState({grade: val})}}
             spacing={4}
             starSize={40}
             count={5}
@@ -115,14 +136,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   textBoxStyle: {
-    textAlign: 'left', // muutettu "right" -> "left"
+    textAlign: 'left',
     marginRight: 25,
-    marginLeft: 25, // lisatty
+    marginLeft: 25,
     fontSize: 10,
     marginTop: 0,
     paddingTop: 0,
     paddingBottom: Platform.OS === 'ios' ? 200 : 0,
-    textAlignVertical: 'top' // Tarvitaan androidille
+    textAlignVertical: 'top'
   },
   navigationButton: {
     height: 50,
@@ -134,8 +155,5 @@ const styles = StyleSheet.create({
   }
 });
 
-const select = store => {
-  return {};
-};
+export default EventFeedback;
 
-export default connect(select)(EventFeedback);

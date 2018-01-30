@@ -386,7 +386,10 @@ const EventDetail = React.createClass({
     return () => {
       this.props.navigator.push({
         component: EventFeedback,
-        name: 'Event Feedback'
+        name: 'Event Feedback',
+        passProps: {
+          eventId: this.props.route.model.id
+        }
       });
     };
   },
