@@ -63,7 +63,6 @@ class UserView extends Component {
 
   componentDidMount() {
     const { user } = this.props.route;
-    const { userId } = this.props;
     // Fetch images and data upon mounting if this is not the user's own profile
     if (user && user.id) {
       this.props.fetchUserProfile(user.id);
@@ -332,12 +331,6 @@ class UserView extends Component {
           </View>
         }
 
-<<<<<<< HEAD
-=======
-        <Button style={{marginBottom:100}} onPress={this.deleteBuddyProfile()}>
-        Delete my profile
-        </Button>
->>>>>>> Profile deletion view and mock button to navigate to it
       </View>
       </ParallaxView>
       </View>
