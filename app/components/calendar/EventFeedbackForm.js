@@ -89,7 +89,7 @@ class EventFeedback extends Component {
               multiline={true}
               numberOfLines={10}
               maxLength={1000}
-              textBreakStrategy={'balanced'}
+              textBreakStrategy={'highQuality'}
               onChangeText={(text) => this.setState({text: text})}
             />
           </View>
