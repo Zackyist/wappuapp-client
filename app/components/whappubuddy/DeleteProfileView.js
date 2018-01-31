@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import Header from '../common/Header';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {deleteBuddyProfile} from '../../actions/whappuBuddy';
+import autobind from 'autobind-decorator';
 
 import theme from '../../style/theme';
 
@@ -23,7 +24,8 @@ const isIOS = Platform.OS === 'ios';
 
 class DeleteProfileView extends Component {
 
-  onDelete = () => {
+  @autobind
+  onDelete() {
       Alert.alert(
         'Are you sure you want to delete your profile?!',
         '',
@@ -35,7 +37,8 @@ class DeleteProfileView extends Component {
       )
     }
 
-      deleteProfile(){
+    @autobind
+    deleteProfile(){
       console.log('deleteeee');
 
       deleteBuddyProfile();

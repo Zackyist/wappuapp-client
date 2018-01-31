@@ -63,8 +63,12 @@ class UserView extends Component {
 
   componentDidMount() {
     const { user } = this.props.route;
+<<<<<<< HEAD
 
     // Fetch images and data upon mounting if not accessing the profile through a tab
+=======
+    // Fetch images and data upon mounting if this is not the user's own profile
+>>>>>>> trying to get api calls to work
     if (user && user.id) {
       this.props.fetchUserProfile(user.id);
       this.props.fetchUserImages(user.id);
@@ -348,12 +352,6 @@ class UserView extends Component {
           </View>
         }
 
-<<<<<<< HEAD
-=======
-        <Button style={{marginBottom:100}} onPress={this.deleteBuddyProfile()}>
-        Delete my profile
-        </Button>
->>>>>>> Profile deletion view and mock button to navigate to it
       </View>
       </ParallaxView>
       </View>
