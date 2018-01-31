@@ -12,7 +12,6 @@ import theme from '../style/theme';
 
 const VIEW_NAME = 'HeilaView';
 
-let theToken;
 
 const styles = StyleSheet.create({
   navigator: {
@@ -124,28 +123,27 @@ class HeilaView extends Component {
     console.log('HeilaView :: MOUNTED');
     analytics.viewOpened(VIEW_NAME);
 
-    if (isIOS)
-    {
-     FCM.requestPermissions(); // for iOS
+
+    // FCM.requestPermissions(); // for iOS
      // TODO: add iOS specific hanlding here
-    }
-    FCM.getFCMToken().then(token => {
-      console.log('FCM.getFCMToken --> token ::: ')
-      theToken = token;
-      console.log(token)
-      // client should now send this token to the server
-    });
 
-    this.refreshTokenListener = FCM.on('refreshToken', (token) => {
-      console.log('refreshTokenListener ----->> token ::')
-      console.log(token)
-      // fcm token may not be available on first load, catch it here
-    });
-
-    pushNotificationListener();
-
-  }
-
+  //   FCM.getFCMToken().then(token => {
+  //     console.log('FCM.getFCMToken --> token ::: ')
+  //     theToken = token;
+  //     console.log(token)
+  //     // client should now send this token to the server
+  //   });
+  //
+  //   this.refreshTokenListener = FCM.on('refreshToken', (token) => {
+  //     console.log('refreshTokenListener ----->> token ::')
+  //     console.log(token)
+  //     // fcm token may not be available on first load, catch it here
+  //   });
+  //
+  //   pushNotificationListener();
+  //
+  // }
+}
   @autobind
   renderScene(route, navigator) {
     if (route.component) {
