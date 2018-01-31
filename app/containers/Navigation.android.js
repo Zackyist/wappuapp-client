@@ -40,6 +40,8 @@ const ANDROID_TAB_ORDER = [
 ];
 const initialTab = 0;
 
+
+
 function pushNotificationListener(navigator) {
   return FCM.on('notification', (notif) => {
     console.log('notificationListener ----> NOTIFICATION RECEIVED');

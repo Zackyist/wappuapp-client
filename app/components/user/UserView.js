@@ -48,7 +48,6 @@ const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
-const VIEW_NAME = 'UserView';
 
 
 class UserView extends Component {
