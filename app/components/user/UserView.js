@@ -1,5 +1,9 @@
 'use strict';
 
+// TODO: Add modal styles to the style sheet
+// TODO: Fix the position problem with avatars with actual picture - After merge to avoid unnecessary work
+// TODO: Fix the disapearing user name under avatar with actual picture - After merge to avoid unnecessary work
+
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
@@ -347,7 +351,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 20,
   },
   headerKpiTitle: {
     color: theme.accentLight,
