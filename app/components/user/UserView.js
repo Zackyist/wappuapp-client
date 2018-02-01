@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
+
 import autobind from 'autobind-decorator';
 
 import {
@@ -16,8 +17,8 @@ import {
   getTotalSimas,
   getTotalVotesForUser,
   getUserImageUrl,
+  fetchUserImages,
   fetchUserProfile,
-  getUserImageUrl,
   isLoadingUserImages,}
   from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
@@ -99,9 +100,6 @@ class UserView extends Component {
     }
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
@@ -135,40 +133,7 @@ class UserView extends Component {
   closeModal() {
     this.setState({modalVisible: false})
 }
-=======
-  @autobind
-=======
->>>>>>> refactored names and routes to correspond the ones in the back end and request
-  //TODO move this to heilaView and get userId
-  @autobind
-  onLikePress(){
-    const {user} = this.props.route;
 
-    const Subpackage  = {
-      userId: 2,
-      opinion: 'UP'
-    };
-       const OpinionSubmitPackage = Object.assign({}, Subpackage );
-
-
-    this.props.submitOpinion(OpinionSubmitPackage);
-  }
-  @autobind
-  onDislikePress(){
-    const {user} = this.props.route;
-
-
-    // const OpinionSubmitPackage = Object.assign(
-    //   {user},
-    //   'DOWN'
-    // );
-
-    this.props.submitOpinion(user, 'DOWN');
-  }
->>>>>>> started with the handling of like/dislike. Just a mock using the user view instead of heila view
-
-=======
->>>>>>> fixed endpoints and api
   render() {
 
     const { images, isLoading, totalVotes, totalSimas,
@@ -236,21 +201,6 @@ class UserView extends Component {
                     <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information']} onPress={this.onPopupEvent} />
                 }
               </View>
-
-              <View>
-              <UserAvatar name={user.name || userName } src={this.props.image_url || user.imageUrl}
-              size={100} />
-              </View>
-              <Text style={styles.headerTitle}>
-                {user.name}
-              </Text>
-              <Text style={styles.headerSubTitle}>
-                {userTeam || user.team}
-              </Text>
-              <View style={styles.headerKpis}>
-                <View style={styles.headerKpi}>
-                  <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
-                  <Text style={styles.headerKpiTitle}>photos</Text>
             }
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
@@ -532,7 +482,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView, fetchUserProfile, setLike };
+const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView, fetchUserProfile };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
