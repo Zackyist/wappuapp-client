@@ -227,6 +227,6 @@ export default {
   getUser,
   getImages,
   getUserProfile,
-  putOpinion,
+  postOpinion,
   postFeedback
 };

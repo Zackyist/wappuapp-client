@@ -413,11 +413,7 @@ const styles = StyleSheet.create({
 });
 
 
-<<<<<<< HEAD
-const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile };
-=======
-const mapDispatchToProps = { openLightBox, fetchUserImages, submitOpinion };
->>>>>>> fixed endpoints and api
+const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile, submitOpinion };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),

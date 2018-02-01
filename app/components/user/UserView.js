@@ -15,25 +15,11 @@ import {
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
-<<<<<<< HEAD
-  fetchUserImages,
-=======
-
   getUserImageUrl,
->>>>>>> refactored names and routes to correspond the ones in the back end and request
   fetchUserProfile,
-<<<<<<< HEAD
   getUserImageUrl,
-  isLoadingUserImages,
-=======
-  isLoadingUserImages,
-<<<<<<< HEAD
-  setLike
->>>>>>> started with the handling of like/dislike. Just a mock using the user view instead of heila view
-=======
-  submitOpinion
->>>>>>> refactored names and routes to correspond the ones in the back end and request
-} from '../../concepts/user';
+  isLoadingUserImages,}
+  from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
