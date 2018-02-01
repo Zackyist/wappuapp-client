@@ -14,11 +14,13 @@ import {
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
-  getUserImageUrl,
+  fetchUserImages,
   fetchUserProfile,
-  isLoadingUserImages
+  getUserImageUrl,
+  isLoadingUserImages,
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
+import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
 
 import ParallaxView from 'react-native-parallax-view';
@@ -32,6 +34,13 @@ import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
 
+import AppInfo from './AppInfo';
+import LegalStuff from './LegalStuff';
+import PopupMenu from './PopupMenu';
+
+import { openRegistrationView } from '../../actions/registration';
+import { getCurrentCityName } from '../../concepts/city';
+import WebViewer from '../webview/WebViewer';
 import BuddyUserView from '../whappubuddy/BuddyUserView';
 import Button from '../../components/common/Button';
 
@@ -73,13 +82,49 @@ class UserView extends Component {
 
   componentDidMount() {
     const { user } = this.props.route;
-    const { userId } = this.props;
 
     if (user && user.id) {
       this.props.fetchUserProfile(user.id);
-    } else {
-      this.props.fetchUserProfile(userId);
+      this.props.fetchUserImages(user.id);
     }
+  }
+
+  componentWillReceiveProps({ tab, userId }) {
+    // Fetch images on Settings tab
+    if (tab !== this.props.tab && tab === 'SETTINGS') {
+      this.props.fetchUserImages(userId);
+      this.props.fetchUserProfile(userId);
+      console.log('own profile');
+    }
+  }
+  
+  onTOS = () => {
+    this.props.navigator.push({component: LegalStuff});
+  }
+  onChangeMyProfile() {
+    this.props.openRegistrationView();
+  }
+
+  onAppInfo = () => {
+    this.props.navigator.push({component: AppInfo});
+  }
+
+  onFuksiSurvivalKit = () => {
+    this.props.navigator.push({
+      component: WebViewer,
+      showName: true,
+      name: 'Fuksi Survival Kit',
+      url: 'https://ttyy.fi/me-ollaan-teekkareita/teekkarikulttuuri/wappu/fuksi-survival-kit/'
+    });
+  }
+
+  onPopupEvent = (eventName, index) => {
+
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onTOS()
+    else if (index === 1) this.onChangeMyProfile()
+    else if (index === 2) this.onAppInfo()
+    else this.onFuksiSurvivalKit()
   }
 
   // Close the user image modal
@@ -89,13 +134,16 @@ class UserView extends Component {
 
   render() {
 
-    const { images, image_url, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator} = this.props;
+    const { images, isLoading, totalVotes, totalSimas,
+      userTeam, userName, navigator, cityName, image_url } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName, imageUrl: image_url}
+      user = { name: userName,
+               team: userTeam,
+               imageUrl: image_url };
+      console.log(userTeam);
     }
 
     const imagesCount = images.size;
@@ -133,14 +181,25 @@ class UserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {(!isIOS && !isLoading) &&
+            {!isIOS  && !isLoading && user.name !== userName &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
-                <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
+                <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />
               </TouchableHighlight>
             </View>
             }
 
+
+            {user.name === userName && !isIOS &&
+              <View style={styles.menu}>
+                {cityName === 'Tampere' &&
+                    <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
+                }
+                {cityName !== 'Tampere' &&
+                    <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information']} onPress={this.onPopupEvent} />
+                }
+              </View>
+            }
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
               <View>
@@ -255,6 +314,8 @@ class UserView extends Component {
   }
 };
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -290,6 +351,11 @@ const styles = StyleSheet.create({
     left: 7,
     top: 7,
     zIndex: 2,
+  },
+  menu: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
   },
   backLinkText: {
     justifyContent: 'center',
@@ -403,7 +469,8 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapDispatchToProps = { openLightBox, fetchUserProfile };
+
+const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView, fetchUserProfile };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -413,6 +480,8 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
+  cityName: getCurrentCityName(state),
+  tab: getCurrentTab(state),
   image_url: getUserImageUrl(state)
 });
 

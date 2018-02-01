@@ -1,5 +1,6 @@
 'use strict';
 
+import { createSelector } from 'reselect';
 import Immutable from 'immutable';
 import {
   CHANGE_TAB
@@ -9,6 +10,8 @@ import Tabs from '../constants/Tabs';
 const initialState = Immutable.fromJS({
   currentTab: Tabs.FEED
 });
+
+export const getCurrentTab = state => state.navigation.get('currentTab');
 
 export default function navigation(state = initialState, action) {
   switch (action.type) {

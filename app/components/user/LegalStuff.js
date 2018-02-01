@@ -21,11 +21,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import WebViewer from '../webview/WebViewer';
 import PlatformTouchable from '../common/PlatformTouchable';
 import theme from '../../style/theme';
-import { fetchLinks } from '../../actions/profile';
-import { getCurrentCityName } from '../../concepts/city';
 import { openRegistrationView } from '../../actions/registration';
 import feedback from '../../services/feedback';
-import UserAvatar from 'react-native-user-avatar';
+import Header from '../common/Header';
+
+import TermsView from '../terms/Terms';
 
 const IOS = Platform.OS === 'ios';
 
@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
   },
   avatarColumn: {
     width: 50,
-    right: 10,
   },
   avatar: {
     justifyContent: 'center',
@@ -159,7 +158,7 @@ const styles = StyleSheet.create({
   }
 });
 
-class Profile extends Component {
+class AppInfo extends Component {
   propTypes: {
     dispatch: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
@@ -175,7 +174,8 @@ class Profile extends Component {
 
 
   componentDidMount() {
-    this.props.fetchLinks();
+    //console.log(this.props);
+    //this.props.fetchLinks();
   }
 
   @autobind
@@ -263,7 +263,7 @@ class Profile extends Component {
   renderModalItem(item, index) {
     const currentTeam = _.find(this.props.teams.toJS(), ['id', this.props.selectedTeam]) || {name:''};
     const hasName = !!item.title;
-    //const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
+    const avatarInitialLetters = hasName ? item.title.split(' ').slice(0, 2).map(t => t.substring(0, 1)).join('') : null;
 
     return (
       <View key={index} style={{flex:1}}>
@@ -271,8 +271,12 @@ class Profile extends Component {
             <View style={[styles.listItemButton, styles.listItemSeparator]}>
             <View style={[styles.listItem, styles.listItem__hero]}>
               <View style={styles.avatarColumn}>
-              <UserAvatar name={hasName ? item.title : 'W A'}
-                src={this.props.image_url} size={50} />
+                <View style={[styles.avatar, hasName ? styles.avatarInitialLetter : {}]}>
+                  {hasName
+                    ? <Text style={styles.avatarText}>{avatarInitialLetters}</Text>
+                    : <Icon style={[styles.listItemIcon, styles.listItemIcon__hero]} name={item.icon} />
+                  }
+                </View>
               </View>
               <View style={{flexDirection:'column',flex:1}}>
                 {
@@ -285,7 +289,7 @@ class Profile extends Component {
                   </Text>
                 }
                 <Text style={[styles.listItemText, styles.listItemText__small]}>
-                {currentTeam.name}
+                  {currentTeam.name}
                 </Text>
               </View>
               <Icon style={[styles.listItemIcon, styles.listItemIconRight]} name={item.rightIcon} />
@@ -333,50 +337,39 @@ class Profile extends Component {
     return this.renderModalItem(item, key);
   }
 
+
+
   render() {
-    const { name, links, terms, cityName } = this.props;
 
-    const linksForCity = links.toJS().map(link => {
-      const showCity = link.showCity;
-      if (showCity && (cityName || '').toLowerCase() !== showCity) {
-        link.hidden = true;
-      }
-      return link;
-    });
+    let ROOT_URL = 'https://wappu.futurice.com';
 
-    const userItem = { title: name, icon: 'person-outline', rightIcon: 'create', id: 'user-edit'};
-    const listData = [userItem].concat(linksForCity, [{ type: 'IMAGES', id: 'madeby' }], terms.toJS());
+    
+    let terms = [
+      {title: 'Terms of Service', link: `${ROOT_URL}/terms`, icon: 'info-outline', component: TermsView, showInWebview: false},
+      {title: 'Privacy', link: `${ROOT_URL}/privacy`, icon: 'lock-outline', showInWebview: false},
+    ];
 
+
+   const listData = terms
     return (
       <View style={styles.container}>
+      {!IOS && <Header backgroundColor={theme.secondary} title="Legal Stuff" navigator={this.props.navigator} />}
         <ScrollView style={styles.scrollView}>
           {listData.map(this.renderItem)}
         </ScrollView>
-
-      {/*
-      <ListView style={[styles.scrollView]}
-          dataSource={this.state.dataSource.cloneWithRows(listData)}
-          renderRow={this.renderItem}
-        />
-      */}
       </View>
       );
 
   }
 }
 
-const mapDispatchToProps = { fetchLinks, openRegistrationView };
+const mapDispatchToProps = { openRegistrationView };
 
 const select = store => {
   return {
       selectedTeam: store.registration.get('selectedTeam'),
       teams: store.team.get('teams'),
-      name: store.registration.get('name'),
-      links: store.profile.get('links'),
-      terms: store.profile.get('terms'),
-      image_url: store.registration.get('image_url'),
-      cityName: getCurrentCityName(store)
     }
 };
 
-export default connect(select, mapDispatchToProps)(Profile);
+export default connect(select, mapDispatchToProps)(AppInfo);

@@ -52,6 +52,19 @@ export const fetchUserProfile = (userId) => (dispatch) => {
     .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
 }
 
+export const fetchUserImages = (userId) => (dispatch) => {
+  dispatch({ type: GET_USER_PROFILE_REQUEST });
+  return api.getUserProfile(userId)
+    .then(images => {
+      dispatch({
+        type: SET_USER_PROFILE,
+        payload: images
+      });
+      dispatch({ type: GET_USER_PROFILE_SUCCESS });
+    })
+    .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
+}
+
 // # Reducer
 const initialState = fromJS({
   profile: {},

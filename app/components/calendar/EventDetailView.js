@@ -456,6 +456,16 @@ const EventDetail = React.createClass({
               </View>
             </TouchableHighlight>
 
+            <View style={styles.gridListItemMeta}>
+              <View style={styles.gridListItemMeta__block}>
+                <Text style={styles.gridListItemLeftIcon}><MaterialIcon style={styles.gridListItemIcon} name='check-circle'/> </Text>
+              </View>
+
+              <View style={[styles.gridListItemMeta__block, {alignItems: 'flex-start'}]}>
+                <Text style={styles.gridListItemMetaInfo__title}>Check Ins</Text>
+                <Text style={styles.gridListItemMetaInfo}>{this.props.route.model.checkinCount}</Text>
+              </View>
+            </View>
 
             { currentDistance !== '' && currentDistance &&
             <View style={styles.gridListItemMeta}>
