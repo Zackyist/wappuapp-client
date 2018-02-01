@@ -43,6 +43,12 @@ const postAction = (params, location, queryParams) => {
   return _post(Endpoints.urls.action, payload, queryParams);
 };
 
+const postFeedback = (params, id) => {
+  let payload = params;
+
+  return _post(Endpoints.urls.eventFeedback(id), payload);
+}
+
 const putMood = (params) => {
   let payload = Object.assign({}, params, { user: DeviceInfo.getUniqueID() });
 
@@ -207,5 +213,6 @@ export default {
   putMood,
   getUser,
   getImages,
-  getUserProfile
+  getUserProfile,
+  postFeedback
 };

@@ -3905,6 +3905,10 @@ react-native-share@^1.0.13:
   version "1.0.23"
   resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-1.0.23.tgz#6476f10d34e5274b9e0ef2c93def6c3a282ffe94"
 
+react-native-stars@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-stars/-/react-native-stars-1.1.3.tgz#99e722480265746396443ceca59ca0e4b83706c1"
+
 react-native-svg@4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-4.4.0.tgz#418f55cab61ec8e18a03745605b317089ceb899a"
@@ -4253,7 +4257,6 @@ regenerator-runtime@^0.10.5:
 regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
-
 
 regenerator-runtime@^0.9.5:
   version "0.9.6"
@@ -4878,11 +4881,6 @@ try-resolve@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/try-resolve/-/try-resolve-1.0.1.tgz#cfde6fabd72d63e5797cfaab873abbe8e700e912"
 
-
-tryit@^1.0.1:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
-  
 tryor@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/tryor/-/tryor-0.1.2.tgz#8145e4ca7caff40acde3ccf946e8b8bb75b4172b"
