@@ -1,8 +1,12 @@
 'use strict';
 
+// TODO: Add modal styles to the style sheet
+// TODO: Fix the position problem with avatars with actual picture - After merge to avoid unnecessary work
+// TODO: Fix the disapearing user name under avatar with actual picture - After merge to avoid unnecessary work
+
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text } from 'react-native';
+  TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
 import {
@@ -22,6 +26,9 @@ import { openLightBox } from '../../actions/feed';
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserAvatar from 'react-native-user-avatar';
+import Modal from 'react-native-modal';
+import PhotoView from 'react-native-photo-view';
+import Toolbar from './UserViewProfileToolbar';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
@@ -43,6 +50,17 @@ const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
 class UserView extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.closeModal = this.closeModal.bind(this)
+
+    this.state = {
+      modalVisible: false
+    };
+  }
+
   // This method is used to navigate from the user's Whappu Log to their WhappuBuddy profile
   showBuddyProfile = () => {
     let { user } = this.props.route;
@@ -61,7 +79,7 @@ class UserView extends Component {
       });
     };
   }
-  
+
   componentDidMount() {
     const { user } = this.props.route;
 
@@ -109,6 +127,11 @@ class UserView extends Component {
     else this.onFuksiSurvivalKit()
   }
 
+  // Close the user image modal
+  closeModal() {
+    this.setState({modalVisible: false})
+}
+
   render() {
 
     const { images, isLoading, totalVotes, totalSimas,
@@ -127,6 +150,30 @@ class UserView extends Component {
 
     return (
       <View style={{ flex: 1 }}>
+
+        <View>
+          <Modal
+            isVisible={this.state.modalVisible}
+            backdropOpacity={1.0}
+            backdropColor={theme.black}
+            onBackButtonPress={() => this.setState({modalVisible: false})}
+            onBackdropPress={() => this.setState({modalVisible: false})}
+            style={{margin: 0}}
+          >
+            <View style={{width: width, flex: 1, margin: 0}}>
+                <Toolbar title={user.name} closeModal={this.closeModal} navigator={this.props.navigator} />
+            </View>
+            <View style={{ width: width, height: height}}>
+              <PhotoView
+                source={{uri: image_url}}
+                minimumZoomScale={1}
+                maximumZoomScale={4}
+                style={styles.imageModal}
+              />
+            </View>
+          </Modal>
+        </View>
+
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
       <ParallaxView
         backgroundSource={headerImage}
@@ -134,13 +181,14 @@ class UserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {!isIOS && user.name !== userName &&
+            {!isIOS  && !isLoading && user.name !== userName &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
                 <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />
               </TouchableHighlight>
             </View>
             }
+
 
             {user.name === userName && !isIOS &&
               <View style={styles.menu}>
@@ -152,40 +200,85 @@ class UserView extends Component {
                 }
               </View>
             }
+            {/* Load user's profile picture or avatar with initials */}
+            {!isLoading ? (
+              <View>
+                { image_url ? (
+                <View>
+                  <View style={styles.containerAvatar}>
+                    <TouchableOpacity style={styles.buttonAvatar} onPress={() => this.setState({modalVisible: true})}>
+                      <Image source={{ uri: image_url || user.imageUrl }} style={styles.clickableAvatar} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                ) : (
+                <View>
+                  <View style={styles.containerAvatar}>
+                    <UserAvatar
+                    name={user.name || userName }
+                    src={image_url || user.imageUrl}
+                    size={100}
+                    />
+                  </View>
+                </View>
+                )}
+              </View>
+            ) : (
+              <View>
+                <ActivityIndicator size={'large'} />
+              </View>
+            )}
 
-            <View>
-            <UserAvatar name={user.name || userName } src={image_url || user.imageUrl}
-            size={100} />
-            </View>
-            <Text style={styles.headerTitle}>
-              {user.name}
-            </Text>
-            <Text style={styles.headerSubTitle}>
-              {user.team}
-            </Text>
-            <View style={styles.headerKpis}>
-              <View style={styles.headerKpi}>
-                <Text style={styles.headerKpiValue}>{!isLoading ? imagesCount : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>photos</Text>
+            {/* Load username and name of the user's team */}
+            {!isLoading ? (
+              <View>
+                <Text style={styles.headerTitle}>{user.name}</Text>
+                <Text style={styles.headerSubTitle}>{userTeam || user.team}</Text>
               </View>
-              <View style={styles.headerKpi}>
-                <Text style={styles.headerKpiValue}>{!isLoading ? totalVotes : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>votes for photos</Text>
+            ) : (
+              <View>
               </View>
-              <View style={styles.headerKpi}>
-                <Text style={styles.headerKpiValue}>{!isLoading ? (totalSimas || '-') : '-'}</Text>
-                <Text style={styles.headerKpiTitle}>simas</Text>
+            )}
+
+            {/* Load user's image, vote and sima statistics */}
+            {!isLoading ? (
+              <View style={styles.headerKpis}>
+                <View style={styles.headerKpi}>
+                  <Text style={styles.headerKpiValue}>{!isLoading ? (imagesCount || '-') : '-'}</Text>
+                  <Text style={styles.headerKpiTitle}>photos</Text>
+                </View>
+                <View style={styles.headerKpi}>
+                  <Text style={styles.headerKpiValue}>{!isLoading ? totalVotes : '-'}</Text>
+                  <Text style={styles.headerKpiTitle}>votes for photos</Text>
+                </View>
+                <View style={styles.headerKpi}>
+                  <Text style={styles.headerKpiValue}>{!isLoading ? (totalSimas || '-') : '-'}</Text>
+                  <Text style={styles.headerKpiTitle}>simas</Text>
+                </View>
               </View>
-            </View>
-            <View style={styles.buddyButtonView}>
-              <Button
-                onPress={this.showBuddyProfile()}
-                style={styles.buddyButton}
-                isDisabled={false}
-              >
-                Find me on WhappuBuddy
-              </Button>
-            </View>
+            ) : (
+              <View>
+
+              </View>
+            )}
+
+            {/* Ugly but this hack is needed to render the button below in correct manner */}
+            {!isLoading ? (
+              <View style={styles.headerKpis}>
+                <View style={styles.buddyButtonView}>
+                  <Button
+                    onPress={this.showBuddyProfile()}
+                    style={styles.buddyButton}
+                    isDisabled={false}
+                  >
+                    Find me on WhappuBuddy
+                  </Button>
+                </View>
+              </View>
+            ) : (
+              <View>
+              </View>
+            )}
           </View>
         )}
       >
@@ -236,6 +329,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  modalHeader: {
+    height: 56,
+    justifyContent: 'center',
+    position: 'absolute',
+    left: 0,
+    top:0,
+    right: 0,
+    zIndex: 2,
+  },
+  modalHeaderIcon: {
+    position: 'absolute',
+    left: 15,
+    right: 15,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   backLink: {
     position: 'absolute',
     left: 7,
@@ -275,7 +385,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: theme.light,
-    marginBottom: 3,
+    marginBottom: 0,
+    padding: 0
   },
   headerSubTitle: {
     fontSize: 12,
@@ -284,30 +395,29 @@ const styles = StyleSheet.create({
     color: 'rgba(0,0,0,.6)',
     opacity: 0.9,
   },
-  avatar: {
-    marginBottom: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 90,
-    height: 90,
-    backgroundColor: theme.stable,
-    borderRadius: 45,
+  buttonAvatar: {
+    borderRadius: 100
   },
-  avatarText: {
-    backgroundColor: theme.transparent,
-    color: theme.secondary,
-    fontSize: 60,
+  clickableAvatar: {
+    height: 100,
+    width: 100,
+    borderRadius: 100,
+    padding: 0,
+    margin: 0,
+  },
+  containerAvatar: {
+    alignItems: 'center'
   },
   headerKpis: {
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   headerKpi: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 25,
+    marginTop: 20,
   },
   headerKpiTitle: {
     color: theme.accentLight,
@@ -333,6 +443,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start'
   },
+  imageModal: {
+    flex: 1,
+    width,
+    height: width,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   imageTitle: {
     textAlign: 'center',
     color: theme.grey,
@@ -345,6 +462,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 0
   },
+  userProfilePicture: {
+    width: 100,
+    height: 100,
+    borderRadius: 100
+  }
 });
 
 
