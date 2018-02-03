@@ -43,6 +43,12 @@ const {
 const SET_USER_BUDDY = 'SET_USER_BUDDY';
 
 const {
+  PUT_OPINION_REQUEST,
+  PUT_OPINION_SUCCESS,
+  PUT_OPINION_FAILURE
+} = createRequestActionTypes('PUT_OPINION');
+
+const {
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
@@ -92,6 +98,20 @@ export const fetchUserBuddies = () => {
       });
   };
 };
+
+export const submitOpinion = (params) => {
+  return (dispatch) => {
+    console.log("DEBUG: " + params.userId + " " + params.opinion)
+    dispatch({type: PUT_OPINION_REQUEST});
+    console.log("DEBUG: user.js " + params.opinion);
+    return api.postOpinion(params)
+    .then(response => {
+      dispatch({type: PUT_OPINION_SUCCESS});
+      //dispatch({type: CLOSE_MATCH_VIEW});
+    })
+    .catch(error => dispatch({type: PUT_OPINION_FAILURE, error: error}))
+  }
+}
 
 // # Reducer
 const initialState = fromJS({

@@ -219,10 +219,14 @@ class BuddyUserView extends Component {
 
             <View style={styles.headerInfo}>
               <Text style={styles.headerTitle}>
-                {user.name}
+              {this.props.buddies.size > 0 &&
+                this.props.buddies.get(this.state.buddyIndex).name || "A man/woman has no name"
+              }
               </Text>
               <Text style={styles.headerSubTitle}>
-                {userTeam || user.team}, 3. year
+              {this.props.buddies.size > 0 &&
+                this.props.buddies.get(this.state.buddyIndex).class_year || "69 BC"
+              }
               </Text>
             </View>
           </View>
