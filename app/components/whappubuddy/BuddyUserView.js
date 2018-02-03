@@ -145,23 +145,24 @@ class BuddyUserView extends Component {
 
   @autobind
   onLikePress(){
-    const {user} = this.props.route;
     this.nextBuddy()
+    //this.props.buddies.delete(this.state.buddyIndex);
 
     const Subpackage  = {
-      matchedUserId: user.id,
+      matchedUserId: this.props.buddies.get(this.state.buddyIndex).id,
       opinion: 'UP'
     };
     this.props.submitOpinion(Subpackage);
   }
 
+  //this.props.fetchUserBuddies(this.props.userId);
   @autobind
   onDislikePress(){
-    const {user} = this.props.route;
     this.nextBuddy()
+    //this.props.buddies.delete(this.state.buddyIndex);
 
     const Subpackage  = {
-      matchedUserId: user.id,
+      matchedUserId: this.props.buddies.get(this.state.buddyIndex).id,
       opinion: 'DOWN'
     };
     this.props.submitOpinion(Subpackage);
@@ -182,7 +183,7 @@ class BuddyUserView extends Component {
     let headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
     // Show the user's profile picture as the header image if it's set
-    if (image_url || user.imageUrl) {
+    if (image_url || this.props.buddies.get(this.state.buddyIndex).image_url) {
       headerImage = { uri: image_url };
     }
 
