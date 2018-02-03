@@ -99,7 +99,7 @@ const initialState = fromJS({
   isLoading: false,
   selectedUser: null,
   user: {},
-  buddies: []
+  buddies: [],
 });
 
 export default function city(state = initialState, action) {

@@ -146,6 +146,7 @@ class BuddyRegistrationView extends Component {
     this.props.closeRegistrationView();
   }
 
+  @autobind
   teamIsValid() {
     const { selectedTeam, teams } = this.props
     const { selectedCity } = this.state;
