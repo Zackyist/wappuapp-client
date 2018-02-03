@@ -181,7 +181,7 @@ closePopModal = () => {
   this.setState({popModalVisible:false});
 }
 
-closePopModal() {
+closeModal() {
   this.setState({modalVisible: false})
 }
 
@@ -564,10 +564,6 @@ const styles = StyleSheet.create({
       top: 75,
       right: 0
 
-    },
-    popUpiOS: {
-      width: 50,
-      height: 50
     },
     modalLink: {
       paddingLeft: 10,

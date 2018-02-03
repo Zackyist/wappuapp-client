@@ -17,7 +17,11 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
+<<<<<<< HEAD
 import { parseInt } from 'lodash';
+=======
+import Modal from 'react-native-modal';
+>>>>>>> Adds popup menu for ios in whappu buddy view
 
 import {
   fetchUserProfile,
@@ -60,6 +64,14 @@ const isIOS = Platform.OS === 'ios';
 
 
 class BuddyUserView extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      popModalVisible: false
+    };
+  }
+
   componentDidMount() {
     const { user } = this.props.route;
     const { userId } = this.props;
@@ -70,6 +82,12 @@ class BuddyUserView extends Component {
       this.props.fetchBuddyProfile(userId);
     }
   }
+
+
+  // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
+  showWhappuLog = () => {
+    let { user } = this.props.route;
+    const { userName } = this.props;
 
   componentWillReceiveProps({ tab, userId }) {
     // Fetch images and data on Buddy tab if this is the user's own profile
@@ -187,7 +205,7 @@ class BuddyUserView extends Component {
       if (parsed == 11 || parsed == 12 || parsed == 13) {
         ordinal = 'th';
       }
-      
+
       return ', ' + buddyClassYear + ordinal + ' year';
     } else {
       return '';
@@ -201,6 +219,23 @@ class BuddyUserView extends Component {
     } else {
       return '';
     }
+  }
+
+  openPopModal = () => {
+    this.setState({popModalVisible:true});
+  }
+
+  togglePopModal = () => {
+    if (this.state.modalVisible){
+      this.closePopModal();
+    }
+    else {
+      this.openPopModal();
+    }
+  }
+
+  closePopModal = () => {
+    this.setState({popModalVisible:false});
   }
 
   render() {
@@ -244,6 +279,23 @@ class BuddyUserView extends Component {
               </View>
             }
 
+            {user.name === userName && isIOS && <View style={styles.popContainer}>
+                <Modal
+                    onBackdropPress={() => this.setState({ popModalVisible: false })}
+                    visible={this.state.popModalVisible}
+                    animationType={'fade'}>
+                    <View style={styles.modalContainer}>
+                    <TouchableOpacity onPress={this.onDeleteProfile}>
+                      <Text style={styles.modalLink}> Delete profile</Text>
+                    </TouchableOpacity>
+                    </View>
+                </Modal>
+                <TouchableOpacity onPress={this.togglePopModal}>
+                <Icon name='more-vert' size={28} color={'white'} />
+                </TouchableOpacity>
+              </View>
+            }
+
             {user.name !== userName && !isIOS &&
               <View style={styles.menu}>
                 <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
@@ -274,7 +326,7 @@ class BuddyUserView extends Component {
           </Text>
         </View>
         <View style={styles.thumbs}>
-        
+
         { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
              the user's own profile */}
         {user.id &&
@@ -487,10 +539,31 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 0
   },
+  popContainer: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
+    width: 50,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    width: 150,
+    top: 75,
+    right: 0
+
+  },
+  modalLink: {
+    paddingLeft: 10,
+    paddingRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: theme.secondary
+  },
 });
 
 
-const mapDispatchToProps = { 
+const mapDispatchToProps = {
   acknowledgeDataUpdate,
   fetchUserImages,
   fetchUserProfile,
