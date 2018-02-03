@@ -65,6 +65,8 @@ class Navigation extends Component {
   }
 
   componentDidMount() {
+    const {navigator} = this.props;
+
     console.log('jebin');
 
     FCM.getFCMToken().then(token => {
