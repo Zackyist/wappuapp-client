@@ -10,6 +10,10 @@ class BuddyChatView extends Component {
 
   }
 
+  componentWillMount() {
+    console.log('Navigator chatissa: ', this.props.navigator)
+  }
+
   render() {
     return (
       <View>
