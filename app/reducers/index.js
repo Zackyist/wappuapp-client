@@ -9,6 +9,7 @@ import announcement from './announcement';
 import profile from './profile';
 import marker from './marker';
 import errors from './errors';
+import matches from './matches';
 import radio from '../concepts/radio';
 import city from '../concepts/city';
 import mood from '../concepts/mood';
@@ -31,5 +32,6 @@ export {
   city,
   mood,
   sortType,
-  user
+  user,
+  matches
 };

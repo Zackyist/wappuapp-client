@@ -39,19 +39,27 @@ const styles = StyleSheet.create({
 
 
 class BuddyView extends Component {
+
+  constructor(props) {
+    super(props);
+   
+  }
+
   @autobind
   renderScene(route, navigator) {
+    console.log('route', route)
     if (route.component) {
+      console.log('route component', route.component)
       const RouteComponent = route.component;
       return <RouteComponent route={route} {...this.props} />
     }
   }
 
-  componentWillMount() {
+  render() {
     <Navigator
       style={styles.navigator}
       initialRoute={{
-        component: BuddyView, // BuddyUserView
+        component: BuddyView,
         name: 'WhappuBuddy'
       }}
       renderScene={this.renderScene}
@@ -59,19 +67,19 @@ class BuddyView extends Component {
         ...Navigator.SceneConfigs.FloatFromRight
       })}
     />
-  }
 
-  render() {
+    let routelist = this.props.navigator.getCurrentRoutes();
+    console.log('routelist containerista', routelist)
     return (
       <View style={{ flex: 1 }}>
         <ScrollTabs
-          contentProps={this.props.route}
+          // contentProps={this.props.route}
           initialPage={0}
           tabBarActiveTextColor={theme.secondary}
           tabBarUnderlineColor={theme.secondary}
           tabBarBackgroundColor={theme.white}
           tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
-          locked={IOS}
+          locked={true}
           prerenderingSiblingsNumber={0}
           renderTabBar={() => <TabBarItems />}
         >
