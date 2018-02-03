@@ -160,6 +160,36 @@ class BuddyMatches extends Component {
     }
   }
 
+  propTypes: {
+    matches: PropTypes.array.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    matchesFetched: PropTypes.bool.isRequired,
+    errorMsg: PropTypes.string.isRequired,
+    navigator: PropTypes.object.isRequired
+  };
+
+    this.props.fetchingMatches();
+  }
+
+  renderRow = (item) => {
+    return (
+      <TouchableOpacity onPress={this.openChat.bind(this, item)}>
+        <View style={styles.containerStyle} >
+          <UserAvatar
+            name={item.buddyName}
+            src={item.buddyImg}
+            size={50}
+          />
+          <Text
+            style={styles.containerNameStyle}
+          >
+            {item.buddyName}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   componentDidMount() {
 
     this.props.fetchingMatches();
@@ -184,29 +214,9 @@ class BuddyMatches extends Component {
     );
   }
 
-  // renderRow = (item) => {
-
-  //   return (
-  //     <TouchableOpacity onPress={this.openChat.bind(this, item)}>
-  //       <View style={styles.containerStyle} >
-  //         <UserAvatar
-  //           name={item.buddyName}
-  //           src={item.buddyImage}
-  //           size={50}
-  //         />
-  //         <Text
-  //           style={styles.containerNameStyle}
-  //         >
-  //           {item.buddyName}
-  //         </Text>
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // }
-
-  // renderSeparator = (sectionID, rowID) => {
-  //   return <View key={`${sectionID}-${rowID}`} />
-  // }
+  renderSeparator = (sectionID, rowID) => {
+    return <View key={`${sectionID}-${rowID}`} />
+  }
 
   render() {
 
