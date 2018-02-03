@@ -1,15 +1,9 @@
 'use strict';
 
-// TODO: Add modal styles to the style sheet
-// TODO: Fix the position problem with avatars with actual picture - After merge to avoid unnecessary work
-// TODO: Fix the disapearing user name under avatar with actual picture - After merge to avoid unnecessary work
-
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-
-import autobind from 'autobind-decorator';
 
 import {
   getUserImages,
@@ -183,7 +177,7 @@ class UserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {!isIOS  && !isLoading && user.name !== userName &&
+            {!isIOS  && !isLoading /* && user.name !== userName */ &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
                 <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />
@@ -404,7 +398,7 @@ const styles = StyleSheet.create({
   clickableAvatar: {
     height: 100,
     width: 100,
-    borderRadius: 100,
+    borderRadius: 50,
     padding: 0,
     margin: 0,
   },
