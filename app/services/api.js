@@ -55,6 +55,12 @@ const getBuddyProfile = userId => {
     .then(response => response.json());
 }
 
+const getLookingForTypes = () => {
+  return wapuFetch(Endpoints.urls.lookingForTypes())
+    .then(checkResponseStatus)
+    .then(response => response.json());
+};
+
 const getMatches = uuid => {
   return wapuFetch(Endpoints.urls.matchesList(uuid))
     .then(checkResponseStatus)
@@ -225,6 +231,7 @@ export default {
   getBuddyProfile,
   getUser,
   getImages,
+  getLookingForTypes,
   getMatches,
   getUserProfile
 };

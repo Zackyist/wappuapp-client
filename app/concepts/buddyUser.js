@@ -6,10 +6,10 @@ import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
 
 // # Selectors
-export const getBuddyBio = state => state.user.getIn(['buddyProfile', 'buddyBio'], '') || '';
-export const getBuddyClassYear = state => state.user.getIn(['buddyProfile', 'buddyClassYear'], '') || '';
-export const getBuddyLookingFor = state => state.user.getIn(['buddyProfile', 'buddyLookingFor'], '') || '';
-export const getBuddyPushToken = state => state.user.getIn(['buddyProfile', 'buddyPushToken'], '') || '';
+export const getBuddyBio = state => state.buddyUser.getIn(['buddyProfile', 'bio_text'], '') || '';
+export const getBuddyClassYear = state => state.buddyUser.getIn(['buddyProfile', 'class_year'], '') || '';
+export const getBuddyLookingFor = state => state.buddyUser.getIn(['buddyProfile', 'bio_looking_for_type_id'], '') || '';
+export const getBuddyPushToken = state => state.buddyUser.getIn(['buddyProfile', 'pushToken'], '') || '';
 
 // # Action creators
 const {
@@ -35,9 +35,7 @@ export const fetchBuddyProfile = (userId) => (dispatch) => {
 // # Reducer
 const initialState = fromJS({
   buddyProfile: {},
-  isLoading: false,
-  selectedUser: null,
-  user: {}
+  isLoading: false
 });
 
 export default function city(state = initialState, action) {

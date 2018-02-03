@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import {
   getUserImages,
@@ -35,7 +36,8 @@ const isIOS = Platform.OS === 'ios';
 
 class UserView extends Component {
   // This method is used to navigate from the user's Whappu Log to their WhappuBuddy profile
-  showBuddyProfile = () => {
+  @autobind
+  showBuddyProfile() {
     let { user } = this.props.route;
     const { userName } = this.props;
 

@@ -1,27 +1,24 @@
-// TODO: Get the bioText from the back-end
-// TODO: Get the lookingFor from the back-end
-// TODO: Get the class year from the back-end
 // TODO: Replace placeholder headerImage with a WhappuBuddy header image
 // TODO: BUG: Make sure that user data is loaded when entering from the navigation bar without going anywhere else first, currently not happening!
-// TODO: Vuosikurssin järjestyskirjaimet st nd rd th jotenkin, ehkä jo matkalla bäkkäriin?
-// TODO: Remove unused imports!
-// TODO: PUT onPress={this.showWhappuLog()} back to the Whappu Log button!
 
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text } from 'react-native'; 
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableHighlight,
+  Platform,
+  Text
+} from 'react-native'; 
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import {
-  getUserImages,
-  getUserTeam,
-  getTotalSimas,
-  getTotalVotesForUser,
-  getUserImageUrl,
   fetchUserProfile,
-  isLoadingUserImages,
+  getUserImageUrl,
+  getUserTeam,
 } from '../../concepts/user';
 import {
   getBuddyBio,
@@ -29,17 +26,14 @@ import {
   getBuddyLookingFor,
   fetchBuddyProfile,
 } from '../../concepts/buddyUser';
-import { getUserName, getUserId } from '../../reducers/registration';
-import { openLightBox } from '../../actions/feed';
-import { openBuddyRegistrationView } from '../../actions/buddyRegistration';
+import { getUserName, getUserId, getLookingForTypes } from '../../reducers/registration';
+import { openBuddyRegistrationView } from '../../actions/registration';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import UserAvatar from 'react-native-user-avatar';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
-import Loader from '../common/Loader';
 
 import UserView from '../user/UserView';
 import Button from '../../components/common/Button';
@@ -48,8 +42,20 @@ const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
 class BuddyUserView extends Component {
+  componentDidMount() {
+    const { user } = this.props.route;
+    const { userId } = this.props;
+
+    if (user && user.id) {
+      this.props.fetchBuddyProfile(user.id);
+    } else {
+      this.props.fetchBuddyProfile(userId);
+    }
+  }
+
   // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
-  showWhappuLog = () => {
+  @autobind
+  showWhappuLog() {
     let { user } = this.props.route;
     const { userName } = this.props;
 
@@ -67,10 +73,33 @@ class BuddyUserView extends Component {
     };
   }
 
+  @autobind
+  openBuddyRegistration() {
+    this.props.openBuddyRegistrationView();
+  }
+
+  @autobind
+  renderClassYear() {
+    if (this.props.buddyClassYear) {
+      // TODO: Add the class year ordering to the end of the number: st, nd, rd, th
+      return this.props.buddyClassYear;
+    } else {
+      return '';
+    }
+  }
+
+  @autobind
+  renderLookingFor() {
+    if (this.props.buddyLookingFor) {
+      return this.props.lookingForTypes.find(item => item.id === this.props.buddyLookingFor).type;
+    } else {
+      return '';
+    }
+  }
+
   render() {
 
-    const { buddyBio, buddyClassYear, buddyLookingFor, images, image_url, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator } = this.props;
+    const { buddyBio, buddyClassYear, buddyLookingFor, image_url, userTeam, userName, navigator } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
@@ -84,7 +113,6 @@ class BuddyUserView extends Component {
     if (image_url || user.imageUrl) {
       headerImage = { uri: image_url };
     }
-
 
     return (
       <View style={{ flex: 1 }}>
@@ -108,7 +136,7 @@ class BuddyUserView extends Component {
                 {user.name}
               </Text>
               <Text style={styles.headerSubTitle}>
-                {userTeam || user.team}, {buddyClassYear} year
+                {userTeam || user.team}, {this.renderClassYear()} year
               </Text>
             </View>
           </View>
@@ -122,12 +150,12 @@ class BuddyUserView extends Component {
           </Text>
           <Text style={styles.lookingForTitle}>Looking For</Text>
           <Text style={styles.lookingForText}>
-            {buddyLookingFor}
+            {this.renderLookingFor()}
           </Text>
         </View>
         <View style={styles.logButtonView}>
           <Button
-            onPress={this.props.openBuddyRegistrationView}
+            onPress={this.showWhappuLog()}
             style={styles.logButton}
             isDisabled={false}
           >
@@ -316,19 +344,17 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserProfile, fetchBuddyProfile, openBuddyRegistrationView };
+const mapDispatchToProps = { fetchUserProfile, fetchBuddyProfile, openBuddyRegistrationView };
 
 const mapStateToProps = state => ({
-  images: getUserImages(state),
-  isLoading: isLoadingUserImages(state),
-  totalSimas: getTotalSimas(state),
-  totalVotes: getTotalVotesForUser(state),
+  buddyBio: getBuddyBio(state),
+  buddyClassYear: getBuddyClassYear(state),
+  buddyLookingFor: getBuddyLookingFor(state),
+  image_url: getUserImageUrl(state),
+  lookingForTypes: getLookingForTypes(state),
   userId: getUserId(state),
   userName: getUserName(state),
-  userTeam: getUserTeam(state),
-  image_url: getUserImageUrl(state),
-  buddyBio: getBuddyBio(state),
-  buddyLookingFor: getBuddyLookingFor(state),
+  userTeam: getUserTeam(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);
