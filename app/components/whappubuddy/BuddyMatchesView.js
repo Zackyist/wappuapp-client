@@ -17,15 +17,18 @@ import {
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
-import DeviceInfo from 'react-native-device-info';
+import autobind from 'autobind-decorator';
 import UserAvatar from 'react-native-user-avatar';
-
-import api from '../../services/api';
+import BuddyView from '../../containers/BuddyView';
 import BuddyChatView from './BuddyChatView';
-
 import theme from '../../style/theme';
 
-import {fetchMatches, fetchBuddyInfo } from '../../actions/matches';
+import {
+  fetchingMatches,
+  fetchingBuddy,
+  updateDatasource,
+  finishList
+} from '../../actions/matches';
 
 
 const isIOS = Platform === 'ios';
@@ -35,152 +38,121 @@ class BuddyMatches extends Component {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   dataSource: [],
-    //   matches: [],
-    //   isLoading: true
-    // }
+    const dataSource = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+
+    this.state = {
+      dataSource: dataSource.cloneWithRows([])
+    }
   }
 
-  // openChat = (item) => {
-  //   console.log('Avataan chatti... ', item)
-  //   return () => {
-  //     this.props.navigator.push({
-  //       component: BuddyChatView,
-  //       // name: `${item.buddyName}`,
-  //       passProps: {
-  //         name: item
-  //       }
-  //     });
-  //   };
-  // }
 
-  // setBuddyInfo = () => {
+  propTypes: {
+    matches: PropTypes.array.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    matchesFetched: PropTypes.bool.isRequired,
+    errorMsg: PropTypes.string.isRequired,
+    navigator: PropTypes.object.isRequired
+  };
 
-  //   let currentMatches = [...this.state.matches ]
+  openChat(item) {
+    console.log('Avataan chatti... ', item)
+    console.log(this.props.navigator)
+    let routelist = this.props.navigator.getCurrentRoutes();
+    console.log('routelist', routelist)
+    return () => {
+      this.props.navigator.push({
+        component: BuddyChatView,
+        // name: `${item.buddyName}`,
+        passProps: {
+          name: item
+        }
+      });
+    };
+  };
 
-  //   _.each(currentMatches, (match) => {
-  //     return api.getUserProfile(match.buddyId)
-  //       .then(buddy => {
-  //         match.buddyName = buddy.name,
-  //         match.buddyImage = buddy.image_url
-  //       })
-  //   })
+  getMatchDetails = (matches) => {
+    _.forEach(matches, (match) => {
+      this.props.fetchingBuddy(match.userId2);
+    });
+  }
 
-  //   this.setState({
-  //     matches: currentMatches,
-  //   })
-  // }
+  setDatasource = (source) => {
 
-  // async setMatchData(match) {
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(source)
+    });
+    this.props.finishList();
+  };
 
-  //   // Name and image placeholders, find solution to the async problem
-  //   var buddyName = 'Placeholder'
-  //   var buddyImage = 'https://i.imgur.com/DhXdgph.png'
-  //   var myId = match.userId1
-  //   var buddyId = match.userId2
-  //   var chatId = match.firebaseChatId
+  getDatasource = () => {
 
-  //   const buddyObject = { myId, buddyId, buddyName, buddyImage, chatId }
+    this.props.updateDatasource(this.props.matchList, this.props.buddyList);
+  };
 
-  //   return buddyObject
-  // }
+  componentDidUpdate() {
 
-  // async getMatchData() {
-
-  //   return api.getMatches(DeviceInfo.getUniqueID())
-  //     .then(async (matches) => {
-  //       for (const match of matches) {
-
-  //         const buddy = await this.setMatchData(match)
-
-  //         this.setState({
-  //           matches: [...this.state.matches, buddy]
-  //         })
-  //       }
-
-  //       // Fetch names and profile pictures of current user's matches 
-  //       this.setBuddyInfo()
-
-  //       // Update the datasource
-  //       this.setState({
-  //         dataSource: this.state.dataSource.cloneWithRows(this.state.matches),
-  //         isLoading: false
-  //       })
-  //     })
-  // }
+    if (this.props.matchesFetched && !this.props.buddiesFetched) {
+      this.getMatchDetails(this.props.matchList);
+    }
+    if (this.props.isLoading && this.props.matchesFetched && this.props.buddiesFetched) {
+      this.getDatasource();
+    }
+    if (this.props.datasourceReady && !this.props.listReady) {
+      this.setDatasource(this.props.datasource);
+    }
+  }
 
   componentDidMount() {
 
-    // Fetch current user's matches
-    // 
-    
-    console.log('didmount: ')
-
+    this.props.fetchingMatches();
   }
 
-  componentWillMount() {
-    this.props.fetchMatches(DeviceInfo.getUniqueID())
-    // this.setState({
-    //   dataSource: ds.cloneWithRows([]),
-    //   matches: [],
-    //   isLoading: true
-    // })
-
-    // console.log('matches', this.props)
-    // console.log('matches', this.props.route)
+  renderRow = (item) => {
+    return (
+      <TouchableOpacity onPress={this.openChat.bind(this, item)}>
+        <View style={styles.containerStyle} >
+          <UserAvatar
+            name={item.buddyName}
+            src={item.buddyImg}
+            size={50}
+          />
+          <Text
+            style={styles.containerNameStyle}
+          >
+            {item.buddyName}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
   }
 
-  // renderRow = (item) => {
-
-  //   return (
-  //     <TouchableOpacity onPress={this.openChat.bind(this, item)}>
-  //       <View style={styles.containerStyle} >
-  //         <UserAvatar
-  //           name={item.buddyName}
-  //           src={item.buddyImage}
-  //           size={50}
-  //         />
-  //         <Text
-  //           style={styles.containerNameStyle}
-  //         >
-  //           {item.buddyName}
-  //         </Text>
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // }
-
-  // renderSeparator = (sectionID, rowID) => {
-  //   return <View key={`${sectionID}-${rowID}`} />
-  // }
+  renderSeparator = (sectionID, rowID) => {
+    return <View key={`${sectionID}-${rowID}`} />
+  }
 
   render() {
 
     return (
-      <View>
-        <Text>
-          Testiä.
-        </Text>
-      </View>
-      // <ScrollView style={styles.scrollStyle} >
-      //   { this.state.isLoading ? (
-      //     <View style={styles.activityStyle}>
-      //       {!isIOS ? (
-      //         <ActivityIndicator size='large' />
-      //       ) : (
-      //         <ActivityIndicatorIOS />
-      //       )}
-      //     </View>
-      //   ) : (
-      //   <ListView
-      //     enableEmptySections
-      //     dataSource={this.state.dataSource}
-      //     renderRow={this.renderRow}
-      //     renderSeparator={this.renderSeparator}
-      //   />
-      //   )}
-      // </ScrollView>
+      <ScrollView style={styles.scrollStyle} >
+        { !this.props.listReady ? (
+          <View style={styles.activityStyle}>
+            {!isIOS ? (
+              <ActivityIndicator size='large' />
+            ) : (
+              <ActivityIndicatorIOS />
+            )}
+          </View>
+        ) : (
+        <ListView
+          enableEmptySections
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+          renderSeparator={this.renderSeparator}
+        />
+        )}
+      </ScrollView>
     );
   }
 }
@@ -207,51 +179,35 @@ const styles = {
     fontWeight: 'bold'
   },
   activityStyle: {
-    flex: 1,
+    position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center'
   }
 }
 
-// const dataSource = new ListView.DataSource({
-//   rowHasChanged: (r1, r2) => r1 !== r2
-// });
+
 
 // BuddyMatches.propTypes = {
-//   // dataSource: PropTypes.object,
-//   matches: PropTypes.array,
-//   isLoading: PropTypes.bool,
-//   matchesFetched: PropTypes.bool
+//   matches: PropTypes.array.isRequired,
+//   isFetching: PropTypes.bool.isRequired,
+//   errorMsg: PropTypes.string.isRequired
 // };
 
-// const mapDispatchToProps = { fetchMatches, fetchBuddyInfo };
+const mapDispatchToProps = { fetchingMatches, fetchingBuddy, updateDatasource, finishList };
 
-const mapStateToProps = ({ items }) => {
-  const {
-    dataSource,
-    matches,
-    buddies,
-    matchList,
-    isLoading,
-    matchesFetched,
-    buddiesFetched,
-    matchListGenerated,
-    error,
-    isError
-  } = items;
+const mapStateToProps = store => {
 
   return {
-    dataSource,
-    matches,
-    buddies,
-    matchList,
-    isLoading,
-    matchesFetched,
-    buddiesFetched,
-    matchListGenerated,
-    error,
-    isError
+    matchesFetched: store.matches.matchesFetched,
+    buddiesFetched: store.matches.buddiesFetched,
+    datasourceReady: store.matches.datasourceReady,
+    listReady: store.matches.listReady,
+    errorMsg: store.matches.errorMsg,
+    buddyList: store.matches.buddyList,
+    matchList: store.matches.matchList,
+    datasource: store.matches.datasource,
+    isLoading: store.matches.isLoading
   };
 };
 
-export default connect(mapStateToProps, { fetchMatches, fetchBuddyInfo })(BuddyMatches);
+export default connect(mapStateToProps, mapDispatchToProps)(BuddyMatches);
