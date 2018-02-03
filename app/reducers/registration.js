@@ -1,6 +1,6 @@
 'use strict';
 
-import { fromJS } from 'immutable';
+import { fromJS, List } from 'immutable';
 import { createSelector } from 'reselect';
 import {
   CREATE_USER_REQUEST,
@@ -15,7 +15,16 @@ import {
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
   SELECT_TEAM,
-  RESET
+  RESET,
+  OPEN_BUDDY_REGISTRATION_VIEW,
+  CLOSE_BUDDY_REGISTRATION_VIEW,
+  GET_LOOKING_FOR_TYPES_FAILURE,
+  GET_LOOKING_FOR_TYPES_REQUEST,
+  GET_LOOKING_FOR_TYPES_SUCCESS,
+  UPDATE_BUDDY_BIO,
+  UPDATE_BUDDY_CLASS_YEAR,
+  UPDATE_BUDDY_LOOKING_FOR,
+  UPDATE_BUDDY_PUSH_TOKEN
 } from '../actions/registration';
 
 import {
@@ -31,7 +40,13 @@ const initialState = fromJS({
   selectedTeam: 0,
   isLoading: false,
   isError: false,
-  isIntroductionDismissed: false
+  isIntroductionDismissed: false,
+  isBuddyRegistrationViewOpen: false,
+  bio_text: '',
+  bio_looking_for_type_id: 1,
+  class_year: '',
+  lookingForTypes: [],
+  pushToken: ''
 });
 
 export default function registration(state = initialState, action) {
@@ -61,6 +76,7 @@ export default function registration(state = initialState, action) {
         'isLoading': true,
         'isError': false
       });
+    case GET_LOOKING_FOR_TYPES_REQUEST:
     case GET_USER_REQUEST:
       return state.set('isLoading', true);
     case CREATE_USER_SUCCESS:
@@ -68,6 +84,7 @@ export default function registration(state = initialState, action) {
         'isLoading': false,
         'isError': false
       });
+    case GET_LOOKING_FOR_TYPES_FAILURE:
     case CREATE_USER_FAILURE:
     case GET_USER_FAILURE:
       return state.merge({
@@ -88,6 +105,23 @@ export default function registration(state = initialState, action) {
         'image_url' : action.payload.image_url,
         'isLoading': false
       });
+    case OPEN_BUDDY_REGISTRATION_VIEW:
+      return state.set('isBuddyRegistrationViewOpen', true);
+    case CLOSE_BUDDY_REGISTRATION_VIEW:
+      return state.set('isBuddyRegistrationViewOpen', false);
+    case GET_LOOKING_FOR_TYPES_SUCCESS:
+      return state.merge({
+        'lookingForTypes': List(action.payload),
+        'isLoading': false
+      });
+    case UPDATE_BUDDY_BIO:
+      return state.set('bio_text', action.payload);
+    case UPDATE_BUDDY_CLASS_YEAR:
+      return state.set('class_year', action.payload);
+    case UPDATE_BUDDY_LOOKING_FOR:
+      return state.set('bio_looking_for_type_id', action.payload);
+    case UPDATE_BUDDY_PUSH_TOKEN:
+      return state.set('pushToken', action.payload);
     default:
       return state;
   }
@@ -99,3 +133,4 @@ export const getUserName = state => state.registration.get('name');
 export const getUserTeamId = state => state.registration.get('selectedTeam', 0);
 export const getUserTeam = createSelector(getUserTeamId, getTeams,
   (teamId, teams) => teams.find(item => item.get('id') === teamId))
+export const getLookingForTypes = state => state.registration.get('lookingForTypes');
