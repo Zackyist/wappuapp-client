@@ -248,15 +248,7 @@ class BuddyUserView extends Component {
           </Text>
 
         </View>
-        <View style={styles.logButtonView}>
-          <Button
-            onPress={ this.nextBuddy }
-            style={styles.logButton}
-            isDisabled={false}
-          >
-            Next Buddy
-          </Button>     
-        </View>
+
         <View style={styles.thumbs}>
         {user.id &&
           <View style={{flex: 1, flexDirection: 'row'}}>
@@ -269,6 +261,17 @@ class BuddyUserView extends Component {
           </View>
         }
         </View>
+
+        <View style={styles.logButtonView}>
+          <Button
+            onPress={ this.nextBuddy }
+            style={styles.logButton}
+            isDisabled={false}
+          >
+            Skip
+          </Button>     
+        </View>
+
         <View style={styles.logButtonView}>
           <Button
             onPress={this.showWhappuLog()}
