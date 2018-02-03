@@ -22,7 +22,6 @@ import {
   fetchUserProfile,
   getUserImageUrl,
   fetchUserImages,
-  fetchUserProfile,
   isLoadingUserImages,
   submitOpinion,
   getUserTeam

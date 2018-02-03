@@ -10,8 +10,6 @@ import { View, StyleSheet, Dimensions, TouchableOpacity,
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
-import autobind from 'autobind-decorator';
-
 import {
   getUserImages,
   getUserTeam,
