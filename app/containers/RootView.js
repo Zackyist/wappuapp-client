@@ -45,6 +45,9 @@ store.dispatch(initializeUsersRadio())
 // fetch radio stations
 .then(() => store.dispatch(fetchRadioStations()))
 
+// Fetch WhappuBuddy's Looking For options
+store.dispatch(RegistrationActions.getLookingForTypes());
+
 
 class RootView extends Component {
   constructor(props) {

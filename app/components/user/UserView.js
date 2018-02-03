@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import {
   getUserImages,
@@ -58,7 +59,8 @@ class UserView extends Component {
   }
 
   // This method is used to navigate from the user's Whappu Log to their WhappuBuddy profile
-  showBuddyProfile = () => {
+  @autobind
+  showBuddyProfile() {
     let { user } = this.props.route;
     const { userName } = this.props;
 
@@ -177,7 +179,7 @@ class UserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {!isIOS  && !isLoading /* && user.name !== userName */ &&
+            {!isIOS  && !isLoading && user.name !== userName &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
                 <Icon name="arrow-back" size={28} style={styles.backLinkIcon} />

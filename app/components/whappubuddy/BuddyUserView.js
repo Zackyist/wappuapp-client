@@ -1,30 +1,39 @@
-// TODO: Get the bioText from the back-end
-// TODO: Get the lookingFor from the back-end
-// TODO: Get the class year from the back-end
 // TODO: Replace placeholder headerImage with a WhappuBuddy header image
 // TODO: BUG: Make sure that user data is loaded when entering from the navigation bar without going anywhere else first, currently not happening!
 
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  TouchableHighlight,
+  Image,
+  Platform,
+  Text,
+  Alert
+} from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 
 import {
-  getUserImages,
-  getUserTeam,
-  getTotalSimas,
-  getTotalVotesForUser,
+  fetchUserProfile,
   getUserImageUrl,
   fetchUserImages,
-  fetchUserProfile,
   isLoadingUserImages,
-  submitOpinion
+  submitOpinion,
+  getUserTeam
 } from '../../concepts/user';
-import { getUserName, getUserId } from '../../reducers/registration';
-import { openLightBox } from '../../actions/feed';
+import {
+  getBuddyBio,
+  getBuddyClassYear,
+  getBuddyLookingFor,
+  fetchBuddyProfile,
+} from '../../concepts/buddyUser';
+import { getUserName, getUserId, getLookingForTypes } from '../../reducers/registration';
+import { openBuddyRegistrationView } from '../../actions/registration';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -46,8 +55,20 @@ const isIOS = Platform.OS === 'ios';
 
 
 class BuddyUserView extends Component {
+  componentDidMount() {
+    const { user } = this.props.route;
+    const { userId } = this.props;
+
+    if (user && user.id) {
+      this.props.fetchBuddyProfile(user.id);
+    } else {
+      this.props.fetchBuddyProfile(userId);
+    }
+  }
+
   // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
-  showWhappuLog = () => {
+  @autobind
+  showWhappuLog() {
     let { user } = this.props.route;
     const { userName } = this.props;
 
@@ -67,7 +88,6 @@ class BuddyUserView extends Component {
     };
   }
 
-
   componentWillReceiveProps({ tab, userId }) {
     // Fetch images on Settings tab
     if (tab !== this.props.tab && tab === 'BUDDY') {
@@ -81,8 +101,6 @@ class BuddyUserView extends Component {
     if (eventName !== 'itemSelected') return
     if (index === 0) this.onReportUser()
   }
-
-
 
   onMyPopupEvent = (eventName, index) => {
 
@@ -109,7 +127,7 @@ class BuddyUserView extends Component {
   }
 
   @autobind
-  onLikePress(){
+  onLikePress() {
     const {user} = this.props.route;
 
     const Subpackage  = {
@@ -119,7 +137,7 @@ class BuddyUserView extends Component {
     this.props.submitOpinion(Subpackage);
   }
   @autobind
-  onDislikePress(){
+  onDislikePress() {
     const {user} = this.props.route;
 
     const Subpackage  = {
@@ -127,18 +145,40 @@ class BuddyUserView extends Component {
       opinion: 'DOWN'
     };
     this.props.submitOpinion(Subpackage);
+  }
 
+  @autobind
+  openBuddyRegistration() {
+    this.props.openBuddyRegistrationView();
+  }
+
+  @autobind
+  renderClassYear() {
+    if (this.props.buddyClassYear) {
+      // TODO: Add the class year ordering to the end of the number: st, nd, rd, th
+      return this.props.buddyClassYear;
+    } else {
+      return '';
+    }
+  }
+
+  @autobind
+  renderLookingFor() {
+    if (this.props.buddyLookingFor) {
+      return this.props.lookingForTypes.find(item => item.id === this.props.buddyLookingFor).type;
+    } else {
+      return '';
+    }
   }
 
   render() {
 
-    const { images, image_url, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator } = this.props;
+    const { buddyBio, buddyClassYear, buddyLookingFor, image_url, userTeam, userName, navigator } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName, imageUrl: image_url }
+      user = { name: userName, imageUrl: image_url, buddyBio: buddyBio, buddyLookingFor: buddyLookingFor, buddyClassYear: buddyClassYear }
     }
 
     let headerImage = require('../../../assets/frontpage_header-bg.jpg');
@@ -184,7 +224,7 @@ class BuddyUserView extends Component {
                 {user.name}
               </Text>
               <Text style={styles.headerSubTitle}>
-                {userTeam || user.team}, 3. year
+                {userTeam || user.team}, {this.renderClassYear()} year
               </Text>
             </View>
           </View>
@@ -194,11 +234,11 @@ class BuddyUserView extends Component {
         <View style={styles.bioView}>
           <Text style={styles.bioTitle}>About Me</Text>
           <Text style={styles.bioText}>
-            Liirumlaarum olot sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.
+            {buddyBio}
           </Text>
           <Text style={styles.lookingForTitle}>Looking For</Text>
           <Text style={styles.lookingForText}>
-            Hauskaa wappuseuraa!
+            {this.renderLookingFor()}
           </Text>
         </View>
         <View style={styles.thumbs}>
@@ -413,13 +453,14 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile, submitOpinion };
+const mapDispatchToProps = { fetchUserImages, fetchUserProfile, fetchBuddyProfile, openBuddyRegistrationView, submitOpinion };
 
 const mapStateToProps = state => ({
-  images: getUserImages(state),
-  isLoading: isLoadingUserImages(state),
-  totalSimas: getTotalSimas(state),
-  totalVotes: getTotalVotesForUser(state),
+  buddyBio: getBuddyBio(state),
+  buddyClassYear: getBuddyClassYear(state),
+  buddyLookingFor: getBuddyLookingFor(state),
+  image_url: getUserImageUrl(state),
+  lookingForTypes: getLookingForTypes(state),
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
