@@ -9,16 +9,18 @@ import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
+import autobind from 'autobind-decorator';
+
 import {
   getUserImages,
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
+  getUserImageUrl,
   fetchUserImages,
   fetchUserProfile,
-  getUserImageUrl,
-  isLoadingUserImages,
-} from '../../concepts/user';
+  isLoadingUserImages,}
+  from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
@@ -97,7 +99,7 @@ class UserView extends Component {
       console.log('own profile');
     }
   }
-  
+
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
@@ -307,6 +309,7 @@ class UserView extends Component {
             <Text style={styles.imageTitle}>No photos</Text>
           </View>
         }
+
       </View>
       </ParallaxView>
       </View>
@@ -407,6 +410,15 @@ const styles = StyleSheet.create({
   },
   containerAvatar: {
     alignItems: 'center'
+  },
+  thumbs: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    backgroundColor: theme.transparent,
+    color: theme.secondary,
+    fontSize: 60,
   },
   headerKpis: {
     alignItems: 'center',

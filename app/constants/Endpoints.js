@@ -22,7 +22,10 @@ const EndpointUrls = {
   mood: `${ROOT_URL}/mood`,
   userProfile: (userId) => `${ROOT_URL}/users?userId=${userId}`,
   profilePic: (uuid) => `${ROOT_URL}/users/${uuid}/image`,
-  buddyList: (uuid) => `${ROOT_URL}/heila/${uuid}`
+  buddyList: (uuid) => `${ROOT_URL}/heila/${uuid}`,
+  setLike: (userId) => '${ROOT_URL}/users/${userId}/like',
+  putOpinion: (uuid) => `${ROOT_URL}/heila/${uuid}`,
+  opinion: (uuid) => `${ROOT_URL}/heila/matches/`
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);
