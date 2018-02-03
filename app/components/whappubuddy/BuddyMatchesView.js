@@ -48,16 +48,19 @@ import {
 import { connect } from 'react-redux';
 
 import _ from 'lodash';
-import DeviceInfo from 'react-native-device-info';
+import autobind from 'autobind-decorator';
 import UserAvatar from 'react-native-user-avatar';
-
-import api from '../../services/api';
+import BuddyView from '../../containers/BuddyView';
 import BuddyChatView from './BuddyChatView';
-
 import theme from '../../style/theme';
 >>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
 
-import {fetchMatches, fetchBuddyInfo } from '../../actions/matches';
+import {
+  fetchingMatches,
+  fetchingBuddy,
+  updateDatasource,
+  finishList
+} from '../../actions/matches';
 
 
 const isIOS = Platform === 'ios';
@@ -69,6 +72,9 @@ class BuddyMatches extends Component {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
     const dataSource = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
@@ -76,6 +82,7 @@ class BuddyMatches extends Component {
     this.state = {
       dataSource: dataSource.cloneWithRows([])
     }
+<<<<<<< HEAD
   }
 
 
@@ -283,9 +290,20 @@ class BuddyMatches extends Component {
   //     })
   // }
 >>>>>>> Added action creators and reducer for matches. Degugging continues.
+=======
+  }
 
-  componentDidMount() {
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
 
+  propTypes: {
+    matches: PropTypes.array.isRequired,
+    isFetching: PropTypes.bool.isRequired,
+    matchesFetched: PropTypes.bool.isRequired,
+    errorMsg: PropTypes.string.isRequired,
+    navigator: PropTypes.object.isRequired
+  };
+
+<<<<<<< HEAD
 <<<<<<< HEAD
     this.props.fetchingMatches();
   }
@@ -296,9 +314,31 @@ class BuddyMatches extends Component {
     // 
     
     console.log('didmount: ')
+=======
+  openChat(item) {
+    console.log('Avataan chatti... ', item)
+    console.log(this.props.navigator)
+    let routelist = this.props.navigator.getCurrentRoutes();
+    console.log('routelist', routelist)
+    return () => {
+      this.props.navigator.push({
+        component: BuddyChatView,
+        // name: `${item.buddyName}`,
+        passProps: {
+          name: item
+        }
+      });
+    };
+  };
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
 
+  getMatchDetails = (matches) => {
+    _.forEach(matches, (match) => {
+      this.props.fetchingBuddy(match.userId2);
+    });
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   renderRow = (item) => {
 
@@ -335,48 +375,85 @@ class BuddyMatches extends Component {
     // console.log('matches', this.props)
     // console.log('matches', this.props.route)
 >>>>>>> Added action creators and reducer for matches. Degugging continues.
+=======
+  setDatasource = (source) => {
+
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(source)
+    });
+    this.props.finishList();
+  };
+
+  getDatasource = () => {
+
+    this.props.updateDatasource(this.props.matchList, this.props.buddyList);
+  };
+
+  componentDidUpdate() {
+
+    if (this.props.matchesFetched && !this.props.buddiesFetched) {
+      this.getMatchDetails(this.props.matchList);
+    }
+    if (this.props.isLoading && this.props.matchesFetched && this.props.buddiesFetched) {
+      this.getDatasource();
+    }
+    if (this.props.datasourceReady && !this.props.listReady) {
+      this.setDatasource(this.props.datasource);
+    }
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
   }
 
-  // renderRow = (item) => {
+  componentDidMount() {
 
-  //   return (
-  //     <TouchableOpacity onPress={this.openChat.bind(this, item)}>
-  //       <View style={styles.containerStyle} >
-  //         <UserAvatar
-  //           name={item.buddyName}
-  //           src={item.buddyImage}
-  //           size={50}
-  //         />
-  //         <Text
-  //           style={styles.containerNameStyle}
-  //         >
-  //           {item.buddyName}
-  //         </Text>
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // }
+    this.props.fetchingMatches();
+  }
 
-  // renderSeparator = (sectionID, rowID) => {
-  //   return <View key={`${sectionID}-${rowID}`} />
-  // }
+  renderRow = (item) => {
+    return (
+      <TouchableOpacity onPress={this.openChat.bind(this, item)}>
+        <View style={styles.containerStyle} >
+          <UserAvatar
+            name={item.buddyName}
+            src={item.buddyImg}
+            size={50}
+          />
+          <Text
+            style={styles.containerNameStyle}
+          >
+            {item.buddyName}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  renderSeparator = (sectionID, rowID) => {
+    return <View key={`${sectionID}-${rowID}`} />
+  }
 
   render() {
 
     return (
 <<<<<<< HEAD
+<<<<<<< HEAD
       <ScrollView style={styles.scrollStyle} >
 <<<<<<< HEAD
+=======
+      <ScrollView style={styles.scrollStyle} >
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
         { !this.props.listReady ? (
           <View style={styles.activityStyle}>
             {!isIOS ? (
               <ActivityIndicator size='large' />
+<<<<<<< HEAD
 =======
         { this.state.isLoading ? (
           <View>
             {!isIOS ? (
               <ActivityIndicator />
 >>>>>>> Created matchesview for buddies and updated api and endpoints to make fetch possible for users' buddymatches. Added tab navigation for whappubuddy views and included placeholders for buddyprofile and whappubuddy.
+=======
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
             ) : (
               <ActivityIndicatorIOS />
             )}
@@ -390,6 +467,7 @@ class BuddyMatches extends Component {
         />
         )}
       </ScrollView>
+<<<<<<< HEAD
 =======
       <View>
         <Text>
@@ -415,6 +493,8 @@ class BuddyMatches extends Component {
       //   )}
       // </ScrollView>
 >>>>>>> Added action creators and reducer for matches. Degugging continues.
+=======
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
     );
   }
 }
@@ -484,52 +564,40 @@ export default BuddyMatches;
 =======
   },
   activityStyle: {
-    flex: 1,
+    position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center'
   }
 }
 
-// const dataSource = new ListView.DataSource({
-//   rowHasChanged: (r1, r2) => r1 !== r2
-// });
+
 
 // BuddyMatches.propTypes = {
-//   // dataSource: PropTypes.object,
-//   matches: PropTypes.array,
-//   isLoading: PropTypes.bool,
-//   matchesFetched: PropTypes.bool
+//   matches: PropTypes.array.isRequired,
+//   isFetching: PropTypes.bool.isRequired,
+//   errorMsg: PropTypes.string.isRequired
 // };
 
-// const mapDispatchToProps = { fetchMatches, fetchBuddyInfo };
+const mapDispatchToProps = { fetchingMatches, fetchingBuddy, updateDatasource, finishList };
 
-const mapStateToProps = ({ items }) => {
-  const {
-    dataSource,
-    matches,
-    buddies,
-    matchList,
-    isLoading,
-    matchesFetched,
-    buddiesFetched,
-    matchListGenerated,
-    error,
-    isError
-  } = items;
+const mapStateToProps = store => {
 
   return {
-    dataSource,
-    matches,
-    buddies,
-    matchList,
-    isLoading,
-    matchesFetched,
-    buddiesFetched,
-    matchListGenerated,
-    error,
-    isError
+    matchesFetched: store.matches.matchesFetched,
+    buddiesFetched: store.matches.buddiesFetched,
+    datasourceReady: store.matches.datasourceReady,
+    listReady: store.matches.listReady,
+    errorMsg: store.matches.errorMsg,
+    buddyList: store.matches.buddyList,
+    matchList: store.matches.matchList,
+    datasource: store.matches.datasource,
+    isLoading: store.matches.isLoading
   };
 };
 
+<<<<<<< HEAD
 export default connect(mapStateToProps, { fetchMatches, fetchBuddyInfo })(BuddyMatches);
 >>>>>>> Added action creators and reducer for matches. Degugging continues.
+=======
+export default connect(mapStateToProps, mapDispatchToProps)(BuddyMatches);
+>>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.

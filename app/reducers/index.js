@@ -36,6 +36,6 @@ export {
   sortType,
   user,
   buddyUser,
-  eventFeedback
+  eventFeedback,
   matches
 };
