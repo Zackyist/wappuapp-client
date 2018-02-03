@@ -49,7 +49,11 @@ function pushNotificationListener(navigator) {
 
 
   if (notif.opened_from_tray) {
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> applied listeners to ios version and added killed app notification listener
     console.log('notif.opened_from_tray');
     navigator.push({
       component: BuddyView
@@ -57,6 +61,7 @@ function pushNotificationListener(navigator) {
 
 
   } else {
+<<<<<<< HEAD
     //if (notif.notifType === 'message')
     Alert.alert(
        'New Message received',
@@ -69,6 +74,11 @@ function pushNotificationListener(navigator) {
 
     console.log('notification received while the app was foregr.');
     console.log(notif);
+=======
+
+    console.log('notification received while the app was foregr.');
+
+>>>>>>> applied listeners to ios version and added killed app notification listener
   }
 });
 }
