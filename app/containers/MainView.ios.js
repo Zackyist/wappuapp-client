@@ -17,6 +17,7 @@ import CheckInActionView from '../components/actions/CheckInActionView';
 import TextActionView from '../components/actions/TextActionView';
 import LightBox from '../components/lightbox/Lightbox';
 import CitySelector from '../components/header/CitySelector';
+import BuddyRegistrationView from '../components/whappubuddy/BuddyRegistrationView';
 
 const theme = require('../style/theme');
 
@@ -54,6 +55,7 @@ class MainView extends Component {
         />
         {showCitySelection && <CitySelector />}
         <LightBox />
+        <BuddyRegistrationView />
         <RegistrationView />
         <CheckInActionView />
         <TextActionView />
