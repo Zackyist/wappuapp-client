@@ -109,7 +109,7 @@ export default function city(state = initialState, action) {
     }
 
     case SET_USER_BUDDY: {
-      return state.set('buddies', fromJS(action.payload));
+      return state.set('buddies', List(action.payload));
     }
 
     case GET_USER_BUDDY_REQUEST: {

@@ -25,6 +25,7 @@ import {
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
+import autobind from 'autobind-decorator';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -46,6 +47,15 @@ const isIOS = Platform.OS === 'ios';
 
 
 class BuddyUserView extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      buddyIndex: 0
+    };
+  }
+
+
   // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
   showWhappuLog = () => {
     let { user } = this.props.route;
@@ -67,6 +77,17 @@ class BuddyUserView extends Component {
     };
   }
 
+  componentDidMount() {
+    const { user } = this.props.route;
+
+    if (user && user.id) {
+      this.props.fetchUserProfile(user.id);
+      this.props.fetchUserImages(user.id);
+      this.props.fetchUserBuddies(user.id);
+      //console.log('kamuja')
+      console.log(this.props.buddies.get(0));
+    }
+  }
 
   componentWillReceiveProps({ tab, userId }) {
     // Fetch images on Settings tab
@@ -108,6 +129,17 @@ class BuddyUserView extends Component {
           onPress: () => { abuse.reportUser(this.props.route.user) }, style: 'destructive' }
       ]
     );
+  }
+
+  @autobind
+  nextBuddy() {
+    if (this.state.buddyIndex === this.props.buddies.size - 1) {
+      this.setState({buddyIndex: 0});
+    }
+    else {
+      this.setState({buddyIndex: this.state.buddyIndex + 1});
+      console.log(this.state.buddyIndex);
+    }
   }
 
   render() {
@@ -174,13 +206,27 @@ class BuddyUserView extends Component {
         <View style={styles.bioView}>
           <Text style={styles.bioTitle}>About Me</Text>
           <Text style={styles.bioText}>
-            Liirumlaarum olot sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium.
+          {this.props.buddies.size > 0 &&
+            this.props.buddies.get(this.state.buddyIndex).bio_text || "No bio for lamo"
+          }
           </Text>
+          
           <Text style={styles.lookingForTitle}>Looking For</Text>
           <Text style={styles.lookingForText}>
             Hauskaa wappuseuraa!
           </Text>
+
         </View>
+        <View style={styles.logButtonView}>
+          <Button
+            onPress={ this.nextBuddy }
+            style={styles.logButton}
+            isDisabled={false}
+          >
+            Next Buddy
+          </Button>     
+        </View>
+
         <View style={styles.logButtonView}>
           <Button
             onPress={this.showWhappuLog()}
