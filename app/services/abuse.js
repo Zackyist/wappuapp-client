@@ -37,6 +37,32 @@ function reportFeedItem(item) {
   Linking.openURL(emailURL);
 }
 
+reportUser = (user) => {
+
+  if (!user.id) {
+    throw new Error('No ID available for reported user!');
+  }
+  
+  let emailURL = 'mailto:' + ABUSE_EMAIL_ADDRESS;
+
+  // Subject (ID-hashtag to help searching from Flowdock inbox)
+  emailURL += '?subject=' + ABUSE_EMAIL_SUBJECT + ' (ID' + user.id + ')';
+
+  // Body
+  emailURL += '&body=I want to report user with ID ' + user.id;
+  if (user.url) {
+    emailURL += ' \n\n ';
+    emailURL += parseUrl(user.url);
+  }
+  emailURL += ' \n\n ';
+  emailURL += '(Add voluntary explanation about content in here)';
+
+  // Ship it
+  Linking.openURL(emailURL);
+  
+}
+
 export default {
-  reportFeedItem
+  reportFeedItem,
+  reportUser
 }

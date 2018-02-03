@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import { parseInt } from 'lodash';
+import DeviceInfo from 'react-native-device-info';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
@@ -24,6 +25,8 @@ export const getTotalVotesForUser = createSelector(
   }
 )
 
+
+
 // # Action creators
 const {
   GET_USER_PROFILE_REQUEST,
@@ -31,6 +34,12 @@ const {
   GET_USER_PROFILE_FAILURE
 } = createRequestActionTypes('GET_USER_PROFILE');
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
+
+const {
+  PUT_OPINION_REQUEST,
+  PUT_OPINION_SUCCESS,
+  PUT_OPINION_FAILURE
+} = createRequestActionTypes('PUT_OPINION');
 
 const {
   GET_USER_REQUEST,
@@ -52,6 +61,19 @@ export const fetchUserProfile = (userId) => (dispatch) => {
     .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
 }
 
+export const fetchUserImages = (userId) => (dispatch) => {
+  dispatch({ type: GET_USER_PROFILE_REQUEST });
+  return api.getUserProfile(userId)
+    .then(images => {
+      dispatch({
+        type: SET_USER_PROFILE,
+        payload: images
+      });
+      dispatch({ type: GET_USER_PROFILE_SUCCESS });
+    })
+    .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
+}
+
 // # Reducer
 const initialState = fromJS({
   profile: {},
@@ -59,6 +81,20 @@ const initialState = fromJS({
   selectedUser: null,
   user: {}
 });
+
+export const submitOpinion = (params) => {
+  return (dispatch) => {
+    console.log("DEBUG: " + params.userId + " " + params.opinion)
+    dispatch({type: PUT_OPINION_REQUEST});
+    console.log("DEBUG: user.js " + params.opinion);
+    return api.postOpinion(params)
+    .then(response => {
+      dispatch({type: PUT_OPINION_SUCCESS});
+      //dispatch({type: CLOSE_MATCH_VIEW});
+    })
+    .catch(error => dispatch({type: PUT_OPINION_FAILURE, error: error}))
+  }
+}
 
 export default function city(state = initialState, action) {
   switch (action.type) {

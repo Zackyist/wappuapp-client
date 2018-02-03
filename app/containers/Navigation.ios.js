@@ -10,6 +10,8 @@ import MoodView from './MoodView';
 import CompetitionView from './CompetitionNavigator';
 import FeedView from './FeedView';
 import SettingsView from './ProfileView';
+import BuddyView from './BuddyView'
+
 import Tabs from '../constants/Tabs';
 import { changeTab } from '../actions/navigation';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
@@ -26,7 +28,8 @@ class Navigation extends Component {
   render() {
     const { navigator, currentTab } = this.props;
     return (
-      <TabBarIOS tintColor={theme.secondary} translucent={true}>
+      <TabBarIOS tintColor={theme.secondary} translucent={true}
+      itemPositioning={'center'}>
         <MDIcon.TabBarItemIOS
           iconName={'whatshot'}
           title=''
@@ -49,12 +52,13 @@ class Navigation extends Component {
           <MoodView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
         <MDIcon.TabBarItemIOS
-          iconName='equalizer'
+          iconName='favorite-border'
           title=''
-          selected={currentTab === Tabs.ACTION}
-          onPress={() => { this.onChangeTab(Tabs.ACTION); }}>
-          <CompetitionView navigator={navigator} />
+          selected={currentTab === Tabs.HEILA}
+          onPress={() => { this.onChangeTab(Tabs.HEILA); }}>
+          <BuddyView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
+
         <MDIcon.TabBarItemIOS
           iconName='account-circle'
           title=''

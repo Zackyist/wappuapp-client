@@ -8,8 +8,9 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text } from 'react-native'; 
+  TouchableHighlight, Image, Platform, Text, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import autobind from 'autobind-decorator';
 
 import {
   getUserImages,
@@ -18,7 +19,9 @@ import {
   getTotalVotesForUser,
   getUserImageUrl,
   fetchUserImages,
+  fetchUserProfile,
   isLoadingUserImages,
+  submitOpinion
 } from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { openLightBox } from '../../actions/feed';
@@ -26,10 +29,13 @@ import { openLightBox } from '../../actions/feed';
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserAvatar from 'react-native-user-avatar';
+import abuse from '../../services/abuse';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
 import Loader from '../common/Loader';
+import PopupMenu from '../user/PopupMenu';
+import { getCurrentTab } from '../../reducers/navigation';
 
 import UserView from '../user/UserView';
 import Button from '../../components/common/Button';
@@ -37,11 +43,15 @@ import Button from '../../components/common/Button';
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
+
+
 class BuddyUserView extends Component {
   // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
   showWhappuLog = () => {
     let { user } = this.props.route;
     const { userName } = this.props;
+
+    //console.log(user.id);
 
     // Show Current user if not user selected
     if (!user) {
@@ -55,6 +65,69 @@ class BuddyUserView extends Component {
         user
       });
     };
+  }
+
+
+  componentWillReceiveProps({ tab, userId }) {
+    // Fetch images on Settings tab
+    if (tab !== this.props.tab && tab === 'BUDDY') {
+      this.props.fetchUserImages(userId);
+      this.props.fetchUserProfile(userId);
+    }
+  }
+
+  onPopupEvent = (eventName, index) => {
+
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onReportUser()
+  }
+
+
+
+  onMyPopupEvent = (eventName, index) => {
+
+    if (eventName !== 'itemSelected') return
+    if (index === 0) this.onDeleteProfile()
+  }
+
+  onDeleteProfile = () => {
+
+  }
+
+  onReportUser = () => {
+    Alert.alert(
+
+      'Flag Content',
+      'Do you want to report this user?',
+      [
+        { text: 'Cancel',
+          onPress: () => this.onDeleteProfile() , style: 'cancel' },
+        { text: 'Yes, report user',
+          onPress: () => { abuse.reportUser(this.props.route.user) }, style: 'destructive' }
+      ]
+    );
+  }
+
+  @autobind
+  onLikePress(){
+    const {user} = this.props.route;
+
+    const Subpackage  = {
+      matchedUserId: user.id,
+      opinion: 'UP'
+    };
+    this.props.submitOpinion(Subpackage);
+  }
+  @autobind
+  onDislikePress(){
+    const {user} = this.props.route;
+
+    const Subpackage  = {
+      matchedUserId: user.id,
+      opinion: 'DOWN'
+    };
+    this.props.submitOpinion(Subpackage);
+
   }
 
   render() {
@@ -84,13 +157,27 @@ class BuddyUserView extends Component {
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
-            {!isIOS &&
+            {!isIOS && user.name !== userName &&
             <View style={styles.backLink}>
               <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
                 <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
               </TouchableHighlight>
             </View>
             }
+
+
+            {user.name === userName && !isIOS &&
+              <View style={styles.menu}>
+                <PopupMenu actions={['Delete my profile']} onPress={this.onMyPopupEvent} />
+              </View>
+            }
+
+            {user.name !== userName && !isIOS &&
+              <View style={styles.menu}>
+                <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
+              </View>
+            }
+
 
             <View style={styles.headerInfo}>
               <Text style={styles.headerTitle}>
@@ -114,6 +201,18 @@ class BuddyUserView extends Component {
             Hauskaa wappuseuraa!
           </Text>
         </View>
+        <View style={styles.thumbs}>
+        {user.id &&
+          <View style={{flex: 1, flexDirection: 'row'}}>
+          <TouchableHighlight onPress={this.onLikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.onDislikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
+          </TouchableHighlight>
+          </View>
+        }
+        </View>
         <View style={styles.logButtonView}>
           <Button
             onPress={this.showWhappuLog()}
@@ -121,7 +220,7 @@ class BuddyUserView extends Component {
             isDisabled={false}
           >
             Check out my Whappu Log
-          </Button>     
+          </Button>
         </View>
 
       </ParallaxView>
@@ -150,6 +249,11 @@ const styles = StyleSheet.create({
     left: 7,
     top: 7,
     zIndex: 2,
+  },
+  menu: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
   },
   backLinkText: {
     justifyContent: 'center',
@@ -279,6 +383,10 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: 50
   },
+  thumbs: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   imageContainer:{
     margin: 1,
     marginTop: 2,
@@ -305,7 +413,7 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages };
+const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile, submitOpinion };
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -315,7 +423,8 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  image_url: getUserImageUrl(state)
+  image_url: getUserImageUrl(state),
+  tab: getCurrentTab(state),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);
