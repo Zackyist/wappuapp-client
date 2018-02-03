@@ -2,32 +2,22 @@
 
 import React, { Component } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text,
-  ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
+  TouchableHighlight, Image, Platform, Text, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-<<<<<<< HEAD
 import autobind from 'autobind-decorator';
-=======
->>>>>>> small fix after rebase
 
 import {
   getUserImages,
   getUserTeam,
   getTotalSimas,
   getTotalVotesForUser,
+  getUserImageUrl,
   fetchUserImages,
   fetchUserProfile,
-<<<<<<< HEAD
   isLoadingUserImages,
   hasRegisteredOnWhappuBuddy
 } from '../../concepts/user';
 import { getUserName, getUserId, isDataUpdated } from '../../reducers/registration';
-=======
-  getUserImageUrl,
-  isLoadingUserImages,
-} from '../../concepts/user';
-import { getUserName, getUserId } from '../../reducers/registration';
->>>>>>> small fix after rebase
 import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
 
@@ -67,19 +57,14 @@ class UserView extends Component {
     this.closeModal = this.closeModal.bind(this)
 
     this.state = {
-      modalVisible: false,
-      popModalVisible: false
+      modalVisible: false
     };
   }
 
   componentDidMount() {
     const { user } = this.props.route;
-<<<<<<< HEAD
 
     // Fetch images and data upon mounting if not accessing the profile through a tab
-=======
-    // Fetch images and data upon mounting if this is not the user's own profile
->>>>>>> trying to get api calls to work
     if (user && user.id) {
       this.props.fetchUserProfile(user.id);
       this.props.fetchUserImages(user.id);
@@ -154,7 +139,7 @@ class UserView extends Component {
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
-  onChangeMyProfile = () => {
+  onChangeMyProfile() {
     this.props.openRegistrationView();
   }
 
@@ -182,28 +167,7 @@ class UserView extends Component {
 
   // Close the user image modal
   closeModal() {
-    this.setState({popModalVisible: false})
-}
-
-openPopModal = () => {
-  this.setState({popModalVisible:true});
-}
-
-togglePopModal = () => {
-  if (this.state.modalVisible){
-    this.closePopModal();
-  }
-  else {
-    this.openPopModal();
-  }
-}
-
-closePopModal = () => {
-  this.setState({popModalVisible:false});
-}
-
-closePopModal() {
-  this.setState({modalVisible: false})
+    this.setState({modalVisible: false})
 }
 
   render() {
@@ -223,6 +187,7 @@ closePopModal() {
 
     return (
       <View style={{ flex: 1 }}>
+
         <View>
           <Modal
             isVisible={this.state.modalVisible}
@@ -273,35 +238,6 @@ closePopModal() {
               </View>
             }
 
-            {user.name === userName && isIOS && <View style={styles.popContainer}>
-                <Modal
-                    onBackdropPress={() => this.setState({ popModalVisible: false })}
-                    visible={this.state.popModalVisible}
-                    animationType={'fade'}>
-                    <View style={styles.modalContainer}>
-                    <TouchableOpacity onPress={this.onTOS}>
-                      <Text style={styles.modalLink}>Terms of Service</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.onChangeMyProfile}>
-                      <Text style={styles.modalLink}>Change My Profile</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this.onAppInfo}>
-                      <Text style={styles.modalLink}> App Information</Text>
-                    </TouchableOpacity>
-                      {cityName === 'Tampere' && <View>
-                      <TouchableOpacity onPress={this.onFuksiSurvivalKit}>
-                        <Text style={styles.modalLink}>Fuksi Survival Kit</Text>
-                      </TouchableOpacity>
-                      </View>
-                    }
-                    </View>
-                </Modal>
-                <TouchableOpacity onPress={this.togglePopModal}>
-                <Icon name='more-vert' size={28} color={'white'} />
-                </TouchableOpacity>
-              </View>
-            }
-
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
               <View>
@@ -312,7 +248,6 @@ closePopModal() {
                       <Image source={{ uri: image_url || user.imageUrl }} style={styles.clickableAvatar} />
                     </TouchableOpacity>
                   </View>
-                }
                 </View>
                 ) : (
                 <View>
@@ -412,6 +347,7 @@ closePopModal() {
             <Text style={styles.imageTitle}>No photos</Text>
           </View>
         }
+
       </View>
       </ParallaxView>
       </View>
@@ -511,7 +447,16 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   containerAvatar: {
+    alignItems: 'center'
+  },
+  thumbs: {
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  avatarText: {
+    backgroundColor: theme.transparent,
+    color: theme.secondary,
+    fontSize: 60,
   },
   headerKpis: {
     alignItems: 'center',
@@ -570,38 +515,8 @@ const styles = StyleSheet.create({
   userProfilePicture: {
     width: 100,
     height: 100,
-    borderRadius: 100,
-  },
-    popContainer: {
-      position: 'absolute',
-      right: 7,
-      top: 7,
-      width: 50,
-    },
-    modalContainer: {
-      backgroundColor: 'white',
-      position: 'absolute',
-      width: 150,
-      top: 75,
-      right: 0
-
-    },
-    popUpiOS: {
-      width: 50,
-      height: 50
-    },
-    modalLink: {
-      paddingLeft: 10,
-      paddingRight: 15,
-      paddingTop: 10,
-      paddingBottom: 10,
-      color: theme.secondary
-    },
-    userProfilePicture: {
-      width: 100,
-      height: 100,
-      borderRadius: 100
-    }
+    borderRadius: 100
+  }
 });
 
 
