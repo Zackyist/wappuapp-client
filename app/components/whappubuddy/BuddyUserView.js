@@ -464,7 +464,6 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  image_url: getUserImageUrl(state),
   tab: getCurrentTab(state),
 });
 
