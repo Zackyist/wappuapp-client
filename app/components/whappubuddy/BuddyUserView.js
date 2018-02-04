@@ -165,6 +165,10 @@ class BuddyUserView extends Component {
     );
   }
 
+  onBuddiesEnd(){
+    //TODO
+  }
+
   @autobind
   nextBuddy() {
     if (this.props.buddies.size > 0) {
@@ -184,7 +188,7 @@ class BuddyUserView extends Component {
     this.props.fetchUserBuddies(this.props.userId);
     }
     else {
-      //call something
+      this.onBuddiesEnd
     }
   }
 
