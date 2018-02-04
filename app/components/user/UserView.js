@@ -101,34 +101,22 @@ class UserView extends Component {
     };
   }
 
-  deleteBuddyProfile() {
-    let { user } = this.props.route;
-    const { userName } = this.props;
-
-    // Show Current user if not user selected
-    if (!user) {
-      user = { name: userName };
-    }
-
-    return () => {
-      this.props.navigator.push({
-        component: DeleteProfileView,
-        name: `${user.name}`,
-        user
-      });
-    };
-  }
-
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
+    if (isIOS){
+      this.closePopModal();
   }
 
   onChangeMyProfile = () =>  {
     this.props.openRegistrationView();
+    if (isIOS){
+      this.closePopModal();
   }
 
   onAppInfo = () => {
     this.props.navigator.push({component: AppInfo});
+    if (isIOS){
+      this.closePopModal();
   }
 
   onFuksiSurvivalKit = () => {
