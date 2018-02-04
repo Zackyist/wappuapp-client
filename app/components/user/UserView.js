@@ -124,7 +124,6 @@ class UserView extends Component {
   }
 
   onChangeMyProfile = () =>  {
-    console.log("TÄÄLLÄ")
     this.props.openRegistrationView();
   }
 
