@@ -70,10 +70,27 @@ class BuddyView extends Component {
   }
 
   render() {
+<<<<<<< HEAD
     
 
     // let routelist = this.props.navigator.getCurrentRoutes();
     // console.log('routelist containerista', routelist)
+=======
+    <Navigator
+      style={styles.navigator}
+      initialRoute={{
+        component: BuddyView,
+        name: 'WhappuBuddy'
+      }}
+      renderScene={this.renderScene}
+      configureScene={() => ({
+        ...Navigator.SceneConfigs.FloatFromRight
+      })}
+    />
+
+    let routelist = this.props.navigator.getCurrentRoutes();
+    console.log('routelist containerista', routelist)
+>>>>>>> 93c71dbd93cd142a574612ce7b03428dea9984e6
     return (
       <View style={{ flex: 1 }}>
         <ScrollTabs

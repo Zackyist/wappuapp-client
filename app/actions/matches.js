@@ -119,4 +119,4 @@ export const finishList = () => {
   return dispatch => {
     dispatch(listReady());
   }
-}
+};
