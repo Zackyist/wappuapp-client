@@ -120,7 +120,6 @@ const deleteFeedItem = item => {
 };
 
 const deleteBuddyProfile = uuid => {
-  console.log('apissa');
   return _delete(Endpoints.urls.heila(uuid));
 };
 

@@ -52,6 +52,7 @@ import PopupMenu from '../user/PopupMenu';
 import { getCurrentTab } from '../../reducers/navigation';
 
 import UserView from '../user/UserView';
+import DeleteProfileView from './DeleteProfileView';
 import Button from '../../components/common/Button';
 
 const { height, width } = Dimensions.get('window');
@@ -150,7 +151,9 @@ class BuddyUserView extends Component {
   }
 
   onDeleteProfile = () => {
-
+    this.props.navigator.push({
+      component: DeleteProfileView
+    });
   }
 
   onReportUser = () => {
@@ -244,13 +247,8 @@ class BuddyUserView extends Component {
       if (parsed == 11 || parsed == 12 || parsed == 13) {
         ordinal = 'th';
       }
-<<<<<<< HEAD
 
       return ', ' + ClassYear + ordinal + ' year';
-=======
-
-      return ', ' + buddyClassYear + ordinal + ' year';
->>>>>>> Adds popup menu for ios in whappu buddy view
     } else {
       return '';
     }
@@ -309,7 +307,7 @@ class BuddyUserView extends Component {
 
 
     return (
-      <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
       <ParallaxView
         backgroundSource={headerImage}
@@ -338,6 +336,9 @@ class BuddyUserView extends Component {
                     visible={this.state.popModalVisible}
                     animationType={'fade'}>
                     <View style={styles.modalContainer}>
+                    <TouchableOpacity onPress={this.onEditProfile}>
+                      <Text style={styles.modalLink}> Edit my profile</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={this.onDeleteProfile}>
                       <Text style={styles.modalLink}> Delete profile</Text>
                     </TouchableOpacity>
@@ -352,6 +353,23 @@ class BuddyUserView extends Component {
             {user.name !== userName && !isIOS &&
               <View style={styles.menu}>
                 <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
+              </View>
+            }
+
+            {user.name !== userName && isIOS && <View style={styles.popContainer}>
+                <Modal
+                    onBackdropPress={() => this.setState({ popModalVisible: false })}
+                    visible={this.state.popModalVisible}
+                    animationType={'fade'}>
+                    <View style={styles.modalContainer}>
+                    <TouchableOpacity onPress={this.onReportUser}>
+                      <Text style={styles.modalLink}> Report user</Text>
+                    </TouchableOpacity>
+                    </View>
+                </Modal>
+                <TouchableOpacity onPress={this.togglePopModal}>
+                <Icon name='more-vert' size={28} color={'white'} />
+                </TouchableOpacity>
               </View>
             }
 
@@ -371,7 +389,7 @@ class BuddyUserView extends Component {
           </View>
         )}
       >
-
+      <View>
         <View style={styles.bioView}>
           <Text style={styles.bioTitle}>About Me</Text>
           <Text style={styles.bioText}>
@@ -386,12 +404,7 @@ class BuddyUserView extends Component {
           </Text>
 
         </View>
-<<<<<<< HEAD
 
-=======
-        <View style={styles.thumbs}>
-
->>>>>>> Adds popup menu for ios in whappu buddy view
         { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
              the user's own profile */}
         <View style={styles.thumbs}>
@@ -430,7 +443,7 @@ class BuddyUserView extends Component {
           </Button>
         </View>
         }
-
+        </View>
       </ParallaxView>
       </View>
     );
@@ -589,10 +602,24 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: 50
   },
-  thumbs: {
-    justifyContent: 'center',
+  thumbContainer: {
+    flex: 1,
+    flexDirection:'row',
     alignItems: 'center',
+    justifyContent: 'center'
   },
+
+  thumbTouchable: {
+    // placeholder
+  },
+
+  thumbImage: {
+    width: 75,
+    height: 75,
+    marginLeft: 10,
+    marginRight: 10
+  },
+
   imageContainer:{
     margin: 1,
     marginTop: 2,

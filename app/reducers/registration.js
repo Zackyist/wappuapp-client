@@ -28,7 +28,10 @@ import {
   UPDATE_BUDDY_BIO,
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
-  UPDATE_BUDDY_PUSH_TOKEN
+  UPDATE_BUDDY_PUSH_TOKEN,
+  DELETE_BUDDY_PROFILE_SUCCESS,
+  DELETE_BUDDY_PROFILE_REQUEST,
+  DELETE_BUDDY_PROFILE_FAILURE,
 } from '../actions/registration';
 
 import {
@@ -136,6 +139,13 @@ export default function registration(state = initialState, action) {
       return state.set('bio_looking_for_type_id', action.payload);
     case UPDATE_BUDDY_PUSH_TOKEN:
       return state.set('pushToken', action.payload);
+    case DELETE_BUDDY_PROFILE_SUCCESS:
+    return state.set('isOnWhappuBuddy', false);
+    case DELETE_BUDDY_PROFILE_REQUEST:
+    case DELETE_BUDDY_PROFILE_FAILURE:
+
+
+
     default:
       return state;
   }

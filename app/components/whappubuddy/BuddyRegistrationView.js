@@ -8,7 +8,7 @@ import {
   Dimensions,
   Modal,
   Picker,
-  Platform, 
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -203,7 +203,7 @@ class BuddyRegistrationView extends Component {
             {this._renderClassYearSelect()}
           </View>
         </ScrollView>
-          
+
         <View style={styles.bottomButtonContainer}>
           <Button
             onPress={this.saveProfile}
