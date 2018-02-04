@@ -188,7 +188,7 @@ class BuddyUserView extends Component {
     this.props.fetchUserBuddies(this.props.userId);
     }
     else {
-      this.onBuddiesEnd
+      this.onBuddiesEnd()
     }
   }
 
