@@ -86,6 +86,7 @@ class BuddyUserView extends Component {
     if (tab !== this.props.tab && tab === 'BUDDY') {
       this.props.fetchUserImages(userId);
       this.props.fetchUserProfile(userId);
+      this.props.fetchBuddyProfile(userId);
     }
   }
 
