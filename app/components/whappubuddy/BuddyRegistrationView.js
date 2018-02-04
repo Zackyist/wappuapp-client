@@ -38,6 +38,7 @@ import {
 import theme from '../../style/theme';
 import Header from '../common/Header';
 import Button from '../../components/common/Button';
+import Toolbar from '../registration/RegistrationToolbar';
 
 const { height, width } = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
@@ -60,7 +61,8 @@ class BuddyRegistrationView extends Component {
 
   @autobind
   onChangeClassYear(buddyClassYear) {
-    this.props.updateBuddyClassYear(buddyClassYear);
+    const trimmedYear = buddyClassYear.trim();
+    this.props.updateBuddyClassYear(trimmedYear);
   }
 
   @autobind
@@ -101,7 +103,7 @@ class BuddyRegistrationView extends Component {
 
   _renderBioSelect() {
     return (
-      <View style={[styles.inputGroup, {marginBottom:4}]}>
+      <View style={[styles.inputGroup, {marginTop: 10}]}>
         <View style={styles.inputLabel}>
           <Text style={styles.inputLabelText}>{`Write a short bio (max. 250 characters)`}</Text>
         </View>
@@ -133,7 +135,7 @@ class BuddyRegistrationView extends Component {
 
   _renderClassYearSelect() {
     return (
-      <View style={[styles.inputGroup, {marginBottom:4}]}>
+      <View style={[styles.inputGroup, {marginTop: 10}]}>
         <View style={styles.inputLabel}>
           <Text style={styles.inputLabelText}>{`What's your current class year?`}</Text>
         </View>
@@ -163,7 +165,7 @@ class BuddyRegistrationView extends Component {
 
   _renderLookingForSelect() {
     return (
-      <View style={[styles.inputGroup, {marginBottom:4}]}>
+      <View style={[styles.inputGroup, {marginTop: 10}]}>
         <View style={styles.inputLabel}>
           <Text style={styles.inputLabelText}>{`What kind of Wappu company are you looking for?`}</Text>
         </View>
@@ -187,24 +189,30 @@ class BuddyRegistrationView extends Component {
         animationType={'slide'}
         onRequestClose={this.onRequestClose}
       >
+        <Toolbar icon={'done'}
+          iconClick={this.onRequestClose}
+          title='Fill your WhappuBuddy profile' />
+
         <ScrollView
           ref={view => this.containerScrollViewRef = view}
           showsVerticalScrollIndicator={true}
-          style={{flex:1}}>
+          style={styles.container}>
           <View style={[styles.innerContainer]}>
             {this._renderBioSelect()}
             {this._renderLookingForSelect()}
             {this._renderClassYearSelect()}
           </View>
+        </ScrollView>
           
+        <View style={styles.bottomButtonContainer}>
           <Button
             onPress={this.saveProfile}
-            style={styles.button}
+            style={styles.saveButton}
             isDisabled={false}
           >
-            Save your profile
-          </Button> 
-        </ScrollView>
+            Save
+          </Button>
+        </View>
       </Modal>
     );
   }
@@ -213,17 +221,6 @@ class BuddyRegistrationView extends Component {
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.white,
-  },
-  header: {
-    flex:1,
-    elevation: 3,
-    paddingTop: 30,
-    alignItems: 'center',
-    justifyContent: 'flex-end'
-  },
   backLink: {
     position: 'absolute',
     left: 7,
@@ -241,6 +238,20 @@ const styles = StyleSheet.create({
   backLinkIcon: {
     color: theme.white
   },
+  bottomButtonContainer:{
+    flex:1,
+    flexDirection:'row',
+    margin:0,
+    marginBottom:0,
+    marginLeft:0,
+    marginRight:0,
+    height:50,
+    alignItems:'stretch',
+    position:'absolute',
+    bottom:0,
+    left:0,
+    right:0,
+  },
   button: {
     height: 35,
     borderRadius: 2,
@@ -248,6 +259,18 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#eee',
+    paddingBottom: 50,
+  },
+  header: {
+    flex:1,
+    elevation: 3,
+    paddingTop: 30,
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   innerContainer: {
     flex:1,
@@ -301,6 +324,11 @@ const styles = StyleSheet.create({
   item: {
     flex: 1
   },
+  saveButton: {
+    borderRadius:0,
+    flex:1,
+    marginLeft:0,
+  }
 });
 
 
