@@ -4,5 +4,13 @@
 
 module.exports = {
   API_TOKEN: '',
-  API_URL: ''
+  API_URL: '',
+  FIREBASE_CONFIG: {
+    apiKey: 'yourAPIKey',
+    authDomain: 'yourAppDomain',
+    databaseURL: 'yourURL',
+    projectId: 'yourProjectId',
+    storageBucket: 'yourBucket',
+    messagingSenderId: 'yourID'
+  }
 };

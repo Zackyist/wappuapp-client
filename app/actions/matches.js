@@ -17,6 +17,7 @@ export const UPDATE_DATASOURCE_SUCCESS = 'UPDATE_DATASOURCE_SUCCESS';
 export const UPDATE_DATASOURCE_FAILURE = 'UPDATE_DATASOURCE_FAILURE';
 
 export const SET_LIST_READY = 'SET_LIST_READY';
+export const RESET_MATCHES = 'RESET_MATCHES';
 
 export const fetchingMatchesRequest = () => ({
   type: FETCH_MATCHES_REQUEST
@@ -118,5 +119,15 @@ export const listReady = () => ({
 export const finishList = () => {
   return dispatch => {
     dispatch(listReady());
-  }
-}
+  };
+};
+
+export const matchReset = () => ({
+  type: RESET_MATCHES
+});
+
+export const resetMatchlist = () => {
+  return dispatch => {
+    dispatch(matchReset());
+  };
+};

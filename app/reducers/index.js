@@ -17,6 +17,7 @@ import sortType from '../concepts/sortType';
 import user from '../concepts/user';
 import buddyUser from '../concepts/buddyUser';
 import eventFeedback from './eventFeedback';
+import chat from './chat';
 
 export {
   errors,
@@ -37,5 +38,6 @@ export {
   user,
   buddyUser,
   eventFeedback,
-  matches
+  matches,
+  chat
 };
