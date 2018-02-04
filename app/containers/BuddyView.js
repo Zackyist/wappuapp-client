@@ -16,6 +16,7 @@ import TabBarItems from '../components/tabs/Tabs';
 import BuddyMatchesView from '../components/whappubuddy/BuddyMatchesView';
 import FindBuddyPlaceholder from '../components/whappubuddy/FindBuddyPlaceholder';
 import BuddyPlaceholder from '../components/whappubuddy/BuddyPlaceholder';
+import BuddyChatView from '../components/whappubuddy/BuddyChatView';
 
 const ScrollTabs = require('react-native-scrollable-tab-view');
 
@@ -71,7 +72,6 @@ class BuddyView extends Component {
 
   render() {
     
-
     // let routelist = this.props.navigator.getCurrentRoutes();
     // console.log('routelist containerista', routelist)
     return (
@@ -99,6 +99,11 @@ class BuddyView extends Component {
               navigator={this.props.navigator}
               barColor={theme.accent}
               ref="buddy" />
+           {/* <BuddyChatView
+              tabLabel="Temp chat"
+              navigator={this.props.navigator}
+              barColor={theme.accent}
+              ref="chat" /> */}
           <BuddyMatchesView
               tabLabel="My Matches"
               navigator={this.props.navigator}
