@@ -89,6 +89,22 @@ class BuddyUserView extends Component {
     }
   }
 
+  // Checks whether this is the user's own profile or not
+  isCurrentUser() {
+    let { user } = this.props.route;
+    const { userId } = this.props.userId;
+
+    if (user) {
+      if (user.id == userId) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
   @autobind
   showWhappuLog() {
@@ -149,6 +165,7 @@ class BuddyUserView extends Component {
     };
     this.props.submitOpinion(Subpackage);
   }
+
   @autobind
   onDislikePress() {
     const {user} = this.props.route;
@@ -273,11 +290,11 @@ class BuddyUserView extends Component {
             {this.renderLookingFor()}
           </Text>
         </View>
-        <View style={styles.thumbs}>
         
         { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
              the user's own profile */}
-        {user.id &&
+        <View style={styles.thumbs}>
+        {!this.isCurrentUser() &&
           <View style={{flex: 1, flexDirection: 'row'}}>
           <TouchableHighlight onPress={this.onLikePress}>
             <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
@@ -288,7 +305,8 @@ class BuddyUserView extends Component {
           </View>
         }
         </View>
-        {user.id &&
+        
+        {!this.isCurrentUser() &&
         <View style={styles.logButtonView}>
           <Button
             onPress={this.showWhappuLog()}
