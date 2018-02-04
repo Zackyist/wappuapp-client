@@ -55,7 +55,7 @@ class BuddyView extends Component {
     }
   }
 
-  render() {
+  componentWillMount() {
     <Navigator
       style={styles.navigator}
       initialRoute={{
@@ -70,7 +70,6 @@ class BuddyView extends Component {
   }
 
   render() {
-
     return (
       <View style={{ flex: 1 }}>
         <ScrollTabs
