@@ -225,7 +225,7 @@ class BuddyUserView extends Component {
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
       <ParallaxView
         backgroundSource={headerImage}
-        windowHeight={430}
+        windowHeight={height/1.8}
         style={{ backgroundColor:theme.white }}
         header={(
           <View style={styles.header}>
