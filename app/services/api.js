@@ -119,6 +119,10 @@ const deleteFeedItem = item => {
   return _delete(Endpoints.urls.feedItem(item.id));
 };
 
+const deleteBuddyProfile = uuid => {
+  return _delete(Endpoints.urls.heila(uuid));
+};
+
 const voteFeedItem = payload => {
   return _put(Endpoints.urls.vote, payload)
 };
@@ -255,4 +259,5 @@ export default {
   postFeedback,
   getLookingForTypes,
   getMatches,
+  deleteBuddyProfile
 };

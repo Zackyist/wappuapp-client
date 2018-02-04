@@ -101,17 +101,21 @@ class UserView extends Component {
   }
 
   onTOS = () => {
+    if (isIOS) this.closePopModal();
     this.props.navigator.push({component: LegalStuff});
   }
   onChangeMyProfile() {
+    if (isIOS) this.closePopModal();
     this.props.openRegistrationView();
   }
 
   onAppInfo = () => {
+    if (isIOS) this.closePopModal();
     this.props.navigator.push({component: AppInfo});
   }
 
   onFuksiSurvivalKit = () => {
+    if (isIOS) this.closePopModal();
     this.props.navigator.push({
       component: WebViewer,
       showName: true,
@@ -201,7 +205,7 @@ class UserView extends Component {
                 }
               </View>
             }
-            
+
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
               <View>
