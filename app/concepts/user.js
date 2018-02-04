@@ -14,6 +14,7 @@ export const getTotalSimas = state => state.user.getIn(['profile', 'numSimas'], 
 export const getSelectedUser = state => state.user.get('selectedUser', Map()) || Map();
 export const isLoadingUserImages = state => state.user.get('isLoading', false) || false;
 export const getUserImageUrl = state => state.user.getIn(['profile', 'image_url'], '') || '';
+export const getUserBuddies = state => state.user.get('buddies') || Immutable.List([]);
 // TODO: Fix hasRegisteredOnWhappuBuddy once the backend fix has been applied
 export const hasRegisteredOnWhappuBuddy = state => true;
 // export const hasRegisteredOnWhappuBuddy = state => state.user.get(['profile', 'heila'], false) || false;
@@ -28,8 +29,6 @@ export const getTotalVotesForUser = createSelector(
   }
 )
 
-
-
 // # Action creators
 const {
   GET_USER_PROFILE_REQUEST,
@@ -37,6 +36,13 @@ const {
   GET_USER_PROFILE_FAILURE
 } = createRequestActionTypes('GET_USER_PROFILE');
 const SET_USER_PROFILE = 'SET_USER_PROFILE';
+
+const {
+  GET_USER_BUDDY_REQUEST,
+  GET_USER_BUDDY_SUCCESS,
+  GET_USER_BUDDY_FAILURE
+} = createRequestActionTypes('GET_USER_BUDDY');
+const SET_USER_BUDDY = 'SET_USER_BUDDY';
 
 const {
   PUT_OPINION_REQUEST,
@@ -77,13 +83,23 @@ export const fetchUserImages = (userId) => (dispatch) => {
     .catch(error => dispatch({ type: GET_USER_PROFILE_FAILURE, error: true, payload: error }));
 }
 
-// # Reducer
-const initialState = fromJS({
-  profile: {},
-  isLoading: false,
-  selectedUser: null,
-  user: {}
-});
+export const fetchUserBuddies = () => {
+  return dispatch => {
+    dispatch({ type: GET_USER_BUDDY_REQUEST });
+    const uuid = DeviceInfo.getUniqueID();
+    return api.getBuddies(uuid)
+      .then(buddies => {
+        dispatch({
+           type: SET_USER_BUDDY,
+           payload: buddies
+       });
+       dispatch({ type: GET_USER_BUDDY_SUCCESS});
+      })
+      .catch(error => {
+        dispatch({ type: GET_USER_BUDDY_FAILURE, error: true, payload: error });
+      });
+  };
+};
 
 export const submitOpinion = (params) => {
   return (dispatch) => {
@@ -99,11 +115,33 @@ export const submitOpinion = (params) => {
   }
 }
 
+// # Reducer
+const initialState = fromJS({
+  profile: {},
+  isLoading: false,
+  selectedUser: null,
+  user: {},
+  buddies: [],
+});
+
 export default function city(state = initialState, action) {
   switch (action.type) {
     case SET_USER_PROFILE: {
       return state.set('profile', fromJS(action.payload));
     }
+
+    case SET_USER_BUDDY: {
+      return state.set('buddies', List(action.payload));
+    }
+
+    case GET_USER_BUDDY_REQUEST: {
+      return state.merge({
+        buddies: Map(),
+        isLoading: true
+      });
+    }
+
+    case GET_USER_SUCCESS:
 
     case GET_USER_PROFILE_REQUEST: {
       return state.merge({
@@ -130,6 +168,10 @@ export default function city(state = initialState, action) {
 
     case GET_USER_PROFILE_SUCCESS:
     case GET_USER_PROFILE_FAILURE: {
+      return state.set('isLoading', false);
+    }
+
+    case GET_USER_BUDDY_FAILURE: {
       return state.set('isLoading', false);
     }
 
