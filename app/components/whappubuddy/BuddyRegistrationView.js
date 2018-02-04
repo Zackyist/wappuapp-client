@@ -1,363 +1,117 @@
+// TODO: Remove unused imports
+
 'use strict';
 
-// TODO: Connect the bioSelectContainer to the back-end
-// TODO: Remove useless duplicate files from the folder and imports
-
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  StyleSheet,
+  Alert,
   Dimensions,
-  Platform,
-  TouchableOpacity,
+  Modal,
+  Picker,
+  Platform, 
   ScrollView,
-  BackAndroid,
-  Modal
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-import AppIntro from 'react-native-app-intro';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import * as keyboard from '../../utils/keyboard';
+
+import {
+  fetchUserProfile,
+} from '../../concepts/user';
+import {
+  fetchBuddyProfile,
+} from '../../concepts/buddyUser';
+import {
+  closeBuddyRegistrationView,
+  openBuddyRegistrationView,
+  putBuddyProfile,
+  updateBuddyBio,
+  updateBuddyClassYear,
+  updateBuddyLookingFor
+} from '../../actions/registration';
 
 import theme from '../../style/theme';
+import Header from '../common/Header';
 import Button from '../../components/common/Button';
-import InstructionView from './InstructionView';
-import SkipView from './SkipView';
-import IntroView from './IntroView';
-import ModalBox from 'react-native-modalbox';
-import Team from './Team';
-import Toolbar from './RegistrationToolbar';
-import {
-  putUser,
-  updateName,
-  selectTeam,
-  reset,
-  generateName,
-  dismissIntroduction,
-  openRegistrationView,
-  closeRegistrationView
-} from '../../actions/registration';
-import { setCity, getCityIdByTeam, getCityId } from '../../concepts/city';
-import { setDefaultRadioByCity } from '../../concepts/radio';
-import { showChooseTeam } from '../../actions/team';
-import * as keyboard from '../../utils/keyboard';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toolbar from '../registration/RegistrationToolbar';
 
+const { height, width } = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
-const { width, height } = Dimensions.get('window');
 
 class BuddyRegistrationView extends Component {
-  propTypes: {
-    name: PropTypes.string.isRequired,
-    teams: PropTypes.any,
-    selectedTeam: PropTypes.number.isRequired,
-    isRegistrationViewOpen: PropTypes.bool.isRequired,
-    isRegistrationInfoValid: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      showSkipButton: false,
-      selectedCity: props.selectedCityId || 2,
-      index: 0
-    };
-  }
-
   componentDidMount() {
-    BackAndroid.addEventListener('hardwareBackPress', () => {
-      if (this.props.isRegistrationViewOpen && this.props.isRegistrationInfoValid) {
-        this.onCloseProfileEditor()
-        return true;
-      }
-      return false;
-    })
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.isRegistrationViewOpen && nextProps.isRegistrationViewOpen) {
-
-      const startingSelectedCity = nextProps.isRegistrationInfoValid
-        ? nextProps.selectedCityId
-        : nextProps.viewCityId;
-
-      this.setState({ selectedCity: startingSelectedCity || 2 });
-    }
+    const { userId } = this.props;
+    this.props.fetchBuddyProfile(userId);
   }
 
   @autobind
-  onRegister() {
-    this.props.putUser();
+  saveProfile() {
+    this.props.putBuddyProfile(this.onSaveError);
   }
 
   @autobind
-  onChangeName(name) {
-    this.props.updateName(name);
+  onChangeBio(buddyBio) {
+    this.props.updateBuddyBio(buddyBio);
   }
 
   @autobind
-  onSelectTeam(id) {
-    this.props.selectTeam(id);
-    this.scrollToNameSelection();
+  onChangeClassYear(buddyClassYear) {
+    const trimmedYear = buddyClassYear.trim();
+    this.props.updateBuddyClassYear(trimmedYear);
   }
 
   @autobind
-  onSelectCity(id) {
-    this.setState({
-      selectedCity: id
-    });
+  onChangeLookingFor(buddyLookingFor, itemIndex)  {
+    this.props.updateBuddyLookingFor(buddyLookingFor);
   }
 
   @autobind
-  onGenerateName() {
-    this.props.generateName();
+  onRequestClose() {
+    this.props.closeBuddyRegistrationView();
   }
 
   @autobind
-  onShowChooseTeam() {
-    this.props.showChooseTeam();
-  }
-
-  @autobind
-  onDismissIntroduction() {
-    if (this.props.isRegistrationInfoValid) {
-      this.onRegister();
-    }
-    this.props.dismissIntroduction();
-  }
-
-  @autobind
-  onClose() {
-    this.props.reset();
-    this.props.setCity(this.state.selectedCity);
-    this.props.setDefaultRadioByCity(this.state.selectedCity);
-    this.props.dismissIntroduction();
-    this.props.closeRegistrationView();
-  }
-
-  @autobind
-  onCloseProfileEditor() {
-    if (this.props.isRegistrationInfoValid) {
-      this.onRegister();
-    }
-    this.props.closeRegistrationView();
-  }
-
-  @autobind
-  teamIsValid() {
-    const { selectedTeam, teams } = this.props
-    const { selectedCity } = this.state;
-    const team = teams.find(t => t.get('id') === selectedTeam);
-
-    if (team) {
-      return team.get('city') === selectedCity;
-    }
-    return false;
-  }
-
-  changeSlide(index) {
-    this.setState({
-      showSkipButton: index > 0,
-      index
-    });
-  }
-
-
-  @autobind
-  scrollToNameSelection() {
-    const regScroll = this.containerScrollViewRef;
-    if (regScroll && !IOS) {
-      setTimeout(() => {
-        regScroll.scrollTo({x: 0, y: 2000, animated: true});
-      }, 750);
-    }
-  }
-
-  _renderEditContainer() {
-    const simplified = this.props.isIntroductionDismissed;
-    const containerStyles = [styles.container, styles.modalBackgroundStyle, simplified && styles.simplified]
-
-    return (
-      <View style={containerStyles}>
-
-        {!simplified ? <Toolbar icon={'done'}
-          iconClick={this.onCloseProfileEditor}
-          title='Fill your profile' />
-        : <Text style={styles.header}>Create
-            <Image style={styles.logo}  source={require('../../../assets/whappu-text.png')}/>
-            user</Text>}
-
-        <ScrollView
-          ref={view => this.containerScrollViewRef = view}
-          showsVerticalScrollIndicator={true}
-          style={{flex:1}}>
-          <View style={[styles.innerContainer]}>
-            {!simplified && this._renderCitySelect()}
-            {this._renderBioSelect()}
-          </View>
-        </ScrollView>
-
-        {!simplified && <View style={styles.bottomButtons}>
-          <Button
-            onPress={this.onRegister}
-            style={styles.modalButton}
-            isDisabled={!this.props.isRegistrationInfoValid || !this.teamIsValid()}>
-            Save
-          </Button>
-        </View>}
-      </View>
+  onSaveError() {
+    Alert.alert(
+      'Incomplete information',
+      'Please fill in all the fields!',
+      [
+        { text: 'Close profile editor',
+          onPress: () => this.onRequestClose(), style: 'cancel' },
+        { text: 'Okay, let me fix that',
+          onPress: () => { return }, style: 'default' }
+      ]
     );
   }
 
   @autobind
-  _renderCitySelect() {
-    const { selectedCity } = this.state;
-    return (
-      <View style={styles.inputGroup}>
-        <View style={styles.inputLabel}>
-          <Text style={styles.inputLabelText}>{`Choose your City`}</Text>
-        </View>
-        <View style={{flexDirection: 'row', padding: 10, paddingTop: 5 }}>
-          {this.props.cities.map((city, i) => {
-            const isCitySelected = selectedCity === city.get('id');
-            return (
-              <View key={i} style={styles.item}>
-                <TouchableOpacity
-                  style={[styles.button, { backgroundColor: isCitySelected ? theme.secondary : theme.white}]}
-                  onPress={() => this.onSelectCity(city.get('id'))}>
-                  <Text style={[styles.text, {color: isCitySelected ? 'white' : theme.midgrey }]}>
-                    {city.get('name')}
-                  </Text>
-                </TouchableOpacity>
-              </View>);
-            }
+  renderLookingForPickerItems() {
+    var pickerItems = [];
+    for (var i = 0; i < this.props.lookingForTypes.size; i++) {
+      const itemLabel = this.props.lookingForTypes.get(i).type;
+      const itemValue = this.props.lookingForTypes.get(i).id;
+      pickerItems.push(<Picker.Item key={itemValue} label={itemLabel} value={itemValue}/>);
+    }
 
-          )}
-        </View>
-      </View>
-    );
-  }
-
-  _renderNameSelect() {
-    return (
-      <View style={[styles.inputGroup, {marginBottom:4}]}>
-        <View style={styles.inputLabel}>
-          <Text style={styles.inputLabelText}>{`Hi there! What's your Whappu name?`}</Text>
-        </View>
-        <View style={styles.inputFieldWrap}>
-          <TextInput
-            ref={view => this.nameTextInputRef = view}
-            autoCorrect={false}
-            autoCapitalize={'words'}
-            clearButtonMode={'while-editing'}
-            returnKeyType={'done'}
-            style={[styles.inputField, styles['inputField_' + Platform.OS]]}
-            onChangeText={this.onChangeName}
-            onFocus={() => {
-              keyboard.onInputFocus(this.containerScrollViewRef, this.nameTextInputRef,300);
-            }}
-            onBlur={() => {
-              keyboard.onInputBlur(this.containerScrollViewRef)
-            }}
-            value={this.props.name}
-          />
-        </View>
-
-        <View>
-          <TouchableOpacity onPress={this.onGenerateName}>
-            <View style={styles.textButton}>
-              <Icon name='loop' style={styles.textButtonIcon} />
-              <Text style={styles.textButtonText}>Generate wappu name</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
-  _renderIntroForCitySelection() {
-
-    return (
-      <ModalBox
-        isOpen={this.props.isRegistrationViewOpen}
-        swipeToClose={false}
-        backdropPressToClose={false}
-        // visible={this.props.isRegistrationViewOpen}
-        // animationType={'none'}
-        // onRequestClose={() => console.log('AppIntro cannot be closed by back button!')}
-      >
-        <AppIntro
-          skipBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18 }}>SKIP</Text>}
-          doneBtnLabel={<Text style={{ fontWeight: '500', fontSize: 18, lineHeight: IOS ? 22 : 32 }}>SKIP</Text>}
-          onSkipBtnClick={this.onClose}
-          onDoneBtnClick={this.onClose}
-          showSkipButton={false}
-          showDoneButton={this.state.index !== 3 || (this.props.isRegistrationInfoValid && this.teamIsValid())}
-          onSlideChange={(index) => this.changeSlide(index)}
-          defaultIndex={this.state.index}
-          leftTextColor={theme.white}
-          rightTextColor={theme.white}
-          activeDotColor={theme.white}
-          nextBtnLabel={<Icon name="chevron-right" style={{ lineHeight: IOS ? 40 : 40 }} size={32} />}
-          style={{backgroundColor: theme.secondary }}
-          dotColor={'rgba(255, 255, 255, .3)'}>
-          <IntroView style={styles.slide} selectedCity={this.state.selectedCity} onSelect={this.onSelectCity} cities={this.props.cities} />
-          <View style={[styles.slide, styles.slideIntro]} >
-            <View style={styles.topArea} level={10} >
-              <View style={styles.iconWrap}>
-                <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
-                <Icon style={styles.icon} name={'face'} />
-                <Icon style={styles.subIcon} name={'chat-bubble-outline'} />
-                <Icon style={[styles.subIcon, { top: IOS ? -20 : 0, left: IOS ? 65 : 70, fontSize: IOS ? 50 : 35 }]} name={'event'} />
-                <Icon style={[styles.subIcon, { top: 20, left: IOS ? -15 : 0, fontSize: 50 }]} name={'photo-camera'} />
-              </View>
-            </View>
-            <View level={-10} >
-              <InstructionView simplified={true} closeRegistrationView={this.onClose} />
-            </View>
-          </View>
-          <View style={[styles.slide, styles.slideIntro]} >
-            <View style={styles.topArea} level={10} >
-              <View style={styles.iconWrap}>
-                <Image style={styles.bgImage} source={require('../../../assets/frontpage_header-bg.jpg')} />
-                <Icon style={styles.icon} name={'people-outline'} />
-                <Icon style={[styles.subIcon, { left: 115, top: IOS ? -15 : 0, }]} name={'wb-sunny'} />
-              </View>
-            </View>
-            <View level={-10} >
-              <SkipView onPressProfileLink={() => {
-                this.onClose();
-                setTimeout(() => {
-                  this.props.openRegistrationView();
-                }, 750);
-              }}
-              />
-            </View>
-          </View>
-          {/*
-          <View style={[styles.slide, { backgroundColor: '#fff' }]}>
-            {this._renderEditContainer()}
-          </View>
-          */}
-        </AppIntro>
-      </ModalBox>
-    );
+    return pickerItems;
   }
 
   _renderBioSelect() {
     return (
-      <View style={[styles.inputGroup, {marginBottom:4}]}>
+      <View style={[styles.inputGroup, {marginTop: 10}]}>
         <View style={styles.inputLabel}>
           <Text style={styles.inputLabelText}>{`Write a short bio (max. 250 characters)`}</Text>
         </View>
         <View style={styles.inputFieldWrap}>
           <TextInput
-            ref={view => this.nameTextInputRef = view}
+            ref={view => this.bioTextInputRef = view}
             autoCorrect={false}
-            autoCapitalize={'words'}
+            autoCapitalize={'sentences'}
             clearButtonMode={'while-editing'}
             maxLength={250}
             multiline={true}
@@ -365,57 +119,126 @@ class BuddyRegistrationView extends Component {
             textAlignVertical={'top'}
             returnKeyType={'done'}
             style={[styles.inputFieldMultiline, styles['inputField_' + Platform.OS]]}
-            onChangeText={this.onChangeName}
+            onChangeText={this.onChangeBio}
             onFocus={() => {
-              keyboard.onInputFocus(this.containerScrollViewRef, this.nameTextInputRef,300);
+              keyboard.onInputFocus(this.containerScrollViewRef, this.bioTextInputRef,300);
             }}
             onBlur={() => {
               keyboard.onInputBlur(this.containerScrollViewRef)
             }}
-            value={this.props.name}
+            value={this.props.buddyBio}
           />
         </View>
       </View>
     );
   }
 
-  render() {
-    const { initialSetup } = this.props;
+  _renderClassYearSelect() {
     return (
-      initialSetup ?
-        this._renderIntroForCitySelection()
-        :
-        <Modal
-          visible={this.props.isRegistrationViewOpen}
-          animationType={'slide'}
-          onRequestClose={this.onCloseProfileEditor}
-        >
-          {this._renderEditContainer()}
-        </Modal>
+      <View style={[styles.inputGroup, {marginTop: 10}]}>
+        <View style={styles.inputLabel}>
+          <Text style={styles.inputLabelText}>{`What's your current class year?`}</Text>
+        </View>
+        <View style={styles.inputFieldWrap}>
+          <TextInput
+            ref={view => this.yearTextInputRef = view}
+            autoCorrect={false}
+            autoCapitalize={'words'}
+            clearButtonMode={'while-editing'}
+            maxLength={2}
+            textAlignVertical={'top'}
+            returnKeyType={'done'}
+            style={[styles.inputField, styles['inputField_' + Platform.OS]]}
+            onChangeText={this.onChangeClassYear}
+            onFocus={() => {
+              keyboard.onInputFocus(this.containerScrollViewRef, this.yearTextInputRef,300);
+            }}
+            onBlur={() => {
+              keyboard.onInputBlur(this.containerScrollViewRef)
+            }}
+            value={this.props.buddyClassYear}
+          />
+        </View>
+      </View>
     );
   }
 
-}
+  _renderLookingForSelect() {
+    return (
+      <View style={[styles.inputGroup, {marginTop: 10}]}>
+        <View style={styles.inputLabel}>
+          <Text style={styles.inputLabelText}>{`What kind of Wappu company are you looking for?`}</Text>
+        </View>
+        <View style={styles.inputFieldWrap}>
+          <Picker
+            selectedValue={this.props.buddyLookingFor || 1}
+            onValueChange={this.onChangeLookingFor}
+            mode="dropdown"
+          >
+            {this.renderLookingForPickerItems()}
+          </Picker>
+        </View>
+      </View>
+    );
+  }
 
-// jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+  render() {
+    return (
+      <Modal
+        visible={this.props.isBuddyRegistrationViewOpen}
+        animationType={'slide'}
+        onRequestClose={this.onRequestClose}
+      >
+        <Toolbar icon={'done'}
+          iconClick={this.onRequestClose}
+          title='Fill your WhappuBuddy profile' />
+
+        <ScrollView
+          ref={view => this.containerScrollViewRef = view}
+          showsVerticalScrollIndicator={true}
+          style={styles.container}>
+          <View style={[styles.innerContainer]}>
+            {this._renderBioSelect()}
+            {this._renderLookingForSelect()}
+            {this._renderClassYearSelect()}
+          </View>
+        </ScrollView>
+          
+        <View style={styles.bottomButtonContainer}>
+          <Button
+            onPress={this.saveProfile}
+            style={styles.saveButton}
+            isDisabled={false}
+          >
+            Save
+          </Button>
+        </View>
+      </Modal>
+    );
+  }
+};
+
+
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingBottom:50,
+  backLink: {
+    position: 'absolute',
+    left: 7,
+    top: 7,
+    zIndex: 2,
   },
-  simplified: {
-    paddingBottom: 80,
-    alignSelf: 'stretch',
-    backgroundColor: theme.secondary
+  backLinkText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: theme.transparent
   },
-  innerContainer: {
-    flex:1,
-    paddingTop:15,
-    paddingBottom: 50,
-    margin: 0,
-    borderRadius: 5
+  backLinkIcon: {
+    color: theme.white
   },
-  bottomButtons:{
+  bottomButtonContainer:{
     flex:1,
     flexDirection:'row',
     margin:0,
@@ -429,13 +252,51 @@ const styles = StyleSheet.create({
     left:0,
     right:0,
   },
-  modalButton: {
-    borderRadius:0,
-    flex:1,
-    marginLeft:0,
+  button: {
+    height: 35,
+    borderRadius: 2,
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  modalBackgroundStyle: {
-    backgroundColor: '#eee'
+  container: {
+    flex: 1,
+    backgroundColor: '#eee',
+    paddingBottom: 50,
+  },
+  header: {
+    flex:1,
+    elevation: 3,
+    paddingTop: 30,
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  innerContainer: {
+    flex:1,
+    paddingTop:15,
+    paddingBottom: 50,
+    margin: 0,
+    borderRadius: 5
+  },
+  inputField: {
+    height: 40,
+    fontSize:16,
+  },
+  inputField_android: {
+
+  },
+  inputField_ios: {
+    padding:5,
+    backgroundColor: 'rgba(20,20,20,0.05)',
+  },
+  inputFieldMultiline:{
+    fontSize:16,
+    height:200,
+  },
+  inputFieldWrap:{
+    paddingTop: 5,
+    padding:15,
   },
   inputGroup:{
     padding: 0,
@@ -446,17 +307,6 @@ const styles = StyleSheet.create({
     flex:1,
     borderRadius:5,
     overflow:'hidden'
-  },
-  item: {
-    flex: 1
-  },
-  button: {
-    height: 35,
-    borderRadius: 2,
-    flex: 1,
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   inputLabel:{
     padding: 15,
@@ -471,168 +321,37 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     textAlign: IOS ? 'center' : 'left',
   },
-  inputFieldWrap:{
-    paddingTop: 5,
-    padding:15,
+  item: {
+    flex: 1
   },
-  inputFieldMultiline:{
-    fontSize:16,
-    height:200,
-  },
-  inputField: {
-    height: 40,
-    fontSize:16,
-  },
-  inputField_android: {
-
-  },
-  inputField_ios: {
-    padding:5,
-    backgroundColor: 'rgba(20,20,20,0.05)',
-  },
-  textButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: IOS ? 'center' : 'flex-start',
-    padding: IOS ? 5 : 5,
-    paddingLeft:20,
-    paddingRight:20,
-    marginBottom:15,
-  },
-  textButtonIcon: {
-    color: theme.secondary,
-    fontSize:18,
-    paddingRight:5
-  },
-  textButtonText:{
-    color: theme.secondary,
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  header: {
-    textAlign:'center',
-    color: theme.white,
-    marginTop: 15,
-    // marginLeft: IOS ? 25 : 15,
-    fontSize: 28
-  },
-  logo: {
-    marginTop: 20,
-    marginLeft: 10,
-    marginRight: 10,
-    height: 110,
-    width: 110
-  },
-  slide: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    backgroundColor: theme.secondary,
-    padding: 0,
-  },
-  text: {
-    color: '#000',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  // Slide top
-
-  slideIntro: {
-    backgroundColor: theme.secondary,
-    paddingTop: height / 2.4,
-  },
-  topArea: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flex: 1,
-    flexGrow: 1,
-    backgroundColor: theme.secondary,
-    minHeight: height / 2.5,
-    // alignItems: 'center',
-    // justifyContent: 'flex-start',
-  },
-  iconWrap: {
-    // overflow: 'hidden',
-    position: 'absolute',
-    width: 190,
-    height: 190,
-    borderRadius: 95,
-    backgroundColor: 'rgba(255,255,255,.1)',
-    left: width / 2 - 95,
-    top: width / 8,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  icon: {
-    // width: 200,
-    // left: width / 2 - 100,
-    // top: 50,
-    // position: 'absolute',
-    textAlign: 'center',
-    opacity: 1,
-    backgroundColor: theme.transparent,
-    fontSize: 150,
-    width: 150,
-    height: 150,
-    // tintColor: theme.white,
-    color: theme.white,
-  },
-  subIcon: {
-    backgroundColor: theme.transparent,
-    color: theme.accentLight,
-    fontSize: IOS ? 90 : 60,
-    left: IOS ? 140 : 135,
-    top: IOS ? -5 : 10,
-    position: 'absolute'
-  },
-  bgImage: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    width: 190,
-    height: 190,
-    borderRadius: 95,
-    overflow: 'hidden',
-    bottom: 0,
-    opacity: 0.3
-  },
+  saveButton: {
+    borderRadius:0,
+    flex:1,
+    marginLeft:0,
+  }
 });
 
+
 const mapDispatchToProps = {
-  putUser,
-  updateName,
-  reset,
-  setCity,
-  setDefaultRadioByCity,
-  selectTeam,
-  generateName,
-  dismissIntroduction,
-  openRegistrationView,
-  closeRegistrationView,
-  showChooseTeam
+    closeBuddyRegistrationView,
+    openBuddyRegistrationView,
+    fetchUserProfile,
+    fetchBuddyProfile,
+    putBuddyProfile,
+    updateBuddyBio,
+    updateBuddyClassYear,
+    updateBuddyLookingFor
 };
 
 const select = store => {
-
-  const initialSetup = store.city.get('id') === 1 || !store.city.get('id');
   return {
-    isIntroductionDismissed: store.registration.get('isIntroductionDismissed'),
-    isRegistrationViewOpen: store.registration.get('isRegistrationViewOpen'),
-    name: store.registration.get('name'),
-    selectedTeam: store.registration.get('selectedTeam'),
-    selectedCityId: getCityIdByTeam(store),
-    viewCityId: getCityId(store),
-    teams: store.team.get('teams'),
-    cities: store.city.get('list'),
-    isChooseTeamViewOpen: store.team.get('isChooseTeamViewOpen'),
-    isRegistrationInfoValid: !!store.registration.get('name') &&
-      !!store.registration.get('selectedTeam'),
-    initialSetup
+    buddyBio: store.registration.get('bio_text'),
+    buddyLookingFor: store.registration.get('bio_looking_for_type_id'),
+    buddyClassYear: store.registration.get('class_year'),
+    isBuddyRegistrationViewOpen: store.registration.get('isBuddyRegistrationViewOpen'),
+    lookingForTypes: store.registration.get('lookingForTypes'),
+    userId: store.registration.get('userId'),
+    userName: store.registration.get('name')
   };
 };
 

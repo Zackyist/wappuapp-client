@@ -1,32 +1,42 @@
-// TODO: Get the bioText from the back-end
-// TODO: Get the lookingFor from the back-end
-// TODO: Get the class year from the back-end
 // TODO: Replace placeholder headerImage with a WhappuBuddy header image
 // TODO: BUG: Make sure that user data is loaded when entering from the navigation bar without going anywhere else first, currently not happening!
 
 'use strict';
 
 import React, { Component } from 'react';
-import { View, StyleSheet, Dimensions, TouchableOpacity,
-  TouchableHighlight, Image, Platform, Text, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  TouchableHighlight,
+  Image,
+  Platform,
+  Text,
+  Alert
+} from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
+import { parseInt } from 'lodash';
 
 import {
-  getUserImages,
-  getUserTeam,
-  getTotalSimas,
-  getTotalVotesForUser,
+  fetchUserProfile,
   getUserImageUrl,
   getUserBuddies,
   fetchUserImages,
-  fetchUserProfile,
   isLoadingUserImages,
   fetchUserBuddies,
-  submitOpinion
+  submitOpinion,
+  getUserTeam
 } from '../../concepts/user';
-import { getUserName, getUserId } from '../../reducers/registration';
-import { openLightBox } from '../../actions/feed';
+import {
+  getBuddyBio,
+  getBuddyClassYear,
+  getBuddyLookingFor,
+  fetchBuddyProfile,
+} from '../../concepts/buddyUser';
+import { getUserName, getUserId, getLookingForTypes } from '../../reducers/registration';
+import { openBuddyRegistrationView } from '../../actions/registration';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -52,22 +62,30 @@ class BuddyUserView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buddyIndex: 0
+      buddyIndex: 0,
+      buddyToShow: this.props.route
     };
   }
 
 
-  // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
-  showWhappuLog = () => {
-    let { user } = this.props.route;
-    const { userName } = this.props;
+  componentDidMount() {
+    const { user } = this.props.route;
+    const { userId } = this.props;
 
-    //console.log(user.id);
-
-    // Show Current user if not user selected
-    if (!user) {
-      user = { name: userName };
+    if (user && user.id) {
+      this.props.fetchBuddyProfile(user.id);
+      this.props.fetchUserProfile(user.id);
+      this.props.fetchUserImages(user.id);
+      this.props.fetchUserBuddies(user.id);
+    } else {
+      this.props.fetchBuddyProfile(userId);
     }
+  }
+
+  // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
+  @autobind
+  showWhappuLog() {
+    let { user } = this.props.route;
 
     return () => {
       this.props.navigator.push({
@@ -76,18 +94,6 @@ class BuddyUserView extends Component {
         user
       });
     };
-  }
-
-  componentDidMount() {
-    const { user } = this.props.route;
-
-    if (user && user.id) {
-      this.props.fetchUserProfile(user.id);
-      this.props.fetchUserImages(user.id);
-      this.props.fetchUserBuddies(user.id);
-      //console.log('kamuja')
-      console.log(this.props.buddies.get(0));
-    }
   }
 
   componentWillReceiveProps({ tab, userId }) {
@@ -106,12 +112,16 @@ class BuddyUserView extends Component {
     if (index === 0) this.onReportUser()
   }
 
-
-
   onMyPopupEvent = (eventName, index) => {
 
     if (eventName !== 'itemSelected') return
-    if (index === 0) this.onDeleteProfile()
+    if (index === 0) this.onEditProfile()
+    if (index === 1) this.onDeleteProfile()
+  }
+
+  @autobind
+  onEditProfile() {
+    this.props.openBuddyRegistrationView();
   }
 
   onDeleteProfile = () => {
@@ -136,11 +146,17 @@ class BuddyUserView extends Component {
   nextBuddy() {
     if (this.state.buddyIndex === this.props.buddies.size - 1) {
       this.setState({buddyIndex: 0});
+      this.setState({buddyToShow: this.props.buddies.first()});
     }
     else {
       this.setState({buddyIndex: this.state.buddyIndex + 1});
+      this.setState({buddyToShow: this.props.buddies.get(this.state.buddyIndex)});
       console.log(this.state.buddyIndex);
     }
+    this.props.fetchBuddyProfile(this.state.buddyToShow.id);
+    this.props.fetchUserProfile(this.state.buddyToShow.id);
+    this.props.fetchUserImages(this.state.buddyToShow.id);
+
   }
 
   @autobind
@@ -149,7 +165,7 @@ class BuddyUserView extends Component {
     //this.props.buddies.delete(this.state.buddyIndex);
 
     const Subpackage  = {
-      matchedUserId: this.props.buddies.get(this.state.buddyIndex).id,
+      matchedUserId: this.state.buddyToShow.id,
       opinion: 'UP'
     };
     this.props.submitOpinion(Subpackage);
@@ -162,28 +178,69 @@ class BuddyUserView extends Component {
     //this.props.buddies.delete(this.state.buddyIndex);
 
     const Subpackage  = {
-      matchedUserId: this.props.buddies.get(this.state.buddyIndex).id,
+      matchedUserId: this.state.buddyToShow.id,
       opinion: 'DOWN'
     };
     this.props.submitOpinion(Subpackage);
+  }
 
+  // Adds ordinal endings to the class year
+  @autobind
+  renderClassYear() {
+    const { buddyClassYear } = this.props;
+
+    if (buddyClassYear) {
+      const lastChar =buddyClassYear.slice(-1);
+      let ordinal = 'th';
+
+      switch (parseInt(lastChar)) {
+        case 1:
+          ordinal = 'st';
+          break;
+        case 2:
+          ordinal = 'nd';
+          break;
+        case 3:
+          ordinal = 'rd';
+          break;
+        default:
+      }
+
+      // 11, 12 and 13 are always 'th'
+      const parsed = parseInt(buddyClassYear);
+      if (parsed == 11 || parsed == 12 || parsed == 13) {
+        ordinal = 'th';
+      }
+      
+      return buddyClassYear + ordinal;
+    } else {
+      return '';
+    }
+  }
+
+  @autobind
+  renderLookingFor() {
+    if (this.props.buddyLookingFor) {
+      return this.props.lookingForTypes.find(item => item.id === this.props.buddyLookingFor).type;
+    } else {
+      return '';
+    }
   }
 
   render() {
 
-    const { images, image_url, isLoading, totalVotes, totalSimas,
-      userTeam, userName, navigator } = this.props;
+    const { buddyBio, buddyClassYear, buddyLookingFor, image_url, userTeam, userName, navigator } = this.props;
     let { user } = this.props.route;
 
     // Show Current user if not user selected
     if (!user) {
-      user = { name: userName, imageUrl: image_url }
+      user = { name: userName, imageUrl: image_url, buddyBio: buddyBio, buddyLookingFor: buddyLookingFor, buddyClassYear: buddyClassYear }
     }
 
     let headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
     // Show the user's profile picture as the header image if it's set
-    if (image_url || this.props.buddies.get(this.state.buddyIndex).image_url) {
+    if (image_url || user.image_url ) {
       headerImage = { uri: image_url };
     }
 
@@ -207,7 +264,7 @@ class BuddyUserView extends Component {
 
             {user.name === userName && !isIOS &&
               <View style={styles.menu}>
-                <PopupMenu actions={['Delete my profile']} onPress={this.onMyPopupEvent} />
+                <PopupMenu actions={['Edit my profile', 'Delete my profile']} onPress={this.onMyPopupEvent} />
               </View>
             }
 
@@ -221,12 +278,12 @@ class BuddyUserView extends Component {
             <View style={styles.headerInfo}>
               <Text style={styles.headerTitle}>
               {this.props.buddies.size > 0 &&
-                this.props.buddies.get(this.state.buddyIndex).name || "A man/woman has no name"
+                this.state.buddyToShow.name || "A man/woman has no name"
               }
               </Text>
               <Text style={styles.headerSubTitle}>
               {this.props.buddies.size > 0 &&
-                this.props.buddies.get(this.state.buddyIndex).class_year || "69 BC"
+                this.state.buddyToShow.class_year || "69 BC"
               }
               </Text>
             </View>
@@ -238,19 +295,22 @@ class BuddyUserView extends Component {
           <Text style={styles.bioTitle}>About Me</Text>
           <Text style={styles.bioText}>
           {this.props.buddies.size > 0 &&
-            this.props.buddies.get(this.state.buddyIndex).bio_text || "No bio for lamo"
+            this.state.buddyToShow.bio_text || "No bio for lamo"
           }
           </Text>
           
           <Text style={styles.lookingForTitle}>Looking For</Text>
           <Text style={styles.lookingForText}>
-            Hauskaa wappuseuraa!
+            {this.renderLookingFor()}
           </Text>
 
         </View>
 
         <View style={styles.thumbs}>
-        {user.id &&
+        
+        { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
+             the user's own profile */}
+        {this.state.buddyToShow.id !== this.props.userId &&
           <View style={{flex: 1, flexDirection: 'row'}}>
           <TouchableHighlight onPress={this.onLikePress}>
             <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
@@ -272,6 +332,7 @@ class BuddyUserView extends Component {
           </Button>     
         </View>
 
+        {user.id &&
         <View style={styles.logButtonView}>
           <Button
             onPress={this.showWhappuLog()}
@@ -281,6 +342,7 @@ class BuddyUserView extends Component {
             Check out my Whappu Log
           </Button>
         </View>
+        }
 
       </ParallaxView>
       </View>
@@ -471,18 +533,17 @@ const styles = StyleSheet.create({
   },
 });
 
-
-const mapDispatchToProps = { openLightBox, fetchUserImages, fetchUserProfile, submitOpinion, fetchUserBuddies };
+const mapDispatchToProps = { fetchUserImages, fetchUserProfile, fetchBuddyProfile, openBuddyRegistrationView, submitOpinion, fetchUserBuddies };
 
 const mapStateToProps = state => ({
-  images: getUserImages(state),
-  isLoading: isLoadingUserImages(state),
-  totalSimas: getTotalSimas(state),
-  totalVotes: getTotalVotesForUser(state),
+  buddyBio: getBuddyBio(state),
+  buddyClassYear: getBuddyClassYear(state),
+  buddyLookingFor: getBuddyLookingFor(state),
+  image_url: getUserImageUrl(state),
+  lookingForTypes: getLookingForTypes(state),
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  image_url: getUserImageUrl(state),
   tab: getCurrentTab(state),
   buddies: getUserBuddies(state)
 });

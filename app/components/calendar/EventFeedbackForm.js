@@ -1,12 +1,30 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { Text, View, TextInput, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
+
+import {
+  Text,
+  View,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  Platform
+} from 'react-native';
+
 import Star from 'react-native-stars';
+import { connect } from 'react-redux';
+
+import {
+  sendEventFeedback,
+  setEventId,
+  setGrade,
+  setText,
+  resetForm
+} from '../../actions/eventFeedback';
+
 import Button from '../common/Button';
 import Toolbar from './EventFeedbackToolbar';
-import api from '../../services/api';
-import DeviceInfo from 'react-native-device-info';
 
 import theme from '../../style/theme';
 
@@ -15,49 +33,66 @@ class EventFeedback extends Component {
   constructor(props) {
     super(props);
 
-    const { eventId } = this.props.route.passProps;
+  }
 
-    this.state = {
-      id: eventId,
-      grade: 0,
-      text: '',
-      textLength: 0,
-      uuid: DeviceInfo.getUniqueID()
-    };
+  starGrade(stars) {
+    this.props.setGrade(stars);
   }
 
   submitFeedback() {
 
-    const { id, text, grade, uuid } = this.state;
+    const {
+      errorState,
+      feedbackSent,
+      idSet,
+      id,
+      text,
+      grade,
+      uuid
+    } = this.props;
 
-    const feedback = {id, text, grade, uuid }
+    if (!errorState && !feedbackSent && idSet) {
 
-    return api.postFeedback(feedback, id)
-      .then(response => {
-        if (response.status === 200) {
-          Alert.alert(
-            'Thank you!',
-            'We have received your feedback!',
-            [
-              {text: 'Return', onPress: () => this.props.navigator.pop()}
-            ],
-            { cancelable: false }
-          )
-        }
-      })
-      .catch(e => {
-        Alert.alert(
-          'Something went wrong...',
-          'Your feedback wasn\'t sent. Please try again in a moment.',
-          [
-            {text: 'Cancel', onPress: () => console.log('Event feedback canceled!')}
-          ],
-          { cancelable: false }
-        )
-      })
+      let feedback = { id, text, grade, uuid };
+      this.props.sendEventFeedback(feedback);
+    }
+  }
+
+  componentWillMount() {
+
+    this.props.resetForm();
   }
 
   render() {
+
+    if (!this.props.idSet) {
+      let eventId = this.props.route.passProps.eventId;
+      this.props.setEventId(eventId);
+    }
+
+    if (this.props.feedbackSent && !this.props.errorState) {
+      this.props.resetForm();
+      Alert.alert(
+        'Thank you!',
+        'We have received your feedback!',
+        [
+          {text: 'Return', onPress: () => this.props.navigator.pop()}
+        ],
+        { cancelable: false }
+      )
+    }
+
+    if (!this.props.feedbackSent && this.props.errorState) {
+      Alert.alert(
+        'Something went wrong...',
+        'Your feedback wasn\'t sent. Please try again in a moment.',
+        [
+          {text: 'Cancel', onPress: () => console.log('Event feedback canceled!')}
+        ],
+        { cancelable: false }
+      )
+    }
+
     return (
       <ScrollView style={{ backgroundColor: theme.lightgrey }} >
         <View style={ styles.toolbarContainerStyle }>
@@ -68,7 +103,7 @@ class EventFeedback extends Component {
             Rate the event
           </Text>
           <Star
-            update={(val)=>{this.setState({grade: val})}}
+            update={(val) => this.starGrade(val)}
             spacing={4}
             starSize={40}
             count={5}
@@ -90,10 +125,10 @@ class EventFeedback extends Component {
               numberOfLines={10}
               maxLength={1000}
               textBreakStrategy={'highQuality'}
-              onChangeText={(text) => this.setState({text: text})}
+              onChangeText={(text) => this.props.setText(text)}
             />
           </View>
-          <Text style={styles.charCounterStyle}>{this.state.text.length}/1000</Text>
+          <Text style={styles.charCounterStyle}>{this.props.text.length}/1000</Text>
         </View>
         <View style={styles.navigationButton}>
             <Button onPress={() => this.submitFeedback()}>Send</Button>
@@ -163,5 +198,20 @@ const styles = StyleSheet.create({
   }
 });
 
-export default EventFeedback;
+const mapDispatchToProps = { sendEventFeedback, setEventId, setGrade, setText, resetForm };
 
+const mapStateToProps = store => {
+
+  return {
+    id: store.eventFeedback.id,
+    idSet: store.eventFeedback.idSet,
+    grade: store.eventFeedback.grade,
+    text: store.eventFeedback.text,
+    errorMsg: store.eventFeedback.errorMsg,
+    errorState: store.eventFeedback.errorState,
+    feedbackSent: store.eventFeedback.feedbackSent,
+    uuid: store.eventFeedback.uuid
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EventFeedback);

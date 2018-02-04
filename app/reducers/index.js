@@ -14,6 +14,8 @@ import city from '../concepts/city';
 import mood from '../concepts/mood';
 import sortType from '../concepts/sortType';
 import user from '../concepts/user';
+import buddyUser from '../concepts/buddyUser';
+import eventFeedback from './eventFeedback';
 
 export {
   errors,
@@ -31,5 +33,7 @@ export {
   city,
   mood,
   sortType,
-  user
+  user,
+  buddyUser,
+  eventFeedback
 };
