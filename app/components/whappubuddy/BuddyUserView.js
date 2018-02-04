@@ -138,6 +138,10 @@ class BuddyUserView extends Component {
   }
 
   onReportUser = () => {
+    if (isIOS){
+      this.closePopModal();
+    }
+
     Alert.alert(
 
       'Flag Content',
@@ -159,16 +163,21 @@ class BuddyUserView extends Component {
       matchedUserId: user.id,
       opinion: 'UP'
     };
+    if (isIOS){
+      this.closePopModal();
+    }
     this.props.submitOpinion(Subpackage);
   }
   @autobind
   onDislikePress() {
+
     const {user} = this.props.route;
 
     const Subpackage  = {
       matchedUserId: user.id,
       opinion: 'DOWN'
     };
+
     this.props.submitOpinion(Subpackage);
   }
 
