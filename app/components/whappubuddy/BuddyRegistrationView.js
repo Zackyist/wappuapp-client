@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import {
+  Alert,
   Dimensions,
   Modal,
   Picker,
@@ -49,7 +50,7 @@ class BuddyRegistrationView extends Component {
 
   @autobind
   saveProfile() {
-    this.props.putBuddyProfile();
+    this.props.putBuddyProfile(this.onSaveError);
   }
 
   @autobind
@@ -70,6 +71,20 @@ class BuddyRegistrationView extends Component {
   @autobind
   onRequestClose() {
     this.props.closeBuddyRegistrationView();
+  }
+
+  @autobind
+  onSaveError() {
+    Alert.alert(
+      'Incomplete information',
+      'Please fill in all the fields!',
+      [
+        { text: 'Close profile editor',
+          onPress: () => this.onRequestClose(), style: 'cancel' },
+        { text: 'Okay, let me fix that',
+          onPress: () => { return }, style: 'default' }
+      ]
+    );
   }
 
   @autobind
@@ -94,7 +109,7 @@ class BuddyRegistrationView extends Component {
           <TextInput
             ref={view => this.bioTextInputRef = view}
             autoCorrect={false}
-            autoCapitalize={'words'}
+            autoCapitalize={'sentences'}
             clearButtonMode={'while-editing'}
             maxLength={250}
             multiline={true}
@@ -305,10 +320,10 @@ const select = store => {
     buddyBio: store.registration.get('bio_text'),
     buddyLookingFor: store.registration.get('bio_looking_for_type_id'),
     buddyClassYear: store.registration.get('class_year'),
+    isBuddyRegistrationViewOpen: store.registration.get('isBuddyRegistrationViewOpen'),
     lookingForTypes: store.registration.get('lookingForTypes'),
     userId: store.registration.get('userId'),
-    userName: store.registration.get('name'),
-    isBuddyRegistrationViewOpen: store.registration.get('isBuddyRegistrationViewOpen')
+    userName: store.registration.get('name')
   };
 };
 

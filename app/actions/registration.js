@@ -151,7 +151,7 @@ const getLookingForTypes = () => (dispatch) => {
     .catch(error => dispatch({ type: GET_LOOKING_FOR_TYPES_FAILURE, error: true, payload: error }));
 }
 
-const putBuddyProfile = () => {
+const putBuddyProfile = (onPutError) => {
   return (dispatch, getStore) => {
     dispatch({ type: CREATE_USER_REQUEST });
     const uuid = DeviceInfo.getUniqueID();
@@ -164,10 +164,13 @@ const putBuddyProfile = () => {
     const class_year = getStore().registration.get('class_year');
     return api.putBuddyProfile({ uuid, bio_text, bio_looking_for_type_id, pushToken, class_year })
       .then(response => {
-        dispatch({type: CREATE_USER_SUCCESS});
+        dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_BUDDY_REGISTRATION_VIEW });
       })
-      .catch(error => dispatch({type: CREATE_USER_FAILURE, error: error}));
+      .catch(error => {
+        dispatch({ type: CREATE_USER_FAILURE, error: error });
+        onPutError();
+      });
   };
 };
 

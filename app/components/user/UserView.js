@@ -14,8 +14,9 @@ import {
   getUserImageUrl,
   fetchUserImages,
   fetchUserProfile,
-  isLoadingUserImages,}
-  from '../../concepts/user';
+  isLoadingUserImages,
+  hasRegisteredOnWhappuBuddy
+} from '../../concepts/user';
 import { getUserName, getUserId } from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
@@ -58,16 +59,28 @@ class UserView extends Component {
     };
   }
 
+  componentDidMount() {
+    const { user } = this.props.route;
+
+    // Fetch images and data upon mounting if this is not the user's own profile
+    if (user && user.id) {
+      this.props.fetchUserProfile(user.id);
+      this.props.fetchUserImages(user.id);
+    }
+  }
+
+  componentWillReceiveProps({ tab, userId }) {
+    // Fetch images and data on Settings tab if this is the user's own profile
+    if (tab !== this.props.tab && tab === 'SETTINGS') {
+      this.props.fetchUserImages(userId);
+      this.props.fetchUserProfile(userId);
+    }
+  }
+
   // This method is used to navigate from the user's Whappu Log to their WhappuBuddy profile
   @autobind
   showBuddyProfile() {
     let { user } = this.props.route;
-    const { userName } = this.props;
-
-    // Show Current user if not user selected
-    if (!user) {
-      user = { name: userName };
-    }
 
     return () => {
       this.props.navigator.push({
@@ -76,24 +89,6 @@ class UserView extends Component {
         user
       });
     };
-  }
-
-  componentDidMount() {
-    const { user } = this.props.route;
-
-    if (user && user.id) {
-      this.props.fetchUserProfile(user.id);
-      this.props.fetchUserImages(user.id);
-    }
-  }
-
-  componentWillReceiveProps({ tab, userId }) {
-    // Fetch images on Settings tab
-    if (tab !== this.props.tab && tab === 'SETTINGS') {
-      this.props.fetchUserImages(userId);
-      this.props.fetchUserProfile(userId);
-      console.log('own profile');
-    }
   }
 
   onTOS = () => {
@@ -141,7 +136,6 @@ class UserView extends Component {
       user = { name: userName,
                team: userTeam,
                imageUrl: image_url };
-      console.log(userTeam);
     }
 
     const imagesCount = images.size;
@@ -260,8 +254,10 @@ class UserView extends Component {
               </View>
             )}
 
-            {/* Ugly but this hack is needed to render the button below in correct manner */}
-            {!isLoading ? (
+            {/* Ugly but this hack is needed to render the WhappuBuddy connection button in a correct manner.
+                Also only renders the button if the user is viewing someone else's UserView than their own
+                and that someone else has registered on WhappuBuddy. */}
+            {(!isLoading && user.id && this.props.isOnWhappuBuddy) ? (
               <View style={styles.headerKpis}>
                 <View style={styles.buddyButtonView}>
                   <Button
@@ -490,7 +486,8 @@ const mapStateToProps = state => ({
   userTeam: getUserTeam(state),
   cityName: getCurrentCityName(state),
   tab: getCurrentTab(state),
-  image_url: getUserImageUrl(state)
+  image_url: getUserImageUrl(state),
+  isOnWhappuBuddy: hasRegisteredOnWhappuBuddy(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);
