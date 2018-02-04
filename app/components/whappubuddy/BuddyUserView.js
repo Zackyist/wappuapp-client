@@ -18,6 +18,7 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import { parseInt } from 'lodash';
+import Modal from 'react-native-modal';
 
 import {
   fetchUserProfile,
@@ -52,6 +53,7 @@ import PopupMenu from '../user/PopupMenu';
 import { getCurrentTab } from '../../reducers/navigation';
 
 import UserView from '../user/UserView';
+import DeleteProfileView from './DeleteProfileView';
 import Button from '../../components/common/Button';
 
 const { height, width } = Dimensions.get('window');
@@ -60,6 +62,14 @@ const isIOS = Platform.OS === 'ios';
 
 
 class BuddyUserView extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      popModalVisible: false
+    };
+  }
+
   componentDidMount() {
     const { user } = this.props.route;
     const { userId } = this.props;
@@ -122,10 +132,16 @@ class BuddyUserView extends Component {
   }
 
   onDeleteProfile = () => {
-
+    this.props.navigator.push({
+      component: DeleteProfileView
+    });
   }
 
   onReportUser = () => {
+    if (isIOS){
+      this.closePopModal();
+    }
+
     Alert.alert(
 
       'Flag Content',
@@ -147,16 +163,21 @@ class BuddyUserView extends Component {
       matchedUserId: user.id,
       opinion: 'UP'
     };
+    if (isIOS){
+      this.closePopModal();
+    }
     this.props.submitOpinion(Subpackage);
   }
   @autobind
   onDislikePress() {
+
     const {user} = this.props.route;
 
     const Subpackage  = {
       matchedUserId: user.id,
       opinion: 'DOWN'
     };
+
     this.props.submitOpinion(Subpackage);
   }
 
@@ -187,7 +208,7 @@ class BuddyUserView extends Component {
       if (parsed == 11 || parsed == 12 || parsed == 13) {
         ordinal = 'th';
       }
-      
+
       return ', ' + buddyClassYear + ordinal + ' year';
     } else {
       return '';
@@ -201,6 +222,23 @@ class BuddyUserView extends Component {
     } else {
       return '';
     }
+  }
+
+  openPopModal = () => {
+    this.setState({popModalVisible:true});
+  }
+
+  togglePopModal = () => {
+    if (this.state.modalVisible){
+      this.closePopModal();
+    }
+    else {
+      this.openPopModal();
+    }
+  }
+
+  closePopModal = () => {
+    this.setState({popModalVisible:false});
   }
 
   render() {
@@ -221,7 +259,7 @@ class BuddyUserView extends Component {
     }
 
     return (
-      <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
       <ParallaxView
         backgroundSource={headerImage}
@@ -244,9 +282,46 @@ class BuddyUserView extends Component {
               </View>
             }
 
+            {user.name === userName && isIOS && <View style={styles.popContainer}>
+                <Modal
+                    onBackdropPress={() => this.setState({ popModalVisible: false })}
+                    visible={this.state.popModalVisible}
+                    animationType={'fade'}>
+                    <View style={styles.modalContainer}>
+                    <TouchableOpacity onPress={this.onEditProfile}>
+                      <Text style={styles.modalLink}> Edit my profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.onDeleteProfile}>
+                      <Text style={styles.modalLink}> Delete profile</Text>
+                    </TouchableOpacity>
+                    </View>
+                </Modal>
+                <TouchableOpacity onPress={this.togglePopModal}>
+                <Icon name='more-vert' size={28} color={'white'} />
+                </TouchableOpacity>
+              </View>
+            }
+
             {user.name !== userName && !isIOS &&
               <View style={styles.menu}>
                 <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
+              </View>
+            }
+
+            {user.name !== userName && isIOS && <View style={styles.popContainer}>
+                <Modal
+                    onBackdropPress={() => this.setState({ popModalVisible: false })}
+                    visible={this.state.popModalVisible}
+                    animationType={'fade'}>
+                    <View style={styles.modalContainer}>
+                    <TouchableOpacity onPress={this.onReportUser}>
+                      <Text style={styles.modalLink}> Report user</Text>
+                    </TouchableOpacity>
+                    </View>
+                </Modal>
+                <TouchableOpacity onPress={this.togglePopModal}>
+                <Icon name='more-vert' size={28} color={'white'} />
+                </TouchableOpacity>
               </View>
             }
 
@@ -262,7 +337,7 @@ class BuddyUserView extends Component {
           </View>
         )}
       >
-
+      <View>
         <View style={styles.bioView}>
           <Text style={styles.bioTitle}>About Me</Text>
           <Text style={styles.bioText}>
@@ -273,21 +348,22 @@ class BuddyUserView extends Component {
             {this.renderLookingFor()}
           </Text>
         </View>
-        <View style={styles.thumbs}>
-        
+      </View>
+
         { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
              the user's own profile */}
-        {user.id &&
-          <View style={{flex: 1, flexDirection: 'row'}}>
-          <TouchableHighlight onPress={this.onLikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.onDislikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
-          </TouchableHighlight>
+        {user.name !== userName &&
+          <View style={styles.thumbContainer}>
+          <TouchableOpacity style={styles.thumbTouchable} onPress={this.onLikePress}>
+            <Image style={styles.thumbImage} source={require('../../../assets/thumbUp.png')}/>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.thumbTouchable} onPress={this.onDislikePress}>
+            <Image style={styles.thumbImage} source={require('../../../assets/thumbDown.png')}/>
+          </TouchableOpacity>
           </View>
         }
-        </View>
+
+
         {user.id &&
         <View style={styles.logButtonView}>
           <Button
@@ -460,10 +536,24 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: 50
   },
-  thumbs: {
-    justifyContent: 'center',
+  thumbContainer: {
+    flex: 1,
+    flexDirection:'row',
     alignItems: 'center',
+    justifyContent: 'center'
   },
+
+  thumbTouchable: {
+    // placeholder
+  },
+
+  thumbImage: {
+    width: 75,
+    height: 75,
+    marginLeft: 10,
+    marginRight: 10
+  },
+
   imageContainer:{
     margin: 1,
     marginTop: 2,
@@ -487,10 +577,31 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 0
   },
+  popContainer: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
+    width: 50,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    width: 150,
+    top: 75,
+    right: 0
+
+  },
+  modalLink: {
+    paddingLeft: 10,
+    paddingRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: theme.secondary
+  },
 });
 
 
-const mapDispatchToProps = { 
+const mapDispatchToProps = {
   acknowledgeDataUpdate,
   fetchUserImages,
   fetchUserProfile,
