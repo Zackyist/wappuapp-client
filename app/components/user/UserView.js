@@ -62,7 +62,7 @@ class UserView extends Component {
   componentDidMount() {
     const { user } = this.props.route;
 
-    // Fetch images and data upon mounting if this is not the user's own profile
+    // Fetch images and data upon mounting if not accessing the profile through a tab
     if (user && user.id) {
       this.props.fetchUserProfile(user.id);
       this.props.fetchUserImages(user.id);
@@ -84,6 +84,22 @@ class UserView extends Component {
       this.props.acknowledgeDataUpdate();
       this.props.fetchUserProfile(userId);
     }
+  }
+
+  // Checks whether this is the user's own profile or not
+  isCurrentUser() {
+    let { user } = this.props.route;
+    const { userId } = this.props;
+
+    if (user) {
+      if (user.id === userId) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   // This method is used to navigate from the user's Whappu Log to their WhappuBuddy profile
@@ -267,7 +283,7 @@ class UserView extends Component {
             {/* Ugly but this hack is needed to render the WhappuBuddy connection button in a correct manner.
                 Also only renders the button if the user is viewing someone else's UserView than their own
                 and that someone else has registered on WhappuBuddy. */}
-            {(!isLoading && user.id && this.props.isOnWhappuBuddy) ? (
+            {(!isLoading && !this.isCurrentUser() && this.props.isOnWhappuBuddy) ? (
               <View style={styles.headerKpis}>
                 <View style={styles.buddyButtonView}>
                   <Button
