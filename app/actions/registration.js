@@ -32,6 +32,8 @@ const DISMISS_INTRODUCTION = 'DISMISS_INTRODUCTION';
 const UPDATE_PROFILE_PIC = 'UPDATE_PROFILE_PIC';
 const OPEN_BUDDY_REGISTRATION_VIEW = 'OPEN_BUDDY_REGISTRATION_VIEW';
 const CLOSE_BUDDY_REGISTRATION_VIEW = 'CLOSE_BUDDY_REGISTRATION_VIEW';
+const ACKNOWLEDGE_DATA_UPDATE = 'ACKNOWLEDGE_DATA_UPDATE';
+const SET_DATA_UPDATED = 'SET_DATA_UPDATED';
 const UPDATE_BUDDY_BIO = 'UPDATE_BUDDY_BIO';
 const UPDATE_BUDDY_CLASS_YEAR = 'UPDATE_BUDDY_CLASS_YEAR';
 const UPDATE_BUDDY_LOOKING_FOR = 'UPDATE_BUDDY_LOOKING_FOR';
@@ -59,6 +61,7 @@ const putUser = () => {
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_REGISTRATION_VIEW });
+        dispatch({ type: SET_DATA_UPDATED });
       })
       .catch(error => dispatch({ type: CREATE_USER_FAILURE, error: error }));
   };
@@ -71,9 +74,9 @@ const putProfilePic = () => {
     const imageData = getStore().registration.get('profilePic');
     return api.putProfilePic({ uuid, imageData })
       .then(response => {
-        dispatch({type: CREATE_USER_SUCCESS})
+        dispatch({ type: CREATE_USER_SUCCESS });
       })
-      .catch(error => dispatch({type: CREATE_USER_FAILURE, error: error}));
+      .catch(error => dispatch({ type: CREATE_USER_FAILURE, error: error }));
   };
 };
 
@@ -142,6 +145,10 @@ const closeBuddyRegistrationView = () => {
   return { type: CLOSE_BUDDY_REGISTRATION_VIEW };
 };
 
+const acknowledgeDataUpdate = () => {
+  return { type: ACKNOWLEDGE_DATA_UPDATE };
+};
+
 const getLookingForTypes = () => (dispatch) => {
   dispatch({ type: GET_LOOKING_FOR_TYPES_REQUEST });
   return api.getLookingForTypes()
@@ -166,6 +173,7 @@ const putBuddyProfile = (onPutError) => {
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_BUDDY_REGISTRATION_VIEW });
+        dispatch({ type: SET_DATA_UPDATED });
       })
       .catch(error => {
         dispatch({ type: CREATE_USER_FAILURE, error: error });
@@ -208,6 +216,8 @@ export {
   DISMISS_INTRODUCTION,
   OPEN_BUDDY_REGISTRATION_VIEW,
   CLOSE_BUDDY_REGISTRATION_VIEW,
+  ACKNOWLEDGE_DATA_UPDATE,
+  SET_DATA_UPDATED,
   GET_LOOKING_FOR_TYPES_REQUEST,
   GET_LOOKING_FOR_TYPES_SUCCESS,
   GET_LOOKING_FOR_TYPES_FAILURE,
@@ -228,6 +238,7 @@ export {
   dismissIntroduction,
   openBuddyRegistrationView,
   closeBuddyRegistrationView,
+  acknowledgeDataUpdate,
   getLookingForTypes,
   putBuddyProfile,
   updateBuddyBio,
