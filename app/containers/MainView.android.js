@@ -18,6 +18,7 @@ import CheckInActionView from '../components/actions/CheckInActionView';
 import errorAlert from '../utils/error-alert';
 import LightBox from '../components/lightbox/Lightbox';
 import BuddyRegistrationView from '../components/whappubuddy/BuddyRegistrationView';
+import BuddyIntroView from '../components/whappubuddy/BuddyIntroView';
 
 const theme = require('../style/theme');
 
@@ -60,6 +61,7 @@ class MainView extends Component {
             ...Navigator.SceneConfigs.FloatFromBottomAndroid
           })}
         />
+        <BuddyIntroView />
         <BuddyRegistrationView />
         <RegistrationView />
         <LightBox />

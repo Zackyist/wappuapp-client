@@ -30,10 +30,12 @@ const SELECT_TEAM = 'SELECT_TEAM';
 const CLOSE_TEAM_SELECTOR = 'CLOSE_TEAM_SELECTOR';
 const DISMISS_INTRODUCTION = 'DISMISS_INTRODUCTION';
 const UPDATE_PROFILE_PIC = 'UPDATE_PROFILE_PIC';
-const OPEN_BUDDY_REGISTRATION_VIEW = 'OPEN_BUDDY_REGISTRATION_VIEW';
-const CLOSE_BUDDY_REGISTRATION_VIEW = 'CLOSE_BUDDY_REGISTRATION_VIEW';
 const ACKNOWLEDGE_DATA_UPDATE = 'ACKNOWLEDGE_DATA_UPDATE';
+const CLOSE_BUDDY_INTRO_VIEW = 'CLOSE_BUDDY_INTRO_VIEW';
+const CLOSE_BUDDY_REGISTRATION_VIEW = 'CLOSE_BUDDY_REGISTRATION_VIEW';
 const SET_DATA_UPDATED = 'SET_DATA_UPDATED';
+const OPEN_BUDDY_INTRO_VIEW = 'OPEN_BUDDY_INTRO_VIEW';
+const OPEN_BUDDY_REGISTRATION_VIEW = 'OPEN_BUDDY_REGISTRATION_VIEW';
 const UPDATE_BUDDY_BIO = 'UPDATE_BUDDY_BIO';
 const UPDATE_BUDDY_CLASS_YEAR = 'UPDATE_BUDDY_CLASS_YEAR';
 const UPDATE_BUDDY_LOOKING_FOR = 'UPDATE_BUDDY_LOOKING_FOR';
@@ -137,16 +139,16 @@ const updateProfilePic = (profilePic) => {
 
 // WhappuBuddy registration and profile editing actions begin
 
-const openBuddyRegistrationView = () => {
-  return { type: OPEN_BUDDY_REGISTRATION_VIEW };
+const acknowledgeDataUpdate = () => {
+  return { type: ACKNOWLEDGE_DATA_UPDATE };
+};
+
+const closeBuddyIntroView = () => {
+  return { type: CLOSE_BUDDY_INTRO_VIEW };
 };
 
 const closeBuddyRegistrationView = () => {
   return { type: CLOSE_BUDDY_REGISTRATION_VIEW };
-};
-
-const acknowledgeDataUpdate = () => {
-  return { type: ACKNOWLEDGE_DATA_UPDATE };
 };
 
 const getLookingForTypes = () => (dispatch) => {
@@ -157,6 +159,14 @@ const getLookingForTypes = () => (dispatch) => {
     })
     .catch(error => dispatch({ type: GET_LOOKING_FOR_TYPES_FAILURE, error: true, payload: error }));
 }
+
+const openBuddyIntroView = () => {
+  return { type: OPEN_BUDDY_INTRO_VIEW };
+};
+
+const openBuddyRegistrationView = () => {
+  return { type: OPEN_BUDDY_REGISTRATION_VIEW };
+};
 
 const putBuddyProfile = (onPutError) => {
   return (dispatch, getStore) => {
@@ -214,13 +224,15 @@ export {
   SELECT_TEAM,
   RESET,
   DISMISS_INTRODUCTION,
-  OPEN_BUDDY_REGISTRATION_VIEW,
-  CLOSE_BUDDY_REGISTRATION_VIEW,
   ACKNOWLEDGE_DATA_UPDATE,
+  CLOSE_BUDDY_INTRO_VIEW,
+  CLOSE_BUDDY_REGISTRATION_VIEW,
   SET_DATA_UPDATED,
   GET_LOOKING_FOR_TYPES_REQUEST,
   GET_LOOKING_FOR_TYPES_SUCCESS,
   GET_LOOKING_FOR_TYPES_FAILURE,
+  OPEN_BUDDY_INTRO_VIEW,
+  OPEN_BUDDY_REGISTRATION_VIEW,
   UPDATE_BUDDY_BIO,
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
@@ -236,10 +248,12 @@ export {
   selectTeam,
   reset,
   dismissIntroduction,
-  openBuddyRegistrationView,
-  closeBuddyRegistrationView,
   acknowledgeDataUpdate,
+  closeBuddyIntroView,
+  closeBuddyRegistrationView,
   getLookingForTypes,
+  openBuddyIntroView,
+  openBuddyRegistrationView,
   putBuddyProfile,
   updateBuddyBio,
   updateBuddyClassYear,

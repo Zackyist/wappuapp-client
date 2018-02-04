@@ -16,12 +16,14 @@ import {
   GET_USER_FAILURE,
   SELECT_TEAM,
   RESET,
-  OPEN_BUDDY_REGISTRATION_VIEW,
-  CLOSE_BUDDY_REGISTRATION_VIEW,
   ACKNOWLEDGE_DATA_UPDATE,
+  CLOSE_BUDDY_INTRO_VIEW,
+  CLOSE_BUDDY_REGISTRATION_VIEW,
   GET_LOOKING_FOR_TYPES_FAILURE,
   GET_LOOKING_FOR_TYPES_REQUEST,
   GET_LOOKING_FOR_TYPES_SUCCESS,
+  OPEN_BUDDY_INTRO_VIEW,
+  OPEN_BUDDY_REGISTRATION_VIEW,
   SET_DATA_UPDATED,
   UPDATE_BUDDY_BIO,
   UPDATE_BUDDY_CLASS_YEAR,
@@ -43,6 +45,7 @@ const initialState = fromJS({
   isLoading: false,
   isError: false,
   isIntroductionDismissed: false,
+  isBuddyIntroViewOpen: false,
   isBuddyRegistrationViewOpen: false,
   bio_text: '',
   bio_looking_for_type_id: 1,
@@ -108,17 +111,21 @@ export default function registration(state = initialState, action) {
         'image_url' : action.payload.image_url,
         'isLoading': false
       });
-    case OPEN_BUDDY_REGISTRATION_VIEW:
-      return state.set('isBuddyRegistrationViewOpen', true);
-    case CLOSE_BUDDY_REGISTRATION_VIEW:
-      return state.set('isBuddyRegistrationViewOpen', false);
     case ACKNOWLEDGE_DATA_UPDATE:
       return state.set('isDataUpdated', false);
+    case CLOSE_BUDDY_INTRO_VIEW:
+      return state.set('isBuddyIntroViewOpen', false);
+    case CLOSE_BUDDY_REGISTRATION_VIEW:
+      return state.set('isBuddyRegistrationViewOpen', false);
     case GET_LOOKING_FOR_TYPES_SUCCESS:
       return state.merge({
         'lookingForTypes': List(action.payload),
         'isLoading': false
       });
+    case OPEN_BUDDY_INTRO_VIEW:
+      return state.set('isBuddyIntroViewOpen', true);
+    case OPEN_BUDDY_REGISTRATION_VIEW:
+      return state.set('isBuddyRegistrationViewOpen', true);
     case SET_DATA_UPDATED:
       return state.set('isDataUpdated', true);
     case UPDATE_BUDDY_BIO:
