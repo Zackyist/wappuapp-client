@@ -40,6 +40,8 @@ const ANDROID_TAB_ORDER = [
 ];
 const initialTab = 0;
 
+
+
 function pushNotificationListener(navigator) {
   return FCM.on('notification', (notif) => {
     console.log('notificationListener ----> NOTIFICATION RECEIVED');
@@ -47,15 +49,7 @@ function pushNotificationListener(navigator) {
 
 
   if (notif.opened_from_tray) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> applied listeners to ios version and added killed app notification listener
-=======
-
->>>>>>> NON-WORKING version of alert for notifications on foreground
     console.log('notif.opened_from_tray');
     navigator.push({
       component: BuddyView
@@ -63,8 +57,6 @@ function pushNotificationListener(navigator) {
 
 
   } else {
-<<<<<<< HEAD
-<<<<<<< HEAD
     //if (notif.notifType === 'message')
     Alert.alert(
        'New Message received',
@@ -77,14 +69,6 @@ function pushNotificationListener(navigator) {
 
     console.log('notification received while the app was foregr.');
     console.log(notif);
-=======
-
-=======
-    this.onForegroundNotif();
->>>>>>> NON-WORKING version of alert for notifications on foreground
-    console.log('notification received while the app was foregr.');
-
->>>>>>> applied listeners to ios version and added killed app notification listener
   }
 });
 }
@@ -133,20 +117,6 @@ class AndroidTabNavigation extends Component {
     this.props.changeTab(ANDROID_TAB_ORDER[i]);
   }
 
-<<<<<<< HEAD
-=======
-  onForegroundNotif = () => {
-    console.log('alerttihommia');
-    Alert.alert(
-      'New Message received',
-      'Go check it out?',
-      [
-        { text: 'Nope'},
-        { text: 'Yes, ofc '}
-      ]
-    );
-  }
->>>>>>> NON-WORKING version of alert for notifications on foreground
 
   render() {
     const {
