@@ -17,7 +17,7 @@ import {
   isLoadingUserImages,
   hasRegisteredOnWhappuBuddy
 } from '../../concepts/user';
-import { getUserName, getUserId } from '../../reducers/registration';
+import { getUserName, getUserId, isDataUpdated } from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
 
@@ -36,7 +36,7 @@ import AppInfo from './AppInfo';
 import LegalStuff from './LegalStuff';
 import PopupMenu from './PopupMenu';
 
-import { openRegistrationView } from '../../actions/registration';
+import { openRegistrationView, acknowledgeDataUpdate } from '../../actions/registration';
 import { getCurrentCityName } from '../../concepts/city';
 import WebViewer from '../webview/WebViewer';
 import BuddyUserView from '../whappubuddy/BuddyUserView';
@@ -73,6 +73,15 @@ class UserView extends Component {
     // Fetch images and data on Settings tab if this is the user's own profile
     if (tab !== this.props.tab && tab === 'SETTINGS') {
       this.props.fetchUserImages(userId);
+      this.props.fetchUserProfile(userId);
+    }
+  }
+
+  componentDidUpdate() {
+    // Ensure that the user data is updated right after editing the profile
+    if (this.props.isDataUpdated) {
+      const { userId } = this.props;
+      this.props.acknowledgeDataUpdate();
       this.props.fetchUserProfile(userId);
     }
   }
@@ -192,6 +201,7 @@ class UserView extends Component {
                 }
               </View>
             }
+            
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
               <View>
@@ -474,7 +484,13 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { openLightBox, fetchUserImages, openRegistrationView, fetchUserProfile };
+const mapDispatchToProps = {
+  acknowledgeDataUpdate,
+  fetchUserImages,
+  fetchUserProfile,
+  openLightBox,
+  openRegistrationView
+};
 
 const mapStateToProps = state => ({
   images: getUserImages(state),
@@ -487,7 +503,8 @@ const mapStateToProps = state => ({
   cityName: getCurrentCityName(state),
   tab: getCurrentTab(state),
   image_url: getUserImageUrl(state),
-  isOnWhappuBuddy: hasRegisteredOnWhappuBuddy(state)
+  isOnWhappuBuddy: hasRegisteredOnWhappuBuddy(state),
+  isDataUpdated: isDataUpdated(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserView);
