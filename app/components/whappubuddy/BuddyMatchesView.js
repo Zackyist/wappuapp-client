@@ -403,14 +403,8 @@ class BuddyMatches extends Component {
 >>>>>>> Fixed actions and reducers. Finished and fixed fetching users' whappubuddies.
   }
 
-  propTypes: {
-    matches: PropTypes.array.isRequired,
-    isFetching: PropTypes.bool.isRequired,
-    matchesFetched: PropTypes.bool.isRequired,
-    errorMsg: PropTypes.string.isRequired,
-    navigator: PropTypes.object.isRequired
-  };
-
+  componentDidMount() {
+    
     this.props.fetchingMatches();
   }
 
