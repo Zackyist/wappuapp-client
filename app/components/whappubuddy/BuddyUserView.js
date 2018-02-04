@@ -167,6 +167,8 @@ class BuddyUserView extends Component {
 
   @autobind
   nextBuddy() {
+    if (this.props.buddies.size > 0) {
+
     if (this.state.buddyIndex === this.props.buddies.size - 1) {
       this.setState({buddyIndex: 0});
     }
@@ -179,39 +181,43 @@ class BuddyUserView extends Component {
     this.props.fetchBuddyProfile(this.state.buddyToShow.id);
     this.props.fetchUserProfile(this.state.buddyToShow.id);
     this.props.fetchUserImages(this.state.buddyToShow.id);
+    this.props.fetchUserBuddies(this.props.userId);
+    }
+    else {
+      //call something
+    }
   }
 
   @autobind
   onLikePress(){
-    this.nextBuddy()
-    this.props.buddies.delete(this.state.buddyIndex);
-
     const Subpackage  = {
       matchedUserId: this.state.buddyToShow.id,
       opinion: 'UP'
     };
     this.props.submitOpinion(Subpackage);
+    this.props.buddies.delete(this.state.buddyIndex);
+    this.nextBuddy()
   }
 
   @autobind
   onDislikePress(){
-    this.nextBuddy()
-    this.props.buddies.delete(this.state.buddyIndex);
-
+    console.log('koko');
+    console.log(this.props.buddies.size);
     const Subpackage  = {
       matchedUserId: this.state.buddyToShow.id,
       opinion: 'DOWN'
     };
     this.props.submitOpinion(Subpackage);
+    this.props.buddies.delete(this.state.buddyIndex);
+    this.nextBuddy()
   }
 
   // Adds ordinal endings to the class year
   @autobind
-  renderClassYear() {
-    const { buddyClassYear } = this.props;
+  renderClassYear(ClassYear) {
 
-    if (buddyClassYear) {
-      const lastChar =buddyClassYear.slice(-1);
+    if (ClassYear) {
+      const lastChar = ClassYear.slice(-1);
       let ordinal = 'th';
 
       switch (parseInt(lastChar)) {
@@ -228,12 +234,12 @@ class BuddyUserView extends Component {
       }
 
       // 11, 12 and 13 are always 'th'
-      const parsed = parseInt(buddyClassYear);
+      const parsed = parseInt(ClassYear);
       if (parsed == 11 || parsed == 12 || parsed == 13) {
         ordinal = 'th';
       }
       
-      return ', ' + buddyClassYear + ordinal + ' year';
+      return ', ' + ClassYear + ordinal + ' year';
     } else {
       return '';
     }
@@ -313,7 +319,7 @@ class BuddyUserView extends Component {
               </Text>
               <Text style={styles.headerSubTitle}>
               {this.props.buddies.size > 0 &&
-                this.renderClassYear()
+                this.renderClassYear(this.state.buddyToShow.class_year) || this.renderClassYear(buddyClassYear) || "69 BC"
               }
               </Text>
             </View>
