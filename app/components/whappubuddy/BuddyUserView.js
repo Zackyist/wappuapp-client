@@ -323,6 +323,9 @@ class BuddyUserView extends Component {
               </Text>
               <Text style={styles.headerSubTitle}>
               {this.props.buddies.size > 0 &&
+                this.state.buddyToShow.team || userTeam || "The Guild"
+              }
+              {this.props.buddies.size > 0 &&
                 this.renderClassYear(this.state.buddyToShow.class_year) || this.renderClassYear(buddyClassYear) || "69 BC"
               }
               </Text>
