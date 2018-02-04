@@ -15,6 +15,7 @@ import * as RegistrationActions from '../actions/registration';
 import { initializeUsersCity, fetchCities } from '../concepts/city';
 import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
 import permissions from '../services/android-permissions';
+import * as ENV from '../../env';
 
 const IOS = Platform.OS === 'ios';
 

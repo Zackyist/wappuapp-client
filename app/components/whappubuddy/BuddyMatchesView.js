@@ -27,7 +27,8 @@ import {
   fetchingMatches,
   fetchingBuddy,
   updateDatasource,
-  finishList
+  finishList,
+  resetMatchlist
 } from '../../actions/matches';
 
 
@@ -91,61 +92,31 @@ class BuddyMatches extends Component {
     this.props.updateDatasource(this.props.matchList, this.props.buddyList);
   };
 
-  componentDidUpdate() {
-
-    if (this.props.matchesFetched && !this.props.buddiesFetched) {
-      this.getMatchDetails(this.props.matchList);
-    }
-    if (this.props.isLoading && this.props.matchesFetched && this.props.buddiesFetched) {
-      this.getDatasource();
-    }
-    if (this.props.datasourceReady && !this.props.listReady) {
-      this.setDatasource(this.props.datasource);
-    }
+  renderLoadingView() {
+    return <View style={styles.activityStyle}>
+      <ActivityIndicator
+        color={theme.primary}
+        animating={true}
+        style={{ alignItems: 'center', justifyContent: 'center', height: 80 }}
+        size='large' />
+      <Text style={styles.activityText}>Loading your matches...</Text>
+    </View>;
   }
 
-  propTypes: {
-    matches: PropTypes.array.isRequired,
-    isFetching: PropTypes.bool.isRequired,
-    matchesFetched: PropTypes.bool.isRequired,
-    errorMsg: PropTypes.string.isRequired,
-    navigator: PropTypes.object.isRequired
-  };
-
-  openChat(item) {
-    console.log('Avataan chatti... ', item)
-    console.log(this.props.navigator)
-    let routelist = this.props.navigator.getCurrentRoutes();
-    console.log('routelist', routelist)
-    return () => {
-      this.props.navigator.push({
-        component: BuddyChatView,
-        // name: `${item.buddyName}`,
-        passProps: {
-          name: item
-        }
-      });
-    };
-  };
-
-  getMatchDetails = (matches) => {
-    _.forEach(matches, (match) => {
-      this.props.fetchingBuddy(match.userId2);
-    });
+  renderListView() {
+    if (this.props.datasource === 0) {
+      return <View style={styles.activityStyle}>
+        <Text style={styles.activityText} >You have no matches :(</Text>
+      </View>
+    } else {
+      return <ListView
+      enableEmptySections
+      dataSource={this.state.dataSource}
+      renderRow={this.renderRow}
+      renderSeparator={this.renderSeparator}
+      />
+    }
   }
-
-  setDatasource = (source) => {
-
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(source)
-    });
-    this.props.finishList();
-  };
-
-  getDatasource = () => {
-
-    this.props.updateDatasource(this.props.matchList, this.props.buddyList);
-  };
 
   componentDidUpdate() {
 
@@ -158,6 +129,8 @@ class BuddyMatches extends Component {
     if (this.props.datasourceReady && !this.props.listReady) {
       this.setDatasource(this.props.datasource);
     }
+
+    console.log(this.props.datasource);
   }
 
   componentDidMount() {
@@ -184,32 +157,13 @@ class BuddyMatches extends Component {
     );
   }
 
-  componentDidMount() {
-
-    this.props.fetchingMatches();
-  }
-
-  renderRow = (item) => {
-    return (
-      <TouchableOpacity onPress={this.openChat.bind(this, item)}>
-        <View style={styles.containerStyle} >
-          <UserAvatar
-            name={item.buddyName}
-            src={item.buddyImg}
-            size={50}
-          />
-          <Text
-            style={styles.containerNameStyle}
-          >
-            {item.buddyName}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
   renderSeparator = (sectionID, rowID) => {
     return <View key={`${sectionID}-${rowID}`} />
+  }
+
+  componentWillUnmount() {
+    
+    this.props.resetMatchlist();
   }
 
   render() {
@@ -217,20 +171,9 @@ class BuddyMatches extends Component {
     return (
       <ScrollView style={styles.scrollStyle} >
         { !this.props.listReady ? (
-          <View style={styles.activityStyle}>
-            {!isIOS ? (
-              <ActivityIndicator size='large' />
-            ) : (
-              <ActivityIndicatorIOS />
-            )}
-          </View>
+          this.renderLoadingView()
         ) : (
-        <ListView
-          enableEmptySections
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow}
-          renderSeparator={this.renderSeparator}
-        />
+          this.renderListView()
         )}
       </ScrollView>
     );
@@ -259,21 +202,24 @@ const styles = {
     fontWeight: 'bold'
   },
   activityStyle: {
-    position: 'absolute',
+    flexGrow: 1,
+    flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+    backgroundColor: theme.light,
+  },
+  activityText:{
+    color:'#aaa',
+  },
 }
 
-
-
-// BuddyMatches.propTypes = {
-//   matches: PropTypes.array.isRequired,
-//   isFetching: PropTypes.bool.isRequired,
-//   errorMsg: PropTypes.string.isRequired
-// };
-
-const mapDispatchToProps = { fetchingMatches, fetchingBuddy, updateDatasource, finishList };
+const mapDispatchToProps = {
+  fetchingMatches,
+  fetchingBuddy,
+  updateDatasource,
+  finishList,
+  resetMatchlist
+};
 
 const mapStateToProps = store => {
 

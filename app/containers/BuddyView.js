@@ -94,16 +94,16 @@ class BuddyView extends Component {
             barColor={theme.accent}
             ref='profile'
           />
-          <FindBuddyPlaceholder
+          {/* <FindBuddyPlaceholder
               tabLabel="Find Matches"
               navigator={this.props.navigator}
               barColor={theme.accent}
-              ref="buddy" />
-           {/* <BuddyChatView
+              ref="buddy" /> */}
+           <BuddyChatView
               tabLabel="Temp chat"
               navigator={this.props.navigator}
               barColor={theme.accent}
-              ref="chat" /> */}
+              ref="chat" />
           <BuddyMatchesView
               tabLabel="My Matches"
               navigator={this.props.navigator}

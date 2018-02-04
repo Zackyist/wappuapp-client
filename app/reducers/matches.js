@@ -10,7 +10,8 @@ import {
   UPDATE_DATASOURCE_REQUEST,
   UPDATE_DATASOURCE_SUCCESS,
   UPDATE_DATASOURCE_FAILURE,
-  SET_LIST_READY
+  SET_LIST_READY,
+  RESET_MATCHES
 } from '../actions/matches';
 
 const initialState = {
@@ -56,6 +57,9 @@ const matches = (state = initialState, action) => {
     }
     case SET_LIST_READY: {
       return {...state, listReady: true}
+    }
+    case RESET_MATCHES: {
+      return {...initialState}
     }
     default:
       return state;
