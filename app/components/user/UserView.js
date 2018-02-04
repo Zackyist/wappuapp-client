@@ -5,10 +5,7 @@ import { View, StyleSheet, Dimensions, TouchableOpacity,
   TouchableHighlight, Image, Platform, Text,
   ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
-<<<<<<< HEAD
 import autobind from 'autobind-decorator';
-=======
->>>>>>> small fix after rebase
 
 import {
   getUserImages,
@@ -17,17 +14,10 @@ import {
   getTotalVotesForUser,
   fetchUserImages,
   fetchUserProfile,
-<<<<<<< HEAD
   isLoadingUserImages,
   hasRegisteredOnWhappuBuddy
 } from '../../concepts/user';
-import { getUserName, getUserId, isDataUpdated } from '../../reducers/registration';
-=======
-  getUserImageUrl,
-  isLoadingUserImages,
-} from '../../concepts/user';
-import { getUserName, getUserId } from '../../reducers/registration';
->>>>>>> small fix after rebase
+import { getUserName, getUserId, isDataUpdated} from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
 
@@ -65,7 +55,6 @@ class UserView extends Component {
     super(props)
 
     this.closeModal = this.closeModal.bind(this)
-
     this.state = {
       modalVisible: false,
       popModalVisible: false
@@ -112,7 +101,7 @@ class UserView extends Component {
     };
   }
 
-  deleteBuddyProfile = () => {
+  deleteBuddyProfile() {
     let { user } = this.props.route;
     const { userName } = this.props;
 
@@ -133,7 +122,9 @@ class UserView extends Component {
   onTOS = () => {
     this.props.navigator.push({component: LegalStuff});
   }
-  onChangeMyProfile = () => {
+
+  onChangeMyProfile = () =>  {
+    console.log("TÄÄLLÄ")
     this.props.openRegistrationView();
   }
 
@@ -179,10 +170,6 @@ togglePopModal = () => {
 
 closePopModal = () => {
   this.setState({popModalVisible:false});
-}
-
-closeModal() {
-  this.setState({modalVisible: false})
 }
 
   render() {
@@ -598,7 +585,6 @@ const mapStateToProps = state => ({
   userTeam: getUserTeam(state),
   cityName: getCurrentCityName(state),
   tab: getCurrentTab(state),
-  image_url: getUserImageUrl(state),
   isOnWhappuBuddy: hasRegisteredOnWhappuBuddy(state),
   isDataUpdated: isDataUpdated(state)
 });

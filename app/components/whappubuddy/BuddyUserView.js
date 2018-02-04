@@ -17,11 +17,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
-<<<<<<< HEAD
 import { parseInt } from 'lodash';
-=======
 import Modal from 'react-native-modal';
->>>>>>> Adds popup menu for ios in whappu buddy view
 
 import {
   fetchUserProfile,
@@ -82,12 +79,6 @@ class BuddyUserView extends Component {
       this.props.fetchBuddyProfile(userId);
     }
   }
-
-
-  // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
-  showWhappuLog = () => {
-    let { user } = this.props.route;
-    const { userName } = this.props;
 
   componentWillReceiveProps({ tab, userId }) {
     // Fetch images and data on Buddy tab if this is the user's own profile
