@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import { parseInt } from 'lodash';
 import DeviceInfo from 'react-native-device-info';
-import Immutable from 'immutable';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';

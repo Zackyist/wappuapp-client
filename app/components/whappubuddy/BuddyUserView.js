@@ -168,7 +168,7 @@ class BuddyUserView extends Component {
   @autobind
   onLikePress(){
     this.nextBuddy()
-    //this.props.buddies.delete(this.state.buddyIndex);
+    this.props.buddies.delete(this.state.buddyIndex);
 
     const Subpackage  = {
       matchedUserId: this.state.buddyToShow.id,
@@ -177,11 +177,10 @@ class BuddyUserView extends Component {
     this.props.submitOpinion(Subpackage);
   }
 
-  //this.props.fetchUserBuddies(this.props.userId);
   @autobind
   onDislikePress(){
     this.nextBuddy()
-    //this.props.buddies.delete(this.state.buddyIndex);
+    this.props.buddies.delete(this.state.buddyIndex);
 
     const Subpackage  = {
       matchedUserId: this.state.buddyToShow.id,
@@ -298,7 +297,7 @@ class BuddyUserView extends Component {
               </Text>
               <Text style={styles.headerSubTitle}>
               {this.props.buddies.size > 0 &&
-                this.state.buddyToShow.class_year || buddyClassYear || "69 BC"
+                this.renderClassYear()
               }
               </Text>
             </View>
