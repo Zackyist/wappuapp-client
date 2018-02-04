@@ -18,9 +18,11 @@ import {
   RESET,
   OPEN_BUDDY_REGISTRATION_VIEW,
   CLOSE_BUDDY_REGISTRATION_VIEW,
+  ACKNOWLEDGE_DATA_UPDATE,
   GET_LOOKING_FOR_TYPES_FAILURE,
   GET_LOOKING_FOR_TYPES_REQUEST,
   GET_LOOKING_FOR_TYPES_SUCCESS,
+  SET_DATA_UPDATED,
   UPDATE_BUDDY_BIO,
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
@@ -45,6 +47,7 @@ const initialState = fromJS({
   bio_text: '',
   bio_looking_for_type_id: 1,
   class_year: '',
+  isDataUpdated: false,
   lookingForTypes: [],
   pushToken: ''
 });
@@ -109,11 +112,15 @@ export default function registration(state = initialState, action) {
       return state.set('isBuddyRegistrationViewOpen', true);
     case CLOSE_BUDDY_REGISTRATION_VIEW:
       return state.set('isBuddyRegistrationViewOpen', false);
+    case ACKNOWLEDGE_DATA_UPDATE:
+      return state.set('isDataUpdated', false);
     case GET_LOOKING_FOR_TYPES_SUCCESS:
       return state.merge({
         'lookingForTypes': List(action.payload),
         'isLoading': false
       });
+    case SET_DATA_UPDATED:
+      return state.set('isDataUpdated', true);
     case UPDATE_BUDDY_BIO:
       return state.set('bio_text', action.payload);
     case UPDATE_BUDDY_CLASS_YEAR:
@@ -134,3 +141,4 @@ export const getUserTeamId = state => state.registration.get('selectedTeam', 0);
 export const getUserTeam = createSelector(getUserTeamId, getTeams,
   (teamId, teams) => teams.find(item => item.get('id') === teamId))
 export const getLookingForTypes = state => state.registration.get('lookingForTypes');
+export const isDataUpdated = state => state.registration.get('isDataUpdated');

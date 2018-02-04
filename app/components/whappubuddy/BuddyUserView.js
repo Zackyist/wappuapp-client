@@ -23,7 +23,6 @@ import {
   fetchUserProfile,
   getUserImageUrl,
   fetchUserImages,
-  isLoadingUserImages,
   submitOpinion,
   getUserTeam
 } from '../../concepts/user';
@@ -33,8 +32,13 @@ import {
   getBuddyLookingFor,
   fetchBuddyProfile,
 } from '../../concepts/buddyUser';
-import { getUserName, getUserId, getLookingForTypes } from '../../reducers/registration';
-import { openBuddyRegistrationView } from '../../actions/registration';
+import {
+  getUserName,
+  getUserId,
+  getLookingForTypes,
+  isDataUpdated
+} from '../../reducers/registration';
+import { openBuddyRegistrationView, acknowledgeDataUpdate } from '../../actions/registration';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -67,6 +71,24 @@ class BuddyUserView extends Component {
     }
   }
 
+  componentWillReceiveProps({ tab, userId }) {
+    // Fetch images and data on Buddy tab if this is the user's own profile
+    if (tab !== this.props.tab && tab === 'BUDDY') {
+      this.props.fetchUserImages(userId);
+-     this.props.fetchUserProfile(userId);
+      this.props.fetchBuddyProfile(userId);
+    }
+  }
+
+  componentDidUpdate() {
+    // Ensure that the user data is updated right after editing the profile
+    if (this.props.isDataUpdated) {
+      const { userId } = this.props;
+      this.props.acknowledgeDataUpdate();
+      this.props.fetchBuddyProfile(userId);
+    }
+  }
+
   // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
   @autobind
   showWhappuLog() {
@@ -79,14 +101,6 @@ class BuddyUserView extends Component {
         user
       });
     };
-  }
-
-  componentWillReceiveProps({ tab, userId }) {
-    // Fetch images on Settings tab
-    if (tab !== this.props.tab && tab === 'BUDDY') {
-      this.props.fetchUserImages(userId);
-      this.props.fetchUserProfile(userId);
-    }
   }
 
   onPopupEvent = (eventName, index) => {
@@ -174,7 +188,7 @@ class BuddyUserView extends Component {
         ordinal = 'th';
       }
       
-      return buddyClassYear + ordinal;
+      return ', ' + buddyClassYear + ordinal + ' year';
     } else {
       return '';
     }
@@ -242,7 +256,7 @@ class BuddyUserView extends Component {
                 {user.name}
               </Text>
               <Text style={styles.headerSubTitle}>
-                {userTeam || user.team}, {this.renderClassYear()} year
+                {userTeam || user.team}{this.renderClassYear()}
               </Text>
             </View>
           </View>
@@ -476,13 +490,21 @@ const styles = StyleSheet.create({
 });
 
 
-const mapDispatchToProps = { fetchUserImages, fetchUserProfile, fetchBuddyProfile, openBuddyRegistrationView, submitOpinion };
+const mapDispatchToProps = { 
+  acknowledgeDataUpdate,
+  fetchUserImages,
+  fetchUserProfile,
+  fetchBuddyProfile,
+  openBuddyRegistrationView,
+  submitOpinion
+};
 
 const mapStateToProps = state => ({
   buddyBio: getBuddyBio(state),
   buddyClassYear: getBuddyClassYear(state),
   buddyLookingFor: getBuddyLookingFor(state),
   image_url: getUserImageUrl(state),
+  isDataUpdated: isDataUpdated(state),
   lookingForTypes: getLookingForTypes(state),
   userId: getUserId(state),
   userName: getUserName(state),
