@@ -157,6 +157,10 @@ class BuddyUserView extends Component {
   }
 
   onReportUser = () => {
+    if (isIOS){
+      this.closePopModal();
+    }
+
     Alert.alert(
 
       'Flag Content',
@@ -203,10 +207,20 @@ class BuddyUserView extends Component {
       matchedUserId: this.state.buddyToShow.id,
       opinion: 'UP'
     };
+    if (isIOS){
+      this.closePopModal();
+    }
     this.props.submitOpinion(Subpackage);
     this.props.buddies.delete(this.state.buddyIndex);
     this.nextBuddy()
   }
+<<<<<<< HEAD
+=======
+  @autobind
+  onDislikePress() {
+
+    const {user} = this.props.route;
+>>>>>>> added functions to close the pop up modal after pressing
 
   @autobind
   onDislikePress(){
@@ -216,6 +230,7 @@ class BuddyUserView extends Component {
       matchedUserId: this.state.buddyToShow.id,
       opinion: 'DOWN'
     };
+
     this.props.submitOpinion(Subpackage);
     this.props.buddies.delete(this.state.buddyIndex);
     this.nextBuddy()

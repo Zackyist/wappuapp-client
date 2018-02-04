@@ -40,8 +40,6 @@ import { openRegistrationView, acknowledgeDataUpdate } from '../../actions/regis
 import { getCurrentCityName } from '../../concepts/city';
 import WebViewer from '../webview/WebViewer';
 import BuddyUserView from '../whappubuddy/BuddyUserView';
-import DeleteProfileView from '../whappubuddy/DeleteProfileView';
-
 import Button from '../../components/common/Button';
 
 const headerImage = require('../../../assets/frontpage_header-bg.jpg');
@@ -55,6 +53,7 @@ class UserView extends Component {
     super(props)
 
     this.closeModal = this.closeModal.bind(this)
+
     this.state = {
       modalVisible: false
     };
@@ -117,36 +116,22 @@ class UserView extends Component {
     };
   }
 
-  deleteBuddyProfile() {
-    let { user } = this.props.route;
-    const { userName } = this.props;
-
-    // Show Current user if not user selected
-    if (!user) {
-      user = { name: userName };
-    }
-
-    return () => {
-      this.props.navigator.push({
-        component: DeleteProfileView,
-        name: `${user.name}`,
-        user
-      });
-    };
-  }
-
   onTOS = () => {
+    if (isIOS) this.closePopModal();
     this.props.navigator.push({component: LegalStuff});
   }
   onChangeMyProfile() {
+    if (isIOS) this.closePopModal();
     this.props.openRegistrationView();
   }
 
   onAppInfo = () => {
+    if (isIOS) this.closePopModal();
     this.props.navigator.push({component: AppInfo});
   }
 
   onFuksiSurvivalKit = () => {
+    if (isIOS) this.closePopModal();
     this.props.navigator.push({
       component: WebViewer,
       showName: true,
@@ -557,6 +542,7 @@ const mapStateToProps = state => ({
   userTeam: getUserTeam(state),
   cityName: getCurrentCityName(state),
   tab: getCurrentTab(state),
+  image_url: getUserImageUrl(state),
   isOnWhappuBuddy: hasRegisteredOnWhappuBuddy(state),
   isDataUpdated: isDataUpdated(state)
 });
