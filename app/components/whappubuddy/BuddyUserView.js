@@ -214,13 +214,6 @@ class BuddyUserView extends Component {
     this.props.buddies.delete(this.state.buddyIndex);
     this.nextBuddy()
   }
-<<<<<<< HEAD
-=======
-  @autobind
-  onDislikePress() {
-
-    const {user} = this.props.route;
->>>>>>> added functions to close the pop up modal after pressing
 
   @autobind
   onDislikePress(){
@@ -425,12 +418,12 @@ class BuddyUserView extends Component {
         <View style={styles.thumbs}>
         {!this.isCurrentUser() &&
           <View style={{flex: 1, flexDirection: 'row'}}>
-          <TouchableHighlight onPress={this.onLikePress}>
+          <TouchableOpacity onPress={this.onLikePress}>
             <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.onDislikePress}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.onDislikePress}>
             <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
-          </TouchableHighlight>
+          </TouchableOpacity>
           </View>
         }
         </View>
