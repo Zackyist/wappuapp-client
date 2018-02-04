@@ -55,7 +55,6 @@ class UserView extends Component {
     super(props)
 
     this.closeModal = this.closeModal.bind(this)
-
     this.state = {
       modalVisible: false
     };
@@ -118,7 +117,7 @@ class UserView extends Component {
     };
   }
 
-  deleteBuddyProfile = () => {
+  deleteBuddyProfile() {
     let { user } = this.props.route;
     const { userName } = this.props;
 
@@ -167,7 +166,27 @@ class UserView extends Component {
 
   // Close the user image modal
   closeModal() {
+
     this.setState({modalVisible: false})
+
+}
+
+openPopModal = () => {
+  this.setState({popModalVisible:true});
+}
+
+togglePopModal = () => {
+  if (this.state.modalVisible){
+    this.closePopModal();
+  }
+  else {
+    this.openPopModal();
+  }
+}
+
+closePopModal = () => {
+  this.setState({popModalVisible:false});
+
 }
 
   render() {
@@ -538,7 +557,6 @@ const mapStateToProps = state => ({
   userTeam: getUserTeam(state),
   cityName: getCurrentCityName(state),
   tab: getCurrentTab(state),
-  image_url: getUserImageUrl(state),
   isOnWhappuBuddy: hasRegisteredOnWhappuBuddy(state),
   isDataUpdated: isDataUpdated(state)
 });

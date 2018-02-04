@@ -83,12 +83,6 @@ class BuddyUserView extends Component {
 
   }
 
-
-  // This method is used to navigate from the user's WhappuBuddy profile to their Whappu Log
-  showWhappuLog = () => {
-    let { user } = this.props.route;
-    const { userName } = this.props;
-
   componentWillReceiveProps({ tab, userId }) {
     // Fetch images and data on Buddy tab if this is the user's own profile
     if (tab !== this.props.tab && tab === 'BUDDY') {
