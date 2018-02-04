@@ -67,12 +67,6 @@ const getLookingForTypes = () => {
     .then(response => response.json());
 };
 
-const getMatches = uuid => {
-  return wapuFetch(Endpoints.urls.matchesList(uuid))
-    .then(checkResponseStatus)
-    .then(response => response.json());
-};
-
 const getImages = eventId => {
   return wapuFetch(Endpoints.urls.event(eventId))
     .then(checkResponseStatus)
