@@ -4,6 +4,11 @@ import { parseInt } from 'lodash';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
+import {
+  UPDATE_BUDDY_BIO,
+  UPDATE_BUDDY_CLASS_YEAR,
+  UPDATE_BUDDY_LOOKING_FOR
+} from '../actions/registration';
 
 // # Selectors
 export const getBuddyBio = state => state.buddyUser.getIn(['buddyProfile', 'bio_text'], '') || '';
@@ -28,6 +33,9 @@ export const fetchBuddyProfile = (userId) => (dispatch) => {
         payload: buddyProfile
       });
       dispatch({ type: GET_BUDDY_PROFILE_SUCCESS });
+      dispatch({ type: UPDATE_BUDDY_BIO, payload: buddyProfile.bio_text });
+      dispatch({ type: UPDATE_BUDDY_LOOKING_FOR, payload: buddyProfile.bio_looking_for_type_id });
+      dispatch({ type: UPDATE_BUDDY_CLASS_YEAR, payload: buddyProfile.class_year });
     })
     .catch(error => dispatch({ type: GET_BUDDY_PROFILE_FAILURE, error: true, payload: error }));
 }

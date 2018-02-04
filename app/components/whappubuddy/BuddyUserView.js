@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
+import { parseInt } from 'lodash';
 
 import {
   fetchUserProfile,
@@ -70,14 +71,6 @@ class BuddyUserView extends Component {
   @autobind
   showWhappuLog() {
     let { user } = this.props.route;
-    const { userName } = this.props;
-
-    //console.log(user.id);
-
-    // Show Current user if not user selected
-    if (!user) {
-      user = { name: userName };
-    }
 
     return () => {
       this.props.navigator.push({
@@ -105,7 +98,13 @@ class BuddyUserView extends Component {
   onMyPopupEvent = (eventName, index) => {
 
     if (eventName !== 'itemSelected') return
-    if (index === 0) this.onDeleteProfile()
+    if (index === 0) this.onEditProfile()
+    if (index === 1) this.onDeleteProfile()
+  }
+
+  @autobind
+  onEditProfile() {
+    this.props.openBuddyRegistrationView();
   }
 
   onDeleteProfile = () => {
@@ -147,16 +146,35 @@ class BuddyUserView extends Component {
     this.props.submitOpinion(Subpackage);
   }
 
-  @autobind
-  openBuddyRegistration() {
-    this.props.openBuddyRegistrationView();
-  }
-
+  // Adds ordinal endings to the class year
   @autobind
   renderClassYear() {
-    if (this.props.buddyClassYear) {
-      // TODO: Add the class year ordering to the end of the number: st, nd, rd, th
-      return this.props.buddyClassYear;
+    const { buddyClassYear } = this.props;
+
+    if (buddyClassYear) {
+      const lastChar =buddyClassYear.slice(-1);
+      let ordinal = 'th';
+
+      switch (parseInt(lastChar)) {
+        case 1:
+          ordinal = 'st';
+          break;
+        case 2:
+          ordinal = 'nd';
+          break;
+        case 3:
+          ordinal = 'rd';
+          break;
+        default:
+      }
+
+      // 11, 12 and 13 are always 'th'
+      const parsed = parseInt(buddyClassYear);
+      if (parsed == 11 || parsed == 12 || parsed == 13) {
+        ordinal = 'th';
+      }
+      
+      return buddyClassYear + ordinal;
     } else {
       return '';
     }
@@ -208,7 +226,7 @@ class BuddyUserView extends Component {
 
             {user.name === userName && !isIOS &&
               <View style={styles.menu}>
-                <PopupMenu actions={['Delete my profile']} onPress={this.onMyPopupEvent} />
+                <PopupMenu actions={['Edit my profile', 'Delete my profile']} onPress={this.onMyPopupEvent} />
               </View>
             }
 
@@ -242,6 +260,9 @@ class BuddyUserView extends Component {
           </Text>
         </View>
         <View style={styles.thumbs}>
+        
+        { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
+             the user's own profile */}
         {user.id &&
           <View style={{flex: 1, flexDirection: 'row'}}>
           <TouchableHighlight onPress={this.onLikePress}>
@@ -253,6 +274,7 @@ class BuddyUserView extends Component {
           </View>
         }
         </View>
+        {user.id &&
         <View style={styles.logButtonView}>
           <Button
             onPress={this.showWhappuLog()}
@@ -262,6 +284,7 @@ class BuddyUserView extends Component {
             Check out my Whappu Log
           </Button>
         </View>
+        }
 
       </ParallaxView>
       </View>
@@ -464,7 +487,6 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  image_url: getUserImageUrl(state),
   tab: getCurrentTab(state),
 });
 
