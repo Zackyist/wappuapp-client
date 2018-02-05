@@ -82,7 +82,7 @@ class BuddyUserView extends Component {
       this.props.fetchUserImages(userId);
       this.props.fetchUserProfile(userId);
       this.props.fetchBuddyProfile(userId);
-      this.nextBuddy();
+      this.setState({buddyToShow: this.props.buddies.get(this.state.buddyIndex)});
     }
   }
 
@@ -170,6 +170,9 @@ class BuddyUserView extends Component {
   nextBuddy() {
     if (this.props.buddies.size > 0) {
 
+      console.log('kamuindex');
+      console.log(this.state.buddyIndex);
+
     if (this.state.buddyIndex === this.props.buddies.size - 1) {
       this.setState({buddyToShow: this.props.buddies.get(this.state.buddyIndex)});
       this.setState({buddyIndex: 0});
@@ -182,7 +185,6 @@ class BuddyUserView extends Component {
     this.props.fetchBuddyProfile(this.state.buddyToShow.id);
     this.props.fetchUserProfile(this.state.buddyToShow.id);
     this.props.fetchUserImages(this.state.buddyToShow.id);
-    this.props.fetchUserBuddies(this.props.userId);
     }
     else {
       this.onBuddiesEnd()
