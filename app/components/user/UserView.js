@@ -55,7 +55,8 @@ class UserView extends Component {
     this.closeModal = this.closeModal.bind(this)
 
     this.state = {
-      modalVisible: false
+      modalVisible: false,
+      popModalVisible: false
     };
   }
 
@@ -117,21 +118,22 @@ class UserView extends Component {
   }
 
   onTOS = () => {
-    if (isIOS) this.closePopModal();
+    this.closePopModal();
     this.props.navigator.push({component: LegalStuff});
   }
-  onChangeMyProfile() {
-    if (isIOS) this.closePopModal();
+
+  onChangeMyProfile = () => {
+    this.closePopModal();
     this.props.openRegistrationView();
   }
 
   onAppInfo = () => {
-    if (isIOS) this.closePopModal();
+    this.closePopModal();
     this.props.navigator.push({component: AppInfo});
   }
 
   onFuksiSurvivalKit = () => {
-    if (isIOS) this.closePopModal();
+    this.closePopModal();
     this.props.navigator.push({
       component: WebViewer,
       showName: true,
@@ -231,7 +233,7 @@ closePopModal = () => {
             }
 
 
-            {user.name === userName && !isIOS &&
+            {user.name === userName && isIOS &&
               <View style={styles.menu}>
                 {cityName === 'Tampere' &&
                     <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
@@ -241,6 +243,35 @@ closePopModal = () => {
                 }
               </View>
             }
+
+            {user.name === userName && !isIOS && <View style={styles.popContainer}>
+    <Modal
+        onBackdropPress={() => this.setState({ popModalVisible: false })}
+        visible={this.state.popModalVisible}
+        animationType={'fade'}>
+        <View style={styles.modalContainer}>
+        <TouchableOpacity onPress={this.onTOS}>
+          <Text style={styles.modalLink}>Terms of Service</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.onChangeMyProfile}>
+          <Text style={styles.modalLink}>Change My Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={this.onAppInfo}>
+          <Text style={styles.modalLink}> App Information</Text>
+        </TouchableOpacity>
+          {cityName === 'Tampere' && <View>
+          <TouchableOpacity onPress={this.onFuksiSurvivalKit}>
+            <Text style={styles.modalLink}>Fuksi Survival Kit</Text>
+          </TouchableOpacity>
+          </View>
+        }
+        </View>
+    </Modal>
+    <TouchableOpacity onPress={this.togglePopModal}>
+    <Icon name='more-vert' size={28} color={'white'} />
+    </TouchableOpacity>
+  </View>
+}
 
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
@@ -520,7 +551,32 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 100
-  }
+  },
+  popContainer: {
+   position: 'absolute',
+   right: 7,
+   top: 7,
+   width: 50,
+ },
+ modalContainer: {
+   backgroundColor: 'white',
+   position: 'absolute',
+   width: 150,
+   top: 75,
+   right: 0
+
+ },
+ popUpiOS: {
+   width: 50,
+   height: 50
+ },
+ modalLink: {
+   paddingLeft: 10,
+   paddingRight: 15,
+   paddingTop: 10,
+   paddingBottom: 10,
+   color: theme.secondary
+ },
 });
 
 

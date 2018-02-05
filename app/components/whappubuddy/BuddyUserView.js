@@ -147,10 +147,12 @@ class BuddyUserView extends Component {
 
   @autobind
   onEditProfile() {
+    this.closePopModal();
     this.props.openBuddyRegistrationView();
   }
 
   onDeleteProfile = () => {
+    this.closePopModal();
     this.props.navigator.push({
       component: DeleteProfileView
     });
