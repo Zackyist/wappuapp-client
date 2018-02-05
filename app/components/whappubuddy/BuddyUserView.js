@@ -170,9 +170,6 @@ class BuddyUserView extends Component {
   nextBuddy() {
     if (this.props.buddies.size > 0) {
 
-      console.log('kamuindex');
-      console.log(this.state.buddyIndex);
-
     if (this.state.buddyIndex === this.props.buddies.size - 1) {
       this.setState({buddyToShow: this.props.buddies.get(this.state.buddyIndex)});
       this.setState({buddyIndex: 0});
@@ -258,7 +255,7 @@ class BuddyUserView extends Component {
   render() {
 
     const { buddyBio, buddyClassYear, buddyLookingFor, image_url, userTeam, userName, navigator } = this.props;
-    let user = this.props.buddies.get(this.state.buddyIndex)
+    let user = this.props.buddies.get(this.state.buddyIndex);
 
     // Show Current user if not user selected
     if (!user) {
