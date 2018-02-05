@@ -14,7 +14,7 @@ export const getTotalSimas = state => state.user.getIn(['profile', 'numSimas'], 
 export const getSelectedUser = state => state.user.get('selectedUser', Map()) || Map();
 export const isLoadingUserImages = state => state.user.get('isLoading', false) || false;
 export const getUserImageUrl = state => state.user.getIn(['profile', 'image_url'], '') || '';
-export const getUserBuddies = state => state.user.get('buddies') || Immutable.List([]);
+export const getUserBuddies = state => state.user.get('buddies') || List([]);
 // TODO: Fix hasRegisteredOnWhappuBuddy once the backend fix has been applied
 export const hasRegisteredOnWhappuBuddy = state => true;
 // export const hasRegisteredOnWhappuBuddy = state => state.user.get(['profile', 'heila'], false) || false;
