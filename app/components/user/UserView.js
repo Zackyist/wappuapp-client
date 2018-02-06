@@ -233,7 +233,7 @@ closePopModal = () => {
             }
 
 
-            {user.name === userName && isIOS &&
+            {this.isCurrentUser() && !isIOS &&
               <View style={styles.menu}>
                 {cityName === 'Tampere' &&
                     <PopupMenu actions={['Terms of Service', 'Change my profile', 'App Information', 'Fuksi Survival Kit']} onPress={this.onPopupEvent} />
@@ -244,33 +244,33 @@ closePopModal = () => {
               </View>
             }
 
-            {user.name === userName && !isIOS && <View style={styles.popContainer}>
-    <Modal
-        onBackdropPress={() => this.setState({ popModalVisible: false })}
-        visible={this.state.popModalVisible}
-        animationType={'fade'}>
-        <View style={styles.modalContainer}>
-        <TouchableOpacity onPress={this.onTOS}>
-          <Text style={styles.modalLink}>Terms of Service</Text>
+{this.isCurrentUser() && isIOS && <View style={styles.popContainer}>
+        <Modal
+            onBackdropPress={() => this.setState({ popModalVisible: false })}
+            visible={this.state.popModalVisible}
+            animationType={'fade'}>
+            <View style={styles.modalContainer}>
+            <TouchableOpacity onPress={this.onTOS}>
+              <Text style={styles.modalLink}>Terms of Service</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onChangeMyProfile}>
+              <Text style={styles.modalLink}>Change My Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onAppInfo}>
+              <Text style={styles.modalLink}> App Information</Text>
+            </TouchableOpacity>
+              {cityName === 'Tampere' && <View>
+              <TouchableOpacity onPress={this.onFuksiSurvivalKit}>
+                <Text style={styles.modalLink}>Fuksi Survival Kit</Text>
+              </TouchableOpacity>
+              </View>
+            }
+            </View>
+        </Modal>
+        <TouchableOpacity onPress={this.togglePopModal}>
+        <Icon name='more-vert' size={28} color={'white'} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={this.onChangeMyProfile}>
-          <Text style={styles.modalLink}>Change My Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.onAppInfo}>
-          <Text style={styles.modalLink}> App Information</Text>
-        </TouchableOpacity>
-          {cityName === 'Tampere' && <View>
-          <TouchableOpacity onPress={this.onFuksiSurvivalKit}>
-            <Text style={styles.modalLink}>Fuksi Survival Kit</Text>
-          </TouchableOpacity>
-          </View>
-        }
-        </View>
-    </Modal>
-    <TouchableOpacity onPress={this.togglePopModal}>
-    <Icon name='more-vert' size={28} color={'white'} />
-    </TouchableOpacity>
-  </View>
+      </View>
 }
 
             {/* Load user's profile picture or avatar with initials */}

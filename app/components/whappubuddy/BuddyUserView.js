@@ -334,7 +334,7 @@ class BuddyUserView extends Component {
             }
 
 
-            {user.name === userName && !isIOS &&
+            {this.isCurrentUser() && !isIOS &&
               <View style={styles.menu}>
                 <PopupMenu actions={['Edit my profile', 'Delete my profile']} onPress={this.onMyPopupEvent} />
               </View>
@@ -360,13 +360,13 @@ class BuddyUserView extends Component {
               </View>
             }
 
-            {user.name !== userName && !isIOS &&
+            {!this.isCurrentUser() && !isIOS &&
               <View style={styles.menu}>
                 <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
               </View>
             }
 
-            {user.name !== userName && isIOS && <View style={styles.popContainer}>
+            {!this.isCurrentUser() && isIOS && <View style={styles.popContainer}>
                 <Modal
                     onBackdropPress={() => this.setState({ popModalVisible: false })}
                     visible={this.state.popModalVisible}
