@@ -14,7 +14,7 @@ import {
 export const getBuddyBio = state => state.buddyUser.getIn(['buddyProfile', 'bio_text'], '') || '';
 export const getBuddyClassYear = state => state.buddyUser.getIn(['buddyProfile', 'class_year'], '') || '';
 export const getBuddyLookingFor = state => state.buddyUser.getIn(['buddyProfile', 'bio_looking_for_type_id'], '') || '';
-export const getBuddyPushToken = state => state.buddyUser.getIn(['buddyProfile', 'pushToken'], '') || '';
+export const getBuddyPushToken = state => state.buddyUser.getIn(['buddyProfile', 'push_token'], '') || '';
 
 // # Action creators
 const {
@@ -33,9 +33,6 @@ export const fetchBuddyProfile = (userId) => (dispatch) => {
         payload: buddyProfile
       });
       dispatch({ type: GET_BUDDY_PROFILE_SUCCESS });
-      dispatch({ type: UPDATE_BUDDY_BIO, payload: buddyProfile.bio_text });
-      dispatch({ type: UPDATE_BUDDY_LOOKING_FOR, payload: buddyProfile.bio_looking_for_type_id });
-      dispatch({ type: UPDATE_BUDDY_CLASS_YEAR, payload: buddyProfile.class_year });
     })
     .catch(error => dispatch({ type: GET_BUDDY_PROFILE_FAILURE, error: true, payload: error }));
 }

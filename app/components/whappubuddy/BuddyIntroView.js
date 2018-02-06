@@ -62,18 +62,19 @@ class BuddyIntroView extends Component {
         <View style={styles.viewContainer}>
           <ScrollView
             ref={view => this.containerScrollViewRef = view}
-            showsVerticalScrollIndicator={true}
-            style={styles.container}>
+            showsVerticalScrollIndicator={false}
+            style={styles.container}
+          >
             <View style={styles.innerContainer}>
               <Text style={styles.heading}>Hello {userName}!</Text>
               <Text style={styles.helpText}>Welcome to WhappuBuddy! It's the modern way to find new friends to spend this Wappu with.</Text>
               <View style={styles.imagesContainer}>
-                <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
                 <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
+                <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
               </View>
               <Text style={styles.helpText}>Just browse profiles and thumb them up or down. Matched users will be able to chat with each other.</Text>
               <View style={styles.imagesContainer}>
-                <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+                <Image style={{width: 30, height: 30, marginHorizontal: 25}} source={require('../../../assets/skipButton.png')}/>
               </View>
               <Text style={styles.helpText}>You can browse potential buddies without registering but you cannot give anyone a thumbs up or down.</Text>
               <Text style={styles.adviceText}>So let's sign you up!</Text>

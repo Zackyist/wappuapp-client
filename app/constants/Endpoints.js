@@ -27,9 +27,10 @@ const EndpointUrls = {
   putOpinion: (uuid) => `${ROOT_URL}/heila/${uuid}`,
   opinion: (uuid) => `${ROOT_URL}/heila/matches/`,
   matchesList: (uuid) => `${ROOT_URL}/heila/matches/${uuid}`,
-  buddyProfile: (uuid) => `${ROOT_URL}/heila/${uuid}?userId=${uuid}`,
+  buddyProfile: (userId) => `${ROOT_URL}/heila/?userId=${userId}`,
   buddyInfo: (uuid) => `${ROOT_URL}/heila/${uuid}`,
-  lookingForTypes: () => `${ROOT_URL}/heila-types`
+  buddyUser: (uuid) => `${ROOT_URL}/heila?uuid=${uuid}`,
+  lookingForTypes: () => `${ROOT_URL}/heila-types`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);

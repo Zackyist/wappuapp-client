@@ -17,6 +17,11 @@ const {
   GET_USER_FAILURE
 } = createRequestActionTypes('GET_USER');
 const {
+  GET_BUDDY_USER_REQUEST,
+  GET_BUDDY_USER_SUCCESS,
+  GET_BUDDY_USER_FAILURE
+} = createRequestActionTypes('GET_BUDDY_USER');
+const {
   GET_LOOKING_FOR_TYPES_REQUEST,
   GET_LOOKING_FOR_TYPES_SUCCESS,
   GET_LOOKING_FOR_TYPES_FAILURE
@@ -33,9 +38,9 @@ const UPDATE_PROFILE_PIC = 'UPDATE_PROFILE_PIC';
 const ACKNOWLEDGE_DATA_UPDATE = 'ACKNOWLEDGE_DATA_UPDATE';
 const CLOSE_BUDDY_INTRO_VIEW = 'CLOSE_BUDDY_INTRO_VIEW';
 const CLOSE_BUDDY_REGISTRATION_VIEW = 'CLOSE_BUDDY_REGISTRATION_VIEW';
-const SET_DATA_UPDATED = 'SET_DATA_UPDATED';
 const OPEN_BUDDY_INTRO_VIEW = 'OPEN_BUDDY_INTRO_VIEW';
 const OPEN_BUDDY_REGISTRATION_VIEW = 'OPEN_BUDDY_REGISTRATION_VIEW';
+const SET_DATA_UPDATED = 'SET_DATA_UPDATED';
 const UPDATE_BUDDY_BIO = 'UPDATE_BUDDY_BIO';
 const UPDATE_BUDDY_CLASS_YEAR = 'UPDATE_BUDDY_CLASS_YEAR';
 const UPDATE_BUDDY_LOOKING_FOR = 'UPDATE_BUDDY_LOOKING_FOR';
@@ -151,6 +156,21 @@ const closeBuddyRegistrationView = () => {
   return { type: CLOSE_BUDDY_REGISTRATION_VIEW };
 };
 
+// Used for getting the user's own profile and keeping it in store
+const getBuddyUser = () => {
+  return dispatch => {
+    dispatch({ type: GET_BUDDY_USER_REQUEST });
+    const uuid = DeviceInfo.getUniqueID();
+    return api.getBuddyUser(uuid)
+      .then(buddyUser => {
+        dispatch({ type: GET_BUDDY_USER_SUCCESS, payload: buddyUser });
+      })
+      .catch(error => {
+        dispatch({ type: GET_BUDDY_USER_FAILURE, error: error });
+      });
+  };
+};
+
 const getLookingForTypes = () => (dispatch) => {
   dispatch({ type: GET_LOOKING_FOR_TYPES_REQUEST });
   return api.getLookingForTypes()
@@ -176,10 +196,10 @@ const putBuddyProfile = (onPutError) => {
     const bio_looking_for_type_id = getStore().registration.get('bio_looking_for_type_id');
     // TODO: Replace this one with the commented-out ones below - after 
     //       the push token is properly generated somewhere in the client
-    const pushToken = "INVALID";
-    //const pushToken = getStore().registration.get('pushToken');
+    const push_token = "INVALID";
+    //const push_token = getStore().registration.get('push_token');
     const class_year = getStore().registration.get('class_year');
-    return api.putBuddyProfile({ uuid, bio_text, bio_looking_for_type_id, pushToken, class_year })
+    return api.putBuddyProfile({ uuid, bio_text, bio_looking_for_type_id, push_token, class_year })
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_BUDDY_REGISTRATION_VIEW });
@@ -227,12 +247,15 @@ export {
   ACKNOWLEDGE_DATA_UPDATE,
   CLOSE_BUDDY_INTRO_VIEW,
   CLOSE_BUDDY_REGISTRATION_VIEW,
-  SET_DATA_UPDATED,
+  GET_BUDDY_USER_REQUEST,
+  GET_BUDDY_USER_SUCCESS,
+  GET_BUDDY_USER_FAILURE,
   GET_LOOKING_FOR_TYPES_REQUEST,
   GET_LOOKING_FOR_TYPES_SUCCESS,
   GET_LOOKING_FOR_TYPES_FAILURE,
   OPEN_BUDDY_INTRO_VIEW,
   OPEN_BUDDY_REGISTRATION_VIEW,
+  SET_DATA_UPDATED,
   UPDATE_BUDDY_BIO,
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
@@ -251,6 +274,7 @@ export {
   acknowledgeDataUpdate,
   closeBuddyIntroView,
   closeBuddyRegistrationView,
+  getBuddyUser,
   getLookingForTypes,
   openBuddyIntroView,
   openBuddyRegistrationView,

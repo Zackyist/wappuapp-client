@@ -10,7 +10,8 @@ import {
   Image,
   Platform,
   Text,
-  Alert
+  Alert,
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
@@ -35,9 +36,14 @@ import {
   getUserName,
   getUserId,
   getLookingForTypes,
-  isDataUpdated
+  isDataUpdated,
+  usesWhappuBuddy
 } from '../../reducers/registration';
-import { openBuddyRegistrationView, acknowledgeDataUpdate } from '../../actions/registration';
+import {
+  acknowledgeDataUpdate,
+  openBuddyIntroView,
+  openBuddyRegistrationView
+} from '../../actions/registration';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -129,15 +135,14 @@ class BuddyUserView extends Component {
     };
   }
 
-
+  // Popup Menu actions for other users' profiles
   onPopupEvent = (eventName, index) => {
-
     if (eventName !== 'itemSelected') return
     if (index === 0) this.onReportUser()
   }
 
+  // Popup Menu actions for the user's own profile
   onMyPopupEvent = (eventName, index) => {
-
     if (eventName !== 'itemSelected') return
     if (index === 0) this.onEditProfile()
     if (index === 1) this.onDeleteProfile()
@@ -174,47 +179,54 @@ class BuddyUserView extends Component {
   nextBuddy() {
     if (this.props.buddies.size > 0) {
 
-    if (this.state.buddyIndex === this.props.buddies.size - 1) {
-      this.setState({buddyIndex: 0});
-    }
-    else {
-      this.setState({buddyIndex: this.state.buddyIndex + 1});
-    }
-    
-    this.setState({buddyToShow: this.props.buddies.get(this.state.buddyIndex)});
+      if (this.state.buddyIndex === this.props.buddies.size - 1) {
+        this.setState({buddyIndex: 0});
+      }
+      else {
+        this.setState({buddyIndex: this.state.buddyIndex + 1});
+      }
+      
+      this.setState({buddyToShow: this.props.buddies.get(this.state.buddyIndex)});
 
-    this.props.fetchBuddyProfile(this.state.buddyToShow.id);
-    this.props.fetchUserProfile(this.state.buddyToShow.id);
-    this.props.fetchUserImages(this.state.buddyToShow.id);
-    this.props.fetchUserBuddies(this.props.userId);
-    }
-    else {
+      this.props.fetchBuddyProfile(this.state.buddyToShow.id);
+      this.props.fetchUserProfile(this.state.buddyToShow.id);
+      this.props.fetchUserImages(this.state.buddyToShow.id);
+      this.props.fetchUserBuddies(this.props.userId);
+    } else {
       this.onBuddiesEnd()
     }
   }
 
   @autobind
   onLikePress(){
-    const Subpackage  = {
-      matchedUserId: this.state.buddyToShow.id,
-      opinion: 'UP'
-    };
-    this.props.submitOpinion(Subpackage);
-    this.props.buddies.delete(this.state.buddyIndex);
-    this.nextBuddy()
+    if (this.props.usesWhappuBuddy) {
+      const Subpackage  = {
+        matchedUserId: this.state.buddyToShow.id,
+        opinion: 'UP'
+      };
+      this.props.submitOpinion(Subpackage);
+      this.props.buddies.delete(this.state.buddyIndex);
+      this.nextBuddy()
+    } else {
+      this.props.openBuddyIntroView();
+    }
   }
 
   @autobind
   onDislikePress(){
-    console.log('koko');
-    console.log(this.props.buddies.size);
-    const Subpackage  = {
-      matchedUserId: this.state.buddyToShow.id,
-      opinion: 'DOWN'
-    };
-    this.props.submitOpinion(Subpackage);
-    this.props.buddies.delete(this.state.buddyIndex);
-    this.nextBuddy()
+    if (this.props.usesWhappuBuddy) {
+      console.log('koko');
+      console.log(this.props.buddies.size);
+      const Subpackage  = {
+        matchedUserId: this.state.buddyToShow.id,
+        opinion: 'DOWN'
+      };
+      this.props.submitOpinion(Subpackage);
+      this.props.buddies.delete(this.state.buddyIndex);
+      this.nextBuddy()
+    } else {
+      this.props.openBuddyIntroView();
+    }
   }
 
   // Adds ordinal endings to the class year
@@ -288,108 +300,102 @@ class BuddyUserView extends Component {
     return (
       <View style={{ flex: 1 }}>
       {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
-      <ParallaxView
-        backgroundSource={headerImage}
-        windowHeight={height/1.8}
-        style={{ backgroundColor:theme.white }}
-        header={(
-          <View style={styles.header}>
-            {!isIOS && user.name !== userName &&
-            <View style={styles.backLink}>
-              <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
-                <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
-              </TouchableHighlight>
-            </View>
-            }
-
-
-            {user.name === userName && !isIOS &&
-              <View style={styles.menu}>
-                <PopupMenu actions={['Edit my profile', 'Delete my profile']} onPress={this.onMyPopupEvent} />
-              </View>
-            }
-
-            {user.name !== userName && !isIOS &&
-              <View style={styles.menu}>
-                <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
-              </View>
-            }
-
-
-            <View style={styles.headerInfo}>
-              <Text style={styles.headerTitle}>
-              {this.props.buddies.size > 0 &&
-                this.state.buddyToShow.name || userName || "A man/woman has no name"
-              }
-              </Text>
-              <Text style={styles.headerSubTitle}>
-              {this.props.buddies.size > 0 &&
-                this.state.buddyToShow.team || userTeam || "The Guild"
-              }
-              {this.props.buddies.size > 0 &&
-                this.renderClassYear(this.state.buddyToShow.class_year) || this.renderClassYear(buddyClassYear) || "69 BC"
-              }
-              </Text>
-            </View>
-          </View>
-        )}
+      <ScrollView
+        ref={view => this.containerScrollViewRef = view}
+        showsVerticalScrollIndicator={true}
+        style={styles.container}
       >
+        <ParallaxView
+          backgroundSource={headerImage}
+          windowHeight={height/1.8}
+          style={{ backgroundColor:theme.white }}
+          header={(
+            <View style={styles.header}>
+              {!isIOS && user.name !== userName &&
+              <View style={styles.backLink}>
+                <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
+                  <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
+                </TouchableHighlight>
+              </View>
+              }
 
-        <View style={styles.bioView}>
-          <Text style={styles.bioTitle}>About Me</Text>
-          <Text style={styles.bioText}>
-          {this.props.buddies.size > 0 &&
-            this.state.buddyToShow.bio_text || buddyBio || "No bio for lamo"
-          }
-          </Text>
-          
-          <Text style={styles.lookingForTitle}>Looking For</Text>
-          <Text style={styles.lookingForText}>
-            {this.renderLookingFor()}
-          </Text>
 
-        </View>
+              {user.name === userName && !isIOS &&
+                <View style={styles.menu}>
+                  <PopupMenu actions={['Edit my profile', 'Delete my profile']} onPress={this.onMyPopupEvent} />
+                </View>
+              }
+
+              {user.name !== userName && !isIOS &&
+                <View style={styles.menu}>
+                  <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
+                </View>
+              }
+
+
+              <View style={styles.headerInfo}>
+                <Text style={styles.headerTitle}>
+                {this.props.buddies.size > 0 &&
+                  this.state.buddyToShow.name || userName || "A man/woman has no name"
+                }
+                </Text>
+                <Text style={styles.headerSubTitle}>
+                {this.props.buddies.size > 0 &&
+                  this.state.buddyToShow.team || userTeam || "The Guild"
+                }
+                {this.props.buddies.size > 0 &&
+                  this.renderClassYear(this.state.buddyToShow.class_year) || this.renderClassYear(buddyClassYear) || "69 BC"
+                }
+                </Text>
+              </View>
+            </View>
+          )}
+        >
         
-        { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
-             the user's own profile */}
-        <View style={styles.thumbs}>
-        {!this.isCurrentUser() &&
-          <View style={{flex: 1, flexDirection: 'row'}}>
-          <TouchableHighlight onPress={this.onLikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.onDislikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
-          </TouchableHighlight>
+          { /* Only show the Whappu Log connection button if this is not the user's own profile */}
+          {!this.isCurrentUser() &&
+          <View style={styles.logButtonView}>
+            <Button
+              onPress={this.showWhappuLog()}
+              style={styles.logButton}
+              isDisabled={false}
+            >
+              Check out my Whappu Log
+            </Button>
           </View>
-        }
-        </View>
+          }
 
-        {!this.isCurrentUser() &&
-        <View style={styles.logButtonView}>
-          <Button
-            onPress={ this.nextBuddy }
-            style={styles.logButton}
-            isDisabled={false}
-          >
-            Skip
-          </Button>     
-        </View>
-        }
+          <View style={styles.bioView}>
+            <Text style={styles.bioTitle}>About Me</Text>
+            <Text style={styles.bioText}>
+            {this.props.buddies.size > 0 &&
+              this.state.buddyToShow.bio_text || buddyBio || "No bio for lamo"
+            }
+            </Text>
+            
+            <Text style={styles.lookingForTitle}>Looking For</Text>
+            <Text style={styles.lookingForText}>
+              {this.renderLookingFor()}
+            </Text>
+          </View>
+        </ParallaxView>
+      </ScrollView>
 
-        {!this.isCurrentUser() &&
-        <View style={styles.logButtonView}>
-          <Button
-            onPress={this.showWhappuLog()}
-            style={styles.logButton}
-            isDisabled={false}
-          >
-            Check out my Whappu Log
-          </Button>
+      { /* Only show the opinion buttons if this is not the user's own profile */}
+      {!this.isCurrentUser() &&
+        <View style={styles.opinionButtonContainer}>
+          <TouchableOpacity onPress={this.onDislikePress}>
+            <Image style={styles.opinionButtonImage} source={require('../../../assets/thumbDown.png')}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.nextBuddy}>
+            <Image style={styles.skipButtonImage} source={require('../../../assets/skipButton.png')}/>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.onLikePress}>
+            <Image style={styles.opinionButtonImage} source={require('../../../assets/thumbUp.png')}/>
+          </TouchableOpacity>
         </View>
-        }
+      }
 
-      </ParallaxView>
       </View>
     );
   }
@@ -454,17 +460,19 @@ const styles = StyleSheet.create({
   },
   bioView: {
     flex: 1,
-    marginTop: 0
+    marginTop: 0,
+    paddingBottom: 100
   },
   logButton: {
     flex: 1,
   },
   logButtonView: {
-    marginTop: 20,
+    marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    width: width,
+    width: width/1.2,
     flexDirection: 'row',
+    alignSelf: 'center'
   },
   lookingForText: {
     fontSize: 14,
@@ -547,10 +555,6 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: 50
   },
-  thumbs: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   imageContainer:{
     margin: 1,
     marginTop: 2,
@@ -574,20 +578,69 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 0
   },
+  opinionButtonImage: {
+    height: 70,
+    width: 70,
+    borderRadius: 0,
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 0,
+    shadowColor: '#000000',
+    shadowOpacity: 0.15,
+    shadowRadius: 1,
+    shadowOffset: {
+      height: 2,
+      width: 0
+    },
+    backgroundColor: theme.transparent
+  },
+  opinionButtonContainer: {
+    flex:1,
+    flexDirection:'row',
+    marginTop:0,
+    marginBottom:0,
+    marginLeft:5,
+    marginRight:5,
+    height:70,
+    justifyContent: 'space-between',
+    alignItems:'flex-start',
+    position:'absolute',
+    bottom:20,
+    left:0,
+    right:0
+  },
+  skipButtonImage: {
+    height: 40,
+    width: 40,
+    borderRadius: 0,
+    flex: 0,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: (70 - 40) / 2
+  }  
 });
 
 
 const mapDispatchToProps = { 
   acknowledgeDataUpdate,
+  fetchBuddyProfile,
+  fetchUserBuddies,
   fetchUserImages,
   fetchUserProfile,
-  fetchBuddyProfile,
+  openBuddyIntroView,
   openBuddyRegistrationView,
   submitOpinion,
-  fetchUserBuddies
 };
 
 const mapStateToProps = state => ({
+  buddies: getUserBuddies(state),
   buddyBio: getBuddyBio(state),
   buddyClassYear: getBuddyClassYear(state),
   buddyLookingFor: getBuddyLookingFor(state),
@@ -597,8 +650,8 @@ const mapStateToProps = state => ({
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  tab: getCurrentTab(state),
-  buddies: getUserBuddies(state)
+  usesWhappuBuddy: usesWhappuBuddy(state),
+  tab: getCurrentTab(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);
