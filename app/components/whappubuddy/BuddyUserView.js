@@ -73,7 +73,9 @@ class BuddyUserView extends Component {
       this.props.fetchBuddyProfile(user.id);
       this.props.fetchUserBuddies(user.id);
     } else {
-      this.props.fetchBuddyProfile(userId);
+      //this.props.fetchBuddyProfile(userId);
+      this.props.fetchUserBuddies(userId);
+      this.props.updateCurrentBuddy(this.props.buddies.get(0));
     }
 
   }
@@ -81,7 +83,8 @@ class BuddyUserView extends Component {
   componentWillReceiveProps({ tab, userId }) {
     // Fetch images and data on Buddy tab if this is the user's own profile
     if (tab !== this.props.tab && tab === 'BUDDY') {
-      this.props.fetchBuddyProfile(this.props.buddies.get(this.state.buddyIndex).id);
+      this.props.fetchUserBuddies(userId);
+      this.props.updateCurrentBuddy(this.props.buddies.get(0));
     }
   }
 
@@ -326,19 +329,17 @@ class BuddyUserView extends Component {
         </View>
 
         { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
-             the user's own profile */}
-        <View style={styles.thumbs}>
-
-          <View style={{flex: 1, flexDirection: 'row'}}>
-          <TouchableHighlight onPress={this.onLikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.onDislikePress}>
-            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
-          </TouchableHighlight>
-          </View>
-
-        </View>
+        the user's own profile */}
+   <View style={styles.thumbs}>
+     <View style={{flex: 1, flexDirection: 'row'}}>
+     <TouchableHighlight onPress={this.onLikePress}>
+       <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+     </TouchableHighlight>
+     <TouchableHighlight onPress={this.onDislikePress}>
+       <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
+     </TouchableHighlight>
+     </View>
+   </View>
 
         <View style={styles.logButtonView}>
           <Button
