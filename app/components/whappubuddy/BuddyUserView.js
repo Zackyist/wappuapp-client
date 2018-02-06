@@ -399,7 +399,7 @@ class BuddyUserView extends Component {
           </View>
         )}
       >
-      <View>
+
         <View style={styles.bioView}>
           <Text style={styles.bioTitle}>About Me</Text>
           <Text style={styles.bioText}>
@@ -453,7 +453,6 @@ class BuddyUserView extends Component {
           </Button>
         </View>
         }
-        </View>
       </ParallaxView>
       </View>
     );
