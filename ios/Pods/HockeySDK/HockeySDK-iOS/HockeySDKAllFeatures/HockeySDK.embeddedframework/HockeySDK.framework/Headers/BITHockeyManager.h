@@ -191,7 +191,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)startManager;
 
-
 #pragma mark - Public Properties
 
 ///-----------------------------------------------------------------------------
@@ -227,7 +226,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @warning This property needs to be set before calling `startManager`
  */
-@property (nonatomic, strong) NSString *serverURL;
+@property (nonatomic, copy) NSString *serverURL;
 
 
 #if HOCKEYSDK_FEATURE_CRASH_REPORTER
@@ -434,7 +433,7 @@ NS_ASSUME_NONNULL_BEGIN
  This is not identical to the `[ASIdentifierManager advertisingIdentifier]` or
  the `[UIDevice identifierForVendor]`!
  */
-@property (nonatomic, readonly) NSString *installString;
+@property (nonatomic, readonly, copy) NSString *installString;
 
 
 /**

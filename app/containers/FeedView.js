@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Navigator, View, StyleSheet, Platform } from 'react-native';
 import autobind from 'autobind-decorator';
 
+
 import analytics from '../services/analytics';
 import FeedList from '../components/feed/FeedList';
 import RadioPlayer from '../containers/RadioPlayer'
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
 
 class FeedView extends Component {
   componentDidMount() {
+
     analytics.viewOpened(VIEW_NAME);
   }
 

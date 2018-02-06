@@ -174,10 +174,7 @@ const putBuddyProfile = (onPutError) => {
     const uuid = DeviceInfo.getUniqueID();
     const bio_text = getStore().registration.get('bio_text');
     const bio_looking_for_type_id = getStore().registration.get('bio_looking_for_type_id');
-    // TODO: Replace this one with the commented-out ones below - after 
-    //       the push token is properly generated somewhere in the client
-    const pushToken = "INVALID";
-    //const pushToken = getStore().registration.get('pushToken');
+    const pushToken = getStore().registration.get('pushToken');
     const class_year = getStore().registration.get('class_year');
     return api.putBuddyProfile({ uuid, bio_text, bio_looking_for_type_id, pushToken, class_year })
       .then(response => {

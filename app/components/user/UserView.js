@@ -20,6 +20,7 @@ import {
 import { getUserName, getUserId, isDataUpdated } from '../../reducers/registration';
 import { getCurrentTab } from '../../reducers/navigation';
 import { openLightBox } from '../../actions/feed';
+import analytics from '../../services/analytics';
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -46,6 +47,8 @@ const headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
+
+
 
 class UserView extends Component {
 
@@ -75,6 +78,9 @@ class UserView extends Component {
       this.props.fetchUserImages(userId);
       this.props.fetchUserProfile(userId);
     }
+    console.log('UserView :: MOUNTED');
+    analytics.viewOpened(VIEW_NAME);
+
   }
 
   componentDidUpdate() {
@@ -217,7 +223,7 @@ class UserView extends Component {
                 }
               </View>
             }
-            
+
             {/* Load user's profile picture or avatar with initials */}
             {!isLoading ? (
               <View>
