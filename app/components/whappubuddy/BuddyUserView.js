@@ -99,7 +99,7 @@ class BuddyUserView extends Component {
 
   // Checks whether this is the user's own profile or not
   isCurrentUser() {
-    let { user } = this.props.route;
+    let user = this.props.currentBuddy;
     const { userId } = this.props.userId;
 
     if (user) {
@@ -330,17 +330,20 @@ class BuddyUserView extends Component {
 
         { /* Only show the opinion buttons as well as the Whappu Log connection button if this is not
         the user's own profile */}
-   <View style={styles.thumbs}>
-     <View style={{flex: 1, flexDirection: 'row'}}>
-     <TouchableHighlight onPress={this.onLikePress}>
-       <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-     </TouchableHighlight>
-     <TouchableHighlight onPress={this.onDislikePress}>
-       <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
-     </TouchableHighlight>
-     </View>
-   </View>
+        {!this.isCurrentUser() &&
+        <View style={styles.thumbs}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+          <TouchableHighlight onPress={this.onLikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.onDislikePress}>
+            <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
+          </TouchableHighlight>
+          </View>
+        </View>
+        }
 
+        {!this.isCurrentUser() &&
         <View style={styles.logButtonView}>
           <Button
             onPress={ this.nextBuddy }
@@ -350,6 +353,7 @@ class BuddyUserView extends Component {
             Skip
           </Button>
         </View>
+        }
 
         {!this.isCurrentUser() &&
         <View style={styles.logButtonView}>
