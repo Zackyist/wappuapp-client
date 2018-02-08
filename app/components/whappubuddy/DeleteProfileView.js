@@ -1,11 +1,6 @@
 
 'use strict';
 
-// TODO: Waiting for backend to send the feedback to
-// TODO: Fix colour sources to theme
-// TODO: Repair navigation
-// TODO: Add event and userid to props
-
 import React, { Component } from 'react';
 import { Alert, Text, View, StyleSheet, ScrollView, ParallaxView, Platform, TouchableHighlight, Dimensions } from 'react-native';
 import Button from '../common/Button';
