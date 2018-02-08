@@ -102,9 +102,6 @@ export const fetchUserBuddies = () => {
 
 export const submitOpinion = (params) => {
   return (dispatch) => {
-    console.log("DEBUG: " + params.userId + " " + params.opinion)
-    dispatch({type: PUT_OPINION_REQUEST});
-    console.log("DEBUG: user.js " + params.opinion);
     return api.postOpinion(params)
     .then(response => {
       dispatch({type: PUT_OPINION_SUCCESS});

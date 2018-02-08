@@ -18,27 +18,18 @@ import autobind from 'autobind-decorator';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
-  fetchUserProfile,
-} from '../../concepts/user';
-import {
   closeBuddyIntroView,
   openBuddyIntroView,
   openBuddyRegistrationView
 } from '../../actions/registration';
 
 import theme from '../../style/theme';
-import Header from '../common/Header';
 import Button from '../../components/common/Button';
 
 const { height, width } = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
 
 class BuddyIntroView extends Component {
-  componentDidMount() {
-    const { userId } = this.props;
-    this.props.fetchUserProfile(userId);
-  }
-
   @autobind
   onRequestClose() {
     this.props.closeBuddyIntroView();
@@ -66,7 +57,10 @@ class BuddyIntroView extends Component {
             style={styles.container}
           >
             <View style={styles.innerContainer}>
-              <Text style={styles.heading}>Hello {userName}!</Text>
+              <View style={styles.headingContainer}>
+                <Text style={styles.heading}>Hello</Text>
+                <Text style={styles.heading}>{userName}!</Text>
+              </View>
               <Text style={styles.helpText}>Welcome to WhappuBuddy! It's the modern way to find new friends to spend this Wappu with.</Text>
               <View style={styles.imagesContainer}>
                 <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
@@ -140,7 +134,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: theme.accentLight,
+    color: theme.accentLight
+  },
+  headingContainer: {
     marginBottom: 15,
   },
   helpText: {
@@ -178,7 +174,6 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = {
     closeBuddyIntroView,
-    fetchUserProfile,
     openBuddyIntroView,
     openBuddyRegistrationView
 };

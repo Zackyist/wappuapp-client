@@ -28,6 +28,8 @@ import {
   OPEN_BUDDY_INTRO_VIEW,
   OPEN_BUDDY_REGISTRATION_VIEW,
   SET_DATA_UPDATED,
+  SHOW_OTHER_BUDDY_PROFILE,
+  SHOW_OWN_BUDDY_PROFILE,
   UPDATE_BUDDY_BIO,
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
@@ -56,7 +58,9 @@ const initialState = fromJS({
   bio_text: '',
   bio_looking_for_type_id: 1,
   class_year: '',
+  heila: false,
   isDataUpdated: false,
+  isOwnBuddyProfileShown: false,
   lookingForTypes: [],
   push_token: ''
 });
@@ -144,6 +148,10 @@ export default function registration(state = initialState, action) {
       return state.set('isBuddyRegistrationViewOpen', true);
     case SET_DATA_UPDATED:
       return state.set('isDataUpdated', true);
+    case SHOW_OTHER_BUDDY_PROFILE:
+      return state.set('isOwnBuddyProfileShown', false);
+    case SHOW_OWN_BUDDY_PROFILE:
+      return state.set('isOwnBuddyProfileShown', true);
     case UPDATE_BUDDY_BIO:
       return state.set('bio_text', action.payload);
     case UPDATE_BUDDY_CLASS_YEAR:
@@ -172,4 +180,5 @@ export const getUserTeam = createSelector(getUserTeamId, getTeams,
   (teamId, teams) => teams.find(item => item.get('id') === teamId))
 export const getLookingForTypes = state => state.registration.get('lookingForTypes');
 export const isDataUpdated = state => state.registration.get('isDataUpdated');
+export const isOwnBuddyProfileShown = state => state.registration.get('isOwnBuddyProfileShown');
 export const usesWhappuBuddy = state => state.registration.get('heila');

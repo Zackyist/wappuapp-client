@@ -1,15 +1,12 @@
-import { createSelector } from 'reselect';
-import { fromJS, List, Map } from 'immutable';
-import { parseInt } from 'lodash';
-import DeviceInfo from 'react-native-device-info';
+// TODO: Is getBuddyPushToken still needed?
+
+import { fromJS, Map } from 'immutable';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
+import { fetchUserProfile } from '../concepts/user';
 
 // # Selectors
-export const getBuddyBio = state => state.buddyUser.getIn(['buddyProfile', 'bio_text'], '') || '';
-export const getBuddyClassYear = state => state.buddyUser.getIn(['buddyProfile', 'class_year'], '') || '';
-export const getBuddyLookingFor = state => state.buddyUser.getIn(['buddyProfile', 'bio_looking_for_type_id'], '') || '';
 export const getBuddyPushToken = state => state.buddyUser.getIn(['buddyProfile', 'pushToken'], '') || '';
 export const getBuddyUserProfile = state => state.buddyUser.get('buddyProfile') || {};
 
@@ -35,13 +32,11 @@ export const fetchBuddyProfile = (userId) => (dispatch) => {
 }
 
 export const updateCurrentBuddy = (buddy) => (dispatch) => {
-
       dispatch({
         type: SET_BUDDY_PROFILE,
         payload: buddy
       });
-
-
+      dispatch(fetchUserProfile(buddy.id));
 };
 
 // # Reducer

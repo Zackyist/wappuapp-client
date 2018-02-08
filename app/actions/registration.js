@@ -5,6 +5,7 @@ import api from '../services/api';
 import namegen from '../services/namegen';
 import _ from 'lodash';
 import {createRequestActionTypes} from '.';
+import { fetchUserProfile } from '../concepts/user';
 
 const {
   CREATE_USER_REQUEST,
@@ -46,6 +47,8 @@ const CLOSE_BUDDY_REGISTRATION_VIEW = 'CLOSE_BUDDY_REGISTRATION_VIEW';
 const OPEN_BUDDY_INTRO_VIEW = 'OPEN_BUDDY_INTRO_VIEW';
 const OPEN_BUDDY_REGISTRATION_VIEW = 'OPEN_BUDDY_REGISTRATION_VIEW';
 const SET_DATA_UPDATED = 'SET_DATA_UPDATED';
+const SHOW_OTHER_BUDDY_PROFILE = 'SHOW_OTHER_BUDDY_PROFILE';
+const SHOW_OWN_BUDDY_PROFILE = 'SHOW_OWN_BUDDY_PROFILE';
 const UPDATE_BUDDY_BIO = 'UPDATE_BUDDY_BIO';
 const UPDATE_BUDDY_CLASS_YEAR = 'UPDATE_BUDDY_CLASS_YEAR';
 const UPDATE_BUDDY_LOOKING_FOR = 'UPDATE_BUDDY_LOOKING_FOR';
@@ -136,6 +139,7 @@ const getUser = () => {
     return api.getUser(uuid)
       .then(user => {
         dispatch({ type: GET_USER_SUCCESS, payload: user });
+        dispatch(fetchUserProfile(user.id));
       })
       .catch(error => {
         dispatch({ type: GET_USER_FAILURE, error: error });
@@ -232,6 +236,14 @@ const putBuddyProfile = (onPutError) => {
   };
 };
 
+const showOtherBuddyProfile = () => {
+  return { type: SHOW_OTHER_BUDDY_PROFILE };
+};
+
+const showOwnBuddyProfile = () => {
+  return { type: SHOW_OWN_BUDDY_PROFILE };
+};
+
 const updateBuddyBio = buddyBio => {
   return { type: UPDATE_BUDDY_BIO, payload: buddyBio };
 };
@@ -276,6 +288,8 @@ export {
   OPEN_BUDDY_INTRO_VIEW,
   OPEN_BUDDY_REGISTRATION_VIEW,
   SET_DATA_UPDATED,
+  SHOW_OTHER_BUDDY_PROFILE,
+  SHOW_OWN_BUDDY_PROFILE,
   UPDATE_BUDDY_BIO,
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
@@ -302,6 +316,8 @@ export {
   openBuddyIntroView,
   openBuddyRegistrationView,
   putBuddyProfile,
+  showOtherBuddyProfile,
+  showOwnBuddyProfile,
   updateBuddyBio,
   updateBuddyClassYear,
   updateBuddyLookingFor,
