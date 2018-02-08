@@ -120,7 +120,7 @@ const deleteFeedItem = item => {
 };
 
 const deleteBuddyProfile = uuid => {
-  return _delete(Endpoints.urls.heila(uuid));
+  return _delete(Endpoints.urls.buddyDelete(uuid));
 };
 
 const voteFeedItem = payload => {
