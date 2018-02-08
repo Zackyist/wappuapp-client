@@ -4,11 +4,6 @@ import { parseInt } from 'lodash';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
-import {
-  UPDATE_BUDDY_BIO,
-  UPDATE_BUDDY_CLASS_YEAR,
-  UPDATE_BUDDY_LOOKING_FOR
-} from '../actions/registration';
 
 // # Selectors
 export const getBuddyBio = state => state.buddyUser.getIn(['buddyProfile', 'bio_text'], '') || '';
