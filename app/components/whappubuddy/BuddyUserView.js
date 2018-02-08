@@ -14,6 +14,7 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import { parseInt } from 'lodash';
+import Modal from 'react-native-modal';
 
 import {
   fetchUserProfile,
@@ -50,6 +51,7 @@ import PopupMenu from '../user/PopupMenu';
 import { getCurrentTab } from '../../reducers/navigation';
 
 import UserView from '../user/UserView';
+import DeleteProfileView from './DeleteProfileView';
 import Button from '../../components/common/Button';
 
 const { height, width } = Dimensions.get('window');
@@ -62,6 +64,8 @@ class BuddyUserView extends Component {
     super(props);
     this.state = {
       buddyIndex: 0,
+      buddyToShow: this.props.route,
+      popModalVisible: false
     };
   }
 
@@ -143,14 +147,22 @@ class BuddyUserView extends Component {
 
   @autobind
   onEditProfile() {
+    this.closePopModal();
     this.props.openBuddyRegistrationView();
   }
 
   onDeleteProfile = () => {
-
+    this.closePopModal();
+    this.props.navigator.push({
+      component: DeleteProfileView
+    });
   }
 
   onReportUser = () => {
+    if (isIOS){
+      this.closePopModal();
+    }
+
     Alert.alert(
 
       'Flag Content',
@@ -173,12 +185,12 @@ class BuddyUserView extends Component {
     if (this.props.buddies.size > 0) {
       this.props.updateCurrentBuddy(this.props.buddies.get(this.state.buddyIndex));
 
-    if (this.state.buddyIndex === this.props.buddies.size - 1) {
-      this.setState({buddyIndex: 0});
-    }
-    else {
-      this.setState({buddyIndex: this.state.buddyIndex + 1});
-    }
+      if (this.state.buddyIndex === this.props.buddies.size - 1) {
+        this.setState({buddyIndex: 0});
+      }
+      else {
+        this.setState({buddyIndex: this.state.buddyIndex + 1});
+      }
 
     }
     else {
@@ -192,6 +204,9 @@ class BuddyUserView extends Component {
       matchedUserId: this.props.currentBuddy.id,
       opinion: 'UP'
     };
+    if (isIOS){
+      this.closePopModal();
+    }
     this.props.submitOpinion(Subpackage);
     this.props.buddies.delete(this.state.buddyIndex);
     this.nextBuddy()
@@ -203,6 +218,7 @@ class BuddyUserView extends Component {
       matchedUserId: this.props.currentBuddy.id,
       opinion: 'DOWN'
     };
+
     this.props.submitOpinion(Subpackage);
     this.props.buddies.delete(this.state.buddyIndex);
     this.nextBuddy()
@@ -250,6 +266,22 @@ class BuddyUserView extends Component {
     }
   }
 
+  openPopModal = () => {
+    this.setState({popModalVisible:true});
+  }
+
+  togglePopModal = () => {
+    if (this.state.modalVisible){
+      this.closePopModal();
+    }
+    else {
+      this.openPopModal();
+    }
+  }
+
+  closePopModal = () => {
+    this.setState({popModalVisible:false});
+  }
 
   render() {
 
@@ -280,16 +312,52 @@ class BuddyUserView extends Component {
             </View>
             }
 
-
             {this.isCurrentUser() && !isIOS &&
               <View style={styles.menu}>
                 <PopupMenu actions={['Edit my profile', 'Delete my profile']} onPress={this.onMyPopupEvent} />
               </View>
             }
 
+            {user.name === userName && isIOS && <View style={styles.popContainer}>
+                <Modal
+                    onBackdropPress={() => this.setState({ popModalVisible: false })}
+                    visible={this.state.popModalVisible}
+                    animationType={'fade'}>
+                    <View style={styles.modalContainer}>
+                    <TouchableOpacity onPress={this.onEditProfile}>
+                      <Text style={styles.modalLink}> Edit my profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.onDeleteProfile}>
+                      <Text style={styles.modalLink}> Delete profile</Text>
+                    </TouchableOpacity>
+                    </View>
+                </Modal>
+                <TouchableOpacity onPress={this.togglePopModal}>
+                <Icon name='more-vert' size={28} color={'white'} />
+                </TouchableOpacity>
+              </View>
+            }
+
             {!this.isCurrentUser() && !isIOS &&
               <View style={styles.menu}>
                 <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
+              </View>
+            }
+
+            {!this.isCurrentUser() && isIOS && <View style={styles.popContainer}>
+                <Modal
+                    onBackdropPress={() => this.setState({ popModalVisible: false })}
+                    visible={this.state.popModalVisible}
+                    animationType={'fade'}>
+                    <View style={styles.modalContainer}>
+                    <TouchableOpacity onPress={this.onReportUser}>
+                      <Text style={styles.modalLink}> Report user</Text>
+                    </TouchableOpacity>
+                    </View>
+                </Modal>
+                <TouchableOpacity onPress={this.togglePopModal}>
+                <Icon name='more-vert' size={28} color={'white'} />
+                </TouchableOpacity>
               </View>
             }
 
@@ -333,12 +401,12 @@ class BuddyUserView extends Component {
         {!this.isCurrentUser() &&
         <View style={styles.thumbs}>
           <View style={{flex: 1, flexDirection: 'row'}}>
-          <TouchableHighlight onPress={this.onLikePress}>
+          <TouchableOpacity onPress={this.onLikePress}>
             <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this.onDislikePress}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.onDislikePress}>
             <Image style={{width: 100, height: 100, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
-          </TouchableHighlight>
+          </TouchableOpacity>
           </View>
         </View>
         }
@@ -366,7 +434,6 @@ class BuddyUserView extends Component {
           </Button>
         </View>
         }
-
       </ParallaxView>
       </View>
     );
@@ -525,10 +592,24 @@ const styles = StyleSheet.create({
   loader: {
     marginTop: 50
   },
-  thumbs: {
-    justifyContent: 'center',
+  thumbContainer: {
+    flex: 1,
+    flexDirection:'row',
     alignItems: 'center',
+    justifyContent: 'center'
   },
+
+  thumbTouchable: {
+    // placeholder
+  },
+
+  thumbImage: {
+    width: 75,
+    height: 75,
+    marginLeft: 10,
+    marginRight: 10
+  },
+
   imageContainer:{
     margin: 1,
     marginTop: 2,
@@ -551,6 +632,27 @@ const styles = StyleSheet.create({
   imageTitleWrap: {
     flex: 1,
     marginTop: 0
+  },
+  popContainer: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
+    width: 50,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    width: 150,
+    top: 75,
+    right: 0
+
+  },
+  modalLink: {
+    paddingLeft: 10,
+    paddingRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: theme.secondary
   },
 });
 

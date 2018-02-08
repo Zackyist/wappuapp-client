@@ -7,6 +7,7 @@ import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
 import { VOTE_FEED_ITEM_REQUEST } from '../actions/feed';
 
+
 // # Selectors
 export const getUserImages = state => state.user.getIn(['profile', 'images'], List()) || List();
 export const getUserTeam = state => state.user.getIn(['profile', 'team'], List()) || List();
