@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   Platform,
   Text,
@@ -16,6 +15,7 @@ import {
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
 import { parseInt } from 'lodash';
+import Modal from 'react-native-modal';
 
 import {
   fetchUserProfile,
@@ -31,6 +31,8 @@ import {
   getBuddyClassYear,
   getBuddyLookingFor,
   fetchBuddyProfile,
+  updateCurrentBuddy,
+  getBuddyUserProfile
 } from '../../concepts/buddyUser';
 import {
   getUserName,
@@ -47,30 +49,29 @@ import {
 
 import ParallaxView from 'react-native-parallax-view';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import UserAvatar from 'react-native-user-avatar';
 import abuse from '../../services/abuse';
 
 import theme from '../../style/theme';
 import Header from '../common/Header';
-import Loader from '../common/Loader';
 import PopupMenu from '../user/PopupMenu';
 import { getCurrentTab } from '../../reducers/navigation';
 
 import UserView from '../user/UserView';
+import DeleteProfileView from './DeleteProfileView';
 import Button from '../../components/common/Button';
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
 
-
-
+//|| this.props.buddies.insert(0, this.props.fetchBuddyProfile(this.props.route.id))
 class BuddyUserView extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       buddyIndex: 0,
-      buddyToShow: this.props.route
+      buddyToShow: this.props.route,
+      popModalVisible: false
     };
   }
 
@@ -82,17 +83,18 @@ class BuddyUserView extends Component {
       this.props.fetchBuddyProfile(user.id);
       this.props.fetchUserBuddies(user.id);
     } else {
-      this.props.fetchBuddyProfile(userId);
+      //this.props.fetchBuddyProfile(userId);
+      this.props.fetchUserBuddies(userId);
+      this.props.updateCurrentBuddy(this.props.buddies.get(0));
     }
-    
+
   }
 
   componentWillReceiveProps({ tab, userId }) {
     // Fetch images and data on Buddy tab if this is the user's own profile
     if (tab !== this.props.tab && tab === 'BUDDY') {
-      this.props.fetchUserImages(userId);
-      this.props.fetchUserProfile(userId);
-      this.props.fetchBuddyProfile(userId);
+      this.props.fetchUserBuddies(userId);
+      this.props.updateCurrentBuddy(this.props.buddies.get(0));
     }
   }
 
@@ -107,7 +109,7 @@ class BuddyUserView extends Component {
 
   // Checks whether this is the user's own profile or not
   isCurrentUser() {
-    let { user } = this.props.route;
+    let user = this.props.currentBuddy;
     const { userId } = this.props.userId;
 
     if (user) {
@@ -150,14 +152,22 @@ class BuddyUserView extends Component {
 
   @autobind
   onEditProfile() {
+    this.closePopModal();
     this.props.openBuddyRegistrationView();
   }
 
   onDeleteProfile = () => {
-
+    this.closePopModal();
+    this.props.navigator.push({
+      component: DeleteProfileView
+    });
   }
 
   onReportUser = () => {
+    if (isIOS){
+      this.closePopModal();
+    }
+
     Alert.alert(
 
       'Flag Content',
@@ -178,6 +188,7 @@ class BuddyUserView extends Component {
   @autobind
   nextBuddy() {
     if (this.props.buddies.size > 0) {
+      this.props.updateCurrentBuddy(this.props.buddies.get(this.state.buddyIndex));
 
       if (this.state.buddyIndex === this.props.buddies.size - 1) {
         this.setState({buddyIndex: 0});
@@ -185,14 +196,9 @@ class BuddyUserView extends Component {
       else {
         this.setState({buddyIndex: this.state.buddyIndex + 1});
       }
-      
-      this.setState({buddyToShow: this.props.buddies.get(this.state.buddyIndex)});
 
-      this.props.fetchBuddyProfile(this.state.buddyToShow.id);
-      this.props.fetchUserProfile(this.state.buddyToShow.id);
-      this.props.fetchUserImages(this.state.buddyToShow.id);
-      this.props.fetchUserBuddies(this.props.userId);
-    } else {
+    }
+    else {
       this.onBuddiesEnd()
     }
   }
@@ -201,9 +207,12 @@ class BuddyUserView extends Component {
   onLikePress(){
     if (this.props.usesWhappuBuddy) {
       const Subpackage  = {
-        matchedUserId: this.state.buddyToShow.id,
+        matchedUserId: this.props.currentBuddy.id,
         opinion: 'UP'
       };
+      if (isIOS){
+        this.closePopModal();
+      }
       this.props.submitOpinion(Subpackage);
       this.props.buddies.delete(this.state.buddyIndex);
       this.nextBuddy()
@@ -215,12 +224,11 @@ class BuddyUserView extends Component {
   @autobind
   onDislikePress(){
     if (this.props.usesWhappuBuddy) {
-      console.log('koko');
-      console.log(this.props.buddies.size);
       const Subpackage  = {
-        matchedUserId: this.state.buddyToShow.id,
+        matchedUserId: this.props.currentBuddy.id,
         opinion: 'DOWN'
       };
+  
       this.props.submitOpinion(Subpackage);
       this.props.buddies.delete(this.state.buddyIndex);
       this.nextBuddy()
@@ -255,7 +263,7 @@ class BuddyUserView extends Component {
       if (parsed == 11 || parsed == 12 || parsed == 13) {
         ordinal = 'th';
       }
-      
+
       return ', ' + ClassYear + ordinal + ' year';
     } else {
       return '';
@@ -263,43 +271,46 @@ class BuddyUserView extends Component {
   }
 
   @autobind
-  renderLookingFor() {
-    if (this.state.buddyToShow.bio_looking_for_type_id) {
-      return this.props.lookingForTypes.find(item => item.id === this.state.buddyToShow.bio_looking_for_type_id).type;
+  renderLookingFor(buddy) {
+    if (buddy.bio_looking_for_type_id) {
+      return this.props.lookingForTypes.find(item => item.id === buddy.bio_looking_for_type_id).type;
     } else {
       return 'Nothing specific';
     }
   }
 
+  openPopModal = () => {
+    this.setState({popModalVisible:true});
+  }
+
+  togglePopModal = () => {
+    if (this.state.modalVisible){
+      this.closePopModal();
+    }
+    else {
+      this.openPopModal();
+    }
+  }
+
+  closePopModal = () => {
+    this.setState({popModalVisible:false});
+  }
+
   render() {
 
-    const { buddyBio, buddyClassYear, buddyLookingFor, image_url, userTeam, userName, navigator } = this.props;
-    let { user } = this.props.route;
-
-    // Show Current user if not user selected
-    if (!user) {
-      user = { name: userName, imageUrl: image_url, buddyBio: buddyBio, buddyLookingFor: buddyLookingFor, buddyClassYear: buddyClassYear }
-    }
+    const { navigator } = this.props;
+    let buddy = this.props.currentBuddy;
 
     let headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
     // Show the user's profile picture as the header image if it's set
-    if ( this.state.buddyToShow.image_url || user.imageUrl || image_url) {
-      headerImage = { uri: this.state.buddyToShow.image_url || user.image_url };
-      console.log('kuvasetti');
-      console.log(headerImage);
-      if (this.props.route.name === this.state.buddyToShow.name) {
-        headerImage = {uri: this.state.buddyToShow.image_url || image_url}
-      }
+    if (buddy.image_url) {
+      headerImage = { uri: buddy.image_url};
     }
-
-    console.log('kamu');
-    console.log(this.state.buddyToShow);
-
 
     return (
       <View style={{ flex: 1 }}>
-      {false && <Header backgroundColor={theme.secondary} title={user.name} navigator={navigator} />}
+      {false && <Header backgroundColor={theme.secondary} navigator={navigator} />}
       <ScrollView
         ref={view => this.containerScrollViewRef = view}
         showsVerticalScrollIndicator={true}
@@ -307,11 +318,13 @@ class BuddyUserView extends Component {
       >
         <ParallaxView
           backgroundSource={headerImage}
-          windowHeight={height/1.8}
+          windowHeight={height / 1.8}
           style={{ backgroundColor:theme.white }}
           header={(
+
             <View style={styles.header}>
-              {!isIOS && user.name !== userName &&
+              { /* Back Arrow for Android */ }
+              {!isIOS && !this.isCurrentUser() &&
               <View style={styles.backLink}>
                 <TouchableHighlight onPress={() => navigator.pop()} style={styles.backLinkText} underlayColor={'rgba(255, 255, 255, .1)'}>
                   <Icon name="arrow-back" size={28} style={styles.backLinkIcon}  />
@@ -319,37 +332,77 @@ class BuddyUserView extends Component {
               </View>
               }
 
-
-              {user.name === userName && !isIOS &&
+              { /* Android Popup Menu for own user profile */ }
+              {this.isCurrentUser() && !isIOS &&
                 <View style={styles.menu}>
                   <PopupMenu actions={['Edit my profile', 'Delete my profile']} onPress={this.onMyPopupEvent} />
                 </View>
               }
 
-              {user.name !== userName && !isIOS &&
+              { /* iOS Popup Menu for own user profile */ }
+              {this.isCurrentUser() && isIOS && <View style={styles.popContainer}>
+                  <Modal
+                      onBackdropPress={() => this.setState({ popModalVisible: false })}
+                      visible={this.state.popModalVisible}
+                      animationType={'fade'}>
+                      <View style={styles.modalContainer}>
+                      <TouchableOpacity onPress={this.onEditProfile}>
+                        <Text style={styles.modalLink}> Edit my profile</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={this.onDeleteProfile}>
+                        <Text style={styles.modalLink}> Delete profile</Text>
+                      </TouchableOpacity>
+                      </View>
+                  </Modal>
+                  <TouchableOpacity onPress={this.togglePopModal}>
+                  <Icon name='more-vert' size={28} color={'white'} />
+                  </TouchableOpacity>
+                </View>
+              }
+
+              { /* Android Popup Menu for other user's profile */ }
+              {!this.isCurrentUser() && !isIOS &&
                 <View style={styles.menu}>
                   <PopupMenu actions={['Report user']} onPress={this.onPopupEvent} />
                 </View>
               }
 
-
+              { /* iOS Popup Menu for other user's profile */ }
+              {!this.isCurrentUser() && isIOS && <View style={styles.popContainer}>
+                  <Modal
+                      onBackdropPress={() => this.setState({ popModalVisible: false })}
+                      visible={this.state.popModalVisible}
+                      animationType={'fade'}>
+                      <View style={styles.modalContainer}>
+                      <TouchableOpacity onPress={this.onReportUser}>
+                        <Text style={styles.modalLink}> Report user</Text>
+                      </TouchableOpacity>
+                      </View>
+                  </Modal>
+                  <TouchableOpacity onPress={this.togglePopModal}>
+                  <Icon name='more-vert' size={28} color={'white'} />
+                  </TouchableOpacity>
+                </View>
+              }
+              
+              { /* Actual header title box */ }
               <View style={styles.headerInfo}>
                 <Text style={styles.headerTitle}>
                 {this.props.buddies.size > 0 &&
-                  this.state.buddyToShow.name || userName || "A man/woman has no name"
+                  buddy.name || "A man/woman has no name"
                 }
                 </Text>
                 <Text style={styles.headerSubTitle}>
                 {this.props.buddies.size > 0 &&
-                  this.state.buddyToShow.team || userTeam || "The Guild"
+                  buddy.team || "The Guild"
                 }
                 {this.props.buddies.size > 0 &&
-                  this.renderClassYear(this.state.buddyToShow.class_year) || this.renderClassYear(buddyClassYear) || "69 BC"
+                  this.renderClassYear(buddy.class_year) || "69 BC"
                 }
                 </Text>
               </View>
             </View>
-          )}
+            )}
         >
         
           { /* Only show the Whappu Log connection button if this is not the user's own profile */}
@@ -365,17 +418,19 @@ class BuddyUserView extends Component {
           </View>
           }
 
+          { /* WhappuBuddy Profile Data */ }
           <View style={styles.bioView}>
             <Text style={styles.bioTitle}>About Me</Text>
+
             <Text style={styles.bioText}>
             {this.props.buddies.size > 0 &&
-              this.state.buddyToShow.bio_text || buddyBio || "No bio for lamo"
+              buddy.bio_text || "No bio for lamo"
             }
             </Text>
-            
+
             <Text style={styles.lookingForTitle}>Looking For</Text>
             <Text style={styles.lookingForText}>
-              {this.renderLookingFor()}
+              {this.renderLookingFor(buddy)}
             </Text>
           </View>
         </ParallaxView>
@@ -624,19 +679,42 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginTop: (70 - 40) / 2
-  }  
+  },
+  popContainer: {
+    position: 'absolute',
+    right: 7,
+    top: 7,
+    width: 50,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    width: 150,
+    top: 75,
+    right: 0
+
+  },
+  modalLink: {
+    paddingLeft: 10,
+    paddingRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    color: theme.secondary
+  },
 });
 
 
-const mapDispatchToProps = { 
+const mapDispatchToProps = {
   acknowledgeDataUpdate,
   fetchBuddyProfile,
   fetchUserBuddies,
   fetchUserImages,
   fetchUserProfile,
+  fetchBuddyProfile,
   openBuddyIntroView,
   openBuddyRegistrationView,
   submitOpinion,
+  updateCurrentBuddy
 };
 
 const mapStateToProps = state => ({
@@ -644,14 +722,15 @@ const mapStateToProps = state => ({
   buddyBio: getBuddyBio(state),
   buddyClassYear: getBuddyClassYear(state),
   buddyLookingFor: getBuddyLookingFor(state),
+  currentBuddy: getBuddyUserProfile(state),
   image_url: getUserImageUrl(state),
   isDataUpdated: isDataUpdated(state),
   lookingForTypes: getLookingForTypes(state),
+  tab: getCurrentTab(state),
   userId: getUserId(state),
   userName: getUserName(state),
   userTeam: getUserTeam(state),
-  usesWhappuBuddy: usesWhappuBuddy(state),
-  tab: getCurrentTab(state)
+  usesWhappuBuddy: usesWhappuBuddy(state)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BuddyUserView);

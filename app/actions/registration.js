@@ -27,6 +27,11 @@ const {
   GET_LOOKING_FOR_TYPES_FAILURE
 } = createRequestActionTypes('GET_LOOKING_FOR_TYPES');
 
+const {DELETE_BUDDY_PROFILE_REQUEST,
+      DELETE_BUDDY_PROFILE_SUCCESS,
+      DELETE_BUDDY_PROFILE_FAILURE}
+ = createRequestActionTypes('DELETE_BUDDY_PROFILE');
+
 const OPEN_REGISTRATION_VIEW = 'OPEN_REGISTRATION_VIEW';
 const CLOSE_REGISTRATION_VIEW = 'CLOSE_REGISTRATION_VIEW';
 const UPDATE_NAME = 'UPDATE_NAME';
@@ -138,6 +143,21 @@ const getUser = () => {
   };
 };
 
+const deleteBuddyProfile = () => {
+  return dispatch => {
+    dispatch({ type: DELETE_BUDDY_PROFILE_REQUEST });
+    const uuid = DeviceInfo.getUniqueID();
+    console.log('ACTIONISSA')
+    return api.deleteBuddyProfile(uuid)
+      .then(response => {
+        dispatch({ type: DELETE_BUDDY_PROFILE_SUCCESS});
+      })
+      .catch(error => {
+        dispatch({ type: DELETE_BUDDY_PROFILE_FAILURE, error: error });
+      });
+  };
+};
+
 const updateProfilePic = (profilePic) => {
   return {type: UPDATE_PROFILE_PIC, payload: profilePic};
 }
@@ -194,7 +214,7 @@ const putBuddyProfile = (onPutError) => {
     const uuid = DeviceInfo.getUniqueID();
     const bio_text = getStore().registration.get('bio_text');
     const bio_looking_for_type_id = getStore().registration.get('bio_looking_for_type_id');
-    // TODO: Replace this one with the commented-out ones below - after 
+    // TODO: Replace this one with the commented-out ones below - after
     //       the push token is properly generated somewhere in the client
     const push_token = "INVALID";
     //const push_token = getStore().registration.get('push_token');
@@ -260,6 +280,9 @@ export {
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
   UPDATE_BUDDY_PUSH_TOKEN,
+  DELETE_BUDDY_PROFILE_REQUEST,
+  DELETE_BUDDY_PROFILE_SUCCESS,
+  DELETE_BUDDY_PROFILE_FAILURE,
   putUser,
   updateProfilePic,
   putProfilePic,
@@ -282,5 +305,6 @@ export {
   updateBuddyBio,
   updateBuddyClassYear,
   updateBuddyLookingFor,
-  updateBuddyPushToken
+  updateBuddyPushToken,
+  deleteBuddyProfile
 };

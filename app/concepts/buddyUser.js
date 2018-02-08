@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { fromJS, List, Map } from 'immutable';
 import { parseInt } from 'lodash';
+import DeviceInfo from 'react-native-device-info';
 
 import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
@@ -9,7 +10,8 @@ import {createRequestActionTypes} from '../actions';
 export const getBuddyBio = state => state.buddyUser.getIn(['buddyProfile', 'bio_text'], '') || '';
 export const getBuddyClassYear = state => state.buddyUser.getIn(['buddyProfile', 'class_year'], '') || '';
 export const getBuddyLookingFor = state => state.buddyUser.getIn(['buddyProfile', 'bio_looking_for_type_id'], '') || '';
-export const getBuddyPushToken = state => state.buddyUser.getIn(['buddyProfile', 'push_token'], '') || '';
+export const getBuddyPushToken = state => state.buddyUser.getIn(['buddyProfile', 'pushToken'], '') || '';
+export const getBuddyUserProfile = state => state.buddyUser.get('buddyProfile') || {};
 
 // # Action creators
 const {
@@ -32,6 +34,16 @@ export const fetchBuddyProfile = (userId) => (dispatch) => {
     .catch(error => dispatch({ type: GET_BUDDY_PROFILE_FAILURE, error: true, payload: error }));
 }
 
+export const updateCurrentBuddy = (buddy) => (dispatch) => {
+
+      dispatch({
+        type: SET_BUDDY_PROFILE,
+        payload: buddy
+      });
+
+
+};
+
 // # Reducer
 const initialState = fromJS({
   buddyProfile: {},
@@ -41,7 +53,7 @@ const initialState = fromJS({
 export default function city(state = initialState, action) {
   switch (action.type) {
     case SET_BUDDY_PROFILE: {
-      return state.set('buddyProfile', fromJS(action.payload));
+      return state.set('buddyProfile', action.payload);
     }
 
     case GET_BUDDY_PROFILE_REQUEST: {

@@ -54,8 +54,8 @@ class Navigation extends Component {
         <MDIcon.TabBarItemIOS
           iconName='favorite-border'
           title=''
-          selected={currentTab === Tabs.HEILA}
-          onPress={() => { this.onChangeTab(Tabs.HEILA); }}>
+          selected={currentTab === Tabs.BUDDY}
+          onPress={() => { this.onChangeTab(Tabs.BUDDY); }}>
           <BuddyView navigator={navigator} />
         </MDIcon.TabBarItemIOS>
 

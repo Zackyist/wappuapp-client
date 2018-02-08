@@ -7,6 +7,7 @@ import api from '../services/api';
 import {createRequestActionTypes} from '../actions';
 import { VOTE_FEED_ITEM_REQUEST } from '../actions/feed';
 
+
 // # Selectors
 export const getUserImages = state => state.user.getIn(['profile', 'images'], List()) || List();
 export const getUserTeam = state => state.user.getIn(['profile', 'team'], List()) || List();
@@ -14,7 +15,7 @@ export const getTotalSimas = state => state.user.getIn(['profile', 'numSimas'], 
 export const getSelectedUser = state => state.user.get('selectedUser', Map()) || Map();
 export const isLoadingUserImages = state => state.user.get('isLoading', false) || false;
 export const getUserImageUrl = state => state.user.getIn(['profile', 'image_url'], '') || '';
-export const getUserBuddies = state => state.user.get('buddies') || Immutable.List([]);
+export const getUserBuddies = state => state.user.get('buddies') || List([]);
 export const hasRegisteredOnWhappuBuddy = state => state.user.getIn(['profile', 'heila'], false) || false;
 
 export const getTotalVotesForUser = createSelector(
