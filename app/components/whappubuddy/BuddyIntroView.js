@@ -18,27 +18,18 @@ import autobind from 'autobind-decorator';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
-  fetchUserProfile,
-} from '../../concepts/user';
-import {
   closeBuddyIntroView,
   openBuddyIntroView,
   openBuddyRegistrationView
 } from '../../actions/registration';
 
 import theme from '../../style/theme';
-import Header from '../common/Header';
 import Button from '../../components/common/Button';
 
 const { height, width } = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
 
 class BuddyIntroView extends Component {
-  componentDidMount() {
-    const { userId } = this.props;
-    this.props.fetchUserProfile(userId);
-  }
-
   @autobind
   onRequestClose() {
     this.props.closeBuddyIntroView();
@@ -62,18 +53,22 @@ class BuddyIntroView extends Component {
         <View style={styles.viewContainer}>
           <ScrollView
             ref={view => this.containerScrollViewRef = view}
-            showsVerticalScrollIndicator={true}
-            style={styles.container}>
+            showsVerticalScrollIndicator={false}
+            style={styles.container}
+          >
             <View style={styles.innerContainer}>
-              <Text style={styles.heading}>Hello {userName}!</Text>
+              <View style={styles.headingContainer}>
+                <Text style={styles.heading}>Hello</Text>
+                <Text style={styles.heading}>{userName}!</Text>
+              </View>
               <Text style={styles.helpText}>Welcome to WhappuBuddy! It's the modern way to find new friends to spend this Wappu with.</Text>
               <View style={styles.imagesContainer}>
-                <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
                 <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbDown.png')}/>
+                <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
               </View>
               <Text style={styles.helpText}>Just browse profiles and thumb them up or down. Matched users will be able to chat with each other.</Text>
               <View style={styles.imagesContainer}>
-                <Image style={{width: 50, height: 50, marginHorizontal: 25}} source={require('../../../assets/thumbUp.png')}/>
+                <Image style={{width: 30, height: 30, marginHorizontal: 25}} source={require('../../../assets/skipButton.png')}/>
               </View>
               <Text style={styles.helpText}>You can browse potential buddies without registering but you cannot give anyone a thumbs up or down.</Text>
               <Text style={styles.adviceText}>So let's sign you up!</Text>
@@ -139,7 +134,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: theme.accentLight,
+    color: theme.accentLight
+  },
+  headingContainer: {
     marginBottom: 15,
   },
   helpText: {
@@ -177,7 +174,6 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = {
     closeBuddyIntroView,
-    fetchUserProfile,
     openBuddyIntroView,
     openBuddyRegistrationView
 };

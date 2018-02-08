@@ -16,9 +16,7 @@ export const getSelectedUser = state => state.user.get('selectedUser', Map()) ||
 export const isLoadingUserImages = state => state.user.get('isLoading', false) || false;
 export const getUserImageUrl = state => state.user.getIn(['profile', 'image_url'], '') || '';
 export const getUserBuddies = state => state.user.get('buddies') || List([]);
-// TODO: Fix hasRegisteredOnWhappuBuddy once the backend fix has been applied
-export const hasRegisteredOnWhappuBuddy = state => true;
-// export const hasRegisteredOnWhappuBuddy = state => state.user.get(['profile', 'heila'], false) || false;
+export const hasRegisteredOnWhappuBuddy = state => state.user.getIn(['profile', 'heila'], false) || false;
 
 export const getTotalVotesForUser = createSelector(
   getUserImages, (posts) => {
@@ -104,9 +102,6 @@ export const fetchUserBuddies = () => {
 
 export const submitOpinion = (params) => {
   return (dispatch) => {
-    console.log("DEBUG: " + params.userId + " " + params.opinion)
-    dispatch({type: PUT_OPINION_REQUEST});
-    console.log("DEBUG: user.js " + params.opinion);
     return api.postOpinion(params)
     .then(response => {
       dispatch({type: PUT_OPINION_SUCCESS});

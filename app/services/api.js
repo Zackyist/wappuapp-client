@@ -99,9 +99,14 @@ const putProfilePic = payload => {
 
 const postOpinion = (params)  => {
   let payload = Object.assign({}, params, { uuid: DeviceInfo.getUniqueID() });
-  console.log("DEBUG: " + payload.user + " " + params.opinion + " " + payload.opinion);
   return _post(Endpoints.urls.opinion(payload.user), payload);
 };
+
+const getBuddyUser = uuid => {
+  return wapuFetch(Endpoints.urls.buddyUser(uuid))
+    .then(checkResponseStatus)
+    .then(response => response.json());
+}
 
 const getUser = uuid => {
   return wapuFetch(Endpoints.urls.user(uuid))
@@ -252,6 +257,7 @@ export default {
   putProfilePic,
   putMood,
   getBuddyProfile,
+  getBuddyUser,
   getUser,
   getImages,
   getUserProfile,

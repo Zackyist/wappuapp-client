@@ -34,6 +34,7 @@ const store = createStoreWithMiddleware(reducer);
 // Fetch actions, check user existance
 store.dispatch(CompetitionActions.fetchActionTypes());
 store.dispatch(RegistrationActions.getUser());
+store.dispatch(RegistrationActions.getBuddyUser());
 
 // Fetch all cities
 store.dispatch(fetchCities())

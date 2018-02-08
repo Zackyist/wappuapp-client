@@ -21,13 +21,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as keyboard from '../../utils/keyboard';
 
 import {
-  fetchUserProfile,
-} from '../../concepts/user';
-import {
-  fetchBuddyProfile,
-} from '../../concepts/buddyUser';
-import {
   closeBuddyRegistrationView,
+  getBuddyUser,
   openBuddyRegistrationView,
   putBuddyProfile,
   updateBuddyBio,
@@ -36,7 +31,6 @@ import {
 } from '../../actions/registration';
 
 import theme from '../../style/theme';
-import Header from '../common/Header';
 import Button from '../../components/common/Button';
 import Toolbar from '../registration/RegistrationToolbar';
 
@@ -44,11 +38,6 @@ const { height, width } = Dimensions.get('window');
 const IOS = Platform.OS === 'ios';
 
 class BuddyRegistrationView extends Component {
-  componentDidMount() {
-    const { userId } = this.props;
-    this.props.fetchBuddyProfile(userId);
-  }
-
   @autobind
   saveProfile() {
     this.props.putBuddyProfile(this.onSaveError);
@@ -73,6 +62,8 @@ class BuddyRegistrationView extends Component {
   @autobind
   onRequestClose() {
     this.props.closeBuddyRegistrationView();
+    // Reset any unsaved changes to registration data
+    this.props.getBuddyUser();
   }
 
   @autobind
@@ -335,8 +326,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
     closeBuddyRegistrationView,
     openBuddyRegistrationView,
-    fetchUserProfile,
-    fetchBuddyProfile,
+    getBuddyUser,
     putBuddyProfile,
     updateBuddyBio,
     updateBuddyClassYear,
