@@ -1,9 +1,10 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { TabBarIOS } from 'react-native';
+import { TabBarIOS, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
+import FCM from 'react-native-fcm';
 
 import CalendarView from './CalendarView';
 import MoodView from './MoodView';
@@ -15,14 +16,70 @@ import BuddyView from './BuddyView'
 import Tabs from '../constants/Tabs';
 import { changeTab } from '../actions/navigation';
 import MDIcon from 'react-native-vector-icons/MaterialIcons';
+import {updateBuddyPushToken} from '../actions/registration';
 
 const theme = require('../style/theme');
+
+const pushNotificationListener = (navigator) => {
+  return FCM.on('notification', (notif) => {
+    console.log('notificationListener ----> NOTIFICATION RECEIVED');
+    console.log(notif);
+
+    if (notif.opened_from_tray) {
+      console.log('notif.opened_from_tray');
+      navigator.push({
+        component: BuddyView
+      })
+
+
+    } else {
+      //if (notif.notifType === 'message')
+      Alert.alert(
+        'New Message received',
+        'Go check it out?',
+        [
+          { text: 'Nope'},
+          { text: 'Yes, ofc ', onPress: () => navigator.push({ component: BuddyView}) }
+        ]
+      );
+
+      console.log('notification received while the app was foregr.');
+      console.log(notif);
+    }
+  });
+}
 
 // # Tab navigation
 class Navigation extends Component {
   @autobind
   onChangeTab(tab) {
     this.props.changeTab(tab);
+  }
+
+  componentDidMount(){
+
+    FCM.requestPermissions();
+    FCM.getFCMToken().then(token => {
+      console.log('FCM.getFCMToken --> token ::: ')
+      console.log(token)
+      this.props.updateBuddyPushToken(token);
+    });
+
+    this.refreshTokenListener = FCM.on('refreshToken', (token) => {
+      console.log('refreshTokenListener ----->> token ::')
+      console.log(token)
+      this.props.updateBuddyPushToken(token);
+      // fcm token may not be available on first load, catch it here
+    });
+
+    const {navigator} = this.props;
+    pushNotificationListener(navigator);
+
+    FCM.getInitialNotification().then(notif => {
+      this.setState({
+        initNotif: notif
+      })
+    });
   }
 
   render() {

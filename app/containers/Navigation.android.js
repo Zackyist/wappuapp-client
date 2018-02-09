@@ -84,9 +84,6 @@ class AndroidTabNavigation extends Component {
   componentDidMount() {
     this.props.changeTab(ANDROID_TAB_ORDER[initialTab])
 
-    // FCM.requestPermissions(); // for iOS
-    // TODO: add iOS specific hanlding here
-
     FCM.getFCMToken().then(token => {
       console.log('FCM.getFCMToken --> token ::: ')
       console.log(token)
