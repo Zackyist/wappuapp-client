@@ -114,6 +114,7 @@ class BuddyUserView extends Component {
 
     if (this.props.isDataUpdated && this.props.isOwnBuddyProfileShown) {
       this.props.acknowledgeDataUpdate();
+      this.props.fetchUserProfile(userId);
       this.props.fetchBuddyProfile(userId);
 
     // Ensure that Discover mode is re-entered after changing tabs

@@ -34,6 +34,7 @@ import {
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
   UPDATE_BUDDY_PUSH_TOKEN,
+  UPDATE_BUDDY_REGISTRATION,
   DELETE_BUDDY_PROFILE_SUCCESS,
   DELETE_BUDDY_PROFILE_REQUEST,
   DELETE_BUDDY_PROFILE_FAILURE,
@@ -160,6 +161,8 @@ export default function registration(state = initialState, action) {
       return state.set('bio_looking_for_type_id', action.payload);
     case UPDATE_BUDDY_PUSH_TOKEN:
       return state.set('push_token', action.payload);
+    case UPDATE_BUDDY_REGISTRATION:
+      return state.set('heila', action.payload);
     case DELETE_BUDDY_PROFILE_SUCCESS:
     return state.set('isOnWhappuBuddy', false);
     case DELETE_BUDDY_PROFILE_REQUEST:

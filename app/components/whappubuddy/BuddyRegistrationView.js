@@ -40,6 +40,9 @@ const IOS = Platform.OS === 'ios';
 class BuddyRegistrationView extends Component {
   @autobind
   saveProfile() {
+    if (!this.props.buddyLookingFor) {
+      this.props.updateBuddyLookingFor(1);
+    }
     this.props.putBuddyProfile(this.onSaveError);
   }
 
