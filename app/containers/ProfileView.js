@@ -43,7 +43,7 @@ class ProfileView extends Component {
         style={styles.navigator}
         initialRoute={{
           component: UserView,
-          name: 'Settings'
+          name: 'Profile'
         }}
         renderScene={this.renderScene}
         configureScene={() => ({

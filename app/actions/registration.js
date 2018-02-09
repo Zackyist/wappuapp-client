@@ -172,6 +172,10 @@ const acknowledgeDataUpdate = () => {
   return { type: ACKNOWLEDGE_DATA_UPDATE };
 };
 
+const broadcastDataUpdate = () => {
+  return { type: SET_DATA_UPDATED };
+};
+
 const closeBuddyIntroView = () => {
   return { type: CLOSE_BUDDY_INTRO_VIEW };
 };
@@ -309,6 +313,7 @@ export {
   reset,
   dismissIntroduction,
   acknowledgeDataUpdate,
+  broadcastDataUpdate,
   closeBuddyIntroView,
   closeBuddyRegistrationView,
   getBuddyUser,

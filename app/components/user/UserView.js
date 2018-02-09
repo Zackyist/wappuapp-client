@@ -112,7 +112,8 @@ class UserView extends Component {
       this.props.navigator.push({
         component: BuddyUserView,
         name: `${user.name}`,
-        user
+        user,
+        fromWhappuLog: true
       });
     };
   }
@@ -338,8 +339,10 @@ closePopModal = () => {
 
             {/* Ugly but this hack is needed to render the WhappuBuddy connection button in a correct manner.
                 Also only renders the button if the user is viewing someone else's UserView than their own
-                and that someone else has registered on WhappuBuddy. */}
-            {(!isLoading && !this.isCurrentUser() && this.props.isOnWhappuBuddy) ? (
+                and that someone else has registered on WhappuBuddy. Does not render if the user is already
+                coming here from WhappuBuddy. */}
+            {(!isLoading && !this.isCurrentUser() && !this.props.route.fromWhappuBuddy &&
+              this.props.isOnWhappuBuddy) ? (
               <View style={styles.headerKpis}>
                 <View style={styles.buddyButtonView}>
                   <Button
