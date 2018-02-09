@@ -4335,6 +4335,10 @@ react-native-dismiss-keyboard@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
 
+react-native-fcm@2.5.6:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/react-native-fcm/-/react-native-fcm-2.5.6.tgz#4663c595e037c462ac474c5751556384f072e26b"
+
 react-native-gifted-chat@0.0.10:
   version "0.0.10"
   resolved "https://registry.yarnpkg.com/react-native-gifted-chat/-/react-native-gifted-chat-0.0.10.tgz#4ff71c9869e174eba357d086e33b4baff7fea0c6"

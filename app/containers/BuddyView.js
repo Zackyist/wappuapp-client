@@ -12,6 +12,7 @@ import ScrollableTabView from 'react-native-scrollable-tab-view';
 
 import TabBarItems from '../components/tabs/Tabs';
 import BuddyUserView from '../components/whappubuddy/BuddyUserView';
+import BuddyMatchesView from '../components/whappubuddy/BuddyMatchesView';
 import {
   broadcastDataUpdate,
   showOtherBuddyProfile,
@@ -112,7 +113,7 @@ class BuddyView extends Component {
           key={2}
           style={styles.navigator}
           initialRoute={{
-            component: BuddyUserView,
+            component: BuddyMatchesView,
             name: 'Matches'
           }}
           renderScene={this.renderScene}
