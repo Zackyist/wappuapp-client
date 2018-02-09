@@ -109,10 +109,19 @@ class BuddyUserView extends Component {
 
   componentDidUpdate() {
     // Ensure that the user data is updated right after editing the WhappuBuddy profile
-    if (this.props.isDataUpdated) {
-      const { userId } = this.props;
+    // as well as after switching WhappuBuddy tabs
+    const { userId } = this.props;
+
+    if (this.props.isDataUpdated && this.props.isOwnBuddyProfileShown) {
       this.props.acknowledgeDataUpdate();
       this.props.fetchBuddyProfile(userId);
+
+    // Ensure that Discover mode is re-entered after changing tabs
+    } else if (this.props.isDataUpdated && !this.props.isOwnBuddyProfileShown) {
+      this.props.acknowledgeDataUpdate();
+      this.props.fetchUserBuddies(userId).then(() => {
+        this.props.updateCurrentBuddy(this.props.buddies.get(0));
+      });
     }
   }
 
@@ -121,6 +130,12 @@ class BuddyUserView extends Component {
     let user = this.props.currentBuddy;
     const { userId } = this.props;
 
+    // For My Profile mode
+    if (this.props.isOwnBuddyProfileShown) {
+      return true;
+    }
+
+    // For Discover mode and accessing through Whappu Log
     if (user) {
       if (user.id == userId) {
         return true;
@@ -148,7 +163,8 @@ class BuddyUserView extends Component {
       this.props.navigator.push({
         component: UserView,
         name: user.name,
-        user
+        user,
+        fromWhappuBuddy: true
       });
     };
   }
@@ -301,7 +317,7 @@ class BuddyUserView extends Component {
       >
         <ParallaxView
           backgroundSource={headerImage}
-          windowHeight={height / 1.8}
+          windowHeight={height / 2.3}
           style={{ backgroundColor:theme.white }}
           header={(
 
@@ -392,8 +408,9 @@ class BuddyUserView extends Component {
             )}
         >
         
-          { /* Only show the Whappu Log connection button if this is not the user's own profile */}
-          {!this.isCurrentUser() &&
+          { /* Only show the Whappu Log connection button if this is not the user's own profile
+               and if the user has not arrived here from a Whappu Log */}
+          {!this.isCurrentUser() && !this.props.route.fromWhappuLog &&
           <View style={styles.logButtonView}>
             <Button
               onPress={this.showWhappuLog()}

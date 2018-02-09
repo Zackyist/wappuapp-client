@@ -8,10 +8,18 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
 
+import TabBarItems from '../components/tabs/Tabs';
 import BuddyUserView from '../components/whappubuddy/BuddyUserView';
+import {
+  broadcastDataUpdate,
+  showOtherBuddyProfile,
+  showOwnBuddyProfile
+} from '../actions/registration';
 
 const theme = require('../style/theme');
+const isIOS = Platform.OS === 'ios';
 
 const styles = StyleSheet.create({
   navigator: {
@@ -36,25 +44,99 @@ class BuddyView extends Component {
     }
   }
 
+  @autobind
+  onChangeTab(selectedTab) {
+    const tabIndex = selectedTab.i;
+
+    switch (tabIndex) {
+    case 0:
+      // TODO: Insert MatchesView stuff if needed
+      break;
+    case 1:
+      this.props.showOtherBuddyProfile();
+      this.props.broadcastDataUpdate();
+      break;
+    case 2:
+      this.props.showOwnBuddyProfile();
+      this.props.broadcastDataUpdate();
+      break;
+    default:
+    }
+  }
+
   render() {
     return (
-      <Navigator
-        style={styles.navigator}
-        initialRoute={{
-          component: BuddyUserView,
-          name: 'WhappuBuddy'
-        }}
-        renderScene={this.renderScene}
-        configureScene={() => ({
-          ...Navigator.SceneConfigs.FloatFromRight
-        })}
-      />
+      <ScrollableTabView
+        onChangeTab={this.onChangeTab}
+        initialPage={1}
+        tabBarActiveTextColor={theme.secondary}
+        tabBarUnderlineColor={theme.secondary}
+        tabBarBackgroundColor={theme.white}
+        tabBarInactiveTextColor={'rgba(0,0,0,0.6)'}
+        locked={isIOS}
+        prerenderingSiblingsNumber={0}
+        renderTabBar={() => <TabBarItems />}    
+      >
+        <Navigator
+          key={0}
+          style={styles.navigator}
+          initialRoute={{
+            component: BuddyUserView,
+            name: 'My Profile'
+          }}
+          renderScene={this.renderScene}
+          configureScene={() => ({
+            ...Navigator.SceneConfigs.FloatFromRight
+          })}
+          tabLabel="My Profile"
+          barColor={theme.accent}
+          ref="myProfile"
+        />
+        <Navigator
+          key={1}
+          style={styles.navigator}
+          initialRoute={{
+            component: BuddyUserView,
+            name: 'Discover'
+          }}
+          renderScene={this.renderScene}
+          configureScene={() => ({
+            ...Navigator.SceneConfigs.FloatFromRight
+          })}
+          tabLabel="Discover"
+          barColor={theme.positive}
+          ref="discover"
+        />
+        { /* TODO: Change this to route to MatchesView */ }
+        <Navigator
+          key={2}
+          style={styles.navigator}
+          initialRoute={{
+            component: BuddyUserView,
+            name: 'Matches'
+          }}
+          renderScene={this.renderScene}
+          configureScene={() => ({
+            ...Navigator.SceneConfigs.FloatFromRight
+          })}
+          tabLabel="Matches"
+          barColor={theme.accent}
+          ref="matches"
+        />
+      </ScrollableTabView>
+
     );
   }
 }
+
+const mapDispatchToProps = {
+  broadcastDataUpdate,
+  showOtherBuddyProfile,
+  showOwnBuddyProfile
+};
 
 const select = store => {
   return {};
 };
 
-export default connect(select)(BuddyView);
+export default connect(select, mapDispatchToProps)(BuddyView);
