@@ -5,15 +5,17 @@ import {
   FETCH_CHAT_FAILURE,
   FETCH_CHAT_SUCCESS,
   SEND_MESSAGE_FAILURE,
-  SEND_MESSAGE_SUCCESS
+  SEND_MESSAGE_SUCCESS,
 } from '../actions/chat';
 import { FETCH_BUDDY_FAILURE } from '../actions/matches';
 
 const initialState = {
+  database: null,
   messages: [],
   myId: null,
   buddyId: null,
   buddyImg: null,
+  buddyName: null,
   chatId: null,
   fetching: false,
   fetchReady: false,
@@ -33,7 +35,7 @@ const chat = (state=initialState, action) => {
       return {...state, fetching: false, fetchReady: true, messages: action.payload}
     }
     case SEND_MESSAGE_FAILURE: {
-      return {...state, errorMsg: error}
+      return {...state, errorMsg: action.payload}
     }
     case SEND_MESSAGE_SUCCESS: {
       return {...state}

@@ -1,8 +1,5 @@
 'use strict';
 
-// TODO: Implement redux
-// TODO: Find solution to the async problem with showing profile pic and name
-
 import React, { Component, PropTypes } from 'react';
 import {
   View,
@@ -31,6 +28,9 @@ import {
   resetMatchlist
 } from '../../actions/matches';
 
+import * as firebase from 'firebase';
+import * as ENV from '../../../env';
+
 
 const isIOS = Platform === 'ios';
 
@@ -47,7 +47,6 @@ class BuddyMatches extends Component {
       dataSource: dataSource.cloneWithRows([])
     }
   }
-
 
   propTypes: {
     matches: PropTypes.array.isRequired,
@@ -104,7 +103,7 @@ class BuddyMatches extends Component {
   }
 
   renderListView() {
-    if (this.props.datasource === 0) {
+    if (this.props.datasource.length === 0) {
       return <View style={styles.activityStyle}>
         <Text style={styles.activityText} >You have no matches :(</Text>
       </View>
@@ -134,7 +133,7 @@ class BuddyMatches extends Component {
   }
 
   componentDidMount() {
-    
+    console.log(firebase.database());
     this.props.fetchingMatches();
   }
 
@@ -222,7 +221,7 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = store => {
-
+  console.log(store)
   return {
     matchesFetched: store.matches.matchesFetched,
     buddiesFetched: store.matches.buddiesFetched,

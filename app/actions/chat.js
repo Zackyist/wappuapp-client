@@ -1,9 +1,11 @@
 'use strict';
 
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 import _ from 'lodash';
+import moment from 'moment';
+import 'moment/locale/fi';
 
-// const database = firebase.database();
+moment.locale('fi');
 
 export const FETCH_CHAT_REQUEST = 'FETCH_CHAT_REQUEST';
 export const FETCH_CHAT_FAILURE = 'FETCH_CHAT_FAILURE';
@@ -25,12 +27,36 @@ export const fetchChatSuccess = (messages) => ({
   payload: messages
 });
 
-export const fetchChat = (chatId) => {
+export const fetchChat = (chatId, db, buddyName, buddyImg) => {
   return async dispatch => {
     dispatch(fetchChatRequest());
     try {
-      await database.ref(`chats/${chatId}/messages`).on('value', (messages) => {
-        dispatch(fetchChatSuccess(JSON.stringify(messages1)))
+      await db.ref(`chats/${chatId}/messages`).on('value', (messages) => {
+        const messageList = []
+        messages.forEach(message => {
+          const msg = message.val();
+          var name = 'Me';
+          var url = null;
+          if (Number(msg.userId) === -1) {
+            name = 'WhappuBuddy Admin';
+            url = null;
+          }
+          else {
+            name = buddyName;
+            url = buddyImg;
+          }
+          messageList.push({
+            _id: message.key,
+            text: msg.msg,
+            createdAt: msg.createdAt,
+            user: {
+              _id: Number(msg.userId),
+              name: name,
+              avatar: url
+            }
+          });
+        });
+      dispatch(fetchChatSuccess(messageList.reverse()));
     });
     }
     catch (error) {
@@ -43,24 +69,25 @@ export const sendMessageSuccess = () => ({
   type: SEND_MESSAGE_SUCCESS
 });
 
-export const sendMessageFailure = () => ({
+export const sendMessageFailure = (error) => ({
   type: SEND_MESSAGE_FAILURE,
   payload: error
 });
 
-export const sendMessage = (userId, msg, chatId) => {
-  return async dispatch => {
+export const sendMessage = (id, msg, chatId, database) => {
+  return dispatch => {
     try {
-      const ts = firebase.database.ServerValue.TIMESTAMP;
-      await database.ref(`chats/${chatId}/messages`).push({
+      const createdAt = moment().valueOf();
+      const userId = id.toString();
+      database.ref(`chats/${chatId}/messages`).push({
         msg,
-        ts,
+        createdAt,
         userId
       });
-      await dispatch(sendMessageSuccess());
+      dispatch(sendMessageSuccess());
     }
     catch (error) {
       dispatch(sendMessageFailure(error));
     }
   };
-}
+};

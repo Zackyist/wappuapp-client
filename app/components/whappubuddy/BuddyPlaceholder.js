@@ -10,7 +10,7 @@ class BuddyPlaceholder extends Component {
   }
   
   componentWillMount() {
-    console.log('buddy ', this.props)
+
   }
 
   render() {
