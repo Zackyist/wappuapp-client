@@ -15,6 +15,8 @@ import * as RegistrationActions from '../actions/registration';
 import { initializeUsersCity, fetchCities } from '../concepts/city';
 import { initializeUsersRadio, fetchRadioStations } from '../concepts/radio';
 import permissions from '../services/android-permissions';
+import * as ENV from '../../env';
+import * as firebase from 'firebase';
 
 const IOS = Platform.OS === 'ios';
 
@@ -55,6 +57,17 @@ class RootView extends Component {
     super(props);
 
     this.startLocationWatcher = this.startLocationWatcher.bind(this);
+  }
+
+  componentWillMount() {
+    
+    try {
+      firebase.initializeApp(ENV.FIREBASE_CONFIG);
+      console.log('Firebase settings: ', ENV.FIREBASE_CONFIG)
+    }
+    catch (error) {
+      console.log('Firebase error: ', error)
+    }
   }
 
   componentDidMount() {
