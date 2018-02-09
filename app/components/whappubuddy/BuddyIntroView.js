@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'justify',
     color: theme.light,
-    marginBottom: 5,
+    marginBottom: 0,
   },
   imagesContainer: {
     flex: 1,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex:1,
     paddingTop:15,
-    paddingBottom: 10,
+    paddingBottom: 5,
     margin: 0,
     borderRadius: 5
   },

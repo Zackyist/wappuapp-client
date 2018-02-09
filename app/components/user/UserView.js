@@ -36,7 +36,7 @@ import AppInfo from './AppInfo';
 import LegalStuff from './LegalStuff';
 import PopupMenu from './PopupMenu';
 
-import { openRegistrationView, acknowledgeDataUpdate } from '../../actions/registration';
+import { openRegistrationView, acknowledgeDataUpdate, showOtherBuddyProfile } from '../../actions/registration';
 import { getCurrentCityName } from '../../concepts/city';
 import WebViewer from '../webview/WebViewer';
 import BuddyUserView from '../whappubuddy/BuddyUserView';
@@ -107,6 +107,10 @@ class UserView extends Component {
   @autobind
   showBuddyProfile() {
     let { user } = this.props.route;
+
+    // Make sure that BuddyUserView is updated properly if coming from the My Profile mode
+    // of WhappuBuddy
+    this.props.showOtherBuddyProfile();
 
     return () => {
       this.props.navigator.push({
@@ -589,7 +593,8 @@ const mapDispatchToProps = {
   fetchUserImages,
   fetchUserProfile,
   openLightBox,
-  openRegistrationView
+  openRegistrationView,
+  showOtherBuddyProfile
 };
 
 const mapStateToProps = state => ({

@@ -50,15 +50,15 @@ class BuddyView extends Component {
 
     switch (tabIndex) {
     case 0:
-      // TODO: Insert MatchesView stuff if needed
+      this.props.showOwnBuddyProfile();
+      this.props.broadcastDataUpdate();
       break;
     case 1:
       this.props.showOtherBuddyProfile();
       this.props.broadcastDataUpdate();
       break;
     case 2:
-      this.props.showOwnBuddyProfile();
-      this.props.broadcastDataUpdate();
+      // TODO: Insert MatchesView stuff if needed
       break;
     default:
     }

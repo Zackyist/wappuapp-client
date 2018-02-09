@@ -1,3 +1,4 @@
+// TODO: Remove unnecessary imports
 
 'use strict';
 
@@ -14,8 +15,6 @@ import theme from '../../style/theme';
 
 const { height, width } = Dimensions.get('window');
 const isIOS = Platform.OS === 'ios';
-
-//let headerImage = require('../../../assets/frontpage_header-bg.jpg');
 
 class DeleteProfileView extends Component {
 
@@ -45,13 +44,13 @@ class DeleteProfileView extends Component {
   render() {
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
             <View style={styles.mainView}>
-              <Text style={styles.redText}>Are you sure you want to delete your profile on WhappuBuddy?</Text>
-              <Text style={styles.grayText}>If you delete your profile, other users wont be able to discover you on
+              <Text style={styles.headingText}>Are you sure you want to delete your profile on WhappuBuddy?</Text>
+              <Text style={styles.mainText}>If you delete your profile, other users wont be able to discover you on
                 WhappuBuddy anymore.</Text>
-              <Text style={styles.grayText}>All of your previous matches and chats will also be removed and cannot be recovered.
-                You can, however, rejoin WhappuBuddy later on and start from blank slate.</Text>
+              <Text style={styles.mainText}>All of your previous matches and chats will also be removed and cannot be recovered.
+                You can, however, rejoin WhappuBuddy later on and start from a blank slate.</Text>
               <Text style={styles.boldText}>Please note that leaving WhappuBuddy does not remove your Whappu App profile!</Text>
               <View style={styles.deleteButton}>
                 <Button onPress={this.onDelete}>DELETE MY WHAPPUBUDDY PROFILE</Button>
@@ -63,27 +62,33 @@ class DeleteProfileView extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.danger
+  },
   mainView: {
     flex: 1,
-    marginTop: 40
+    marginTop: 20,
+    padding: 20
   },
-  redText: {
+  headingText: {
     fontWeight: 'bold',
-    fontSize: 20,
-    color: 'red',
-    textAlign: 'center'
+    fontSize: 22,
+    color: theme.accent,
+    textAlign: 'center',
+    marginBottom: 15
   },
-  grayText: {
-    color: 'gray',
+  mainText: {
+    color: theme.accentLight,
     fontSize: 20,
     paddingTop: 20,
     textAlign: 'center'
   },
   boldText: {
-    color: 'gray',
+    color: theme.accentLight,
     fontWeight: 'bold',
     fontSize: 20,
-    paddingTop: 20,
+    paddingTop: 35,
     textAlign: 'center'
   },
   deleteButton: {

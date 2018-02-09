@@ -1,5 +1,3 @@
-// TODO: Remove pushToken hardcoding after the back-end and token generation have been fixed
-
 import DeviceInfo from 'react-native-device-info';
 import api from '../services/api';
 import namegen from '../services/namegen';
@@ -27,11 +25,11 @@ const {
   GET_LOOKING_FOR_TYPES_SUCCESS,
   GET_LOOKING_FOR_TYPES_FAILURE
 } = createRequestActionTypes('GET_LOOKING_FOR_TYPES');
-
-const {DELETE_BUDDY_PROFILE_REQUEST,
-      DELETE_BUDDY_PROFILE_SUCCESS,
-      DELETE_BUDDY_PROFILE_FAILURE}
- = createRequestActionTypes('DELETE_BUDDY_PROFILE');
+const {
+  DELETE_BUDDY_PROFILE_REQUEST,
+  DELETE_BUDDY_PROFILE_SUCCESS,
+  DELETE_BUDDY_PROFILE_FAILURE}
+= createRequestActionTypes('DELETE_BUDDY_PROFILE');
 
 const OPEN_REGISTRATION_VIEW = 'OPEN_REGISTRATION_VIEW';
 const CLOSE_REGISTRATION_VIEW = 'CLOSE_REGISTRATION_VIEW';
@@ -53,6 +51,7 @@ const UPDATE_BUDDY_BIO = 'UPDATE_BUDDY_BIO';
 const UPDATE_BUDDY_CLASS_YEAR = 'UPDATE_BUDDY_CLASS_YEAR';
 const UPDATE_BUDDY_LOOKING_FOR = 'UPDATE_BUDDY_LOOKING_FOR';
 const UPDATE_BUDDY_PUSH_TOKEN = 'UPDATE_BUDDY_PUSH_TOKEN';
+const UPDATE_BUDDY_REGISTRATION = 'UPDATE_BUDDY_REGISTRATION';
 
 const openRegistrationView = () => {
   return { type: OPEN_REGISTRATION_VIEW };
@@ -147,21 +146,6 @@ const getUser = () => {
   };
 };
 
-const deleteBuddyProfile = () => {
-  return dispatch => {
-    dispatch({ type: DELETE_BUDDY_PROFILE_REQUEST });
-    const uuid = DeviceInfo.getUniqueID();
-    console.log('ACTIONISSA')
-    return api.deleteBuddyProfile(uuid)
-      .then(response => {
-        dispatch({ type: DELETE_BUDDY_PROFILE_SUCCESS});
-      })
-      .catch(error => {
-        dispatch({ type: DELETE_BUDDY_PROFILE_FAILURE, error: error });
-      });
-  };
-};
-
 const updateProfilePic = (profilePic) => {
   return {type: UPDATE_PROFILE_PIC, payload: profilePic};
 }
@@ -182,6 +166,22 @@ const closeBuddyIntroView = () => {
 
 const closeBuddyRegistrationView = () => {
   return { type: CLOSE_BUDDY_REGISTRATION_VIEW };
+};
+
+const deleteBuddyProfile = () => {
+  return dispatch => {
+    dispatch({ type: DELETE_BUDDY_PROFILE_REQUEST });
+    const uuid = DeviceInfo.getUniqueID();
+    console.log('ACTIONISSA')
+    return api.deleteBuddyProfile(uuid)
+      .then(response => {
+        dispatch({ type: DELETE_BUDDY_PROFILE_SUCCESS });
+        dispatch({ type: UPDATE_BUDDY_REGISTRATION, payload: false });
+      })
+      .catch(error => {
+        dispatch({ type: DELETE_BUDDY_PROFILE_FAILURE, error: error });
+      });
+  };
 };
 
 // Used for getting the user's own profile and keeping it in store
@@ -222,15 +222,13 @@ const putBuddyProfile = (onPutError) => {
     const uuid = DeviceInfo.getUniqueID();
     const bio_text = getStore().registration.get('bio_text');
     const bio_looking_for_type_id = getStore().registration.get('bio_looking_for_type_id');
-    // TODO: Replace this one with the commented-out ones below - after
-    //       the push token is properly generated somewhere in the client
-    const push_token = "INVALID";
-    //const push_token = getStore().registration.get('push_token');
+    const push_token = getStore().registration.get('push_token');
     const class_year = getStore().registration.get('class_year');
     return api.putBuddyProfile({ uuid, bio_text, bio_looking_for_type_id, push_token, class_year })
       .then(response => {
         dispatch({ type: CREATE_USER_SUCCESS });
         dispatch({ type: CLOSE_BUDDY_REGISTRATION_VIEW });
+        dispatch({ type: UPDATE_BUDDY_REGISTRATION, payload: true });
         dispatch({ type: SET_DATA_UPDATED });
       })
       .catch(error => {
@@ -264,6 +262,10 @@ const updateBuddyPushToken = buddyPushToken => {
   return { type: UPDATE_BUDDY_PUSH_TOKEN, payload: buddyPushToken };
 };
 
+const updateBuddyRegistration = buddyRegistration => {
+  return { type: UPDATE_BUDDY_REGISTRATION, payload: buddyRegistration };
+};
+
 // WhappuBuddy registration and profile editing actions end
 
 export {
@@ -283,6 +285,9 @@ export {
   ACKNOWLEDGE_DATA_UPDATE,
   CLOSE_BUDDY_INTRO_VIEW,
   CLOSE_BUDDY_REGISTRATION_VIEW,
+  DELETE_BUDDY_PROFILE_REQUEST,
+  DELETE_BUDDY_PROFILE_SUCCESS,
+  DELETE_BUDDY_PROFILE_FAILURE,
   GET_BUDDY_USER_REQUEST,
   GET_BUDDY_USER_SUCCESS,
   GET_BUDDY_USER_FAILURE,
@@ -298,9 +303,7 @@ export {
   UPDATE_BUDDY_CLASS_YEAR,
   UPDATE_BUDDY_LOOKING_FOR,
   UPDATE_BUDDY_PUSH_TOKEN,
-  DELETE_BUDDY_PROFILE_REQUEST,
-  DELETE_BUDDY_PROFILE_SUCCESS,
-  DELETE_BUDDY_PROFILE_FAILURE,
+  UPDATE_BUDDY_REGISTRATION,
   putUser,
   updateProfilePic,
   putProfilePic,
@@ -316,6 +319,7 @@ export {
   broadcastDataUpdate,
   closeBuddyIntroView,
   closeBuddyRegistrationView,
+  deleteBuddyProfile,
   getBuddyUser,
   getLookingForTypes,
   openBuddyIntroView,
@@ -327,5 +331,5 @@ export {
   updateBuddyClassYear,
   updateBuddyLookingFor,
   updateBuddyPushToken,
-  deleteBuddyProfile
+  updateBuddyRegistration
 };

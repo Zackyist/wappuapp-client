@@ -1,9 +1,10 @@
 'use strict'
 
 import React, { Component } from 'react';
-import { View } from 'react-native'
+import { View, Alert } from 'react-native'
 
 import { connect } from 'react-redux';
+import FCM from 'react-native-fcm';
 import autobind from 'autobind-decorator';
 
 import { changeTab } from '../actions/navigation';
@@ -24,6 +25,8 @@ import AndroidTabs  from 'react-native-scrollable-tab-view';
 import Header from '../components/common/MainHeader';
 import CitySelector from '../components/header/CitySelector';
 import Tabs from '../constants/Tabs';
+import {updateBuddyPushToken} from '../actions/registration';
+
 
 const theme = require('../style/theme');
 const IconTabBar = require('../components/common/MdIconTabBar');
@@ -37,10 +40,74 @@ const ANDROID_TAB_ORDER = [
 ];
 const initialTab = 0;
 
+const pushNotificationListener = (navigator) => {
+  return FCM.on('notification', (notif) => {
+    console.log('notificationListener ----> NOTIFICATION RECEIVED');
+    console.log(notif);
+
+    if (notif.opened_from_tray) {
+      console.log('notif.opened_from_tray');
+      navigator.push({
+        component: BuddyView
+      })
+
+
+    } else {
+      //if (notif.notifType === 'message')
+      Alert.alert(
+        'New Message received',
+        'Go check it out?',
+        [
+          { text: 'Nope'},
+          { text: 'Yes, ofc ', onPress: () => navigator.push({ component: BuddyView}) }
+        ]
+      );
+
+      console.log('notification received while the app was foregr.');
+      console.log(notif);
+    }
+  });
+}
+
+
 class AndroidTabNavigation extends Component {
+
+  constructor(props) {
+      super(props);
+
+      this.state = {
+        token: "",
+        tokenCopyFeedback: ""
+      }
+    }
 
   componentDidMount() {
     this.props.changeTab(ANDROID_TAB_ORDER[initialTab])
+
+    // FCM.requestPermissions(); // for iOS
+    // TODO: add iOS specific hanlding here
+
+    FCM.getFCMToken().then(token => {
+      console.log('FCM.getFCMToken --> token ::: ')
+      console.log(token)
+      this.props.updateBuddyPushToken(token);
+    });
+
+    this.refreshTokenListener = FCM.on('refreshToken', (token) => {
+      console.log('refreshTokenListener ----->> token ::')
+      console.log(token)
+      this.props.updateBuddyPushToken(token);
+      // fcm token may not be available on first load, catch it here
+    });
+
+    const {navigator} = this.props;
+    pushNotificationListener(navigator);
+
+    FCM.getInitialNotification().then(notif => {
+      this.setState({
+        initNotif: notif
+      })
+    });
   }
 
   @autobind
@@ -99,6 +166,7 @@ const mapDispatchToProps = {
   changeTab,
   toggleCityPanel,
   setFeedSortType,
+  updateBuddyPushToken
 };
 
 const select = state => {
