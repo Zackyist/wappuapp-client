@@ -133,7 +133,7 @@ class BuddyMatches extends Component {
   }
 
   componentDidMount() {
-    console.log(firebase.database());
+    
     this.props.fetchingMatches();
   }
 
@@ -221,7 +221,6 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = store => {
-  console.log(store)
   return {
     matchesFetched: store.matches.matchesFetched,
     buddiesFetched: store.matches.buddiesFetched,

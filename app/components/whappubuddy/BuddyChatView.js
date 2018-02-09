@@ -12,7 +12,6 @@ class BuddyChatView extends Component {
 
   constructor(props) {
     super(props);
-    
     state = {
       messages: [],
       myId: 4,

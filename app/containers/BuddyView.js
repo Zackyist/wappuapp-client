@@ -47,7 +47,9 @@ class BuddyView extends Component {
 
   @autobind
   renderScene(route, navigator) {
+    console.log('route', route)
     if (route.component) {
+      console.log('route component', route.component)
       const RouteComponent = route.component;
       return <RouteComponent navigator={this.props.navigator} route={route} {...this.props} />
     }
@@ -68,6 +70,9 @@ class BuddyView extends Component {
   }
 
   render() {
+    
+    // let routelist = this.props.navigator.getCurrentRoutes();
+    // console.log('routelist containerista', routelist)
     return (
       <View style={{ flex: 1 }}>
         <ScrollTabs
