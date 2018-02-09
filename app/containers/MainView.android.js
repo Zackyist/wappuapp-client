@@ -19,6 +19,7 @@ import errorAlert from '../utils/error-alert';
 import LightBox from '../components/lightbox/Lightbox';
 import BuddyRegistrationView from '../components/whappubuddy/BuddyRegistrationView';
 import BuddyIntroView from '../components/whappubuddy/BuddyIntroView';
+import BuddyChatView from '../components/whappubuddy/BuddyChatView';
 
 const theme = require('../style/theme');
 
@@ -63,6 +64,7 @@ class MainView extends Component {
         />
         <BuddyIntroView />
         <BuddyRegistrationView />
+        <BuddyChatView />
         <RegistrationView />
         <LightBox />
         <CheckInActionView />

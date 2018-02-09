@@ -12,6 +12,9 @@ export const FETCH_CHAT_FAILURE = 'FETCH_CHAT_FAILURE';
 export const FETCH_CHAT_SUCCESS = 'FETCH_CHAT_SUCCESS';
 export const SEND_MESSAGE_FAILURE = 'SEND_MESSAGE_FAILURE';
 export const SEND_MESSAGE_SUCCESS = 'SEND_MESSAGE_SUCCESS';
+export const OPEN_CHAT_VIEW = 'OPEN_CHAT_VIEW';
+export const CLOSE_CHAT_VIEW = 'CLOSE_CHAT_VIEW';
+export const UPDATE_CHAT_INFO = 'UPDATE_CHAT_INFO';
 
 export const fetchChatRequest = () => ({
   type: FETCH_CHAT_REQUEST
@@ -90,4 +93,16 @@ export const sendMessage = (id, msg, chatId, database) => {
       dispatch(sendMessageFailure(error));
     }
   };
+};
+
+export const closeChatView = () => {
+  return { type: CLOSE_CHAT_VIEW };
+};
+
+export const openChatView = () => {
+  return { type: OPEN_CHAT_VIEW };
+};
+
+export const updateChatInfo = item => {
+  return { type: UPDATE_CHAT_INFO, payload: item };
 };

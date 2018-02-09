@@ -30,6 +30,11 @@ import {
 
 import * as firebase from 'firebase';
 import * as ENV from '../../../env';
+import {
+  openChatView,
+  closeChatView,
+  updateChatInfo
+} from '../../actions/chat';
 
 
 const isIOS = Platform === 'ios';
@@ -57,24 +62,13 @@ class BuddyMatches extends Component {
   };
 
   openChat(item) {
-    console.log('Avataan chatti... ', item)
-    console.log(this.props.navigator)
-    let routelist = this.props.navigator.getCurrentRoutes();
-    console.log('routelist', routelist)
-    return () => {
-      this.props.navigator.push({
-        component: BuddyChatView,
-        // name: `${item.buddyName}`,
-        passProps: {
-          name: item
-        }
-      });
-    };
+    this.props.updateChatInfo(item);
+    this.props.openChatView();
   };
 
   getMatchDetails = (matches) => {
     _.forEach(matches, (match) => {
-      this.props.fetchingBuddy(match.userId2);
+      this.props.fetchingBuddy(match.userId1);
     });
   }
 
@@ -108,12 +102,14 @@ class BuddyMatches extends Component {
         <Text style={styles.activityText} >You have no matches :(</Text>
       </View>
     } else {
-      return <ListView
-      enableEmptySections
-      dataSource={this.state.dataSource}
-      renderRow={this.renderRow}
-      renderSeparator={this.renderSeparator}
-      />
+      return (
+        <ListView
+        enableEmptySections
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow}
+        renderSeparator={this.renderSeparator}
+        />
+      )
     }
   }
 
@@ -133,7 +129,6 @@ class BuddyMatches extends Component {
   }
 
   componentDidMount() {
-    console.log('Täällä?')
     this.props.fetchingMatches();
   }
 
@@ -217,7 +212,10 @@ const mapDispatchToProps = {
   fetchingBuddy,
   updateDatasource,
   finishList,
-  resetMatchlist
+  resetMatchlist,
+  openChatView,
+  closeChatView,
+  updateChatInfo
 };
 
 const mapStateToProps = store => {

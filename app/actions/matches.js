@@ -4,6 +4,8 @@ import DeviceInfo from 'react-native-device-info';
 import _ from 'lodash';
 import Endpoints from '../constants/Endpoints';
 
+import api from '../services/api';
+
 export const FETCH_MATCHES_REQUEST = 'FETCH_MATCHES_REQUEST';
 export const FETCH_MATCHES_SUCCESS = 'FETCH_MATCHES_SUCCESS';
 export const FETCH_MATCHES_FAILURE = 'FETCH_MATCHES_FAILURE';
@@ -33,18 +35,17 @@ export const fetchingMatchesFailure = (error) => ({
   payload: error
 });
 
-export const fetchingMatches = () => {
-  return async dispatch => {
-    dispatch(fetchingMatchesRequest());
-    try {
-      let url = Endpoints.urls.matchesList(DeviceInfo.getUniqueID());
-      let response = await fetch(url);
-      let matches = await response.json();
-      await dispatch(fetchingMatchesSuccess(matches));
-    }
-    catch (error) {
-      dispatch(fetchingMatchesFailure(error)); 
-    };
+export const fetchingMatches = () => {  
+  return dispatch => {
+    dispatch({ type: FETCH_MATCHES_REQUEST });
+    const uuid = DeviceInfo.getUniqueID();
+    return api.getMatches(uuid)
+      .then(matches => {
+        dispatch({ type: FETCH_MATCHES_SUCCESS, payload: matches });
+      })
+      .catch(error => {
+        dispatch({ type: FETCH_MATCHES_FAILURE, error: error });
+      });
   };
 };
 
@@ -99,8 +100,8 @@ export const updateDatasource = (matches, buddies) => {
       _.zipWith(matches, buddies, (match, buddy) => {
         var buddyName = buddy.name;
         var buddyImg = buddy.image_url;
-        var myId = match.userId1;
-        var buddyId = match.userId2;
+        var myId = match.userId2;
+        var buddyId = match.userId1;
         var chatId = match.firebaseChatId;
         datasource.push({ myId, buddyId, buddyName, buddyImg, chatId });
       });
