@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.evollu.react.fcm.FIRMessagingPackage;
 import com.cmcewen.blurview.BlurViewPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.audioStreaming.ReactNativeAudioStreamingPackage;
@@ -47,6 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
           new RNSharePackage(),
           new RNSvgPackage(),
           new MainReactPackage(),
+            new FIRMessagingPackage(),
             new BlurViewPackage(),
             new MapsPackage()
       );

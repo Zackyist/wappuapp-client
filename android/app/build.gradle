@@ -127,6 +127,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fcm')
+    compile 'com.google.firebase:firebase-core:10.2.1'
     compile project(':react-native-blur')
     compile project(':react-native-maps')
     compile project(':react-native-svg')
@@ -174,3 +176,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 //   exclude 'META-INF/LICENSE'
 //   exclude 'META-INF/NOTICE'
 // }
+
+apply plugin: "com.google.gms.google-services"
+
