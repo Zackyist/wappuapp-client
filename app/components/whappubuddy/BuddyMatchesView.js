@@ -133,7 +133,7 @@ class BuddyMatches extends Component {
   }
 
   componentDidMount() {
-    
+    console.log('Täällä?')
     this.props.fetchingMatches();
   }
 

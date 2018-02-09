@@ -37,7 +37,7 @@ export const fetchingMatches = () => {
   return async dispatch => {
     dispatch(fetchingMatchesRequest());
     try {
-      let url = Endpoints.urls.matches(DeviceInfo.getUniqueID());
+      let url = Endpoints.urls.matchesList(DeviceInfo.getUniqueID());
       let response = await fetch(url);
       let matches = await response.json();
       await dispatch(fetchingMatchesSuccess(matches));

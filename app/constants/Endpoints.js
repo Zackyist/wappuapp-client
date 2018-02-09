@@ -31,7 +31,7 @@ const EndpointUrls = {
   buddyInfo: (uuid) => `${ROOT_URL}/heila/${uuid}`,
   buddyUser: (uuid) => `${ROOT_URL}/heila?uuid=${uuid}`,
   lookingForTypes: () => `${ROOT_URL}/heila-types`,
-  buddyDelete: (uuid) => `${ROOT_URL}/heila/${uuid}`
+  buddyDelete: (uuid) => `${ROOT_URL}/heila/${uuid}`,
 };
 
 const EndpointTypes = _.map(EndpointUrls, (item, key) => key);
