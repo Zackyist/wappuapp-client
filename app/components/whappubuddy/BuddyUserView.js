@@ -84,7 +84,7 @@ class BuddyUserView extends Component {
       if (this.props.usesWhappuBuddy) {
         this.props.fetchBuddyProfile(userId);
       }
-    
+
     // Fetch buddies when accessing the view from somewhere else than the Buddy tab
     } else if (user && user.id) {
       this.props.fetchBuddyProfile(user.id);
@@ -289,7 +289,7 @@ class BuddyUserView extends Component {
         matchedUserId: this.props.currentBuddy.id,
         opinion: 'DOWN'
       };
-  
+
       this.props.submitOpinion(Subpackage);
       this.props.buddies.delete(this.state.buddyIndex);
       this.nextBuddy()
@@ -387,7 +387,7 @@ class BuddyUserView extends Component {
                   </TouchableOpacity>
                 </View>
               }
-              
+
               { /* Quick and dirty fix for the user info header below not always being rendered
                     TODO: Find out why the element in this exact position in the element hierarchy
                           sometimes renders and sometimes does not. And why a simple View does not
@@ -408,7 +408,7 @@ class BuddyUserView extends Component {
             </View>
             )}
         >
-        
+
           { /* Only show the Whappu Log connection button if this is not the user's own profile
                and if the user has not arrived here from a Whappu Log */}
           {!this.isCurrentUser() && !this.props.route.fromWhappuLog &&
@@ -754,16 +754,22 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection:'row',
     marginTop:0,
-    marginBottom:0,
     marginLeft:5,
     marginRight:5,
     height:70,
     justifyContent: 'space-between',
     alignItems:'flex-start',
     position:'absolute',
-    bottom:20,
     left:0,
-    right:0
+    right:0,
+    ...Platform.select({
+     ios: {
+       bottom: 60,
+     },
+     android: {
+       bottom: 20,
+     },
+   }),
   },
   registerButton: {
     flex: 1
