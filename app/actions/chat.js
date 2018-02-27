@@ -38,8 +38,8 @@ export const fetchChat = (chatId, db, buddyName, buddyImg) => {
         const messageList = []
         messages.forEach(message => {
           const msg = message.val();
-          var name = 'Me';
-          var url = null;
+          let name = 'Me';
+          let url = null;
           if (Number(msg.userId) === -1) {
             name = 'WhappuBuddy Admin';
             url = null;

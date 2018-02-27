@@ -25,7 +25,9 @@ import {
   fetchingBuddy,
   updateDatasource,
   finishList,
-  resetMatchlist
+  resetMatchlist,
+  setBuddiesAsFetched,
+  fetchAllBuddies
 } from '../../actions/matches';
 
 import * as firebase from 'firebase';
@@ -67,9 +69,18 @@ class BuddyMatches extends Component {
   };
 
   getMatchDetails = (matches) => {
+    /*
     _.forEach(matches, (match) => {
       this.props.fetchingBuddy(match.userId1);
+    }).then(() => {
+      this.props.setBuddiesAsFetched();
+    })
+    .catch(error => {
+      console.log("All buddies could not be fetched!");
     });
+    */
+
+    this.props.fetchAllBuddies(matches);
   }
 
   setDatasource = (source) => {
@@ -118,9 +129,11 @@ class BuddyMatches extends Component {
     if (this.props.matchesFetched && !this.props.buddiesFetched) {
       this.getMatchDetails(this.props.matchList);
     }
+
     if (this.props.isLoading && this.props.matchesFetched && this.props.buddiesFetched) {
       this.getDatasource();
     }
+
     if (this.props.datasourceReady && !this.props.listReady) {
       this.setDatasource(this.props.datasource);
     }
@@ -215,7 +228,9 @@ const mapDispatchToProps = {
   resetMatchlist,
   openChatView,
   closeChatView,
-  updateChatInfo
+  updateChatInfo,
+  setBuddiesAsFetched,
+  fetchAllBuddies
 };
 
 const mapStateToProps = store => {

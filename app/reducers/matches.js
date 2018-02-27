@@ -4,6 +4,7 @@ import {
   FETCH_MATCHES_REQUEST,
   FETCH_MATCHES_SUCCESS,
   FETCH_MATCHES_FAILURE,
+  FETCH_ALL_BUDDIES_SUCCESS,
   FETCH_BUDDY_REQUEST,
   FETCH_BUDDY_SUCCESS,
   FETCH_BUDDY_FAILURE,
@@ -37,6 +38,9 @@ const matches = (state = initialState, action) => {
     case FETCH_MATCHES_SUCCESS: {
       return {...state, matchesFetched: true,  matchList: action.payload}
     }
+    case FETCH_ALL_BUDDIES_SUCCESS: {
+      return {...state, buddiesFetched: true}
+    }
     case FETCH_BUDDY_REQUEST: {
       return {...state, buddiesFetched: false}
     }
@@ -44,7 +48,7 @@ const matches = (state = initialState, action) => {
       return {...state, isLoading: false, errorMsg: action.payload}
     }
     case FETCH_BUDDY_SUCCESS: {
-      return {...state, buddiesFetched: true, buddyList: [...state.buddyList, action.payload]}
+      return {...state, buddyList: [...state.buddyList, action.payload]}
     }
     case UPDATE_DATASOURCE_REQUEST: {
       return {...state, datasourceReady: false}
